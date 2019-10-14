@@ -4,13 +4,20 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --simulator 'iPhone 11'",
     "start": "react-native start",
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.6.2",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "react": "16.9.0",
-    "react-native": "0.61.2"
+    "react-native": "0.61.2",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
@@ -19,6 +26,7 @@
     "@types/jest": "^24.0.18",
     "@types/react": "16.9.0",
     "@types/react-native": "^0.60.17",
+    "@types/react-redux": "^7.1.4",
     "@types/react-test-renderer": "16.9.0",
     "babel-jest": "^24.9.0",
     "jest": "^24.9.0",
