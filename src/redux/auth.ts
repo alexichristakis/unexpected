@@ -1,42 +1,53 @@
 import { AuthState as AuthStateType } from "./types";
+import { ActionsUnion, createAction } from "./utils";
 
 const initialState: AuthStateType = {
-  isRequestingAuth: false,
-  errorRequestingAuth: null,
+  loading: false,
+  isAwaitingCode: false,
+  authError: null,
   jwt: null
 };
 
-type AuthActionTypes = RequestAuth | ErrorRequestingAuth | SucessRequestingAuth;
+type AuthActionTypes = ActionsUnion<typeof Actions>;
 export default (state: AuthStateType = initialState, action: AuthActionTypes) => {
   switch (action.type) {
-    case REQUEST_AUTH:
-      return { ...state, isRequestingAuth: true, errorRequestingAuth: null };
+    case ActionTypes.REQUEST_AUTH: {
+      return { ...state, loading: true, errorRequestingAuth: null };
+    }
 
-    case ERROR_REQUESTING_AUTH:
-      return { ...state, isRequestingAuth: false, errorRequestingAuth: action.error };
+    case ActionTypes.ERROR_REQUESTING_AUTH: {
+      return { ...state, loading: false, errorRequestingAuth: action.payload };
+    }
 
-    case SUCCESS_REQUESTING_AUTH:
-      return { ...state, isRequestingAuth: false, errorRequestingAuth: null, jwt: action.jwt };
+    case ActionTypes.SUCCESS_TEXTING_CODE: {
+      return { ...state, loading: false, isAwaitingCode: true, errorRequestingAuth: null };
+    }
+
+    case ActionTypes.SET_JWT: {
+      return {
+        ...state,
+        loading: false,
+        isAwaitingCode: false,
+        errorRequestingAuth: null,
+        jwt: action.payload
+      };
+    }
 
     default:
       return state;
   }
 };
 
-const REQUEST_AUTH = "auth/REQUEST_AUTH";
-export class RequestAuth {
-  readonly type = REQUEST_AUTH;
-  constructor() {}
+export enum ActionTypes {
+  REQUEST_AUTH = "auth/REQUEST_AUTH",
+  ERROR_REQUESTING_AUTH = "auth/ERROR_REQUESTING_AUTH",
+  SUCCESS_TEXTING_CODE = "auth/SUCCESS_TEXTING_CODE",
+  SET_JWT = "auth/SET_JWT"
 }
 
-const ERROR_REQUESTING_AUTH = "auth/ERROR_REQUESTING_AUTH";
-export class ErrorRequestingAuth {
-  readonly type = ERROR_REQUESTING_AUTH;
-  constructor(public error: any) {}
-}
-
-const SUCCESS_REQUESTING_AUTH = "auth/SUCCESS_REQUESTING_AUTH";
-export class SucessRequestingAuth {
-  readonly type = SUCCESS_REQUESTING_AUTH;
-  constructor(public jwt: string) {}
-}
+export const Actions = {
+  requestAuth: () => createAction(ActionTypes.REQUEST_AUTH),
+  errorRequestingAuth: (err: any) => createAction(ActionTypes.ERROR_REQUESTING_AUTH, err),
+  successTextingCode: () => createAction(ActionTypes.SUCCESS_TEXTING_CODE),
+  setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt)
+};

@@ -3,7 +3,8 @@ export interface AppState {
 }
 
 export interface AuthState {
-  readonly isRequestingAuth: boolean;
-  readonly errorRequestingAuth: any;
+  readonly loading: boolean;
+  readonly isAwaitingCode: boolean;
+  readonly authError: any;
   readonly jwt: string | null;
 }
