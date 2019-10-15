@@ -1,0 +1,5 @@
+{
+  "globalDependencies": {
+    "stripe-node": "registry:dt/stripe-node#4.6.0+20160816232029"
+  }
+}
