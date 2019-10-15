@@ -1,10 +1,12 @@
-import { Controller, BodyParams, Get, Put, PathParams } from "@tsed/common";
+import { Controller, BodyParams, Get, Put, PathParams, UseAuth } from "@tsed/common";
 import bcrypt from "bcrypt";
 
 import { UserType } from "../models/user";
 import { TwilioService } from "../services/twilio";
+import { AuthMiddleware } from "../middlewares/auth";
 
 @Controller("/user")
+@UseAuth(AuthMiddleware)
 export class UserController {
   constructor(private twilioService: TwilioService) {}
 
@@ -19,9 +21,7 @@ export class UserController {
   }
 
   @Put("/text/:phoneNumber")
-  async sendText(
-    @PathParams("phoneNumber") phoneNumber: string
-  ): Promise<void> {
+  async sendText(@PathParams("phoneNumber") phoneNumber: string): Promise<void> {
     await this.twilioService.text(phoneNumber, "hello");
   }
 }

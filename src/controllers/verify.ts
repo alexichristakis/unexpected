@@ -1,18 +1,21 @@
-import { Controller, Post, PathParams } from "@tsed/common";
-import bcrypt from "bcrypt";
+import { Inject, Controller, Post, PathParams } from "@tsed/common";
 
-import { TwilioService } from "../services/twilio";
+import { AuthService } from "../services/auth";
 
 export type VerifyPhoneReturnType = Promise<string>;
-export type CheckCodeReturnType = Promise<boolean>;
+export type CheckCodeReturnType = Promise<{
+  response: boolean;
+  token?: string;
+}>;
 
 @Controller("/verify")
 export class UserController {
-  constructor(private twilioService: TwilioService) {}
+  @Inject(AuthService)
+  private authService: AuthService;
 
   @Post("/:phoneNumber")
   async sendVerificationCode(@PathParams("phoneNumber") phoneNumer: string): VerifyPhoneReturnType {
-    const encryptedCode = await this.twilioService.verify(phoneNumer);
+    const encryptedCode = await this.authService.authenticate(phoneNumer);
 
     return encryptedCode;
   }
@@ -22,8 +25,14 @@ export class UserController {
     @PathParams("phoneNumber") phoneNumber: string,
     @PathParams("code") code: string
   ): CheckCodeReturnType {
-    const response = await this.twilioService.checkVerification(phoneNumber, code);
+    const response = await this.authService.checkVerification(phoneNumber, code);
 
-    return response;
+    if (response) {
+      // generate JWT
+      const token = this.authService.generateJWT(phoneNumber);
+      return { response, token };
+    }
+
+    return { response };
   }
 }
