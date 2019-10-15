@@ -26,7 +26,7 @@ class Auth extends React.Component<AuthReduxProps & AuthOwnProps & AuthStateType
     requestAuth();
     requestAuthentication(phoneNumber)
       .then(res => {
-        console.log(res);
+        console.log("res:", res);
         successTextingCode();
       })
       .catch(err => {
@@ -71,7 +71,7 @@ class Auth extends React.Component<AuthReduxProps & AuthOwnProps & AuthStateType
         />
         <Button
           title={isAwaitingCode ? "verify code" : "send text message"}
-          onPress={isAwaitingCode ? this.textAuthenticationCode : this.checkVerificationCode}
+          onPress={isAwaitingCode ? this.checkVerificationCode : this.textAuthenticationCode}
         />
         {authError && <Text>{authError}</Text>}
       </View>

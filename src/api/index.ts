@@ -9,7 +9,7 @@ const client = axios.create({ baseURL: server });
 export const requestAuthentication = async (phoneNumber: string): Promise<void> => {
   try {
     const res = await client.post<VerifyPhoneReturnType>(`/verify/${phoneNumber}`);
-    console.log(res);
+    console.log("inAPI:", res);
   } catch (err) {
     console.debug(err);
   }
@@ -21,6 +21,7 @@ export const verifyAuthenticationCode = async (
 ): Promise<boolean> => {
   try {
     const res = await client.post<CheckCodeReturnType>(`/verify/${phoneNumber}/${code}`);
+    console.log("verify return:", res);
     return res.data;
   } catch (err) {
     console.debug(err);
