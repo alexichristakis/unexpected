@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet, View, Text, TextInput, Button } from "react-native";
+import { compose } from "redux";
 import { connect } from "react-redux";
 
-import { requestAuthentication, verifyAuthenticationCode } from "@api";
+import { withApi, ApiProps } from "@api";
 import { AuthState as AuthStateType, AppState as AppStateType } from "@redux/types";
 import { Actions } from "@redux/auth";
 
@@ -12,19 +13,21 @@ export interface AuthReduxProps {
   errorRequestingAuth: typeof Actions.errorRequestingAuth;
   setJWT: typeof Actions.setJWT;
 }
-export interface AuthOwnProps {}
-class Auth extends React.Component<AuthReduxProps & AuthOwnProps & AuthStateType> {
+export interface AuthOwnProps extends ApiProps {}
+export type AuthProps = AuthReduxProps & AuthOwnProps & AuthStateType;
+class Auth extends React.Component<AuthProps> {
   state = {
     phoneNumber: "",
     code: ""
   };
 
   textAuthenticationCode = () => {
-    const { requestAuth, successTextingCode, errorRequestingAuth } = this.props;
+    const { api, requestAuth, successTextingCode, errorRequestingAuth } = this.props;
     const { phoneNumber } = this.state;
 
     requestAuth();
-    requestAuthentication(phoneNumber)
+    api
+      .requestAuthentication(phoneNumber)
       .then(res => {
         console.log("res:", res);
         successTextingCode();
@@ -35,14 +38,17 @@ class Auth extends React.Component<AuthReduxProps & AuthOwnProps & AuthStateType
   };
 
   checkVerificationCode = () => {
-    const { requestAuth, setJWT, errorRequestingAuth } = this.props;
+    const { api, requestAuth, setJWT, errorRequestingAuth } = this.props;
     const { phoneNumber, code } = this.state;
 
     requestAuth();
-    verifyAuthenticationCode(phoneNumber, code)
-      .then(res => {
-        console.log(res);
-        // if (res) setJWT()
+    api
+      .verifyAuthenticationCode(phoneNumber, code)
+      .then(({ response, token }) => {
+        console.log(response, token);
+        if (response && token) {
+          setJWT(token);
+        }
       })
       .catch(err => {
         errorRequestingAuth(err);
@@ -102,7 +108,9 @@ const mapDispatchToProps = {
   ...Actions
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Auth);
+export default withApi(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Auth)
+);
