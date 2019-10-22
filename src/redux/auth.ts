@@ -6,6 +6,7 @@ import client from "@api";
 import { VerifyPhoneReturnType, CheckCodeReturnType } from "@api/controllers/verify";
 import { AuthState as AuthStateType } from "./types";
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "./utils";
+import Navigation from "../Navigation";
 
 const initialState: AuthStateType = {
   loading: false,
@@ -14,7 +15,7 @@ const initialState: AuthStateType = {
   jwt: null
 };
 
-type AuthActionTypes = ActionsUnion<typeof Actions>;
+export type AuthActionTypes = ActionsUnion<typeof Actions>;
 export default (state: AuthStateType = initialState, action: AuthActionTypes) => {
   switch (action.type) {
     case REHYDRATE as any: {
@@ -51,6 +52,7 @@ export default (state: AuthStateType = initialState, action: AuthActionTypes) =>
     }
 
     case ActionTypes.LOGOUT: {
+      Navigation.navigate({ routeName: "Auth" });
       return {
         ...state,
         jwt: null
@@ -86,7 +88,10 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
     const { data } = res;
 
     if (data.response && data.token) {
-      yield put(Actions.setJWT(data.token));
+      yield all([
+        yield put(Actions.setJWT(data.token)),
+        yield Navigation.navigate({ routeName: "Home" })
+      ]);
     }
   } catch (err) {
     yield put(Actions.errorRequestingAuth(err));

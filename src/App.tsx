@@ -1,20 +1,47 @@
 import React from "react";
+import { createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
+import { Transition } from "react-native-reanimated";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
 import { ApiProvider } from "@api";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
-import Auth from "./components/Auth";
-import Home from "./components/Home";
+
+import Navigation, { createAnimatedSwitchNavigator } from "./Navigation";
 import { useReduxState } from "./hooks";
+import Auth from "./screens/Auth";
+import Home from "./screens/Home";
 
 const Router: React.FC = () => {
-  const isAuthorized = useReduxState(selectors.isAuthorized);
+  // get authorized state, dont re-render root component when this changes.
+  const isAuthorized = useReduxState(selectors.isAuthorized, (a, b) => true);
 
-  const root = isAuthorized ? <Home /> : <Auth />;
+  const AuthSwitch = createAppContainer(
+    createAnimatedSwitchNavigator(
+      {
+        Home: createStackNavigator({ Home }),
+        Auth: Auth
+      },
+      {
+        transition: (
+          <Transition.Together>
+            <Transition.Out type="slide-bottom" durationMs={400} interpolation="easeIn" />
+            <Transition.In type="fade" durationMs={500} />
+          </Transition.Together>
+        ),
+        initialRouteName: isAuthorized ? "Home" : "Auth"
+      }
+    )
+  );
 
-  return root;
+  // return (
+  //   <Transitioning.View style={{ flex: 1 }} transition={transition}>
+  //     <SceneView />
+  //   </Transitioning.View>
+  // );
+  return <AuthSwitch ref={navigatorRef => Navigation.setTopLevelNavigator(navigatorRef)} />;
 };
 
 const App: React.FC = () => {

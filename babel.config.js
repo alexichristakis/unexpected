@@ -7,6 +7,7 @@ module.exports = {
         root: ["./src"],
         extensions: [".tsx"],
         alias: {
+          "@components": "./src/components",
           "@redux": "./src/redux",
           "@api": "./src/api"
         }
