@@ -1,32 +1,21 @@
 import React from "react";
-import { connect, Provider } from "react-redux";
+import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { API, ApiProvider } from "@api";
-import { AppState } from "./redux/types";
-import createStore from "./redux/store";
+import { ApiProvider } from "@api";
+import * as selectors from "@redux/selectors";
+import createStore from "@redux/store";
 import Auth from "./components/Auth";
 import Home from "./components/Home";
+import { useReduxState } from "./hooks";
 
-interface RouterProps {
-  jwt: string | null;
-}
-const Router: React.FC<RouterProps> = ({ jwt }) => {
-  const api = new API();
+const Router: React.FC = () => {
+  const isAuthorized = useReduxState(selectors.isAuthorized);
 
-  if (jwt) {
-    api.addAuthorization(jwt);
-  }
+  const root = isAuthorized ? <Home /> : <Auth />;
 
-  const root = jwt ? <Home /> : <Auth />;
-
-  return <ApiProvider value={{ api }}>{root}</ApiProvider>;
+  return root;
 };
-
-const ReduxifiedRouter = connect(
-  ({ auth: { jwt } }: AppState) => ({ jwt }),
-  {}
-)(Router);
 
 const App: React.FC = () => {
   const { store, persistor } = createStore();
@@ -34,7 +23,9 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <ReduxifiedRouter />
+        <ApiProvider>
+          <Router />
+        </ApiProvider>
       </PersistGate>
     </Provider>
   );

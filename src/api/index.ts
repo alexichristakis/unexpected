@@ -7,6 +7,8 @@ const server = __DEV__ ? "http://localhost:5000/rest" : "https://api.expect.phot
 
 export * from "./context";
 
+export default axios.create({ baseURL: server });
+
 export class API {
   client: AxiosInstance;
   constructor() {
@@ -50,6 +52,16 @@ export class API {
     } catch (err) {
       console.debug(err);
       return { response: false };
+    }
+  };
+
+  testAuthenticated = async () => {
+    try {
+      const res = await this.client.get<boolean>("/user");
+
+      console.log(res);
+    } catch (err) {
+      console.debug(err);
     }
   };
 }

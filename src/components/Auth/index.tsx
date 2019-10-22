@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, View, Text, TextInput, Button } from "react-native";
-import { compose } from "redux";
 import { connect } from "react-redux";
 
 import { withApi, ApiProps } from "@api";
@@ -9,9 +8,7 @@ import { Actions } from "@redux/auth";
 
 export interface AuthReduxProps {
   requestAuth: typeof Actions.requestAuth;
-  successTextingCode: typeof Actions.successTextingCode;
-  errorRequestingAuth: typeof Actions.errorRequestingAuth;
-  setJWT: typeof Actions.setJWT;
+  checkCode: typeof Actions.checkCode;
 }
 export interface AuthOwnProps extends ApiProps {}
 export type AuthProps = AuthReduxProps & AuthOwnProps & AuthStateType;
@@ -22,37 +19,17 @@ class Auth extends React.Component<AuthProps> {
   };
 
   textAuthenticationCode = () => {
-    const { api, requestAuth, successTextingCode, errorRequestingAuth } = this.props;
+    const { requestAuth } = this.props;
     const { phoneNumber } = this.state;
 
-    requestAuth();
-    api
-      .requestAuthentication(phoneNumber)
-      .then(res => {
-        console.log("res:", res);
-        successTextingCode();
-      })
-      .catch(err => {
-        errorRequestingAuth(err);
-      });
+    requestAuth(phoneNumber);
   };
 
   checkVerificationCode = () => {
-    const { api, requestAuth, setJWT, errorRequestingAuth } = this.props;
+    const { checkCode } = this.props;
     const { phoneNumber, code } = this.state;
 
-    requestAuth();
-    api
-      .verifyAuthenticationCode(phoneNumber, code)
-      .then(({ response, token }) => {
-        console.log(response, token);
-        if (response && token) {
-          setJWT(token);
-        }
-      })
-      .catch(err => {
-        errorRequestingAuth(err);
-      });
+    checkCode(phoneNumber, code);
   };
 
   render() {
@@ -63,6 +40,7 @@ class Auth extends React.Component<AuthProps> {
       <View style={styles.container}>
         <Text>Auth page!</Text>
         {loading ? <Text>loading!!</Text> : null}
+        {isAwaitingCode ? <Text>code sent!</Text> : null}
         <TextInput
           style={styles.textInput}
           placeholder="phonenumber"

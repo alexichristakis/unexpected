@@ -1,16 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Diff } from "utility-types";
 import { API } from "@api";
-import { ViewProps } from "react-native";
+
+import * as selectors from "@redux/selectors";
+import { useReduxState } from "../hooks";
 
 export interface ApiContextType {
   api: API | null;
 }
 
 const defaultValue: ApiContextType = { api: null };
-export const { Consumer: ApiConsumer, Provider: ApiProvider } = React.createContext<ApiContextType>(
-  defaultValue
-);
+export const ApiContext = React.createContext<ApiContextType>(defaultValue);
+
+interface ApiProviderProps {
+  children: React.ReactNode;
+}
+export function ApiProvider(props: ApiProviderProps) {
+  const [api, _] = useState(new API());
+  const jwtToken = useReduxState(selectors.jwt);
+
+  useEffect(() => {
+    if (jwtToken) api.addAuthorization(jwtToken);
+  }, [jwtToken]);
+
+  return <ApiContext.Provider value={{ api }}>{props.children}</ApiContext.Provider>;
+}
 
 // export function withApi<Props>(
 //   WrappedComponent: React.ComponentType<Props>
@@ -27,8 +41,8 @@ export const withApi = <WrappedProps extends {}>(
   WrappedComponent: React.ComponentType<WrappedProps>
 ) => (props: Diff<WrappedProps, ApiProps>) => {
   return (
-    <ApiConsumer>
+    <ApiContext.Consumer>
       {({ api }) => <WrappedComponent api={api} {...(props as WrappedProps)} />}
-    </ApiConsumer>
+    </ApiContext.Consumer>
   );
 };

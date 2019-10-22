@@ -15,3 +15,11 @@ export function createAction<T extends string, P>(type: T, payload?: P) {
 }
 
 export type ActionsUnion<A extends ActionCreatorsMapObject> = ReturnType<A[keyof A]>;
+
+export type ExtractActionFromActionCreator<AC> = AC extends () => infer A
+  ? A
+  : (AC extends (payload: any) => infer A
+      ? A
+      : AC extends (payload: any, error: any) => infer A
+      ? A
+      : never);
