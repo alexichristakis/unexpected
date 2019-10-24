@@ -10,7 +10,6 @@ export class AuthMiddleware implements IMiddleware {
     const options = endpoint.get(AuthMiddleware) || {};
 
     const { authorization } = request.headers;
-    console.log(options, authorization);
 
     if (authorization) {
       const publicKey = <string>process.env.PUBLIC_KEY;
@@ -18,10 +17,18 @@ export class AuthMiddleware implements IMiddleware {
 
       try {
         const payload = jwt.verify(token, publicKey);
+
+        // TODO:
+        /* if the user is trying to do something with their
+             data check to see phone number matches? */
+
         console.log(payload);
       } catch (err) {
         console.debug(err);
+        throw new Forbidden("Forbidden");
       }
+    } else {
+      throw new Unauthorized("Unauthorized");
     }
 
     // if (!request.isAuthenticated()) { // passport.js method to check auth

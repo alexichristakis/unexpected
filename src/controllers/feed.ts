@@ -4,9 +4,9 @@ import { MongooseModel } from "@tsed/mongoose";
 import { UserType, User as UserModel } from "../models/user";
 import { AuthMiddleware } from "../middlewares/auth";
 
-@Controller("/user")
+@Controller("/feed")
 @UseAuth(AuthMiddleware)
-export class UserController {
+export class FeedController {
   @Inject(UserModel)
   private User: MongooseModel<UserModel>;
 
@@ -23,10 +23,4 @@ export class UserController {
 
     return doc.save();
   }
-
-  @Put()
-  async followUser() {}
-
-  @Put()
-  async unFollowUser() {}
 }

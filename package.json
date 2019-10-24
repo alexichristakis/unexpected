@@ -19,6 +19,8 @@
     "@tsed/core": "^5.32.1",
     "@tsed/di": "^5.32.1",
     "@tsed/mongoose": "^5.32.1",
+    "agenda": "^2.1.0",
+    "apn": "^2.2.0",
     "atob": "^2.1.2",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
@@ -26,7 +28,7 @@
     "cookie-parser": "^1.4.4",
     "debug": "~4.1.1",
     "express": "~4.17.1",
-    "jimp": "^0.6.4",
+    "jimp": "^0.8.4",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",
     "method-override": "^3.0.0",
@@ -38,6 +40,7 @@
     "typescript": "^3.6.4"
   },
   "devDependencies": {
+    "@types/agenda": "^2.0.6",
     "@types/atob": "^2.1.2",
     "@types/bcrypt": "^3.0.0",
     "@types/compression": "^1.0.1",

@@ -2,11 +2,11 @@ import { Inject, Controller, Post, PathParams } from "@tsed/common";
 
 import { AuthService } from "../services/auth";
 
-export type VerifyPhoneReturnType = Promise<string>;
-export type CheckCodeReturnType = Promise<{
+export type VerifyPhoneReturnType = string;
+export type CheckCodeReturnType = {
   response: boolean;
   token?: string;
-}>;
+};
 
 @Controller("/verify")
 export class UserController {
@@ -14,7 +14,9 @@ export class UserController {
   private authService: AuthService;
 
   @Post("/:phoneNumber")
-  async sendVerificationCode(@PathParams("phoneNumber") phoneNumer: string): VerifyPhoneReturnType {
+  async sendVerificationCode(
+    @PathParams("phoneNumber") phoneNumer: string
+  ): Promise<VerifyPhoneReturnType> {
     const encryptedCode = await this.authService.authenticate(phoneNumer);
 
     return encryptedCode;
@@ -24,7 +26,7 @@ export class UserController {
   async checkVerificationCode(
     @PathParams("phoneNumber") phoneNumber: string,
     @PathParams("code") code: string
-  ): CheckCodeReturnType {
+  ): Promise<CheckCodeReturnType> {
     const response = await this.authService.checkVerification(phoneNumber, code);
 
     if (response) {

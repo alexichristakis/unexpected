@@ -4,9 +4,9 @@ import { MongooseModel } from "@tsed/mongoose";
 import { UserType, User as UserModel } from "../models/user";
 import { AuthMiddleware } from "../middlewares/auth";
 
-@Controller("/user")
+@Controller("/post")
 @UseAuth(AuthMiddleware)
-export class UserController {
+export class PostController {
   @Inject(UserModel)
   private User: MongooseModel<UserModel>;
 
@@ -16,17 +16,11 @@ export class UserController {
   }
 
   @Put()
-  async createUser(@BodyParams("user") user: UserType): Promise<UserModel> {
+  async createPost(@BodyParams("user") user: UserType): Promise<UserModel> {
     console.log(user);
 
     const doc = new this.User(user);
 
     return doc.save();
   }
-
-  @Put()
-  async followUser() {}
-
-  @Put()
-  async unFollowUser() {}
 }
