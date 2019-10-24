@@ -24,10 +24,13 @@ export class SchedulerService {
   setup = () => {
     this.agenda.define(SEND_NOTIFICATION, args => {
       const { toUser } = args.attrs.data;
-      this.notificationService.sendMessage(toUser, "time to take & share a photo");
+      //   this.notificationService.sendMessage(toUser, "time to take & share a photo");
     });
 
-    this.agenda.define(GENERATE_NOTIFICATIONS, () => {});
+    this.agenda.define(GENERATE_NOTIFICATIONS, async () => {
+      const users = await this.userService.getAll(["deviceOS", "firstName", "lastName"]);
+      users.forEach(user => {});
+    });
   };
 
   scheduleNotificationGeneration = () => {

@@ -3,7 +3,7 @@ import { MongooseModel } from "@tsed/mongoose";
 import { Provider, Notification } from "apn";
 import path from "path";
 
-import { User as UserModel } from "../models/user";
+import { UserModel } from "../models/user";
 
 const apnConfig = {
   token: {
