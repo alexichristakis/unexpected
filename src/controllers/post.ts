@@ -1,7 +1,7 @@
 import { Controller, BodyParams, Get, Put, PathParams, UseAuth, Inject } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 
-import { UserType, User as UserModel } from "../models/user";
+import { UserType, UserModel } from "../models/user";
 import { AuthMiddleware } from "../middlewares/auth";
 
 @Controller("/post")

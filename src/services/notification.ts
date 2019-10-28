@@ -1,18 +1,9 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import { Provider, Notification } from "apn";
-import path from "path";
 
 import { UserModel } from "../models/user";
-
-const apnConfig = {
-  token: {
-    key: path.join(__dirname, "../certifications/AuthKey_YYDCNGYXB8.p8"),
-    keyId: "YYDCNGYXB8",
-    teamId: "N4L736JEYW"
-  },
-  production: true
-};
+import { Document } from "mongoose";
 
 const settings = {
   fcm: {
@@ -20,9 +11,9 @@ const settings = {
   },
   apns: {
     token: {
-      key: path.join(__dirname, "../certifications/AuthKey_YYDCNGYXB8.p8"),
-      keyId: "YYDCNGYXB8",
-      teamId: "N4L736JEYW"
+      key: <string>process.env.APNS_KEY,
+      keyId: <string>process.env.APNS_KEY_ID,
+      teamId: <string>process.env.APNS_TEAM_ID
     },
     production: true
   }
@@ -33,32 +24,42 @@ export class NotificationService {
   @Inject(UserModel)
   private User: MongooseModel<UserModel>;
 
-  private APNs = new Provider(apnConfig);
+  private APNs = new Provider(settings.apns);
 
-  async notify(uid: string, body: string): Promise<string> {
-    const query = this.User.findOne({ id: uid });
+  private async send(deviceToken: string, deviceOS: string, body: string): Promise<string> {
+    if (deviceOS == "Android") {
+      // deal with android notification
+    } else {
+      // deal with ios notification
+      const payload = {};
+      const notification = new Notification(payload);
 
-    const model = await query.exec();
-    if (model) {
-      const { deviceOS, deviceToken } = model;
-
-      if (deviceOS == "Android") {
-        // deal with android notification
-      } else {
-        // deal with ios notification
-        const payload = {};
-        const notification = new Notification(payload);
-
-        return this.APNs.send(notification, deviceToken).then(result => {
-          if (result.sent) {
-            return "success";
-          } else {
-            return "failure";
-          }
-        });
-      }
+      return this.APNs.send(notification, deviceToken).then(result => {
+        if (result.sent) {
+          return "success";
+        } else {
+          return "failure";
+        }
+      });
     }
 
     return "";
+  }
+
+  async notifyID(id: string, body: string): Promise<string> {
+    const query = this.User.findOne({ id });
+
+    const model = await query.exec();
+    if (!model) return "";
+
+    const { deviceOS, deviceToken } = model;
+
+    return this.send(deviceToken, deviceOS, body);
+  }
+
+  async notifyUserModel(user: UserModel & Partial<Document>, body: string): Promise<string> {
+    const { deviceOS, deviceToken } = user;
+
+    return this.send(deviceToken, deviceOS, body);
   }
 }

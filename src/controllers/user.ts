@@ -1,14 +1,15 @@
 import { Controller, BodyParams, Get, Put, PathParams, UseAuth, Inject } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 
-import { UserType, User as UserModel } from "../models/user";
+import { UserService } from "../services/user";
+import { UserType, UserModel } from "../models/user";
 import { AuthMiddleware } from "../middlewares/auth";
 
 @Controller("/user")
 @UseAuth(AuthMiddleware)
 export class UserController {
-  @Inject(UserModel)
-  private User: MongooseModel<UserModel>;
+  @Inject(UserService)
+  private userService: UserService;
 
   @Get()
   findAll(): string {
@@ -16,12 +17,8 @@ export class UserController {
   }
 
   @Put()
-  async createUser(@BodyParams("user") user: UserType): Promise<UserModel> {
-    console.log(user);
-
-    const doc = new this.User(user);
-
-    return doc.save();
+  async createUser(@BodyParams("user") user: UserType): Promise<void> {
+    return this.userService.createNewUser(user);
   }
 
   @Put()

@@ -4,9 +4,12 @@ import Agenda from "agenda";
 
 import { UserService } from "./user";
 import { NotificationService } from "./notification";
+import { NotificationPreferencesType } from "../models/user";
 
-const GENERATE_NOTIFICATIONS = "GENERATE_NOTIFICATIONS";
-const SEND_NOTIFICATION = "SEND_NOTIFICATION";
+export enum AgendaJobs {
+  GENERATE_NOTIFICATIONS = "GENERATE_NOTIFICATIONS",
+  SEND_NOTIFICATION = "SEND_NOTIFICATION"
+}
 
 @Service()
 export class SchedulerService {
@@ -21,21 +24,37 @@ export class SchedulerService {
 
   private agenda = new Agenda().mongo(this.mongooseService.get()!.connection.db, "jobs");
 
-  setup = () => {
-    this.agenda.define(SEND_NOTIFICATION, args => {
-      const { toUser } = args.attrs.data;
-      //   this.notificationService.sendMessage(toUser, "time to take & share a photo");
+  constructor() {
+    this.agenda.define(AgendaJobs.SEND_NOTIFICATION, args => {
+      const { to } = args.attrs.data;
+      this.notificationService.notifyUserModel(to, "time to take & share a photo");
     });
 
-    this.agenda.define(GENERATE_NOTIFICATIONS, async () => {
-      const users = await this.userService.getAll(["deviceOS", "firstName", "lastName"]);
-      users.forEach(user => {});
+    this.agenda.define(AgendaJobs.GENERATE_NOTIFICATIONS, async () => {
+      const users = await this.userService.getAll([
+        "notificationPreferences",
+        "deviceOS",
+        "firstName",
+        "lastName"
+      ]);
+
+      users.forEach(user => {
+        const { notificationPreferences } = user;
+        const time = this.generateTime(notificationPreferences);
+
+        this.agenda.schedule(time, AgendaJobs.SEND_NOTIFICATION, { to: user });
+      });
     });
+
+    // schedule the notification generation
+    this.scheduleNotificationGeneration();
+  }
+
+  generateTime = (preferences: NotificationPreferencesType): Date => {
+    return new Date();
   };
 
   scheduleNotificationGeneration = () => {
-    // this.agenda.
+    this.agenda.every("day", AgendaJobs.GENERATE_NOTIFICATIONS);
   };
-
-  scheduleAllNotifications = () => {};
 }

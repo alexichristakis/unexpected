@@ -54,7 +54,7 @@ export class AuthService {
   }
 
   generateJWT(phoneNumber: string): string {
-    const privateKey = <string>process.env.PRIVATE_KEY;
+    const privateKey = <string>process.env.AUTH_PRIVATE_KEY;
     const token = jwt.sign({ phoneNumber }, privateKey, { algorithm: "RS256" });
 
     return token;
