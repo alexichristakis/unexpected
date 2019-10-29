@@ -26,7 +26,7 @@ export class UserController {
     return this.userService.createNewUser(user);
   }
 
-  @Patch()
+  @Patch("/:phoneNumber")
   @UseAuth(AuthMiddleware, {
     select: Select.userFromBody,
     verify: Verify.userPhoneNumberMatchesToken
@@ -35,6 +35,7 @@ export class UserController {
     @PathParams("phoneNumber") phoneNumber: string,
     @BodyParams("user") user: Partial<UserType>
   ): Promise<void> {
+    console.log(phoneNumber, user);
     return this.userService.updateOne({ phoneNumber }, user);
   }
 

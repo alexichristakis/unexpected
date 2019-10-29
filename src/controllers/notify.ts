@@ -1,13 +1,22 @@
-import { Inject, Controller, Post, PathParams } from "@tsed/common";
+import { Controller, BodyParams, Get, Put, PathParams, UseAuth, Inject, Patch } from "@tsed/common";
+import { MongooseModel } from "@tsed/mongoose";
+
 import { NotificationService } from "../services/notification";
+import { AuthMiddleware, Verify, Select } from "../middlewares/auth";
 
 @Controller("/notify")
 export class UserController {
   @Inject(NotificationService)
-  private notifcationService: NotificationService;
+  private notificationService: NotificationService;
 
-  @Post("/:phoneNumber")
-  async sendVerificationCode(@PathParams("phoneNumber") phoneNumer: string): Promise<string> {
-    return this.notifcationService.notifyID(phoneNumer, "hello this is a test");
+  @Get("/:phoneNumber")
+  async notifyUser(@PathParams("phoneNumber") phoneNumber: string) {
+    return this.notificationService.notifyPhoneNumber(phoneNumber, "hello this is a test");
   }
+
+  // @Put()
+  // async followUser() {}
+
+  // @Put()
+  // async unFollowUser() {}
 }

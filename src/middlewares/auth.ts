@@ -1,7 +1,7 @@
 import { EndpointInfo, IMiddleware, Middleware, Req, UseAuth } from "@tsed/common";
 import { Forbidden, Unauthorized } from "ts-httpexceptions";
 import jwt from "jsonwebtoken";
-import fs from "fs";
+
 import { UserType } from "../models/user";
 
 @Middleware()
@@ -20,6 +20,8 @@ export class AuthMiddleware implements IMiddleware {
         const payload: any = jwt.verify(token, publicKey);
 
         const { select, verify } = options;
+
+        console.log(payload);
 
         if (select && verify)
           if (!verify(select(request), payload.phoneNumber)) {

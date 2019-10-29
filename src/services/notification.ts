@@ -4,6 +4,7 @@ import { Provider, Notification } from "apn";
 
 import { UserModel } from "../models/user";
 import { Document } from "mongoose";
+import { UserService } from "./user";
 
 const settings = {
   fcm: {
@@ -21,8 +22,8 @@ const settings = {
 
 @Service()
 export class NotificationService {
-  @Inject(UserModel)
-  private User: MongooseModel<UserModel>;
+  @Inject(UserService)
+  private userService: UserService;
 
   private APNs = new Provider(settings.apns);
 
@@ -49,10 +50,9 @@ export class NotificationService {
     return "";
   }
 
-  async notifyID(id: string, body: string): Promise<string> {
-    const query = this.User.findOne({ id });
+  async notifyPhoneNumber(phoneNumber: string, body: string): Promise<string> {
+    const model = await this.userService.findOne({ phoneNumber }, ["deviceOS", "deviceToken"]);
 
-    const model = await query.exec();
     if (!model) return "";
 
     const { deviceOS, deviceToken } = model;
