@@ -12,6 +12,7 @@ export interface AuthState {
   readonly phoneNumber: string;
   readonly isAwaitingCode: boolean;
   readonly authError: any;
+  readonly authFlowCompleted: boolean;
   readonly jwt: string | null;
 }
 
@@ -20,6 +21,7 @@ const initialState: AuthState = {
   phoneNumber: "",
   isAwaitingCode: false,
   authError: null,
+  authFlowCompleted: false,
   jwt: null
 };
 

@@ -6,4 +6,4 @@ export const jwt = (state: AppState) => s(state).jwt;
 
 export const phoneNumber = (state: AppState) => s(state).phoneNumber;
 
-export const isAuthorized = (state: AppState) => !!s(state).jwt;
+export const isAuthorized = (state: AppState) => !!s(state).jwt && s(state).authFlowCompleted;
