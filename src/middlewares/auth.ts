@@ -17,7 +17,7 @@ export class AuthMiddleware implements IMiddleware {
       const token = authorization.split(" ")[1];
 
       try {
-        const payload = jwt.verify<{ phoneNumber: string }>(token, publicKey);
+        const payload: any = jwt.verify(token, publicKey);
 
         const { select, verify } = options;
 
