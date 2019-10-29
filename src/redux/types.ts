@@ -1,26 +1,11 @@
+import { AuthState as AuthStateType } from "./auth";
+import { UserState as UserStateType } from "./user";
+import { NotificationState as NotificationStateType } from "./notifications";
+import { PermissionsState as PermissionsStateType } from "./permissions";
+
 export interface AppState {
-  auth: AuthState;
-  permissions: PermissionsState;
+  auth: AuthStateType;
+  user: UserStateType;
+  notifications: NotificationStateType;
+  permissions: PermissionsStateType;
 }
-
-export interface AuthState {
-  readonly loading: boolean;
-  readonly isAwaitingCode: boolean;
-  readonly authError: any;
-  readonly jwt: string | null;
-}
-
-export interface PermissionsState {
-  readonly notifications: boolean;
-  readonly location: boolean;
-  readonly contacts: boolean;
-  readonly error: string;
-}
-
-export type ExtractActionFromActionCreator<AC> = AC extends () => infer A
-  ? A
-  : (AC extends (payload: any) => infer A
-      ? A
-      : AC extends (payload: any, error: any) => infer A
-      ? A
-      : never);

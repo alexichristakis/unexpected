@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { useSelector } from "react-redux";
 
 type Result<S> = S extends (...args: any[]) => infer R ? R : any;

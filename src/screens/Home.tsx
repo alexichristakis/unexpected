@@ -1,5 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
+import { NavigationInjectedProps } from "react-navigation";
+import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { withApi, ApiProps } from "@api";
@@ -9,7 +11,7 @@ export interface HomeReduxProps {
   logout: typeof Actions.logout;
 }
 export interface HomeProps extends ApiProps {}
-class Home extends React.Component<HomeProps & HomeReduxProps> {
+class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInjectedProps> {
   state = {};
 
   handleOnPress = () => {
@@ -19,11 +21,15 @@ class Home extends React.Component<HomeProps & HomeReduxProps> {
 
   render() {
     return (
-      <View style={styles.container}>
+      <Screen style={styles.container}>
         <Text>home page!</Text>
         <Button title="test request that needs authorization" onPress={this.handleOnPress} />
+        <Button
+          title="push profile screen"
+          onPress={() => this.props.navigation.navigate({ routeName: "Profile" })}
+        />
         <Button title="logout" onPress={this.props.logout} />
-      </View>
+      </Screen>
     );
   }
 }

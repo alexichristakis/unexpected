@@ -1,28 +1,55 @@
 import React from "react";
+import { useScreens } from "react-native-screens";
 import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
+import { createStackNavigator, TransitionPresets } from "react-navigation-stack";
 import { Transition } from "react-native-reanimated";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { ApiProvider } from "@api";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
 
 import Navigation, { createAnimatedSwitchNavigator } from "./Navigation";
 import { useReduxState } from "./hooks";
+
 import Auth from "./screens/Auth";
+import SignUp from "./screens/SignUp";
 import Home from "./screens/Home";
+import Profile from "./screens/Profile";
+
+useScreens();
 
 const Router: React.FC = () => {
   // get authorized state, dont re-render root component when this changes.
-  const isAuthorized = useReduxState(selectors.isAuthorized, (a, b) => true);
+  const isAuthorized = useReduxState(selectors.isAuthorized, () => true);
 
   const AuthSwitch = createAppContainer(
     createAnimatedSwitchNavigator(
       {
-        Home: createStackNavigator({ Home }),
-        Auth: Auth
+        Home: createStackNavigator(
+          { Home, Profile },
+          {
+            mode: "modal",
+            defaultNavigationOptions: {
+              ...TransitionPresets.ModalPresentationIOS,
+              cardOverlayEnabled: true,
+              gestureEnabled: true,
+              header: () => null
+            }
+          }
+        ),
+        Auth: createStackNavigator(
+          { Auth, SignUp },
+          {
+            mode: "card",
+            defaultNavigationOptions: {
+              // ...TransitionPresets.ModalPresentationIOS,
+              cardOverlayEnabled: true,
+              gestureEnabled: true,
+              header: () => null
+            }
+          }
+        )
       },
       {
         transition: (
@@ -36,11 +63,6 @@ const Router: React.FC = () => {
     )
   );
 
-  // return (
-  //   <Transitioning.View style={{ flex: 1 }} transition={transition}>
-  //     <SceneView />
-  //   </Transitioning.View>
-  // );
   return <AuthSwitch ref={navigatorRef => Navigation.setTopLevelNavigator(navigatorRef)} />;
 };
 
@@ -50,9 +72,7 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <ApiProvider>
-          <Router />
-        </ApiProvider>
+        <Router />
       </PersistGate>
     </Provider>
   );

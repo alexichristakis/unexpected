@@ -4,33 +4,44 @@ import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";
 import { VerifyPhoneReturnType, CheckCodeReturnType } from "@api/controllers/verify";
-import { AuthState as AuthStateType } from "./types";
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "./utils";
 import Navigation from "../Navigation";
 
-const initialState: AuthStateType = {
+export interface AuthState {
+  readonly loading: boolean;
+  readonly phoneNumber: string;
+  readonly isAwaitingCode: boolean;
+  readonly authError: any;
+  readonly jwt: string | null;
+}
+
+const initialState: AuthState = {
   loading: false,
+  phoneNumber: "",
   isAwaitingCode: false,
   authError: null,
   jwt: null
 };
 
 export type AuthActionTypes = ActionsUnion<typeof Actions>;
-export default (state: AuthStateType = initialState, action: AuthActionTypes) => {
+export default (state: AuthState = initialState, action: AuthActionTypes) => {
   switch (action.type) {
     case REHYDRATE as any: {
       const { err, payload } = action as any;
 
-      const auth: AuthStateType = err ? state : payload && payload.auth;
+      const auth: AuthState = err ? state : payload && payload.auth;
 
-      return {
-        ...initialState,
-        jwt: auth.jwt
-      };
+      if (auth)
+        return {
+          ...initialState,
+          jwt: auth.jwt
+        };
+      else return { ...initialState };
     }
 
     case ActionTypes.REQUEST_AUTH || ActionTypes.CHECK_CODE: {
-      return { ...state, loading: true, errorRequestingAuth: null };
+      const { phoneNumber } = action.payload;
+      return { ...state, phoneNumber, loading: true, errorRequestingAuth: null };
     }
 
     case ActionTypes.ERROR_REQUESTING_AUTH: {
@@ -86,12 +97,22 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
     );
 
     const { data } = res;
+    console.log(data);
 
-    if (data.response && data.token) {
-      yield all([
-        yield put(Actions.setJWT(data.token)),
-        yield Navigation.navigate({ routeName: "Home" })
-      ]);
+    if (!data.verified) put(Actions.errorRequestingAuth("code invalid"));
+
+    if (data.token) {
+      if (!data.isNewUser) {
+        yield all([
+          yield put(Actions.setJWT(data.token)),
+          yield Navigation.navigate({ routeName: "Home" })
+        ]);
+      } else {
+        yield all([
+          yield put(Actions.setJWT(data.token)),
+          yield Navigation.navigate({ routeName: "SignUp" })
+        ]);
+      }
     }
   } catch (err) {
     yield put(Actions.errorRequestingAuth(err));

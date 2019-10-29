@@ -4,8 +4,8 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { withApi, ApiProps } from "@api";
-import { AuthState as AuthStateType, AppState as AppStateType } from "@redux/types";
-import { Actions } from "@redux/auth";
+import { AppState as AppStateType } from "@redux/types";
+import { Actions, AuthState as AuthStateType } from "@redux/auth";
 import { PhoneNumberInput, CodeInput } from "@components/Auth";
 
 export interface AuthReduxProps {

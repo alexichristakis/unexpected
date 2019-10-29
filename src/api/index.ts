@@ -9,6 +9,14 @@ export * from "./context";
 
 export default axios.create({ baseURL: server });
 
+export const getHeaders = ({ jwtToken }: { jwtToken: string | undefined }) => {
+  const headers = {
+    Authorization: jwtToken ? `Bearer ${jwtToken}` : ""
+  };
+
+  return headers;
+};
+
 export class API {
   client: AxiosInstance;
   constructor() {
@@ -51,7 +59,7 @@ export class API {
       return res.data;
     } catch (err) {
       console.debug(err);
-      return { response: false };
+      return { verified: false };
     }
   };
 

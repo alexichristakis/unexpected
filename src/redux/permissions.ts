@@ -1,35 +1,26 @@
-import { PermissionsState as PermissionsStateType } from "./types";
 import { ActionsUnion, createAction } from "./utils";
 
-const initialState: PermissionsStateType = {
+export interface PermissionsState {
+  readonly notifications: boolean;
+  readonly location: boolean;
+  readonly contacts: boolean;
+  readonly error: string;
+}
+
+const initialState: PermissionsState = {
   notifications: false,
   location: false,
-  contacts: false
+  contacts: false,
+  error: ""
 };
 
-type PermissionsActionTypes = ActionsUnion<typeof Actions>;
-export default (state: PermissionsStateType = initialState, action: PermissionsActionTypes) => {
+export type PermissionsActionTypes = ActionsUnion<typeof Actions>;
+export default (state: PermissionsState = initialState, action: PermissionsActionTypes) => {
   switch (action.type) {
-    case ActionTypes.REQUEST_AUTH: {
-      return { ...state, loading: true, errorRequestingAuth: null };
+    case ActionTypes.REQUEST_NOTIFICATIONS: {
     }
 
-    case ActionTypes.ERROR_REQUESTING_AUTH: {
-      return { ...state, loading: false, errorRequestingAuth: action.payload };
-    }
-
-    case ActionTypes.SUCCESS_TEXTING_CODE: {
-      return { ...state, loading: false, isAwaitingCode: true, errorRequestingAuth: null };
-    }
-
-    case ActionTypes.SET_JWT: {
-      return {
-        ...state,
-        loading: false,
-        isAwaitingCode: false,
-        errorRequestingAuth: null,
-        jwt: action.payload
-      };
+    case ActionTypes.REQUEST_LOCATION: {
     }
 
     default:
