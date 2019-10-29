@@ -9,9 +9,9 @@ export * from "./context";
 
 export default axios.create({ baseURL: server });
 
-export const getHeaders = ({ jwtToken }: { jwtToken: string | undefined }) => {
+export const getHeaders = ({ jwt }: { jwt: string | undefined }) => {
   const headers = {
-    Authorization: jwtToken ? `Bearer ${jwtToken}` : ""
+    Authorization: jwt ? `Bearer ${jwt}` : ""
   };
 
   return headers;

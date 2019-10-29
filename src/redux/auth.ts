@@ -4,6 +4,7 @@ import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";
 import { VerifyPhoneReturnType, CheckCodeReturnType } from "@api/controllers/verify";
+import { Actions as UserActions } from "./user";
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "./utils";
 import Navigation from "../Navigation";
 
@@ -104,12 +105,14 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
     if (!data.verified) put(Actions.errorRequestingAuth("code invalid"));
 
     if (data.token) {
-      if (!data.isNewUser) {
+      if (data.user) {
         yield all([
+          yield put(UserActions.loadUser(data.user)),
           yield put(Actions.setJWT(data.token)),
-          yield Navigation.navigate({ routeName: "Home" })
+          yield Navigation.navigate({ routeName: "SignUp" })
         ]);
       } else {
+        // user entity doesn't exist in DB: new user
         yield all([
           yield put(Actions.setJWT(data.token)),
           yield Navigation.navigate({ routeName: "SignUp" })

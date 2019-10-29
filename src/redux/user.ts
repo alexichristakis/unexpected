@@ -4,7 +4,9 @@ import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
 import { UserType } from "unexpected-cloud/models/user";
+
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "./utils";
+import { ActionTypes as NotificationActionTypes } from "./notifications";
 import * as selectors from "./selectors";
 
 import Navigation from "../Navigation";
@@ -28,7 +30,7 @@ export default (state: UserState = initialState, action: AuthActionTypes) => {
       return { ...state, loading: true, error: null };
     }
 
-    case ActionTypes.SUCCESS_CREATING_USER: {
+    case ActionTypes.LOAD_USER: {
       const { user } = action.payload;
       return { ...state, loading: false, user };
     }
@@ -39,7 +41,7 @@ export default (state: UserState = initialState, action: AuthActionTypes) => {
 };
 
 function* onCreateUser(action: ExtractActionFromActionCreator<typeof Actions.createUser>) {
-  const jwtToken = yield select(selectors.jwt);
+  const jwt = yield select(selectors.jwt);
   const phoneNumber = yield select(selectors.phoneNumber);
 
   const { name } = action.payload;
@@ -56,14 +58,14 @@ function* onCreateUser(action: ExtractActionFromActionCreator<typeof Actions.cre
       "/user",
       { user: newUser },
       {
-        headers: getHeaders({ jwtToken })
+        headers: getHeaders({ jwt })
       }
     );
 
     const { data: createdUser } = res;
 
     yield all([
-      yield put(Actions.successCreatingUser(createdUser)),
+      yield put(Actions.loadUser(createdUser)),
       yield Navigation.navigate({ routeName: "Home" })
     ]);
   } catch (err) {
@@ -72,13 +74,32 @@ function* onCreateUser(action: ExtractActionFromActionCreator<typeof Actions.cre
   }
 }
 
+function* onSetDeviceToken() {
+  const phoneNumber = yield select(selectors.phoneNumber);
+  const jwt = yield select(selectors.jwt);
+  const deviceToken = yield select(selectors.deviceToken);
+
+  try {
+    yield client.patch(
+      `/user/${phoneNumber}`,
+      { user: { deviceToken } },
+      { headers: getHeaders({ jwt }) }
+    );
+  } catch (err) {
+    yield put(Actions.onError(err));
+  }
+}
+
 export function* userSagas() {
-  yield all([yield takeLatest(ActionTypes.ON_CREATE_NEW_USER, onCreateUser)]);
+  yield all([
+    yield takeLatest(ActionTypes.ON_CREATE_NEW_USER, onCreateUser),
+    yield takeLatest(NotificationActionTypes.INITIALIZE, onSetDeviceToken)
+  ]);
 }
 
 export enum ActionTypes {
   ON_CREATE_NEW_USER = "user/ON_CREATE_NEW_USER",
-  SUCCESS_CREATING_USER = "user/SUCCESS_CREATING_USER",
+  LOAD_USER = "user/LOAD_USER",
   ON_ERROR = "user/ON_ERROR",
   UPDATE_USER = "user/UPDATE_USER"
 }
@@ -86,8 +107,7 @@ export enum ActionTypes {
 export const Actions = {
   createUser: (name: { firstName: string; lastName: string }) =>
     createAction(ActionTypes.ON_CREATE_NEW_USER, { name }),
-  successCreatingUser: (user: UserType) =>
-    createAction(ActionTypes.SUCCESS_CREATING_USER, { user }),
+  loadUser: (user: UserType) => createAction(ActionTypes.LOAD_USER, { user }),
   onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err }),
   updateUser: (user: Partial<UserType>) => createAction(ActionTypes.UPDATE_USER, { user })
 };
