@@ -2,10 +2,12 @@ import { Inject, Controller, Post, PathParams } from "@tsed/common";
 
 import { AuthService } from "../services/auth";
 import { UserService } from "../services/user";
+import { UserType } from "../models/user";
 
 export type VerifyPhoneReturnType = string;
 export type CheckCodeReturnType = {
-  response: boolean;
+  verified: boolean;
+  user?: UserType;
   token?: string;
 };
 
@@ -33,13 +35,13 @@ export class UserController {
   ): Promise<CheckCodeReturnType> {
     const response = await this.authService.checkVerification(phoneNumber, code);
 
-    if (response) {
+    if (response.verified) {
       // generate JWT
       const token = this.authService.generateJWT(phoneNumber);
-      // const isNewUser = this.userService.;
-      return { response, token };
+
+      return { ...response, token };
     }
 
-    return { response };
+    return response;
   }
 }

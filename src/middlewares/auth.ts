@@ -12,7 +12,7 @@ export class AuthMiddleware implements IMiddleware {
     const { authorization } = request.headers;
 
     if (authorization) {
-      const publicKey = <string>process.env.PUBLIC_KEY;
+      const publicKey = <string>process.env.AUTH_PUBLIC_KEY;
       const token = authorization.split(" ")[1];
 
       try {
@@ -22,7 +22,7 @@ export class AuthMiddleware implements IMiddleware {
         /* if the user is trying to do something with their
              data check to see phone number matches? */
 
-        console.log(payload);
+        console.log("auth payload:", payload);
       } catch (err) {
         console.debug(err);
         throw new Forbidden("Forbidden");

@@ -26,7 +26,7 @@ export class NotificationService {
 
   private APNs = new Provider(settings.apns);
 
-  private async send(deviceToken: string, deviceOS: string, body: string): Promise<string> {
+  private async send(deviceToken: string = "", deviceOS: string, body: string): Promise<string> {
     if (deviceOS == "Android") {
       // deal with android notification
     } else {
@@ -34,13 +34,16 @@ export class NotificationService {
       const payload = {};
       const notification = new Notification(payload);
 
-      return this.APNs.send(notification, deviceToken).then(result => {
-        if (result.sent) {
-          return "success";
-        } else {
-          return "failure";
-        }
-      });
+      if (deviceToken.length)
+        return this.APNs.send(notification, deviceToken).then(result => {
+          if (result.sent) {
+            return "success";
+          } else {
+            return "failure";
+          }
+        });
+
+      return "failure";
     }
 
     return "";

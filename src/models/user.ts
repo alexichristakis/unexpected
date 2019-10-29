@@ -1,17 +1,8 @@
-import { Default, Format, Required, Schema } from "@tsed/common";
+import { Default, Format, Required, Schema, Property } from "@tsed/common";
 import { Model, ObjectID, Indexed } from "@tsed/mongoose";
 
 export interface NotificationPreferencesType {
   timezone: string;
-}
-export interface UserType {
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  createdAt: string;
-  deviceOS: string;
-  deviceToken: string;
-  notificationPreferences: NotificationPreferencesType;
 }
 
 @Schema({})
@@ -29,11 +20,9 @@ export class UserModel {
   _id: string;
 
   @Indexed()
+  @Required()
   @Format("/^+?[1-9]d{1,14}$/")
   phoneNumber: string;
-
-  @Required()
-  code: string;
 
   @Required()
   firstName: string;
@@ -44,13 +33,18 @@ export class UserModel {
   @Required()
   deviceOS: string;
 
-  @Required()
-  deviceToken: string;
+  @Property()
+  deviceToken?: string;
 
   @Format("date-time")
   @Default(Date.now)
   createdAt: Date = new Date();
 
   @Required()
-  notificationPreferences: NotificationPreferences;
+  timezone: string;
+
+  // @Required()
+  // notificationPreferences: NotificationPreferences;
 }
+
+export type UserType = Omit<UserModel, "_id" | "createdAt">;

@@ -2,7 +2,7 @@ import { Controller, BodyParams, Get, Put, PathParams, UseAuth, Inject } from "@
 import { MongooseModel } from "@tsed/mongoose";
 
 import { UserService } from "../services/user";
-import { UserType, UserModel } from "../models/user";
+import { UserModel, UserType } from "../models/user";
 import { AuthMiddleware } from "../middlewares/auth";
 
 @Controller("/user")
@@ -17,7 +17,8 @@ export class UserController {
   }
 
   @Put()
-  async createUser(@BodyParams("user") user: UserType): Promise<void> {
+  async createUser(@BodyParams("user") user: UserType): Promise<UserModel> {
+    console.log(user);
     return this.userService.createNewUser(user);
   }
 

@@ -25,14 +25,14 @@ type Selector<T> = Partial<keyof T>[];
 export abstract class CRUDService<Model, Type> {
   public abstract model: MongooseModel<Model>;
 
-  private formatSelector = (querySelector: Selector<Type> = []): string => {
+  private formatSelector = (querySelector: Selector<Model> = []): string => {
     return querySelector.reduce((prev, curr, i) => {
       return (prev += `${curr} `);
     }, "");
   };
 
   /* get */
-  getId = (id: string, querySelector: Selector<Type> = []) => {
+  getId = (id: string, querySelector: Selector<Model> = []) => {
     const selectOn = this.formatSelector(querySelector);
 
     return this.model
@@ -41,7 +41,7 @@ export abstract class CRUDService<Model, Type> {
       .exec();
   };
 
-  getAll = (querySelector: Selector<Type> = []) => {
+  getAll = (querySelector: Selector<Model> = []) => {
     const selectOn = this.formatSelector(querySelector);
 
     return this.model
@@ -50,7 +50,7 @@ export abstract class CRUDService<Model, Type> {
       .exec();
   };
 
-  find = (params: Partial<Type>, querySelector: Selector<Type> = []) => {
+  find = (params: Partial<Type>, querySelector: Selector<Model> = []) => {
     const selectOn = this.formatSelector(querySelector);
 
     // const data = ['text 1', 'text 2'] as const;
@@ -64,7 +64,16 @@ export abstract class CRUDService<Model, Type> {
       .exec();
   };
 
-  updateOne = (params: Partial<Type>, newData: Partial<Type>) => {
+  findOne = (params: Partial<Type>, querySelector: Selector<Model> = []) => {
+    const selectOn = this.formatSelector(querySelector);
+
+    return this.model
+      .findOne(params)
+      .select(selectOn)
+      .exec();
+  };
+
+  updateOne = (params: Partial<Type>, newData: Partial<Model>) => {
     return this.model.updateOne(params, newData).exec();
   };
 

@@ -22,9 +22,11 @@ export class SchedulerService {
   @Inject(UserService)
   private userService: UserService;
 
-  private agenda = new Agenda().mongo(this.mongooseService.get()!.connection.db, "jobs");
+  private agenda: Agenda;
 
-  constructor() {
+  $afterInit() {
+    this.agenda = new Agenda().mongo(this.mongooseService.get()!.connection.db, "jobs");
+
     this.agenda.define(AgendaJobs.SEND_NOTIFICATION, args => {
       const { to } = args.attrs.data;
       this.notificationService.notifyUserModel(to, "time to take & share a photo");
@@ -32,15 +34,15 @@ export class SchedulerService {
 
     this.agenda.define(AgendaJobs.GENERATE_NOTIFICATIONS, async () => {
       const users = await this.userService.getAll([
-        "notificationPreferences",
+        "timezone",
         "deviceOS",
         "firstName",
         "lastName"
       ]);
 
       users.forEach(user => {
-        const { notificationPreferences } = user;
-        const time = this.generateTime(notificationPreferences);
+        const { timezone } = user;
+        const time = this.generateTime(timezone);
 
         this.agenda.schedule(time, AgendaJobs.SEND_NOTIFICATION, { to: user });
       });
@@ -50,7 +52,7 @@ export class SchedulerService {
     this.scheduleNotificationGeneration();
   }
 
-  generateTime = (preferences: NotificationPreferencesType): Date => {
+  generateTime = (timezone: string): Date => {
     return new Date();
   };
 

@@ -6,11 +6,16 @@ import bcrypt from "bcrypt";
 import { VerificationMessage as VerificationMessageModel } from "../models/verification-message";
 import { SALT_ROUNDS } from "../lib/constants";
 import { TwilioService } from "./twilio";
+import { UserService } from "./user";
+import { UserType } from "../models/user";
 
 @Service()
 export class AuthService {
   @Inject(VerificationMessageModel)
   private VerificationMessage: MongooseModel<VerificationMessageModel>;
+
+  @Inject(UserService)
+  private userService: UserService;
 
   @Inject(TwilioService)
   private twilioService: TwilioService;
@@ -38,19 +43,34 @@ export class AuthService {
       .catch(error => error);
   }
 
-  async checkVerification(to: string, code: string): Promise<boolean> {
-    const query = this.VerificationMessage.findOne({ phoneNumber: to }).sort({
+  async checkVerification(
+    phoneNumber: string,
+    code: string
+  ): Promise<{ verified: boolean; user?: UserType }> {
+    const verificationMessageQuery = this.VerificationMessage.findOne({
+      phoneNumber
+    }).sort({
       createdAt: -1
     });
 
-    const model = await query.exec();
-    if (model) {
-      const comparison = await bcrypt.compare(code, model.code);
+    const verificationMessageModel = await verificationMessageQuery.exec();
 
-      return comparison;
+    // no record of the phone number requested to be verified
+    if (!verificationMessageModel) return { verified: false };
+
+    const comparison = await bcrypt.compare(code, verificationMessageModel.code);
+
+    // if the code doesnt match the user isnt verified
+    if (!comparison) return { verified: false };
+
+    // check to see if the user already has an account
+    const userModel = await this.userService.getByPhoneNumber(phoneNumber);
+    if (userModel) {
+      return { verified: true, user: userModel };
     }
 
-    return false;
+    // otherwise verified and new user
+    return { verified: true };
   }
 
   generateJWT(phoneNumber: string): string {
