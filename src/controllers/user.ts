@@ -1,9 +1,9 @@
-import { Controller, BodyParams, Get, Put, PathParams, UseAuth, Inject } from "@tsed/common";
+import { Controller, BodyParams, Get, Put, PathParams, UseAuth, Inject, Patch } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 
 import { UserService } from "../services/user";
 import { UserModel, UserType } from "../models/user";
-import { AuthMiddleware } from "../middlewares/auth";
+import { AuthMiddleware, Verify, Select } from "../middlewares/auth";
 
 @Controller("/user")
 @UseAuth(AuthMiddleware)
@@ -17,14 +17,30 @@ export class UserController {
   }
 
   @Put()
+  @UseAuth(AuthMiddleware, {
+    select: Select.userFromBody,
+    verify: Verify.userPhoneNumberMatchesToken
+  })
   async createUser(@BodyParams("user") user: UserType): Promise<UserModel> {
     console.log(user);
     return this.userService.createNewUser(user);
   }
 
-  @Put()
-  async followUser() {}
+  @Patch()
+  @UseAuth(AuthMiddleware, {
+    select: Select.userFromBody,
+    verify: Verify.userPhoneNumberMatchesToken
+  })
+  async updateUser(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @BodyParams("user") user: Partial<UserType>
+  ): Promise<void> {
+    return this.userService.updateOne({ phoneNumber }, user);
+  }
 
-  @Put()
-  async unFollowUser() {}
+  // @Put()
+  // async followUser() {}
+
+  // @Put()
+  // async unFollowUser() {}
 }

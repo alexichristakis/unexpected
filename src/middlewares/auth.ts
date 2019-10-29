@@ -1,7 +1,8 @@
-import { EndpointInfo, IMiddleware, Middleware, Req } from "@tsed/common";
+import { EndpointInfo, IMiddleware, Middleware, Req, UseAuth } from "@tsed/common";
 import { Forbidden, Unauthorized } from "ts-httpexceptions";
 import jwt from "jsonwebtoken";
 import fs from "fs";
+import { UserType } from "../models/user";
 
 @Middleware()
 export class AuthMiddleware implements IMiddleware {
@@ -16,13 +17,14 @@ export class AuthMiddleware implements IMiddleware {
       const token = authorization.split(" ")[1];
 
       try {
-        const payload = jwt.verify(token, publicKey);
+        const payload = jwt.verify<{ phoneNumber: string }>(token, publicKey);
 
-        // TODO:
-        /* if the user is trying to do something with their
-             data check to see phone number matches? */
+        const { select, verify } = options;
 
-        console.log("auth payload:", payload);
+        if (select && verify)
+          if (!verify(select(request), payload.phoneNumber)) {
+            throw new Forbidden("Forbidden");
+          }
       } catch (err) {
         console.debug(err);
         throw new Forbidden("Forbidden");
@@ -30,13 +32,17 @@ export class AuthMiddleware implements IMiddleware {
     } else {
       throw new Unauthorized("Unauthorized");
     }
-
-    // if (!request.isAuthenticated()) { // passport.js method to check auth
-    //   throw new Unauthorized("Unauthorized");
-    // }
-
-    // if (request.user.role !== options.role) {
-    //   throw new Forbidden("Forbidden");
-    // }
   }
 }
+
+export const Select = {
+  userFromBody: (data: any): Partial<UserType> => {
+    return data.body.user;
+  }
+};
+
+export const Verify = {
+  userPhoneNumberMatchesToken: (data: UserType, phoneNumber: string) => {
+    return data.phoneNumber === phoneNumber;
+  }
+};
