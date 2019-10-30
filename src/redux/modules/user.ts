@@ -7,14 +7,13 @@ import { all, fork, put, call, select, take, takeLatest } from "redux-saga/effec
 import client, { getHeaders } from "@api";
 import { UserType } from "unexpected-cloud/models/user";
 
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "./utils";
+import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 import { Actions as AppActions } from "./app";
 import { Actions as AuthActions } from "./auth";
 import { ActionTypes as PermissionsActionTypes } from "./permissions";
-import * as selectors from "./selectors";
+import * as selectors from "../selectors";
 
-import Navigation from "../Navigation";
-import { REHYDRATE } from "redux-persist";
+import Navigation from "../../Navigation";
 
 export interface UserState {
   readonly user: Partial<UserType>;
@@ -83,7 +82,6 @@ function* onCreateUser(action: ExtractActionFromActionCreator<typeof Actions.cre
       yield Navigation.navigate({ routeName: "Home" })
     ]);
   } catch (err) {
-    console.log(err);
     yield put(Actions.onError(err));
   }
 }
@@ -105,7 +103,6 @@ function* onUpdateUser(action: ExtractActionFromActionCreator<typeof Actions.upd
 
     yield put(Actions.updateComplete());
   } catch (err) {
-    console.log(err);
     yield put(Actions.onError(err));
   }
 }

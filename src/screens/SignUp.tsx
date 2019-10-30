@@ -4,7 +4,7 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { AppState as AppStateType } from "@redux/types";
-import { Actions, UserState as UserStateType } from "@redux/user";
+import { Actions, UserState as UserStateType } from "@redux/modules/user";
 import { Input } from "@components/universal";
 
 export interface AuthReduxProps {

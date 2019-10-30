@@ -5,8 +5,8 @@ import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 import client from "@api";
 import { VerifyPhoneReturnType, CheckCodeReturnType } from "@api/controllers/verify";
 import { Actions as UserActions } from "./user";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "./utils";
-import Navigation from "../Navigation";
+import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import Navigation from "../../Navigation";
 
 export interface State {}
 

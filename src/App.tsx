@@ -16,6 +16,7 @@ import Auth from "./screens/Auth";
 import SignUp from "./screens/SignUp";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
+import Capture from "./screens/Capture";
 
 useScreens();
 
@@ -27,7 +28,7 @@ const Router: React.FC = () => {
     createAnimatedSwitchNavigator(
       {
         Home: createStackNavigator(
-          { Home, Profile },
+          { Home, Profile, Capture },
           {
             mode: "modal",
             defaultNavigationOptions: {

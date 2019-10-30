@@ -1,13 +1,13 @@
 import { AxiosResponse } from "axios";
 import { REHYDRATE } from "redux-persist";
-import { batchActions } from "redux-batched-actions";
+import { batchActions, BATCH } from "redux-batched-actions";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";
 import { VerifyPhoneReturnType, CheckCodeReturnType } from "@api/controllers/verify";
 import { Actions as UserActions } from "./user";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "./utils";
-import Navigation from "../Navigation";
+import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import Navigation from "../../Navigation";
 
 export interface AuthState {
   readonly loading: boolean;
@@ -117,11 +117,14 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
       if (data.user) {
         yield all([
           yield put(
-            batchActions([
-              UserActions.loadUser(data.user),
-              Actions.completedAuthFlow(),
-              Actions.setJWT(data.token)
-            ])
+            batchActions(
+              [
+                UserActions.loadUser(data.user),
+                Actions.completedAuthFlow(),
+                Actions.setJWT(data.token)
+              ],
+              BATCH
+            )
           ),
           yield Navigation.navigate({ routeName: "Home" })
         ]);

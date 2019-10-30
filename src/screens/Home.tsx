@@ -4,22 +4,18 @@ import { NavigationInjectedProps } from "react-navigation";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { withApi, ApiProps } from "@api";
-import { Actions as AuthActions } from "@redux/auth";
-import { Actions as PermissionsActions } from "@redux/permissions";
+import { Actions as AuthActions } from "@redux/modules/auth";
+import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
+import { AppState } from "@redux/types";
 
 export interface HomeReduxProps {
   logout: typeof AuthActions.logout;
   requestNotificationPermissions: typeof PermissionsActions.requestNotifications;
+  requestPermission: typeof PermissionsActions.requestPermission;
 }
-export interface HomeProps extends ApiProps {}
+export interface HomeProps {}
 class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInjectedProps> {
   state = {};
-
-  handleOnPress = () => {
-    const { api } = this.props;
-    api.testAuthenticated();
-  };
 
   requestNotificationPermissions = () => {
     const { requestNotificationPermissions } = this.props;
@@ -27,13 +23,21 @@ class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInject
   };
 
   render() {
+    const { requestPermission } = this.props;
     return (
       <Screen style={styles.container}>
         <Text>home page!</Text>
-        <Button title="test request that needs authorization" onPress={this.handleOnPress} />
         <Button
           title="push profile screen"
           onPress={() => this.props.navigation.navigate({ routeName: "Profile" })}
+        />
+        <Button
+          title="request camera permissions"
+          onPress={() => requestPermission(Permissions.CAMERA)}
+        />
+        <Button
+          title="push capture screen"
+          onPress={() => this.props.navigation.navigate({ routeName: "Capture" })}
         />
         <Button title="request notifications" onPress={this.requestNotificationPermissions} />
         <Button title="logout" onPress={this.props.logout} />
@@ -50,15 +54,14 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state: AppState) => ({});
 const mapDispatchToProps = {
   logout: AuthActions.logout,
-  requestNotificationPermissions: PermissionsActions.requestNotifications
+  requestNotificationPermissions: PermissionsActions.requestNotifications,
+  requestPermission: PermissionsActions.requestPermission
 };
 
-export default withApi(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Home)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Home);

@@ -28,7 +28,7 @@ export default () => {
 
   let store = createStore(persistedReducer, composeEnhancers(applyMiddleware(...middleware)));
 
-  sagaMiddleware.run(sagas);
+  sagaMiddleware.run(sagas as any);
 
   let persistor = persistStore(store);
   return { store, persistor };

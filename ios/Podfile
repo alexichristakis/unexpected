@@ -40,7 +40,7 @@ target 'unexpected' do
   # permissions
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications.podspec"
-  # pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
   # pod 'Permission-Contacts', :path => "#{permissions_path}/Contacts.podspec"
   # pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
 
