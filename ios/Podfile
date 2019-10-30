@@ -44,13 +44,6 @@ target 'unexpected' do
   # pod 'Permission-Contacts', :path => "#{permissions_path}/Contacts.podspec"
   # pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
 
-
-
-  target 'unexpectedTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
   use_native_modules!
 end
 

@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-community/async-storage";
-import createSagaMiddleware from "redux-saga";
 import { createStore, applyMiddleware } from "redux";
+import createSagaMiddleware from "redux-saga";
+import { batchDispatchMiddleware } from "redux-batched-actions";
 import { persistStore, persistReducer, createMigrate } from "redux-persist";
 import { composeWithDevTools } from "redux-devtools-extension";
 
@@ -18,7 +19,7 @@ const persistConfig = {
 export default () => {
   const sagaMiddleware = createSagaMiddleware();
 
-  const middleware = [sagaMiddleware];
+  const middleware = [sagaMiddleware, batchDispatchMiddleware];
   const composeEnhancers = composeWithDevTools({
     // options like actionSanitizer, stateSanitizer
   });

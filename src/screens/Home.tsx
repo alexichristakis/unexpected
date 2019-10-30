@@ -5,10 +5,12 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { withApi, ApiProps } from "@api";
-import { Actions } from "@redux/auth";
+import { Actions as AuthActions } from "@redux/auth";
+import { Actions as PermissionsActions } from "@redux/permissions";
 
 export interface HomeReduxProps {
-  logout: typeof Actions.logout;
+  logout: typeof AuthActions.logout;
+  requestNotificationPermissions: typeof PermissionsActions.requestNotifications;
 }
 export interface HomeProps extends ApiProps {}
 class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInjectedProps> {
@@ -17,6 +19,11 @@ class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInject
   handleOnPress = () => {
     const { api } = this.props;
     api.testAuthenticated();
+  };
+
+  requestNotificationPermissions = () => {
+    const { requestNotificationPermissions } = this.props;
+    requestNotificationPermissions();
   };
 
   render() {
@@ -28,6 +35,7 @@ class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInject
           title="push profile screen"
           onPress={() => this.props.navigation.navigate({ routeName: "Profile" })}
         />
+        <Button title="request notifications" onPress={this.requestNotificationPermissions} />
         <Button title="logout" onPress={this.props.logout} />
       </Screen>
     );
@@ -43,7 +51,10 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = () => ({});
-const mapDispatchToProps = { logout: Actions.logout };
+const mapDispatchToProps = {
+  logout: AuthActions.logout,
+  requestNotificationPermissions: PermissionsActions.requestNotifications
+};
 
 export default withApi(
   connect(

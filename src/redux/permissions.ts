@@ -5,21 +5,23 @@ import {
   PERMISSIONS,
   checkNotifications,
   requestNotifications,
-  NotificationsResponse
+  NotificationsResponse,
+  NotificationSettings
 } from "react-native-permissions";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import { ActionsUnion, createAction } from "./utils";
+import { REHYDRATE } from "redux-persist";
 
 export interface PermissionsState {
-  readonly notifications: boolean;
+  readonly notifications: NotificationsResponse;
   readonly location: boolean;
   readonly contacts: boolean;
   readonly error: string;
 }
 
 const initialState: PermissionsState = {
-  notifications: false,
+  notifications: { status: "unavailable", settings: {} },
   location: false,
   contacts: false,
   error: ""
@@ -29,7 +31,8 @@ export type PermissionsActionTypes = ActionsUnion<typeof Actions>;
 export default (state: PermissionsState = initialState, action: PermissionsActionTypes) => {
   switch (action.type) {
     case ActionTypes.SET_NOTIFICATIONS: {
-      return { ...state, notifications: true };
+      const { res } = action.payload;
+      return { ...state, notifications: res };
     }
 
     case ActionTypes.REQUEST_LOCATION: {
@@ -45,21 +48,29 @@ export default (state: PermissionsState = initialState, action: PermissionsActio
   }
 };
 
+function* onStartup() {
+  try {
+    const { status, settings }: NotificationsResponse = yield checkNotifications();
+    if (status === "granted") {
+      yield put(Actions.setNotifications({ status, settings }));
+    }
+  } catch (err) {
+    yield put(Actions.errorRequestingPermissions(err));
+  }
+}
+
 function* onRequestNotifications() {
   try {
     const { status, settings }: NotificationsResponse = yield checkNotifications();
+    if (status === "granted") {
+      yield put(Actions.setNotifications({ status, settings }));
+    }
 
     if (status !== "granted") {
       const { status, settings }: NotificationsResponse = yield requestNotifications([
         "alert",
         "badge"
       ]);
-
-      console.log(status);
-
-      if (status === "granted") {
-        yield put(Actions.setNotifications());
-      }
     }
   } catch (err) {
     yield put(Actions.errorRequestingPermissions(err));
@@ -67,7 +78,10 @@ function* onRequestNotifications() {
 }
 
 export function* permissionSagas() {
-  yield all([yield takeLatest(ActionTypes.REQUEST_NOTIFICATIONS, onRequestNotifications)]);
+  yield all([
+    yield takeLatest(REHYDRATE, onStartup),
+    yield takeLatest(ActionTypes.REQUEST_NOTIFICATIONS, onRequestNotifications)
+  ]);
 }
 
 export enum ActionTypes {
@@ -80,7 +94,8 @@ export enum ActionTypes {
 
 export const Actions = {
   requestNotifications: () => createAction(ActionTypes.REQUEST_NOTIFICATIONS),
-  setNotifications: () => createAction(ActionTypes.SET_NOTIFICATIONS),
+  setNotifications: (res: NotificationsResponse) =>
+    createAction(ActionTypes.SET_NOTIFICATIONS, { res }),
   requestLocation: () => createAction(ActionTypes.REQUEST_LOCATION),
   errorRequestingPermissions: (err: string) => createAction(ActionTypes.ERROR_REQUESTING, { err })
 };

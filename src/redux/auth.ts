@@ -1,5 +1,6 @@
 import { AxiosResponse } from "axios";
 import { REHYDRATE } from "redux-persist";
+import { batchActions } from "redux-batched-actions";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";
@@ -37,7 +38,8 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
       if (auth)
         return {
           ...initialState,
-          jwt: auth.jwt
+          jwt: auth.jwt,
+          authFlowCompleted: auth.authFlowCompleted
         };
       else return { ...initialState };
     }
@@ -62,6 +64,13 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
         isAwaitingCode: false,
         errorRequestingAuth: null,
         jwt: action.payload
+      };
+    }
+
+    case ActionTypes.COMPLETED_AUTH_FLOW: {
+      return {
+        ...state,
+        authFlowCompleted: true
       };
     }
 
@@ -107,9 +116,14 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
     if (data.token) {
       if (data.user) {
         yield all([
-          yield put(UserActions.loadUser(data.user)),
-          yield put(Actions.setJWT(data.token)),
-          yield Navigation.navigate({ routeName: "SignUp" })
+          yield put(
+            batchActions([
+              UserActions.loadUser(data.user),
+              Actions.completedAuthFlow(),
+              Actions.setJWT(data.token)
+            ])
+          ),
+          yield Navigation.navigate({ routeName: "Home" })
         ]);
       } else {
         // user entity doesn't exist in DB: new user
@@ -136,6 +150,7 @@ export enum ActionTypes {
   CHECK_CODE = "auth/CHECK_CODE",
   ERROR_REQUESTING_AUTH = "auth/ERROR_REQUESTING_AUTH",
   SUCCESS_TEXTING_CODE = "auth/SUCCESS_TEXTING_CODE",
+  COMPLETED_AUTH_FLOW = "auth/COMPLETED_AUTH_FLOW",
   SET_JWT = "auth/SET_JWT",
   LOGOUT = "auth/LOGOUT"
 }
@@ -146,6 +161,7 @@ export const Actions = {
     createAction(ActionTypes.CHECK_CODE, { phoneNumber, code }),
   errorRequestingAuth: (err: any) => createAction(ActionTypes.ERROR_REQUESTING_AUTH, err),
   successTextingCode: () => createAction(ActionTypes.SUCCESS_TEXTING_CODE),
+  completedAuthFlow: () => createAction(ActionTypes.COMPLETED_AUTH_FLOW),
   setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt),
   logout: () => createAction(ActionTypes.LOGOUT)
 };
