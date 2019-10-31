@@ -4,10 +4,17 @@ import jimp from "jimp";
 
 @Service()
 export class ImageService {
-  private storage = new Storage();
-  private bucket = this.storage.bucket(process.env.GOOGLE_BUCKET_NAME || "");
+  private storage = new Storage({
+    projectId: "expect-photos",
+    keyFilename: "certifications/google_cloud.json"
+  });
+  private bucket = this.storage.bucket(<string>process.env.GOOGLE_BUCKET_NAME);
+
+  async resize(input: Express.Multer.File) {
+    const image = await jimp.read(input.path);
+  }
 
   async upload(image: Express.Multer.File) {
-    await this.bucket.upload(image.path);
+    const file = await this.bucket.upload(image.path);
   }
 }

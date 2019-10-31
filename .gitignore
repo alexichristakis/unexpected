@@ -8,6 +8,7 @@ node_modules/
 # testing
 /coverage
 
+
 # production
 dist/
 
@@ -15,6 +16,7 @@ dist/
 .DS_Store
 
 # keys
+certifications/
 .env
 **/*.cer 
 **/*.p8
