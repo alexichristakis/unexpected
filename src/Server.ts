@@ -1,4 +1,5 @@
 import { GlobalAcceptMimesMiddleware, ServerLoader, ServerSettings } from "@tsed/common";
+import "@tsed/multipartfiles";
 import "@tsed/mongoose";
 
 import cookieParser from "cookie-parser";
@@ -17,6 +18,9 @@ import methodOverride from "method-override";
     url: process.env.MONGODB_URI,
     connectionOptions: {}
   }
+  // multer: {
+  //   //
+  // }
 })
 export class Server extends ServerLoader {
   /**

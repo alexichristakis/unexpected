@@ -1,5 +1,5 @@
 import { Default, Format, Required, Schema, Property } from "@tsed/common";
-import { Model, ObjectID, Indexed } from "@tsed/mongoose";
+import { Model, ObjectID, Indexed, Unique } from "@tsed/mongoose";
 
 export interface NotificationPreferencesType {
   timezone: string;

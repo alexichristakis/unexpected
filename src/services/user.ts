@@ -10,9 +10,11 @@ export class UserService extends CRUDService<UserModel, UserType> {
   model: MongooseModel<UserModel>;
 
   createNewUser = async (user: UserType) => {
-    const newUser = await this.create(user);
+    const userExists = await this.getByPhoneNumber(user.phoneNumber);
 
-    return newUser;
+    if (userExists) return;
+
+    return this.create(user);
   };
 
   getByPhoneNumber = async (phoneNumber: string) => {

@@ -19,16 +19,12 @@ export class AuthMiddleware implements IMiddleware {
       try {
         const payload: any = jwt.verify(token, publicKey);
 
-        const { select, verify } = options;
-
-        console.log(payload);
-
+        const { select, verify = (a: any, b: any) => a === b } = options;
         if (select && verify)
           if (!verify(select(request), payload.phoneNumber)) {
             throw new Forbidden("Forbidden");
           }
       } catch (err) {
-        console.debug(err);
         throw new Forbidden("Forbidden");
       }
     } else {
@@ -38,8 +34,11 @@ export class AuthMiddleware implements IMiddleware {
 }
 
 export const Select = {
-  userFromBody: (data: any): Partial<UserType> => {
-    return data.body.user;
+  phoneFromUserFromBody: (data: Req): Partial<UserType> => {
+    return data.body.user.phoneNumber;
+  },
+  phoneFromPath: (data: Req): any => {
+    return data.params.phoneNumber;
   }
 };
 

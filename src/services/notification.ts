@@ -1,6 +1,7 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import { Provider, Notification } from "apn";
+import moment from "moment";
 
 import { UserModel } from "../models/user";
 import { Document } from "mongoose";
@@ -16,7 +17,7 @@ const settings = {
       keyId: <string>process.env.APNS_KEY_ID,
       teamId: <string>process.env.APNS_TEAM_ID
     },
-    production: true
+    production: false
   }
 };
 
@@ -32,16 +33,30 @@ export class NotificationService {
       // deal with android notification
     } else {
       // deal with ios notification
-      const payload = {};
+      const payload = {
+        pushType: "alert",
+        topic: "christakis.expect.photos",
+        payload: {
+          photoTime: true,
+          time: moment().toDate()
+        },
+        alert: {
+          body
+        }
+      };
+
       const notification = new Notification(payload);
+
+      console.log(notification, deviceToken);
 
       if (deviceToken.length)
         return this.APNs.send(notification, deviceToken).then(result => {
-          if (result.sent) {
-            return "success";
-          } else {
-            return "failure";
-          }
+          // console.log("RESULT:", result);
+          result.failed.forEach(failure => {
+            console.log(failure.response);
+          });
+
+          return "";
         });
 
       return "failure";

@@ -80,4 +80,8 @@ export abstract class CRUDService<Model, Type> {
   create = (data: Type) => {
     return this.model.create(data);
   };
+
+  delete = (_id: string) => {
+    return this.model.deleteOne({ _id }).exec();
+  };
 }
