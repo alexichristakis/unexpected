@@ -11,10 +11,16 @@ export * from "./context";
 
 export default axios.create({ baseURL: server });
 
-export const getHeaders = ({ jwt }: { jwt: string | undefined }) => {
-  const headers = {
+export const getHeaders = ({ jwt, image }: { jwt: string | undefined; image?: boolean }) => {
+  const imageHeaders = { Accept: "application/json", "Content-Type": "multipart/form-data" };
+
+  let headers = {
     Authorization: jwt ? `Bearer ${jwt}` : ""
   };
+
+  if (image) {
+    headers = { ...headers, ...imageHeaders };
+  }
 
   return headers;
 };

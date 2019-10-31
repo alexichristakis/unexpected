@@ -1,9 +1,11 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ViewStyle } from "react-native";
 import { RNCamera } from "react-native-camera";
 import { PermissionStatus } from "react-native-permissions";
 
-export interface CameraProps {}
+export interface CameraProps {
+  style?: ViewStyle;
+}
 class Camera extends React.Component<CameraProps> {
   state = {
     type: RNCamera.Constants.Type.back
@@ -33,7 +35,11 @@ class Camera extends React.Component<CameraProps> {
   };
 
   render() {
-    return <RNCamera ref={this.camera} style={styles.camera} type={RNCamera.Constants.Type.back} />;
+    const { type } = this.state;
+    const { style } = this.props;
+    return (
+      <RNCamera ref={this.camera} style={[styles.camera, style]} type={type} captureAudio={false} />
+    );
   }
 }
 

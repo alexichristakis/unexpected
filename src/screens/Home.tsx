@@ -6,12 +6,14 @@ import { connect } from "react-redux";
 
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
+import { Actions as ImageActions } from "@redux/modules/image";
 import { AppState } from "@redux/types";
 
 export interface HomeReduxProps {
   logout: typeof AuthActions.logout;
   requestNotificationPermissions: typeof PermissionsActions.requestNotifications;
   requestPermission: typeof PermissionsActions.requestPermission;
+  uploadPhoto: typeof ImageActions.onUploadPhoto;
 }
 export interface HomeProps {}
 class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInjectedProps> {
@@ -31,6 +33,7 @@ class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInject
           title="push profile screen"
           onPress={() => this.props.navigation.navigate({ routeName: "Profile" })}
         />
+        <Button title="upload photo" onPress={() => this.props.uploadPhoto()} />
         <Button
           title="request camera permissions"
           onPress={() => requestPermission(Permissions.CAMERA)}
@@ -58,7 +61,8 @@ const mapStateToProps = (state: AppState) => ({});
 const mapDispatchToProps = {
   logout: AuthActions.logout,
   requestNotificationPermissions: PermissionsActions.requestNotifications,
-  requestPermission: PermissionsActions.requestPermission
+  requestPermission: PermissionsActions.requestPermission,
+  uploadPhoto: ImageActions.onUploadPhoto
 };
 
 export default connect(
