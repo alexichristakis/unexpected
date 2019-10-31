@@ -39,8 +39,6 @@ export default (state: ImageState = initialState, action: ImageActionTypes) => {
 };
 
 function* onUploadPhoto() {
-  console.log("on upload photo");
-
   const phoneNumber = yield select(selectors.phoneNumber);
   const jwt = yield select(selectors.jwt);
   const { uri, width, height }: TakePictureResponse = yield select(selectors.currentImage);
@@ -55,7 +53,6 @@ function* onUploadPhoto() {
   });
 
   try {
-    console.log("trying put");
     yield client.put("/upload/image", body, {
       headers: getHeaders({ jwt, image: true })
     });
