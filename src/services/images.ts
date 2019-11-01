@@ -20,10 +20,13 @@ export class ImageService {
   });
   private bucket = this.storage.bucket(<string>process.env.GOOGLE_BUCKET_NAME);
 
-  async resize(input: Buffer) {
+  async resize(input: Buffer, width: number, height: number) {
     // const image = await jimp.read(input.path);
     const image = await jimp.read(input);
-    // image.resize()
+
+    const resizedImage = image.resize(width, height);
+
+    return resizedImage;
   }
 
   getProfilePath(phoneNumber: string) {
@@ -73,7 +76,11 @@ export class ImageService {
   }
 
   async downloadPostImage(phoneNumber: string, id: string) {
-    return this.getUrl(`${phoneNumber}/posts/${id}.jpg`);
+    // return this.getUrl(`${phoneNumber}/posts/${id}.jpg`);
+    const [file] = await this.bucket.file(`${phoneNumber}/posts/${id}.jpg`).get();
+    const [buffer] = await file.download();
+
+    return buffer;
   }
 
   async downloadAllPhotoUrls(phoneNumber: string) {

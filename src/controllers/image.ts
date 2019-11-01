@@ -1,8 +1,10 @@
-import { Controller, Inject, Put, Status, Get, PathParams } from "@tsed/common";
+import { Controller, Inject, Put, Get, PathParams, UseAfter, UseAuth } from "@tsed/common";
 import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
 import multer from "multer";
 
+import { SendFileMiddleware } from "../middlewares/send-file";
 import { ImageService } from "../services/images";
+import { AuthMiddleware } from "../middlewares/auth";
 
 @Controller("/image")
 export class ImageController {
@@ -39,7 +41,7 @@ export class ImageController {
 
     const path = this.imageService.getProfilePath(phoneNumber);
 
-    await this.imageService.upload(buffer, path);
+    await this.imageService.upload(buffer, path, true);
 
     return true;
   }
@@ -50,11 +52,15 @@ export class ImageController {
   }
 
   @Get("/:phoneNumber/:id")
+  @UseAuth(AuthMiddleware)
+  @UseAfter(SendFileMiddleware)
   async getPostImageUrl(
     @PathParams("phoneNumber") phoneNumber: string,
     @PathParams("id") id: string
   ) {
-    return this.imageService.downloadPostImage(phoneNumber, id);
+    const buffer = await this.imageService.downloadPostImage(phoneNumber, id);
+
+    return buffer;
   }
 
   @Get("/:phoneNumber/all")
