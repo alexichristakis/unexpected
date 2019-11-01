@@ -1,5 +1,5 @@
-import { AppState } from "../types";
+import { RootState } from "../types";
 
-const s = (state: AppState) => state.image || {};
+const s = (state: RootState) => state.image || {};
 
-export const currentImage = (state: AppState) => s(state).currentImage;
+export const currentImage = (state: RootState) => s(state).currentImage;

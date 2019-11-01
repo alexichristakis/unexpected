@@ -1,13 +1,15 @@
 import { AppState as AppStatus, AppStateStatus as AppStatusType } from "react-native";
 import NetInfo, { NetInfoState, NetInfoStateType } from "@react-native-community/netinfo";
+import PushNotifications, { PushNotification } from "react-native-push-notification";
+import moment, { Moment } from "moment";
+import { REHYDRATE } from "redux-persist";
 import { eventChannel } from "redux-saga";
 import { all, call, fork, put, select, take, takeLatest, takeEvery } from "redux-saga/effects";
-import { PushNotification } from "react-native-push-notification";
-import moment, { Moment } from "moment";
 
 import Navigation from "../../Navigation";
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
-import { REHYDRATE } from "redux-persist";
+import { ActionTypes as PermissionsActionTypes } from "./permissions";
+import { Actions as UserActions } from "./user";
 
 export interface AppState {
   appStatus: AppStatusType;
@@ -29,7 +31,8 @@ const initialState: AppState = {
   },
   currentRoute: "",
   camera: {
-    enabled: false
+    enabled: false,
+    timeOfExpiry: undefined
   }
 };
 
@@ -47,7 +50,7 @@ export default (state: AppState = initialState, action: AppActionTypes) => {
     }
 
     case ActionTypes.EXPIRE_CAMERA: {
-      return { ...state, camera: { enabled: false, timeOfExpiry: null } };
+      return { ...state, camera: { enabled: false, timeOfExpiry: undefined } };
     }
 
     case ActionTypes.SET_APP_STATUS: {
@@ -88,12 +91,15 @@ function* onReceiveNotification(
 
 const appEmitter = () => {
   return eventChannel(emit => {
-    AppStatus.addEventListener("change", state => emit({ appStatus: state }));
-    const unsubscribe = NetInfo.addEventListener(state => emit({ netInfo: state }));
+    const appStatusHandler = (state: AppStatusType) => emit({ appStatus: state });
+    const netInfoHandler = (state: NetInfoState) => emit({ netInfo: state });
+
+    AppStatus.addEventListener("change", appStatusHandler);
+    const unsubscribe = NetInfo.addEventListener(netInfoHandler);
 
     return () => {
       unsubscribe();
-      AppStatus.removeEventListener("change", emit);
+      AppStatus.removeEventListener("change", appStatusHandler);
     };
   });
 };
@@ -116,11 +122,41 @@ function* onStartup() {
   }
 }
 
+const notificationEmitter = () => {
+  return eventChannel(emit => {
+    PushNotifications.configure({
+      onRegister: token => emit({ token }),
+      onNotification: notification => emit({ notification }),
+      senderID: "YOUR GCM (OR FCM) SENDER ID",
+      requestPermissions: false
+    });
+
+    return () => {};
+  });
+};
+
+function* onRegisterNotifications() {
+  const tokenChannel = yield call(notificationEmitter);
+
+  while (true) {
+    const { token, notification } = yield take(tokenChannel);
+
+    if (token) {
+      yield put(UserActions.updateUser({ deviceToken: token.token, deviceOS: token.os }));
+    }
+
+    if (notification) {
+      yield put(Actions.processNotification(notification));
+    }
+  }
+}
+
 export function* appSagas() {
   yield all([
-    takeEvery(REHYDRATE, onStartup),
-    takeEvery(ActionTypes.NAVIGATE, onNavigate),
-    takeEvery(ActionTypes.PROCESS_NOTIFICATION, onReceiveNotification)
+    yield takeEvery(REHYDRATE, onStartup),
+    yield takeEvery(ActionTypes.NAVIGATE, onNavigate),
+    yield takeEvery(ActionTypes.PROCESS_NOTIFICATION, onReceiveNotification),
+    yield takeLatest(PermissionsActionTypes.SET_NOTIFICATIONS, onRegisterNotifications)
   ]);
 }
 
@@ -129,8 +165,8 @@ export enum ActionTypes {
   PROCESS_NOTIFICATION = "app/PROCESS_NOTIFICATION",
   SET_CAMERA_TIMER = "app/SET_CAMERA_TIMER",
   EXPIRE_CAMERA = "app/EXPIRE_CAMERA",
-  SET_NET_INFO = "app/SET_NET_INFO",
-  SET_APP_STATUS = "app/SET_APP_STATUS"
+  SET_APP_STATUS = "app/SET_APP_STATUS",
+  SET_NET_INFO = "app/SET_NET_INFO"
 }
 
 export const Actions = {

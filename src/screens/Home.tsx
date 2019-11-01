@@ -3,11 +3,12 @@ import { StyleSheet, View, Text, Button } from "react-native";
 import { NavigationInjectedProps } from "react-navigation";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import Contacts from "react-native-contacts";
 
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
 import { Actions as ImageActions } from "@redux/modules/image";
-import { AppState } from "@redux/types";
+import { RootState } from "@redux/types";
 
 export interface HomeReduxProps {
   logout: typeof AuthActions.logout;
@@ -24,6 +25,12 @@ class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInject
     requestNotificationPermissions();
   };
 
+  getContacts = () => {
+    Contacts.getAllWithoutPhotos((err, contacts) => {
+      console.log(contacts);
+    });
+  };
+
   render() {
     const { requestPermission } = this.props;
     return (
@@ -37,6 +44,10 @@ class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInject
         <Button
           title="request camera permissions"
           onPress={() => requestPermission(Permissions.CAMERA)}
+        />
+        <Button
+          title="request contact permissions"
+          onPress={() => requestPermission(Permissions.CONTACTS)}
         />
         <Button
           title="push capture screen"
@@ -57,7 +68,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: RootState) => ({});
 const mapDispatchToProps = {
   logout: AuthActions.logout,
   requestNotificationPermissions: PermissionsActions.requestNotifications,

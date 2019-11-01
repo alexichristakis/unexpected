@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 import Camera, { Shutter } from "@components/Camera";
 import * as selectors from "@redux/selectors";
-import { AppState } from "@redux/types";
+import { RootState } from "@redux/types";
 import { Actions as ImageActions } from "@redux/modules/image";
 
 export interface CaptureProps {
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   shutter: { position: "absolute", bottom: 100 }
 });
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (state: RootState) => ({
   cameraPermission: selectors.cameraPermissions(state)
 });
 const mapDispatchToProps = {

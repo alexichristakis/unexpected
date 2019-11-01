@@ -1,5 +1,5 @@
-import { AppState } from "../types";
+import { RootState } from "../types";
 
-const s = (state: AppState) => state.permissions || {};
+const s = (state: RootState) => state.permissions || {};
 
-export const cameraPermissions = (state: AppState) => s(state).camera;
+export const cameraPermissions = (state: RootState) => s(state).camera;

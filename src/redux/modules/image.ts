@@ -39,9 +39,9 @@ export default (state: ImageState = initialState, action: ImageActionTypes) => {
 };
 
 function* onUploadPhoto() {
+  const { uri, width, height }: TakePictureResponse = yield select(selectors.currentImage);
   const phoneNumber = yield select(selectors.phoneNumber);
   const jwt = yield select(selectors.jwt);
-  const { uri, width, height }: TakePictureResponse = yield select(selectors.currentImage);
 
   let body = new FormData();
   body.append("image", {
@@ -53,7 +53,7 @@ function* onUploadPhoto() {
   });
 
   try {
-    yield client.put("/upload/image", body, {
+    yield client.put(`/image/${phoneNumber}`, body, {
       headers: getHeaders({ jwt, image: true })
     });
 

@@ -3,7 +3,7 @@ import { StyleSheet, Platform, Text, Button } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { AppState as AppStateType } from "@redux/types";
+import { RootState as RootStateType } from "@redux/types";
 import { Actions, UserState as UserStateType } from "@redux/modules/user";
 import { Input } from "@components/universal";
 
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = ({ user }: AppStateType, ownProps: SignUpOwnProps) => ({
+const mapStateToProps = ({ user }: RootStateType, ownProps: SignUpOwnProps) => ({
   ...user,
   ...ownProps
 });

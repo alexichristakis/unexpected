@@ -4,7 +4,7 @@ import { AppState as AppStateType } from "./modules/app";
 import { PermissionsState as PermissionsStateType } from "./modules/permissions";
 import { ImageState as ImageStateType } from "./modules/image";
 
-export interface AppState {
+export interface RootState {
   app: AppStateType;
   auth: AuthStateType;
   user: UserStateType;

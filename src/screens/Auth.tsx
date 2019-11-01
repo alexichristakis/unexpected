@@ -4,7 +4,7 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { withApi, ApiProps } from "@api";
-import { AppState as AppStateType } from "@redux/types";
+import { RootState as RootStateType } from "@redux/types";
 import { Actions, AuthState as AuthStateType } from "@redux/modules/auth";
 import { PhoneNumberInput, CodeInput } from "@components/Auth";
 
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = ({ auth }: AppStateType, ownProps: AuthOwnProps) => ({
+const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
   ...auth,
   ...ownProps
 });

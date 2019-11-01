@@ -112,6 +112,7 @@ function* onRequestPermission(
   const { type } = action.payload;
   try {
     const permission = Platform.OS == "ios" ? type.ios : type.android;
+    console.log(permission);
     let status: PermissionStatus = yield check(permission);
 
     if (status === "denied") {

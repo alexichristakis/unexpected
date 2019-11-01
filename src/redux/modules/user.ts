@@ -1,7 +1,5 @@
 import { AxiosResponse } from "axios";
-import PushNotification from "react-native-push-notification";
 import { Platform } from "react-native";
-import { eventChannel } from "redux-saga";
 import { all, fork, put, call, select, take, takeLatest } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
@@ -107,40 +105,10 @@ function* onUpdateUser(action: ExtractActionFromActionCreator<typeof Actions.upd
   }
 }
 
-const notificationEmitter = () => {
-  return eventChannel(emit => {
-    PushNotification.configure({
-      onRegister: token => emit({ token }),
-      onNotification: notification => emit({ notification }),
-      senderID: "YOUR GCM (OR FCM) SENDER ID",
-      requestPermissions: false
-    });
-
-    return () => {};
-  });
-};
-
-function* onRegisterNotifications() {
-  const tokenChannel = yield call(notificationEmitter);
-
-  while (true) {
-    const { token, notification } = yield take(tokenChannel);
-
-    if (token) {
-      yield put(Actions.updateUser({ deviceToken: token.token, deviceOS: token.os }));
-    }
-
-    if (notification) {
-      yield put(AppActions.processNotification(notification));
-    }
-  }
-}
-
 export function* userSagas() {
   yield all([
     yield takeLatest(ActionTypes.ON_CREATE_NEW_USER, onCreateUser),
-    yield takeLatest(ActionTypes.ON_UPDATE_USER, onUpdateUser),
-    yield takeLatest(PermissionsActionTypes.SET_NOTIFICATIONS, onRegisterNotifications)
+    yield takeLatest(ActionTypes.ON_UPDATE_USER, onUpdateUser)
   ]);
 }
 

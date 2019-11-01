@@ -1,9 +1,9 @@
-import { AppState } from "../types";
+import { RootState } from "../types";
 
-const s = (state: AppState) => state.auth || {};
+const s = (state: RootState) => state.auth || {};
 
-export const jwt = (state: AppState) => s(state).jwt;
+export const jwt = (state: RootState) => s(state).jwt;
 
-export const authPhoneNumber = (state: AppState) => s(state).phoneNumber;
+export const authPhoneNumber = (state: RootState) => s(state).phoneNumber;
 
-export const isAuthorized = (state: AppState) => !!s(state).jwt && s(state).authFlowCompleted;
+export const isAuthorized = (state: RootState) => !!s(state).jwt && s(state).authFlowCompleted;

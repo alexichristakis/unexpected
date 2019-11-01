@@ -40,7 +40,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
   <key>NSCameraUsageDescription</key>
-  <string>Unexpected needs camera access in order to share your photos</string>
+  <string>Unexpected needs camera access in order to share your photos.</string>
+  <key>NSContactsUsageDescription</key>
+  <string>Find friends by seeing which of your contacts is also on unexpected.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
