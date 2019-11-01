@@ -1,4 +1,4 @@
-import { Inject, Service, AfterInit } from "@tsed/common";
+import { Inject, Service } from "@tsed/common";
 import { MongooseService } from "@tsed/mongoose";
 import Agenda from "agenda";
 
@@ -32,7 +32,6 @@ export class SchedulerService {
     });
 
     this.agenda.define(AgendaJobs.GENERATE_NOTIFICATIONS, async () => {
-      console.log("generating notifications");
       const users = await this.userService.getAll([
         "_id",
         "timezone",
@@ -42,13 +41,9 @@ export class SchedulerService {
         "lastName"
       ]);
 
-      console.log("num users:", users.length);
-
       users.forEach(user => {
         const { timezone } = user;
-        console.log(user._id, user.deviceToken);
         const time = this.generateTime(timezone);
-        console.log("scheduling notification");
 
         this.agenda.schedule("every hour", AgendaJobs.SEND_NOTIFICATION, { to: user });
       });
