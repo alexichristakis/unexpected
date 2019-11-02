@@ -29,7 +29,21 @@ export class ImageController {
     return true;
   }
 
-  @Put("/:phoneNumber/profile")
+  @Get("/:phoneNumber/:id")
+  @UseAuth(AuthMiddleware)
+  @UseAfter(SendFileMiddleware)
+  async getPostImageUrl(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("id") id: string
+  ) {
+    const path = this.imageService.getPostPath(phoneNumber, id);
+
+    const buffer = await this.imageService.download(path);
+
+    return buffer;
+  }
+
+  @Put("/:phoneNumber")
   @MulterOptions({
     storage: multer.memoryStorage()
   })
@@ -41,24 +55,19 @@ export class ImageController {
 
     const path = this.imageService.getProfilePath(phoneNumber);
 
-    await this.imageService.upload(buffer, path, true);
+    console.log("path:", path);
+
+    await this.imageService.upload(buffer, path);
 
     return true;
   }
 
-  @Get("/:phoneNumber/profile")
-  async getUserProfilePhoto(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.imageService.downloadUserPhoto(phoneNumber);
-  }
-
-  @Get("/:phoneNumber/:id")
-  @UseAuth(AuthMiddleware)
+  @Get("/:phoneNumber")
   @UseAfter(SendFileMiddleware)
-  async getPostImageUrl(
-    @PathParams("phoneNumber") phoneNumber: string,
-    @PathParams("id") id: string
-  ) {
-    const buffer = await this.imageService.downloadPostImage(phoneNumber, id);
+  async getUserProfileImage(@PathParams("phoneNumber") phoneNumber: string) {
+    const path = this.imageService.getProfilePath(phoneNumber);
+
+    const buffer = await this.imageService.download(path);
 
     return buffer;
   }

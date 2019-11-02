@@ -1,13 +1,13 @@
 import { Service } from "@tsed/common";
 import { Storage, GetSignedUrlConfig, GetFilesOptions } from "@google-cloud/storage";
+import { Duplex } from "stream";
 import jimp from "jimp";
-import { Stream, Duplex } from "stream";
 
 /*
   bucket structure:
 
   folder for each user by phonenumber
-  - profile picture: BUCKET/${phonenumber}/PROFILE_IMAGE.jpg
+  - profile picture: BUCKET/${phonenumber}/profile.jpg
   - post: BUCKET/${phonenumber}/posts/${post_id}.jpg
 
 */
@@ -30,14 +30,14 @@ export class ImageService {
   }
 
   getProfilePath(phoneNumber: string) {
-    return `${phoneNumber}/PROFILE_IMAGE.jpg`;
+    return `${phoneNumber}/profile.jpg`;
   }
 
   getPostPath(phoneNumber: string, id: string) {
     return `${phoneNumber}/posts/${id}.jpg`;
   }
 
-  async upload(image: Buffer, path: string, makePublic?: boolean) {
+  async upload(image: Buffer, path: string) {
     const readStream = new Duplex();
     readStream.push(image);
     readStream.push(null);
@@ -46,7 +46,7 @@ export class ImageService {
       .file(path)
       .createWriteStream({ metadata: { contentType: "image/jpeg" } });
 
-    const { err }: { err?: Error } = await new Promise((resolve, reject) => {
+    const res = await new Promise((resolve, reject) => {
       readStream
         .pipe(writeStream)
         .on("error", err => {
@@ -56,10 +56,6 @@ export class ImageService {
           return resolve();
         });
     });
-
-    if (makePublic) {
-      await this.bucket.file(path).makePublic();
-    }
   }
 
   async getUrl(filename: string) {
@@ -75,9 +71,8 @@ export class ImageService {
     return url;
   }
 
-  async downloadPostImage(phoneNumber: string, id: string) {
-    // return this.getUrl(`${phoneNumber}/posts/${id}.jpg`);
-    const [file] = await this.bucket.file(`${phoneNumber}/posts/${id}.jpg`).get();
+  async download(path: string) {
+    const [file] = await this.bucket.file(path).get();
     const [buffer] = await file.download();
 
     return buffer;
@@ -99,9 +94,5 @@ export class ImageService {
     const urls = await Promise.all(files.map(file => file.getSignedUrl(downloadOptions)));
 
     return urls;
-  }
-
-  async downloadUserPhoto(phoneNumber: string) {
-    return this.getUrl(`${phoneNumber}/PROFILE_IMAGE.jpg`);
   }
 }
