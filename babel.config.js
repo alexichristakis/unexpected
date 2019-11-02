@@ -9,7 +9,8 @@ module.exports = {
         alias: {
           "@components": "./src/components",
           "@redux": "./src/redux",
-          "@api": "./src/api"
+          "@api": "./src/api",
+          "@hooks": "./src/hooks"
         }
       }
     ]

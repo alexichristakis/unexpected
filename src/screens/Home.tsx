@@ -5,6 +5,7 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import Contacts from "react-native-contacts";
 
+import { UserImage } from "@components/universal";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
 import { Actions as ImageActions } from "@redux/modules/image";
@@ -36,10 +37,12 @@ class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInject
     return (
       <Screen style={styles.container}>
         <Text>home page!</Text>
+        <UserImage size={60} phoneNumber={"2069409629"} />
         <Button
           title="push profile screen"
           onPress={() => this.props.navigation.navigate({ routeName: "Profile" })}
         />
+        <Button title="upload profile picture" onPress={() => this.props.uploadPhoto()} />
         <Button title="upload photo" onPress={() => this.props.uploadPhoto()} />
         <Button
           title="request camera permissions"

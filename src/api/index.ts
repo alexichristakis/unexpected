@@ -11,7 +11,7 @@ export * from "./context";
 
 export default axios.create({ baseURL: server });
 
-export const getHeaders = ({ jwt, image }: { jwt: string | undefined; image?: boolean }) => {
+export const getHeaders = ({ jwt, image }: { jwt: string | null; image?: boolean }) => {
   const imageHeaders = { Accept: "application/json", "Content-Type": "multipart/form-data" };
 
   let headers = {
@@ -23,6 +23,10 @@ export const getHeaders = ({ jwt, image }: { jwt: string | undefined; image?: bo
   }
 
   return headers;
+};
+
+export const getUserProfileURL = (phoneNumber: string) => {
+  return `${server}/image/${phoneNumber}`;
 };
 
 export class API {

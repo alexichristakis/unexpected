@@ -33,6 +33,10 @@ export default (state: ImageState = initialState, action: ImageActionTypes) => {
       return { ...state, uploading: false, currentImage: null };
     }
 
+    case ActionTypes.ON_UPLOAD_ERROR: {
+      return { ...state, uploadError: action.payload.err };
+    }
+
     default:
       return state;
   }

@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, ViewStyle } from "react-native";
 import { RNCamera } from "react-native-camera";
-import { PermissionStatus } from "react-native-permissions";
 
 export interface CameraProps {
   style?: ViewStyle;
