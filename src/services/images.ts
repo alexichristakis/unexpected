@@ -21,7 +21,6 @@ export class ImageService {
   private bucket = this.storage.bucket(<string>process.env.GOOGLE_BUCKET_NAME);
 
   async resize(input: Buffer, width: number, height: number) {
-    // const image = await jimp.read(input.path);
     const image = await jimp.read(input);
 
     const resizedImage = image.resize(width, height);

@@ -55,8 +55,6 @@ export class ImageController {
 
     const path = this.imageService.getProfilePath(phoneNumber);
 
-    console.log("path:", path);
-
     await this.imageService.upload(buffer, path);
 
     return true;
@@ -72,7 +70,7 @@ export class ImageController {
     return buffer;
   }
 
-  @Get("/:phoneNumber/all")
+  @Get("/:phoneNumber/posts/all")
   async getUsersPhotos(@PathParams("phoneNumber") phoneNumber: string) {
     return this.imageService.downloadAllPhotoUrls(phoneNumber);
   }
