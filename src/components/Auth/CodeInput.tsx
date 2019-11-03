@@ -1,31 +1,32 @@
 import React from "react";
-import {
-  TextInput,
-  NativeSyntheticEvent,
-  TextInputChangeEventData,
-  StyleSheet
-} from "react-native";
+import { TextInput, StyleSheet } from "react-native";
+
+import { TextStyles } from "@lib/styles";
 
 export interface CodeInputProps {
   value: string;
-  onChange: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
+  editable: boolean;
+  onChange: (e: string) => void;
 }
-export const CodeInput: React.FC<CodeInputProps> = ({ value, onChange }) => {
+export const CodeInput: React.FC<CodeInputProps> = ({ editable, value, onChange }) => {
   return (
     <TextInput
+      editable={editable}
       style={styles.textInput}
       placeholder="verification code"
+      keyboardType="number-pad"
+      textContentType="oneTimeCode"
       value={value}
-      onChange={onChange}
+      onChangeText={onChange}
     />
   );
 };
 
 const styles = StyleSheet.create({
   textInput: {
+    ...TextStyles.large,
     marginVertical: 10,
     padding: 5,
-    backgroundColor: "rgba(0,0,0,0.1)",
     width: 300,
     height: 30
   }

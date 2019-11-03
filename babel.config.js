@@ -10,7 +10,8 @@ module.exports = {
           "@components": "./src/components",
           "@redux": "./src/redux",
           "@api": "./src/api",
-          "@hooks": "./src/hooks"
+          "@hooks": "./src/hooks",
+          "@lib": "./src/lib"
         }
       }
     ]

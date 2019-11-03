@@ -43,20 +43,20 @@ export default (state: ImageState = initialState, action: ImageActionTypes) => {
 };
 
 function* onUploadPhoto() {
-  const { uri, width, height }: TakePictureResponse = yield select(selectors.currentImage);
-  const phoneNumber = yield select(selectors.phoneNumber);
-  const jwt = yield select(selectors.jwt);
-
-  let body = new FormData();
-  body.append("image", {
-    uri,
-    height,
-    width,
-    type: "image/jpeg",
-    name: `${phoneNumber}-${Date.now()}.jpg`
-  });
-
   try {
+    const { uri, width, height }: TakePictureResponse = yield select(selectors.currentImage);
+    const phoneNumber = yield select(selectors.phoneNumber);
+    const jwt = yield select(selectors.jwt);
+
+    let body = new FormData();
+    body.append("image", {
+      uri,
+      height,
+      width,
+      type: "image/jpeg",
+      name: `${phoneNumber}-${Date.now()}.jpg`
+    });
+
     yield client.put(`/image/${phoneNumber}`, body, {
       headers: getHeaders({ jwt, image: true })
     });

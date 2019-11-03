@@ -1,5 +1,5 @@
 import React from "react";
-import { useScreens } from "react-native-screens";
+import { enableScreens } from "react-native-screens";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator, TransitionPresets } from "react-navigation-stack";
 import { Transition } from "react-native-reanimated";
@@ -18,7 +18,7 @@ import Home from "./screens/Home";
 import Profile from "./screens/Profile";
 import Capture from "./screens/Capture";
 
-useScreens();
+enableScreens();
 
 const Router: React.FC = () => {
   // get authorized state, dont re-render root component when this changes.
