@@ -1,33 +1,32 @@
 import React from "react";
-import {
-  TextInput,
-  NativeSyntheticEvent,
-  TextInputChangeEventData,
-  StyleSheet
-} from "react-native";
+import { TextInput, View, Text, StyleSheet, TextInputProps } from "react-native";
 
-export interface InputProps {
-  value: string;
-  placeholder: string;
-  onChange: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
+import { TextStyles, Colors } from "@lib/styles";
+
+export interface InputProps extends TextInputProps {
+  label: string;
+  loading?: boolean;
+  error?: string;
 }
-export const Input: React.FC<InputProps> = ({ value, onChange, placeholder }) => {
+export const Input: React.FC<InputProps> = ({ style, label, loading, error, ...rest }) => {
   return (
-    <TextInput
-      style={styles.textInput}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-    />
+    <View>
+      <TextInput style={[styles.textInput, style]} {...rest} />
+      <Text style={[error ? styles.error : styles.label]}>{error ? error : label}</Text>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {},
+  label: {},
+  error: {},
   textInput: {
-    marginVertical: 10,
     padding: 5,
-    backgroundColor: "rgba(0,0,0,0.1)",
-    width: 300,
-    height: 30
+    paddingRight: 10,
+    borderBottomColor: Colors.nearBlack,
+    borderBottomWidth: 1,
+    marginBottom: 10,
+    ...TextStyles.large
   }
 });

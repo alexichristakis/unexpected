@@ -46,15 +46,15 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
 
     case ActionTypes.REQUEST_AUTH || ActionTypes.CHECK_CODE: {
       const { phoneNumber } = action.payload;
-      return { ...state, phoneNumber, loading: true, errorRequestingAuth: null };
+      return { ...state, phoneNumber, loading: true, authError: null };
     }
 
     case ActionTypes.ERROR_REQUESTING_AUTH: {
-      return { ...state, loading: false, errorRequestingAuth: action.payload };
+      return { ...state, loading: false, authError: action.payload };
     }
 
     case ActionTypes.SUCCESS_TEXTING_CODE: {
-      return { ...state, loading: false, isAwaitingCode: true, errorRequestingAuth: null };
+      return { ...state, loading: false, isAwaitingCode: true, authError: null };
     }
 
     case ActionTypes.SET_JWT: {
@@ -62,7 +62,7 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
         ...state,
         loading: false,
         isAwaitingCode: false,
-        errorRequestingAuth: null,
+        authError: null,
         jwt: action.payload
       };
     }
@@ -111,7 +111,7 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
     const { data } = res;
     console.log(data);
 
-    if (!data.verified) put(Actions.errorRequestingAuth("code invalid"));
+    if (!data.verified) yield put(Actions.errorRequestingAuth("code invalid"));
 
     if (data.token) {
       if (data.user) {

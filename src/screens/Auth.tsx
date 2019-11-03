@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text, TextInput } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { Formik, ErrorMessage } from "formik";
+import { Formik } from "formik";
 
 import { RootState as RootStateType } from "@redux/types";
 import { Actions, AuthState as AuthStateType } from "@redux/modules/auth";
@@ -29,18 +29,22 @@ const Auth = ({ loading, isAwaitingCode, authError, requestAuth, checkCode }: Au
 
   return (
     <Screen style={styles.container}>
-      <Text style={TextStyles.large}>unexpected</Text>
+      <Text style={TextStyles.large}>expect.photos</Text>
       <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => {
           return (
             <>
               <View style={styles.formFields}>
                 <PhoneNumberInput
+                  loading={loading}
+                  error={authError}
+                  editable={!isAwaitingCode}
                   value={values.phoneNumber}
                   onChange={handleChange("phoneNumber")}
                 />
                 <CodeInput
                   editable={isAwaitingCode}
+                  error={authError}
                   value={values.code}
                   onChange={handleChange("code")}
                 />

@@ -9,12 +9,17 @@ const baseText: TextStyle = {
   // fontFamily:
 };
 
-export const TextStyles: { [key: string]: TextStyle } = StyleSheet.create({
+export enum TextSizes {
+  small = "small",
+  medium = "medium",
+  large = "large"
+}
+
+export const TextStyles: { [key in TextSizes]: TextStyle } = StyleSheet.create({
   small: {
     ...baseText,
     fontSize: 12,
-    color: Colors.nearBlack,
-    light: {}
+    color: Colors.nearBlack
   },
   medium: {
     ...baseText,

@@ -1,6 +1,7 @@
 import React from "react";
 import { TextInput, NativeSyntheticEvent, TextInputFocusEventData, StyleSheet } from "react-native";
 
+import { Input } from "@components/universal";
 import { TextStyles } from "@lib/styles";
 
 export const normalizePhone = (value: string, previousValue?: string) => {
@@ -29,36 +30,57 @@ export const normalizePhone = (value: string, previousValue?: string) => {
 
 export interface PhoneNumberInputProps {
   value: string;
+  editable: boolean;
+  loading: boolean;
+  error: string;
   onChange: (e: string) => void;
   onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
 }
-export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({ value, onChange, onBlur }) => {
+export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
+  value,
+  onChange,
+  onBlur,
+  loading,
+  editable,
+  error
+}) => {
   const stripPhone = (text: string) => text.replace(/[^\d]/g, "");
 
+  const handleOnChangeText = (text: string) => {
+    if (stripPhone(value).length === stripPhone(text).length) {
+      // we're deleting
+      const nums = stripPhone(value);
+      onChange(nums.slice(0, nums.length - 1));
+    } else {
+      onChange(text.replace(/[^\d]/g, ""));
+    }
+  };
+
   return (
-    <TextInput
+    <Input
       style={styles.textInput}
+      editable={editable}
+      error={editable && !!error ? error : undefined}
+      label={
+        loading
+          ? "we're sending you a code"
+          : !editable
+          ? "we sent you a code"
+          : "enter your phone number"
+      }
       value={normalizePhone(value)}
       onBlur={onBlur}
-      onChangeText={text => {
-        if (stripPhone(value).length === stripPhone(text).length) {
-          // we're deleting
-          const nums = stripPhone(value);
-          onChange(nums.slice(0, nums.length - 1));
-        } else {
-          onChange(text.replace(/[^\d]/g, ""));
-        }
-      }}
+      onChangeText={handleOnChangeText}
       keyboardType="number-pad"
-      placeholder={"(123) 456-7890"}
+      placeholder="(123) 456-7890"
       textContentType="telephoneNumber"
+      maxLength={14}
     />
   );
 };
 
 const styles = StyleSheet.create({
   textInput: {
-    fontSize: 20,
-    marginVertical: 10
+    marginTop: 40
   }
 });
