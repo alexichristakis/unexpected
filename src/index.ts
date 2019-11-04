@@ -12,7 +12,6 @@ async function bootstrap() {
 
     await server.listen();
     $log.debug("Server initialized");
-    console.log("testing launch");
   } catch (er) {
     $log.error(er);
   }

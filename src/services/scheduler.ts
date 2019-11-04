@@ -49,18 +49,23 @@ export class SchedulerService {
       });
     });
 
-    this.agenda.start();
+    this.agenda.processEvery("10 minutes");
 
-    // schedule the notification generation
-    this.scheduleNotificationGeneration();
+    await new Promise((resolve, reject) => {
+      this.agenda.on("ready", async () => {
+        await this.agenda.start();
+        await this.scheduleNotificationGeneration();
+        resolve();
+      });
+    });
   }
 
   generateTime = (timezone: string): Date => {
     return new Date();
   };
 
-  scheduleNotificationGeneration = () => {
-    this.agenda.now(AgendaJobs.GENERATE_NOTIFICATIONS);
-    this.agenda.every("day", AgendaJobs.GENERATE_NOTIFICATIONS);
+  scheduleNotificationGeneration = async () => {
+    await this.agenda.now(AgendaJobs.GENERATE_NOTIFICATIONS);
+    await this.agenda.every("day", AgendaJobs.GENERATE_NOTIFICATIONS);
   };
 }
