@@ -50,7 +50,7 @@ const Auth = ({ loading, isAwaitingCode, authError, requestAuth, checkCode }: Au
                 />
               </View>
               <Button
-                size={"large"}
+                size="large"
                 title={isAwaitingCode ? "verify code" : "send text message"}
                 onPress={handleSubmit}
               />

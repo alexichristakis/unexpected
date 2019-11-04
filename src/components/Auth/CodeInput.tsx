@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { TextInput, StyleSheet } from "react-native";
+import { Animated, TextInput, StyleSheet } from "react-native";
 
 import { Input } from "@components/universal";
 import { TextStyles } from "@lib/styles";
-import Animated, { Easing } from "react-native-reanimated";
+// import , { Easing } from "react-native-reanimated";
 
 export interface CodeInputProps {
   value: string;
@@ -18,8 +18,8 @@ export const CodeInput: React.FC<CodeInputProps> = ({ editable, value, onChange,
     if (editable) {
       Animated.timing(entry, {
         toValue: 1,
-        duration: 500,
-        easing: Easing.ease
+        duration: 300,
+        useNativeDriver: true
       }).start();
     }
   }, [editable]);

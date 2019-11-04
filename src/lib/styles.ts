@@ -2,7 +2,10 @@ import { TextStyle, StyleSheet, Text } from "react-native";
 
 export const Colors = {
   nearBlack: "rgb(10, 10, 10)",
-  lightGray: "rgb(123, 123, 123)"
+  lightGray: "rgb(245, 245, 245)",
+  red: "rgb(255, 0, 0)",
+  yellow: "rgb(0, 0, 0)",
+  green: "rgb(0, 255, 0)"
 };
 
 const baseText: TextStyle = {
@@ -12,10 +15,14 @@ const baseText: TextStyle = {
 export enum TextSizes {
   small = "small",
   medium = "medium",
-  large = "large"
+  large = "large",
+  light = "light"
 }
 
 export const TextStyles: { [key in TextSizes]: TextStyle } = StyleSheet.create({
+  light: {
+    color: Colors.lightGray
+  },
   small: {
     ...baseText,
     fontSize: 12,

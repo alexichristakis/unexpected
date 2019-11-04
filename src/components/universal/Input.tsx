@@ -1,6 +1,7 @@
 import React from "react";
 import { TextInput, View, Text, StyleSheet, TextInputProps } from "react-native";
 
+import { LoadingLine } from "@components/universal";
 import { TextStyles, Colors } from "@lib/styles";
 
 export interface InputProps extends TextInputProps {
@@ -12,6 +13,7 @@ export const Input: React.FC<InputProps> = ({ style, label, loading, error, ...r
   return (
     <View>
       <TextInput style={[styles.textInput, style]} {...rest} />
+      {/* <LoadingLine /> */}
       <Text style={[error ? styles.error : styles.label]}>{error ? error : label}</Text>
     </View>
   );

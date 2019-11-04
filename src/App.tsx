@@ -17,6 +17,7 @@ import SignUp from "./screens/SignUp";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
 import Capture from "./screens/Capture";
+import Connection from "./components/Connection";
 
 enableScreens();
 
@@ -74,6 +75,7 @@ const App: React.FC = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <Router />
+        <Connection />
       </PersistGate>
     </Provider>
   );
