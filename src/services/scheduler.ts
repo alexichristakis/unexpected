@@ -27,11 +27,13 @@ export class SchedulerService {
     this.agenda = new Agenda().mongo(this.mongooseService.get()!.connection.db, "jobs");
 
     this.agenda.define(AgendaJobs.SEND_NOTIFICATION, args => {
+      console.log("SENDING NOTIFICATION");
       const { to } = args.attrs.data;
       this.notificationService.notifyUserModel(to, "time to take & share a photo");
     });
 
     this.agenda.define(AgendaJobs.GENERATE_NOTIFICATIONS, async () => {
+      console.log("GENERATING NOTIFICATIONS");
       const users = await this.userService.getAll([
         "_id",
         "timezone",
@@ -65,7 +67,7 @@ export class SchedulerService {
   };
 
   scheduleNotificationGeneration = async () => {
-    await this.agenda.now(AgendaJobs.GENERATE_NOTIFICATIONS);
+    // await this.agenda.now(AgendaJobs.GENERATE_NOTIFICATIONS);
     await this.agenda.every("day", AgendaJobs.GENERATE_NOTIFICATIONS);
   };
 }
