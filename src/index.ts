@@ -3,7 +3,7 @@ import events from "events";
 
 import { Server } from "./Server";
 
-events.EventEmitter.defaultMaxListeners = 25;
+// events.EventEmitter.defaultMaxListeners = 25;
 
 async function bootstrap() {
   try {

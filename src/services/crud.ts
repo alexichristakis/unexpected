@@ -1,8 +1,6 @@
 import { Service, Inject } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 
-import { UserModel } from "../models/user";
-
 // type Test = Pick<UserModel, ['firstName', 'deviceToken']>
 
 type Selector<T> = Partial<keyof T>[];

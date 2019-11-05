@@ -3,7 +3,7 @@ import { MongooseModel } from "@tsed/mongoose";
 import { Provider, Notification } from "apn";
 import moment from "moment";
 
-import { UserModel } from "../models/user";
+import { User as UserModel } from "../models/user";
 import { Document } from "mongoose";
 import { UserService } from "./user";
 

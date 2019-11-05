@@ -2,7 +2,7 @@ import { Service, Inject } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 
 import { CRUDService } from "./crud";
-import { UserModel, UserType } from "../models/user";
+import { User as UserModel, UserType } from "../models/user";
 
 @Service()
 export class UserService extends CRUDService<UserModel, UserType> {

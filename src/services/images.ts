@@ -48,10 +48,10 @@ export class ImageService {
     const res = await new Promise((resolve, reject) => {
       readStream
         .pipe(writeStream)
-        .on("error", err => {
+        .once("error", err => {
           return reject({ err });
         })
-        .on("finish", () => {
+        .once("finish", () => {
           return resolve();
         });
     });

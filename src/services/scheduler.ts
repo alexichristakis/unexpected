@@ -30,12 +30,12 @@ export class SchedulerService {
 
     this.agenda.processEvery("5 minutes");
 
-    this.agenda.on("complete", job => {
-      $log.info(`Job ${job.attrs.name} finished`);
-    });
+    // this.agenda.on("complete", job => {
+    //   $log.info(`Job ${job.attrs.name} finished`);
+    // });
 
     await new Promise(resolve => {
-      this.agenda.on("ready", async () => {
+      this.agenda.once("ready", async () => {
         await this.agenda.purge();
 
         this.agenda.define(AgendaJobs.SEND_NOTIFICATION, args => {

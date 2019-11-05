@@ -11,7 +11,7 @@ import {
 } from "@tsed/common";
 
 import { UserService } from "../services/user";
-import { UserModel, UserType } from "../models/user";
+import { User as UserModel, UserType } from "../models/user";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 
 @Controller("/user")
