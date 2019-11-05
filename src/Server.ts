@@ -12,10 +12,8 @@ import methodOverride from "method-override";
   acceptMimes: ["application/json"],
   port: process.env.PORT || 5000,
   mongoose: {
-    // url: process.env.PORT
-    //   ? process.env.MONGODB_URI
-    //   : "mongodb://127.0.0.1:27017/db1",
-    url: process.env.MONGODB_URI,
+    url: process.env.PORT ? process.env.MONGODB_URI : "mongodb://127.0.0.1:27017/db1",
+    // url: process.env.MONGODB_URI,
     connectionOptions: {}
   }
   // multer: {

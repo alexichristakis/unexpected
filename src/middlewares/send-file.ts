@@ -1,9 +1,5 @@
 import { IMiddleware, Middleware, ResponseData, Res, ConverterService } from "@tsed/common";
 
-/**
- * See example to override SendResponseMiddleware [here](/docs/middlewares/override/send-response.md).
- * @middleware
- */
 @Middleware()
 export class SendFileMiddleware implements IMiddleware {
   public use(@ResponseData() data: Buffer, @Res() response: Res) {

@@ -43,6 +43,9 @@ export class User {
   @Required()
   timezone: string;
 
+  @Property()
+  following: string[];
+
   // @Required()
   // notificationPreferences: NotificationPreferences;
 }

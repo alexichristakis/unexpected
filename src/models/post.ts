@@ -9,10 +9,13 @@ export class Post {
   @Indexed()
   @Required()
   @Format("/^+?[1-9]d{1,14}$/")
-  phoneNumber: string;
+  userPhoneNumber: string;
 
   @Property()
   description: string;
+
+  // @Property()
+  // location: string;
 
   @Required()
   photoId: string;
@@ -23,9 +26,6 @@ export class Post {
 
   @Required()
   timezone: string;
-
-  // @Required()
-  // notificationPreferences: NotificationPreferences;
 }
 
 export type PostType = Omit<Post, "_id" | "createdAt">;

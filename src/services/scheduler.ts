@@ -1,6 +1,5 @@
-import { Inject, Service } from "@tsed/common";
+import { $log, Inject, Service } from "@tsed/common";
 import { MongooseService } from "@tsed/mongoose";
-import { $log } from "ts-log-debug";
 import Agenda from "agenda";
 import moment, { Moment } from "moment-timezone";
 
