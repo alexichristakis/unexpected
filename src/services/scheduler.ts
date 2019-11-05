@@ -12,8 +12,6 @@ export enum AgendaJobs {
   SEND_NOTIFICATION = "SEND_NOTIFICATION"
 }
 
-$log.name = "Agenda";
-
 @Service()
 export class SchedulerService {
   @Inject(MongooseService)
@@ -33,7 +31,7 @@ export class SchedulerService {
     this.agenda.processEvery("5 minutes");
 
     this.agenda.on("complete", job => {
-      $log.debug(`Job ${job.attrs.name} finished`);
+      $log.info(`Job ${job.attrs.name} finished`);
     });
 
     await new Promise(resolve => {
@@ -60,7 +58,7 @@ export class SchedulerService {
 
             for (let i = 0; i < 10; i++) {
               const time = this.generateTime(timezone);
-              $log.debug(
+              $log.info(
                 `notification for ${user.firstName} at: ${time.format(
                   "dddd, MMMM Do YYYY, h:mm:ss a"
                 )}`
