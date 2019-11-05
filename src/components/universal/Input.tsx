@@ -5,7 +5,7 @@ import { LoadingLine } from "@components/universal";
 import { TextStyles, Colors } from "@lib/styles";
 
 export interface InputProps extends TextInputProps {
-  label: string;
+  label?: string;
   loading?: boolean;
   error?: string;
 }

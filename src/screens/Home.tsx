@@ -4,6 +4,7 @@ import { NavigationInjectedProps } from "react-navigation";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import Contacts from "react-native-contacts";
+import uuid from "uuid/v4";
 
 import { UserImage } from "@components/universal";
 import { Actions as AuthActions } from "@redux/modules/auth";
@@ -56,6 +57,11 @@ class Home extends React.Component<HomeProps & HomeReduxProps & NavigationInject
           title="push capture screen"
           onPress={() => this.props.navigation.navigate({ routeName: "Capture" })}
         />
+        <Button
+          title="push post screen"
+          onPress={() => this.props.navigation.navigate({ routeName: "Post" })}
+        />
+
         <Button title="request notifications" onPress={this.requestNotificationPermissions} />
         <Button title="logout" onPress={this.props.logout} />
       </Screen>

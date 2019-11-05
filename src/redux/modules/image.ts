@@ -3,7 +3,7 @@ import { TakePictureResponse } from "react-native-camera/types";
 
 import client, { getHeaders } from "@api";
 import * as selectors from "../selectors";
-import { ActionsUnion, createAction } from "../utils";
+import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 
 export interface ImageState {
   currentImage: TakePictureResponse | null;
@@ -42,7 +42,8 @@ export default (state: ImageState = initialState, action: ImageActionTypes) => {
   }
 };
 
-function* onUploadPhoto() {
+function* onUploadPhoto(action: ExtractActionFromActionCreator<typeof Actions.onUploadPhoto>) {
+  const { id } = action.payload;
   try {
     const { uri, width, height }: TakePictureResponse = yield select(selectors.currentImage);
     const phoneNumber = yield select(selectors.phoneNumber);
@@ -57,7 +58,10 @@ function* onUploadPhoto() {
       name: `${phoneNumber}-${Date.now()}.jpg`
     });
 
-    yield client.put(`/image/${phoneNumber}`, body, {
+    let endpoint = `/image/${phoneNumber}`;
+    if (id) endpoint += id;
+
+    yield client.put(endpoint, body, {
       headers: getHeaders({ jwt, image: true })
     });
 
@@ -80,7 +84,7 @@ export enum ActionTypes {
 
 export const Actions = {
   takePhoto: (image: TakePictureResponse) => createAction(ActionTypes.TAKE_PHOTO, { image }),
-  onUploadPhoto: () => createAction(ActionTypes.ON_UPLOAD_PHOTO),
+  onUploadPhoto: (id?: string) => createAction(ActionTypes.ON_UPLOAD_PHOTO, { id }),
   uploadPhoto: () => createAction(ActionTypes.UPLOAD_PHOTO),
   onUploadError: (err: any) => createAction(ActionTypes.ON_UPLOAD_ERROR, { err })
 };

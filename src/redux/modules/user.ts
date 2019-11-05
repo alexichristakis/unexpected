@@ -59,8 +59,9 @@ function* onCreateUser(action: ExtractActionFromActionCreator<typeof Actions.cre
   const newUser: UserType = {
     ...name,
     phoneNumber,
+    following: [],
     deviceOS: Platform.OS,
-    timezone: "EST"
+    timezone: "Americas/New_York"
   };
 
   try {

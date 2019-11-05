@@ -113,27 +113,27 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
     if (!data.verified) yield put(Actions.errorRequestingAuth("code invalid"));
 
     if (data.token) {
-      // if (data.user) {
-      //   yield all([
-      //     yield put(
-      //       batchActions(
-      //         [
-      //           UserActions.loadUser(data.user),
-      //           Actions.completedAuthFlow(),
-      //           Actions.setJWT(data.token)
-      //         ],
-      //         BATCH
-      //       )
-      //     ),
-      //     yield Navigation.navigate({ routeName: "Home" })
-      //   ]);
-      // } else {
-      // user entity doesn't exist in DB: new user
-      yield all([
-        yield put(Actions.setJWT(data.token)),
-        yield Navigation.navigate({ routeName: "SignUp" })
-      ]);
-      // }
+      if (data.user) {
+        yield all([
+          yield put(
+            batchActions(
+              [
+                UserActions.loadUser(data.user),
+                Actions.completedAuthFlow(),
+                Actions.setJWT(data.token)
+              ],
+              BATCH
+            )
+          ),
+          yield Navigation.navigate({ routeName: "Home" })
+        ]);
+      } else {
+        // user entity doesn't exist in DB: new user
+        yield all([
+          yield put(Actions.setJWT(data.token)),
+          yield Navigation.navigate({ routeName: "SignUp" })
+        ]);
+      }
     }
   } catch (err) {
     yield put(Actions.errorRequestingAuth(err));

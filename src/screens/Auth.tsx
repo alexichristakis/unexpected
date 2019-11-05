@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TextInput } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { Formik } from "formik";
@@ -18,7 +18,13 @@ export interface AuthOwnProps {}
 export type AuthProps = AuthReduxProps & AuthOwnProps & AuthStateType;
 
 const initialFormValues = { phoneNumber: "", code: "" };
-const Auth = ({ loading, isAwaitingCode, authError, requestAuth, checkCode }: AuthProps) => {
+const Auth: React.FC<AuthProps> = ({
+  loading,
+  isAwaitingCode,
+  authError,
+  requestAuth,
+  checkCode
+}) => {
   const handleSubmit = (values: typeof initialFormValues) => {
     if (isAwaitingCode) {
       checkCode(values.phoneNumber, values.code);

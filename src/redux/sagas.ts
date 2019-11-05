@@ -5,6 +5,7 @@ import { authSagas } from "./modules/auth";
 import { userSagas } from "./modules/user";
 import { permissionSagas } from "./modules/permissions";
 import { imageSagas } from "./modules/image";
+import { postSagas } from "./modules/post";
 
 export default function* rootSaga() {
   yield all([
@@ -12,6 +13,7 @@ export default function* rootSaga() {
     yield fork(userSagas),
     yield fork(permissionSagas),
     yield fork(appSagas),
-    yield fork(imageSagas)
+    yield fork(imageSagas),
+    yield fork(postSagas)
   ]);
 }

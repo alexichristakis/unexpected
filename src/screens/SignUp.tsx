@@ -18,6 +18,7 @@ export type SignUpProps = SignUpReduxProps & SignUpOwnProps & UserStateType;
 const initialFormValues = { firstName: "", lastName: "" };
 const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
   const handleSubmit = (values: typeof initialFormValues) => {
+    console.log("handle submit names", values);
     const { firstName, lastName } = values;
     createUser({ firstName, lastName });
   };
@@ -34,13 +35,13 @@ const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
                   label="enter your first name"
                   placeholder="first name"
                   value={values.firstName}
-                  onChange={handleChange("firstName")}
+                  onChangeText={handleChange("firstName")}
                 />
                 <Input
                   label="and last name"
                   placeholder="last name"
                   value={values.lastName}
-                  onChange={handleChange("lastName")}
+                  onChangeText={handleChange("lastName")}
                 />
               </View>
               <Button size="large" title="get started" onPress={handleSubmit} />

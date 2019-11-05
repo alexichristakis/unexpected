@@ -17,6 +17,7 @@ import SignUp from "./screens/SignUp";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
 import Capture from "./screens/Capture";
+import Post from "./screens/Post";
 import Connection from "./components/Connection";
 
 enableScreens();
@@ -29,7 +30,7 @@ const Router: React.FC = () => {
     createAnimatedSwitchNavigator(
       {
         Home: createStackNavigator(
-          { Home, Profile, Capture },
+          { Home, Profile, Capture, Post },
           {
             mode: "modal",
             defaultNavigationOptions: {
