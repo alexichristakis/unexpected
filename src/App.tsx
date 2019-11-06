@@ -3,9 +3,14 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator, TransitionPresets } from "react-navigation-stack";
-import { createBottomTabNavigator } from "react-navigation-tabs";
+// import { createAppContainer } from "react-navigation";
+// import { createStackNavigator, createNativeStackNavigator, TransitionPresets } from "react-navigation-stack";
+// import { createBottomTabNavigator } from "react-navigation-tabs";
+// import { create } from "@react-navigation/core";
+import { NavigationNativeContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import { Transition } from "react-native-reanimated";
 
 import Navigation, { createAnimatedSwitchNavigator } from "./Navigation";
@@ -34,88 +39,92 @@ const DEFAULT_STACK_CONFIG = {
   }
 } as const;
 
-const createRootNavigator = (isAuthorized: boolean) =>
-  createAppContainer(
-    createAnimatedSwitchNavigator(
-      {
-        App: createStackNavigator(
-          {
-            Home: createBottomTabNavigator(
-              {
-                Feed: createStackNavigator(
-                  {
-                    Feed,
-                    ...MAIN_ROUTES
-                  },
-                  DEFAULT_STACK_CONFIG
-                ),
-                UserProfile: createStackNavigator(
-                  {
-                    UserProfile,
-                    ...MAIN_ROUTES
-                  },
-                  DEFAULT_STACK_CONFIG
-                ),
-                Discover: createStackNavigator(
-                  {
-                    Discover,
-                    ...MAIN_ROUTES
-                  },
-                  DEFAULT_STACK_CONFIG
-                )
-              },
-              {
-                tabBarOptions: {
-                  style: {
-                    backgroundColor: "white",
-                    borderTopColor: "white",
-                    borderWidth: 0
-                  }
-                }
-              }
-            ),
-            Settings,
-            Capture
-          },
-          {
-            mode: "card",
-            headerMode: "none",
-            defaultNavigationOptions: {
-              ...TransitionPresets.ModalPresentationIOS,
-              cardStyle: {
-                backgroundColor: "white"
-              },
-              cardOverlayEnabled: true
-            }
-          }
-        ),
-        Auth: createStackNavigator({ Auth, SignUp }, DEFAULT_STACK_CONFIG)
-      },
-      {
-        transition: (
-          <Transition.Together>
-            <Transition.Out type="slide-bottom" durationMs={400} interpolation="easeIn" />
-            <Transition.In type="fade" durationMs={500} />
-          </Transition.Together>
-        ),
-        initialRouteName: isAuthorized ? "App" : "Auth"
-      }
-    )
-  );
+// const createRootNavigator = (isAuthorized: boolean) =>
+//   createAppContainer(
+//     createAnimatedSwitchNavigator(
+//       {
+//         App: createStackNavigator(
+//           {
+//             Home: createBottomTabNavigator(
+//               {
+//                 Feed: createStackNavigator(
+//                   {
+//                     Feed,
+//                     ...MAIN_ROUTES
+//                   },
+//                   DEFAULT_STACK_CONFIG
+//                 ),
+//                 UserProfile: createStackNavigator(
+//                   {
+//                     UserProfile,
+//                     ...MAIN_ROUTES
+//                   },
+//                   DEFAULT_STACK_CONFIG
+//                 ),
+//                 Discover: createStackNavigator(
+//                   {
+//                     Discover,
+//                     ...MAIN_ROUTES
+//                   },
+//                   DEFAULT_STACK_CONFIG
+//                 )
+//               },
+//               {
+//                 tabBarOptions: {
+//                   style: {
+//                     backgroundColor: "white",
+//                     borderTopColor: "white",
+//                     borderWidth: 0
+//                   }
+//                 }
+//               }
+//             ),
+//             Settings,
+//             Capture
+//           },
+//           {
+//             mode: "card",
+//             headerMode: "none",
+//             defaultNavigationOptions: {
+//               ...TransitionPresets.ModalPresentationIOS,
+//               cardStyle: {
+//                 backgroundColor: "white"
+//               },
+//               cardOverlayEnabled: true
+//             }
+//           }
+//         ),
+//         Auth: createStackNavigator({ Auth, SignUp }, DEFAULT_STACK_CONFIG)
+//       },
+//       {
+//         transition: (
+//           <Transition.Together>
+//             <Transition.Out type="slide-bottom" durationMs={400} interpolation="easeIn" />
+//             <Transition.In type="fade" durationMs={500} />
+//           </Transition.Together>
+//         ),
+//         initialRouteName: isAuthorized ? "App" : "Auth"
+//       }
+//     )
+//   );
 
+const Stack = createNativeStackNavigator();
+const Tabs = createBottomTabNavigator();
 const Router: React.FC = () => {
   // get authorized state, dont re-render root component when this changes.
   const isAuthorized = useReduxState(selectors.isAuthorized, () => true);
 
   // create App navigator
-  const AppNavigator = createRootNavigator(isAuthorized);
+  // const AppNavigator = createRootNavigator(isAuthorized);
 
-  return (
-    <AppNavigator
-      ref={navigatorRef => Navigation.setTopLevelNavigator(navigatorRef)}
-      onNavigationStateChange={Navigation.initializeNavigationEmitter}
-    />
-  );
+  return <NavigationNativeContainer></NavigationNativeContainer>;
+
+  // return (
+  //   <AppNavigator
+  //     ref={navigatorRef => Navigation.setTopLevelNavigator(navigatorRef)}
+  //     onNavigationStateChange={Navigation.initializeNavigationEmitter}
+  //   />
+  // );
 };
 
 const App: React.FC = () => {
