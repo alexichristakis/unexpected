@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse, AxiosError } from "axios";
 import { REHYDRATE } from "redux-persist";
 import { batchActions, BATCH } from "redux-batched-actions";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
@@ -13,7 +13,7 @@ export interface AuthState {
   readonly loading: boolean;
   readonly phoneNumber: string;
   readonly isAwaitingCode: boolean;
-  readonly authError: any;
+  readonly authError?: string;
   readonly authFlowCompleted: boolean;
   readonly jwt: string | null;
 }
@@ -22,7 +22,7 @@ const initialState: AuthState = {
   loading: false,
   phoneNumber: "",
   isAwaitingCode: false,
-  authError: null,
+  authError: undefined,
   authFlowCompleted: false,
   jwt: null
 };
@@ -50,7 +50,7 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
     }
 
     case ActionTypes.ERROR_REQUESTING_AUTH: {
-      return { ...state, loading: false, authError: action.payload };
+      return { ...state, loading: false, authError: action.payload.err };
     }
 
     case ActionTypes.SUCCESS_TEXTING_CODE: {
@@ -136,7 +136,7 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
       }
     }
   } catch (err) {
-    yield put(Actions.errorRequestingAuth(err));
+    yield put(Actions.errorRequestingAuth(err.message));
   }
 }
 
@@ -161,7 +161,7 @@ export const Actions = {
   requestAuth: (phoneNumber: string) => createAction(ActionTypes.REQUEST_AUTH, { phoneNumber }),
   checkCode: (phoneNumber: string, code: string) =>
     createAction(ActionTypes.CHECK_CODE, { phoneNumber, code }),
-  errorRequestingAuth: (err: any) => createAction(ActionTypes.ERROR_REQUESTING_AUTH, err),
+  errorRequestingAuth: (err: string) => createAction(ActionTypes.ERROR_REQUESTING_AUTH, { err }),
   successTextingCode: () => createAction(ActionTypes.SUCCESS_TEXTING_CODE),
   completedAuthFlow: () => createAction(ActionTypes.COMPLETED_AUTH_FLOW),
   setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt),

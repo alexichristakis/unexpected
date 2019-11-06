@@ -10,7 +10,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
 
-import Navigation, { createAnimatedSwitchNavigator, TabBar } from "./Navigation";
+import Navigation, { createAnimatedSwitchNavigator } from "./Navigation";
 import { useReduxState } from "./hooks";
 
 import Auth from "./screens/Auth";
@@ -27,61 +27,72 @@ import Connection from "./components/Connection";
 
 enableScreens();
 
-const Router: React.FC = () => {
-  // get authorized state, dont re-render root component when this changes.
-  const isAuthorized = useReduxState(selectors.isAuthorized, () => true);
+const MAIN_ROUTES = { Post, Profile };
+const DEFAULT_STACK_CONFIG = {
+  headerMode: "none",
+  defaultNavigationOptions: {
+    cardStyle: {
+      backgroundColor: "white"
+    }
+  }
+} as const;
 
-  const AuthSwitch = createAppContainer(
+const createRootNavigator = (isAuthorized: boolean) =>
+  createAppContainer(
     createAnimatedSwitchNavigator(
       {
         App: createStackNavigator(
           {
             Home: createBottomTabNavigator(
               {
-                Feed,
-                UserProfile,
-                Discover
+                Feed: createStackNavigator(
+                  {
+                    Feed,
+                    ...MAIN_ROUTES
+                  },
+                  DEFAULT_STACK_CONFIG
+                ),
+                UserProfile: createStackNavigator(
+                  {
+                    UserProfile,
+                    ...MAIN_ROUTES
+                  },
+                  DEFAULT_STACK_CONFIG
+                ),
+                Discover: createStackNavigator(
+                  {
+                    Discover,
+                    ...MAIN_ROUTES
+                  },
+                  DEFAULT_STACK_CONFIG
+                )
               },
               {
-                tabBarComponent: TabBar
+                tabBarOptions: {
+                  style: {
+                    backgroundColor: "white",
+                    borderTopColor: "white",
+                    borderWidth: 0
+                  }
+                }
               }
             ),
-            Post,
             Settings,
-            Profile,
             Capture
           },
           {
             mode: "card",
+            headerMode: "none",
             defaultNavigationOptions: {
               ...TransitionPresets.ModalPresentationIOS,
-              cardOverlayEnabled: true,
-              // gestureEnabled: true,
-              header: () => null
+              cardStyle: {
+                backgroundColor: "white"
+              },
+              cardOverlayEnabled: true
             }
           }
-          // {
-          //   mode: "modal",
-          //   defaultNavigationOptions: {
-          //     ...TransitionPresets.ModalPresentationIOS,
-          //     cardOverlayEnabled: true,
-          //     gestureEnabled: true,
-          //     header: () => null
-          //   }
-          // }
         ),
-        Auth: createStackNavigator(
-          { Auth, SignUp },
-          {
-            mode: "card",
-            defaultNavigationOptions: {
-              // ...TransitionPresets.ModalPresentationIOS,
-              cardOverlayEnabled: true,
-              gestureEnabled: true,
-              header: () => null
-            }
-          }
-        )
+        Auth: createStackNavigator({ Auth, SignUp }, DEFAULT_STACK_CONFIG)
       },
       {
         transition: (
@@ -95,7 +106,18 @@ const Router: React.FC = () => {
     )
   );
 
-  return <AuthSwitch ref={navigatorRef => Navigation.setTopLevelNavigator(navigatorRef)} />;
+const Router: React.FC = () => {
+  // get authorized state, dont re-render root component when this changes.
+  const isAuthorized = useReduxState(selectors.isAuthorized, () => true);
+
+  const RootNavigator = createRootNavigator(isAuthorized);
+
+  return (
+    <RootNavigator
+      ref={navigatorRef => Navigation.setTopLevelNavigator(navigatorRef)}
+      onNavigationStateChange={Navigation.initializeNavigationEmitter}
+    />
+  );
 };
 
 const App: React.FC = () => {

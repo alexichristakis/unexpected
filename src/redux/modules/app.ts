@@ -1,12 +1,13 @@
-import { AppState as AppStatus, AppStateStatus as AppStatusType } from "react-native";
+import { AppState as AppStatus, AppStateStatus as AppStatusType, StatusBar } from "react-native";
 import NetInfo, { NetInfoState, NetInfoStateType } from "@react-native-community/netinfo";
 import PushNotifications, { PushNotification } from "react-native-push-notification";
+// import {Navigation} from "react-navigation"
 import moment, { Moment } from "moment";
 import { REHYDRATE } from "redux-persist";
 import { eventChannel } from "redux-saga";
 import { all, call, fork, put, select, take, takeLatest, takeEvery } from "redux-saga/effects";
 
-import Navigation from "../../Navigation";
+import Navigation, { NavigationEmitterPayload } from "../../Navigation";
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 import { ActionTypes as PermissionsActionTypes } from "./permissions";
 import { Actions as UserActions } from "./user";
@@ -41,6 +42,7 @@ export default (state: AppState = initialState, action: AppActionTypes) => {
   switch (action.type) {
     case ActionTypes.NAVIGATE: {
       const { route } = action.payload;
+      Navigation.navigate({ routeName: route });
       return { ...state, currentRoute: route };
     }
 
@@ -68,9 +70,11 @@ export default (state: AppState = initialState, action: AppActionTypes) => {
   }
 };
 
-function* onNavigate(action: ExtractActionFromActionCreator<typeof Actions.navigate>) {
-  const { route, props } = action.payload;
-  yield Navigation.navigate({ routeName: route });
+function* onNavigate({ payload }: ExtractActionFromActionCreator<typeof Actions.updateNavigation>) {
+  const { prevState, nextState, action } = payload;
+
+  if (action.type === "Navigation/BACK" || action.type === "Navigation/JUMP_TO") {
+  }
 }
 
 function* onReceiveNotification(
@@ -93,12 +97,15 @@ const appEmitter = () => {
   return eventChannel(emit => {
     const appStatusHandler = (state: AppStatusType) => emit({ appStatus: state });
     const netInfoHandler = (state: NetInfoState) => emit({ netInfo: state });
+    const navigationHandler = (state: NavigationEmitterPayload) => emit({ navigation: state });
 
+    Navigation.navigationEmitter.on("state-change", navigationHandler);
     AppStatus.addEventListener("change", appStatusHandler);
     const unsubscribe = NetInfo.addEventListener(netInfoHandler);
 
     return () => {
       unsubscribe();
+      Navigation.navigationEmitter.removeAllListeners();
       AppStatus.removeEventListener("change", appStatusHandler);
     };
   });
@@ -108,9 +115,15 @@ function* onStartup() {
   const appChannel = yield call(appEmitter);
 
   while (true) {
-    const { appStatus, netInfo }: { appStatus: AppStatusType; netInfo: NetInfoState } = yield take(
-      appChannel
-    );
+    const {
+      appStatus,
+      netInfo,
+      navigation
+    }: {
+      appStatus: AppStatusType;
+      netInfo: NetInfoState;
+      navigation: NavigationEmitterPayload;
+    } = yield take(appChannel);
 
     if (appStatus) {
       yield put(Actions.setAppStatus(appStatus));
@@ -118,6 +131,21 @@ function* onStartup() {
 
     if (netInfo) {
       yield put(Actions.setNetInfo(netInfo));
+    }
+
+    if (navigation) {
+      console.log(navigation);
+      const { action } = navigation;
+
+      if (action.type === "Navigation/NAVIGATE") {
+        if (action.routeName === "Capture") StatusBar.setBarStyle("light-content");
+      }
+
+      if (action.type === "Navigation/POP") {
+        StatusBar.setBarStyle("dark-content");
+      }
+
+      yield put(Actions.updateNavigation(navigation));
     }
   }
 }
@@ -154,13 +182,14 @@ function* onRegisterNotifications() {
 export function* appSagas() {
   yield all([
     yield takeEvery(REHYDRATE, onStartup),
-    yield takeEvery(ActionTypes.NAVIGATE, onNavigate),
+    yield takeEvery(ActionTypes.UPDATE_NAVIGATION, onNavigate),
     yield takeEvery(ActionTypes.PROCESS_NOTIFICATION, onReceiveNotification),
     yield takeLatest(PermissionsActionTypes.SET_NOTIFICATIONS, onRegisterNotifications)
   ]);
 }
 
 export enum ActionTypes {
+  UPDATE_NAVIGATION = "app/UPDATE_NAVIGATION",
   NAVIGATE = "app/NAVIGATE",
   PROCESS_NOTIFICATION = "app/PROCESS_NOTIFICATION",
   SET_CAMERA_TIMER = "app/SET_CAMERA_TIMER",
@@ -170,6 +199,8 @@ export enum ActionTypes {
 }
 
 export const Actions = {
+  updateNavigation: (payload: NavigationEmitterPayload) =>
+    createAction(ActionTypes.UPDATE_NAVIGATION, { ...payload }),
   navigate: (route: string, props?: any) => createAction(ActionTypes.NAVIGATE, { route, props }),
   processNotification: (notification: PushNotification) =>
     createAction(ActionTypes.PROCESS_NOTIFICATION, { notification }),
