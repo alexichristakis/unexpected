@@ -6,9 +6,6 @@ import client, { getHeaders } from "@api";
 import { UserType } from "unexpected-cloud/models/user";
 
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
-import { Actions as AppActions } from "./app";
-import { Actions as AuthActions } from "./auth";
-import { ActionTypes as PermissionsActionTypes } from "./permissions";
 import * as selectors from "../selectors";
 
 import Navigation from "../../Navigation";
@@ -77,7 +74,6 @@ function* onCreateUser(action: ExtractActionFromActionCreator<typeof Actions.cre
 
     yield all([
       yield put(Actions.loadUser(createdUser)),
-      yield put(AuthActions.completedAuthFlow()),
       yield Navigation.navigate({ routeName: "Home" })
     ]);
   } catch (err) {

@@ -14,7 +14,7 @@ export interface AuthState {
   readonly phoneNumber: string;
   readonly isAwaitingCode: boolean;
   readonly authError?: string;
-  readonly authFlowCompleted: boolean;
+  // readonly authFlowCompleted: boolean;
   readonly jwt: string | null;
 }
 
@@ -23,7 +23,6 @@ const initialState: AuthState = {
   phoneNumber: "",
   isAwaitingCode: false,
   authError: undefined,
-  authFlowCompleted: false,
   jwt: null
 };
 
@@ -38,8 +37,8 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
       if (auth)
         return {
           ...initialState,
-          jwt: auth.jwt,
-          authFlowCompleted: auth.authFlowCompleted
+          jwt: auth.jwt
+          // authFlowCompleted: auth.authFlowCompleted
         };
       else return { ...initialState };
     }
@@ -67,12 +66,12 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
       };
     }
 
-    case ActionTypes.COMPLETED_AUTH_FLOW: {
-      return {
-        ...state,
-        authFlowCompleted: true
-      };
-    }
+    // case ActionTypes.COMPLETED_AUTH_FLOW: {
+    //   return {
+    //     ...state,
+    //     authFlowCompleted: true
+    //   };
+    // }
 
     case ActionTypes.LOGOUT: {
       Navigation.navigate({ routeName: "Auth" });
@@ -119,7 +118,7 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
             batchActions(
               [
                 UserActions.loadUser(data.user),
-                Actions.completedAuthFlow(),
+                // Actions.completedAuthFlow(),
                 Actions.setJWT(data.token)
               ],
               BATCH
@@ -152,7 +151,7 @@ export enum ActionTypes {
   CHECK_CODE = "auth/CHECK_CODE",
   ERROR_REQUESTING_AUTH = "auth/ERROR_REQUESTING_AUTH",
   SUCCESS_TEXTING_CODE = "auth/SUCCESS_TEXTING_CODE",
-  COMPLETED_AUTH_FLOW = "auth/COMPLETED_AUTH_FLOW",
+  // COMPLETED_AUTH_FLOW = "auth/COMPLETED_AUTH_FLOW",
   SET_JWT = "auth/SET_JWT",
   LOGOUT = "auth/LOGOUT"
 }
@@ -163,7 +162,7 @@ export const Actions = {
     createAction(ActionTypes.CHECK_CODE, { phoneNumber, code }),
   errorRequestingAuth: (err: string) => createAction(ActionTypes.ERROR_REQUESTING_AUTH, { err }),
   successTextingCode: () => createAction(ActionTypes.SUCCESS_TEXTING_CODE),
-  completedAuthFlow: () => createAction(ActionTypes.COMPLETED_AUTH_FLOW),
+  // completedAuthFlow: () => createAction(ActionTypes.COMPLETED_AUTH_FLOW),
   setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt),
   logout: () => createAction(ActionTypes.LOGOUT)
 };

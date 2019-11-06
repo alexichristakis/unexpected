@@ -1,27 +1,20 @@
 import React from "react";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import * as selectors from "@redux/selectors";
-import createStore from "@redux/store";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator, TransitionPresets } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Transition } from "react-native-reanimated";
 
-import Navigation, { createAnimatedSwitchNavigator } from "./Navigation";
-import { useReduxState } from "./hooks";
+import Auth from "../screens/Auth";
+import SignUp from "../screens/SignUp";
+import Profile from "../screens/Profile";
+import Capture from "../screens/Capture";
+import Post from "../screens/Post";
+import Settings from "../screens/Settings";
+import Feed from "../screens/Home/Feed";
+import UserProfile from "../screens/Home/UserProfile";
+import Discover from "../screens/Home/Discover";
 
-import Connection from "./components/Connection";
-
-import Auth from "./screens/Auth";
-import SignUp from "./screens/SignUp";
-import Profile from "./screens/Profile";
-import Capture from "./screens/Capture";
-import Post from "./screens/Post";
-import Settings from "./screens/Settings";
-import Feed from "./screens/Home/Feed";
-import UserProfile from "./screens/Home/UserProfile";
-import Discover from "./screens/Home/Discover";
+import { createAnimatedSwitchNavigator } from "./AnimatedSwitch";
 
 const MAIN_ROUTES = { Post, Profile };
 const DEFAULT_STACK_CONFIG = {
@@ -34,7 +27,7 @@ const DEFAULT_STACK_CONFIG = {
   }
 } as const;
 
-const createRootNavigator = (isAuthorized: boolean) =>
+export const createRootNavigator = (isAuthorized: boolean) =>
   createAppContainer(
     createAnimatedSwitchNavigator(
       {
@@ -102,33 +95,3 @@ const createRootNavigator = (isAuthorized: boolean) =>
       }
     )
   );
-
-const Router: React.FC = () => {
-  // get authorized state, dont re-render root component when this changes.
-  const isAuthorized = useReduxState(selectors.isAuthorized, () => true);
-
-  // create App navigator
-  const AppNavigator = createRootNavigator(isAuthorized);
-
-  return (
-    <AppNavigator
-      ref={navigatorRef => Navigation.setTopLevelNavigator(navigatorRef)}
-      onNavigationStateChange={Navigation.initializeNavigationEmitter}
-    />
-  );
-};
-
-const App: React.FC = () => {
-  const { store, persistor } = createStore();
-
-  return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <Router />
-        <Connection />
-      </PersistGate>
-    </Provider>
-  );
-};
-
-export default App;

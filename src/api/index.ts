@@ -7,7 +7,7 @@ import { VerifyPhoneReturnType, CheckCodeReturnType } from "@api/controllers/ver
 // const server = "https://www.api.expect.photos";
 const server = "http://172.27.34.211:5000";
 
-export * from "./context";
+// export * from "./context";
 
 export default axios.create({ baseURL: server });
 

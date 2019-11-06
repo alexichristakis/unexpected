@@ -1,7 +1,6 @@
 import { AppState as AppStatus, AppStateStatus as AppStatusType, StatusBar } from "react-native";
 import NetInfo, { NetInfoState, NetInfoStateType } from "@react-native-community/netinfo";
 import PushNotifications, { PushNotification } from "react-native-push-notification";
-// import {Navigation} from "react-navigation"
 import moment, { Moment } from "moment";
 import { REHYDRATE } from "redux-persist";
 import { eventChannel } from "redux-saga";
@@ -134,7 +133,7 @@ function* onStartup() {
     }
 
     if (navigation) {
-      console.log(navigation);
+      // console.log(navigation);
       const { action } = navigation;
 
       if (action.type === "Navigation/NAVIGATE") {
@@ -145,7 +144,7 @@ function* onStartup() {
         StatusBar.setBarStyle("dark-content");
       }
 
-      yield put(Actions.updateNavigation(navigation));
+      // yield put(Actions.updateNavigation(navigation));
     }
   }
 }

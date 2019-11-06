@@ -5,7 +5,11 @@ import {
   NavigationContainerComponent,
   NavigationNavigateActionPayload
 } from "react-navigation";
+
 import { EventEmitter } from "events";
+
+// export { createRootNavigator } from "./Root";
+export { createAnimatedSwitchNavigator } from "./AnimatedSwitch";
 
 let _navigator: NavigationContainerComponent | null;
 const navigationEmitter = new EventEmitter();
@@ -39,6 +43,3 @@ export default {
   navigationEmitter,
   setTopLevelNavigator
 };
-
-export * from "./AnimatedSwitch";
-export * from "./TabNavigator";
