@@ -1,21 +1,27 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
+import { connect, MapStateToProps } from "react-redux";
 import { Formik } from "formik";
 
 import { RootState as RootStateType } from "@redux/types";
-import { Actions, AuthState as AuthStateType } from "@redux/modules/auth";
+import { Actions as AuthActions, AuthState as AuthStateType } from "@redux/modules/auth";
 import { PhoneNumberInput, CodeInput } from "@components/Auth";
 import { Button } from "@components/universal";
 import { TextStyles } from "@lib/styles";
 
-export interface AuthReduxProps {
-  requestAuth: typeof Actions.requestAuth;
-  checkCode: typeof Actions.checkCode;
-}
+const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
+  ...auth,
+  ...ownProps
+});
+const mapDispatchToProps = {
+  requestAuth: AuthActions.requestAuth,
+  checkCode: AuthActions.checkCode
+};
+
+export type AuthReduxProps = (typeof mapDispatchToProps) & ReturnType<typeof mapStateToProps>;
 export interface AuthOwnProps {}
-export type AuthProps = AuthReduxProps & AuthOwnProps & AuthStateType;
+export type AuthProps = AuthReduxProps & AuthOwnProps;
 
 const initialFormValues = { phoneNumber: "", code: "" };
 const Auth: React.FC<AuthProps> = ({
@@ -78,14 +84,6 @@ const styles = StyleSheet.create({
     marginVertical: 100
   }
 });
-
-const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
-  ...auth,
-  ...ownProps
-});
-const mapDispatchToProps = {
-  ...Actions
-};
 
 export default connect(
   mapStateToProps,

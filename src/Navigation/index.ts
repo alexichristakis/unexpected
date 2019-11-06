@@ -21,3 +21,4 @@ export default {
 };
 
 export * from "./AnimatedSwitch";
+export * from "./TabNavigator";

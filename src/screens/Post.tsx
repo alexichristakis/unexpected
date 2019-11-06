@@ -4,7 +4,6 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { Formik } from "formik";
 
-import { withApi, ApiProps } from "@api";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { Input, Button } from "@components/universal";
@@ -16,11 +15,8 @@ const mapDispatchToProps = {
   takePhoto: ImageActions.takePhoto
 };
 
-export interface PostReduxProps {
-  onSendPost: typeof PostActions.onSendPost;
-  takePhoto: typeof ImageActions.takePhoto;
-}
-export interface PostProps extends ApiProps {}
+export type PostReduxProps = (typeof mapDispatchToProps) & ReturnType<typeof mapStateToProps>;
+export interface PostProps {}
 
 const initialFormValues = { description: "" };
 const Post: React.FC<PostProps & PostReduxProps> = ({ onSendPost, takePhoto }) => {

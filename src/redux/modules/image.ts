@@ -59,7 +59,7 @@ function* onUploadPhoto(action: ExtractActionFromActionCreator<typeof Actions.on
     });
 
     let endpoint = `/image/${phoneNumber}`;
-    if (id) endpoint += id;
+    if (id) endpoint += `/${id}`;
 
     yield client.put(endpoint, body, {
       headers: getHeaders({ jwt, image: true })

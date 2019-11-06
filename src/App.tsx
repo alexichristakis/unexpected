@@ -2,6 +2,7 @@ import React from "react";
 import { enableScreens } from "react-native-screens";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator, TransitionPresets } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
 import { Transition } from "react-native-reanimated";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
@@ -9,15 +10,19 @@ import { PersistGate } from "redux-persist/integration/react";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
 
-import Navigation, { createAnimatedSwitchNavigator } from "./Navigation";
+import Navigation, { createAnimatedSwitchNavigator, TabBar } from "./Navigation";
 import { useReduxState } from "./hooks";
 
 import Auth from "./screens/Auth";
 import SignUp from "./screens/SignUp";
-import Home from "./screens/Home";
 import Profile from "./screens/Profile";
 import Capture from "./screens/Capture";
 import Post from "./screens/Post";
+import Settings from "./screens/Settings";
+import Feed from "./screens/Home/Feed";
+import UserProfile from "./screens/Home/UserProfile";
+import Discover from "./screens/Home/Discover";
+
 import Connection from "./components/Connection";
 
 enableScreens();
@@ -29,17 +34,41 @@ const Router: React.FC = () => {
   const AuthSwitch = createAppContainer(
     createAnimatedSwitchNavigator(
       {
-        Home: createStackNavigator(
-          { Home, Profile, Capture, Post },
+        App: createStackNavigator(
           {
-            mode: "modal",
+            Home: createBottomTabNavigator(
+              {
+                Feed,
+                UserProfile,
+                Discover
+              },
+              {
+                tabBarComponent: TabBar
+              }
+            ),
+            Post,
+            Settings,
+            Profile,
+            Capture
+          },
+          {
+            mode: "card",
             defaultNavigationOptions: {
               ...TransitionPresets.ModalPresentationIOS,
               cardOverlayEnabled: true,
-              gestureEnabled: true,
+              // gestureEnabled: true,
               header: () => null
             }
           }
+          // {
+          //   mode: "modal",
+          //   defaultNavigationOptions: {
+          //     ...TransitionPresets.ModalPresentationIOS,
+          //     cardOverlayEnabled: true,
+          //     gestureEnabled: true,
+          //     header: () => null
+          //   }
+          // }
         ),
         Auth: createStackNavigator(
           { Auth, SignUp },
@@ -61,7 +90,7 @@ const Router: React.FC = () => {
             <Transition.In type="fade" durationMs={500} />
           </Transition.Together>
         ),
-        initialRouteName: isAuthorized ? "Home" : "Auth"
+        initialRouteName: isAuthorized ? "App" : "Auth"
       }
     )
   );
