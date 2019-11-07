@@ -3,8 +3,6 @@ import { StyleSheet, View, Text, Button } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { Actions } from "@redux/modules/auth";
-
 export interface ProfileReduxProps {}
 export interface ProfileProps {}
 class Profile extends React.Component<ProfileProps & ProfileReduxProps> {

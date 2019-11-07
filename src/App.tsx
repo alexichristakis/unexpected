@@ -16,15 +16,16 @@ import { useReduxState } from "./hooks";
 
 import Connection from "./components/Connection";
 
-import Auth from "./screens/Auth";
-import SignUp from "./screens/SignUp";
-import Profile from "./screens/Profile";
-import Capture from "./screens/Capture";
-import Post from "./screens/Post";
-import Settings from "./screens/Settings";
+import { routes } from "./screens";
+import Discover from "./screens/Home/Discover";
 import Feed from "./screens/Home/Feed";
 import UserProfile from "./screens/Home/UserProfile";
-import Discover from "./screens/Home/Discover";
+import Auth from "./screens/Auth";
+import Capture from "./screens/Capture";
+import Post from "./screens/Post";
+import Profile from "./screens/Profile";
+import Settings from "./screens/Settings";
+import SignUp from "./screens/SignUp";
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -45,8 +46,8 @@ const HomeTab: React.FC<Props> = ({ navigation, component: Root, name, ...rest }
   return (
     <Stack.Navigator {...rest}>
       <Stack.Screen name={`${name}-root`} options={screenOptions} component={Root} />
-      <Stack.Screen name="profile" options={screenOptions} component={Profile} />
-      <Stack.Screen name="post" options={screenOptions} component={Post} />
+      <Stack.Screen name={routes.Profile} options={screenOptions} component={Profile} />
+      <Stack.Screen name={routes.Post} options={screenOptions} component={Post} />
     </Stack.Navigator>
   );
 };
@@ -57,32 +58,32 @@ const Router: React.FC = () => {
 
   const AuthenticatedRoot = () => (
     <Stack.Navigator screenOptions={{ presentation: "modal" }}>
-      <Stack.Screen name="home" options={{ headerShown: false }}>
+      <Stack.Screen name={routes.Home} options={{ headerShown: false }}>
         {props => (
           <Tabs.Navigator
             tabBarOptions={{ style: { backgroundColor: "white", borderTopWidth: 0 } }}
           >
-            <Tabs.Screen name="feed">
-              {props => <HomeTab component={Feed} {...props} />}
+            <Tabs.Screen name={routes.Feed}>
+              {props => <HomeTab name={routes.Feed} component={Feed} {...props} />}
             </Tabs.Screen>
-            <Tabs.Screen name="user-profile">
+            <Tabs.Screen name={routes.UserProfile}>
               {props => <HomeTab component={UserProfile} {...props} />}
             </Tabs.Screen>
-            <Tabs.Screen name="discover">
+            <Tabs.Screen name={routes.Discover}>
               {props => <HomeTab component={Discover} {...props} />}
             </Tabs.Screen>
           </Tabs.Navigator>
         )}
       </Stack.Screen>
-      <Stack.Screen name="capture" component={Capture} />
-      <Stack.Screen name="settings" component={Settings} />
+      <Stack.Screen name={routes.Capture} component={Capture} />
+      <Stack.Screen name={routes.Settings} component={Settings} />
     </Stack.Navigator>
   );
 
   const UnathenticatedRoot = () => (
     <Stack.Navigator>
-      <Stack.Screen name="auth" options={{ headerShown: false }} component={Auth} />
-      <Stack.Screen name="sign-up" options={{ headerShown: false }} component={SignUp} />
+      <Stack.Screen name={routes.Auth} options={{ headerShown: false }} component={Auth} />
+      <Stack.Screen name={routes.SignUp} options={{ headerShown: false }} component={SignUp} />
     </Stack.Navigator>
   );
 
@@ -90,10 +91,18 @@ const Router: React.FC = () => {
     <NavigationNativeContainer ref={Navigation.setTopLevelNavigator}>
       <Stack.Navigator
         screenOptions={{ animation: "fade" }}
-        initialRouteName={isAuthorized ? "root" : "auth"}
+        initialRouteName={isAuthorized ? routes.Authenticated : routes.Unauthenticated}
       >
-        <Stack.Screen name="root" options={{ headerShown: false }} component={AuthenticatedRoot} />
-        <Stack.Screen name="auth" options={{ headerShown: false }} component={UnathenticatedRoot} />
+        <Stack.Screen
+          name={routes.Authenticated}
+          options={{ headerShown: false }}
+          component={AuthenticatedRoot}
+        />
+        <Stack.Screen
+          name={routes.Unauthenticated}
+          options={{ headerShown: false }}
+          component={UnathenticatedRoot}
+        />
       </Stack.Navigator>
     </NavigationNativeContainer>
   );
