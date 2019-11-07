@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
-import { NavigationInjectedProps } from "react-navigation";
+// import { NavigationInjectedProps } from "react-navigation";
 import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
 import Contacts from "react-native-contacts";
@@ -25,7 +25,7 @@ const mapDispatchToProps = {
 
 export type FeedReduxProps = ReduxType<typeof mapStateToProps, typeof mapDispatchToProps>;
 export interface FeedProps extends ScreenProps {}
-const Feed: React.FC<FeedProps & FeedReduxProps & NavigationInjectedProps> = ({
+const Feed: React.FC<FeedProps & FeedReduxProps> = ({
   requestNotificationPermissions,
   requestPermission,
   uploadPhoto,
@@ -44,7 +44,7 @@ const Feed: React.FC<FeedProps & FeedReduxProps & NavigationInjectedProps> = ({
     <Screen active={active} style={[style, styles.container]}>
       <Text>Feed page!</Text>
       <UserImage size={60} phoneNumber={"2069409629"} />
-      <Button title="push profile screen" onPress={() => navigate("Profile")} />
+      <Button title="push profile screen" onPress={() => navigate("profile")} />
       <Button title="upload profile picture" onPress={() => uploadPhoto()} />
       <Button title="upload photo" onPress={() => uploadPhoto("some id")} />
       <Button
@@ -55,8 +55,8 @@ const Feed: React.FC<FeedProps & FeedReduxProps & NavigationInjectedProps> = ({
         title="request contact permissions"
         onPress={() => requestPermission(Permissions.CONTACTS)}
       />
-      <Button title="push capture screen" onPress={() => navigate("Capture")} />
-      <Button title="push post screen" onPress={() => navigate("Post")} />
+      <Button title="push capture screen" onPress={() => navigate("capture")} />
+      <Button title="push post screen" onPress={() => navigate("post")} />
 
       <Button title="request notifications" onPress={requestNotificationPermissions} />
       <Button title="logout" onPress={logout} />

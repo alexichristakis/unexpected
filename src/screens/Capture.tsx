@@ -10,7 +10,7 @@ import { RootState } from "@redux/types";
 import { Actions as ImageActions } from "@redux/modules/image";
 
 export interface CaptureProps {
-  permission: PermissionStatus;
+  cameraPermission: PermissionStatus;
   takePhoto: typeof ImageActions.takePhoto;
 }
 class Capture extends React.Component<CaptureProps> {
