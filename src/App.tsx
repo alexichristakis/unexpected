@@ -26,6 +26,7 @@ import Post from "./screens/Post";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
 import SignUp from "./screens/SignUp";
+import { StatusBar } from "react-native";
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -59,21 +60,25 @@ const Router: React.FC = () => {
   const AuthenticatedRoot = () => (
     <Stack.Navigator screenOptions={{ presentation: "modal" }}>
       <Stack.Screen name={routes.Home} options={{ headerShown: false }}>
-        {props => (
-          <Tabs.Navigator
-            tabBarOptions={{ style: { backgroundColor: "white", borderTopWidth: 0 } }}
-          >
-            <Tabs.Screen name={routes.Feed}>
-              {props => <HomeTab name={routes.Feed} component={Feed} {...props} />}
-            </Tabs.Screen>
-            <Tabs.Screen name={routes.UserProfile}>
-              {props => <HomeTab component={UserProfile} {...props} />}
-            </Tabs.Screen>
-            <Tabs.Screen name={routes.Discover}>
-              {props => <HomeTab component={Discover} {...props} />}
-            </Tabs.Screen>
-          </Tabs.Navigator>
-        )}
+        {props => {
+          props.navigation.addListener("focus", () => StatusBar.setBarStyle("dark-content", true));
+
+          return (
+            <Tabs.Navigator
+              tabBarOptions={{ style: { backgroundColor: "white", borderTopWidth: 0 } }}
+            >
+              <Tabs.Screen name={routes.Feed}>
+                {props => <HomeTab name={routes.Feed} component={Feed} {...props} />}
+              </Tabs.Screen>
+              <Tabs.Screen name={routes.UserProfile}>
+                {props => <HomeTab component={UserProfile} {...props} />}
+              </Tabs.Screen>
+              <Tabs.Screen name={routes.Discover}>
+                {props => <HomeTab component={Discover} {...props} />}
+              </Tabs.Screen>
+            </Tabs.Navigator>
+          );
+        }}
       </Stack.Screen>
       <Stack.Screen name={routes.Capture} component={Capture} />
       <Stack.Screen name={routes.Settings} component={Settings} />

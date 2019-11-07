@@ -1,5 +1,7 @@
-import React, { createRef, useState } from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, StatusBar } from "react-native";
+import { ParamListBase } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
@@ -15,10 +17,22 @@ const mapDispatchToProps = {
   takePhoto: ImageActions.takePhoto
 };
 
-export interface CaptureOwnProps {}
+export interface CaptureOwnProps {
+  navigation: NativeStackNavigationProp<ParamListBase>;
+}
 export type CaptureReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
-const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({ takePhoto }) => {
+const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({ takePhoto, navigation }) => {
   const [camera, setCamera] = useState<Camera | null>(null);
+
+  useEffect(() => {
+    const lightenStatusBar = () => {
+      StatusBar.setBarStyle("light-content", true);
+    };
+
+    navigation.addListener("focus", lightenStatusBar);
+
+    return () => navigation.removeListener("focus", lightenStatusBar);
+  }, []);
 
   const onTakePhoto = async () => {
     if (camera) {
