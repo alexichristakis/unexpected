@@ -5458,6 +5458,11 @@ react-native-gesture-handler@^1.5.0:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-haptic-feedback@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/react-native-haptic-feedback/-/react-native-haptic-feedback-1.8.2.tgz#532dfcdfe2eaaaf3c30ff5dff97973ff05399fcd"
+  integrity sha512-arY2vsQtcF6Z/HggcfASTFzXm5HLUvK08rj6xPs6b95mpUDyStxEoC2c6MCFx+GSqnpBuOQvQCf42Zp0ATnWoQ==
+
 "react-native-interactable@https://github.com/alexichristakis/react-native-interactable":
   version "1.0.0"
   resolved "https://github.com/alexichristakis/react-native-interactable#27b8d9628c5787f2e4f49fb0c1f9850257d7d39b"

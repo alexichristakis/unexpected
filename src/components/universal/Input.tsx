@@ -8,11 +8,19 @@ export interface InputProps extends TextInputProps {
   label?: string;
   loading?: boolean;
   error?: string;
+  size: "small" | "medium" | "large";
 }
-export const Input: React.FC<InputProps> = ({ style, label, loading, error, ...rest }) => {
+export const Input: React.FC<InputProps> = ({
+  style,
+  label,
+  loading,
+  error,
+  size = "large",
+  ...rest
+}) => {
   return (
     <View>
-      <TextInput style={[styles.textInput, style]} {...rest} />
+      <TextInput style={[styles.textInput, style, TextStyles[size]]} {...rest} />
       {/* <LoadingLine /> */}
       <Text style={[error ? styles.error : styles.label]}>{error ? error : label}</Text>
     </View>
@@ -28,7 +36,6 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     borderBottomColor: Colors.nearBlack,
     borderBottomWidth: 1,
-    marginBottom: 10,
-    ...TextStyles.large
+    marginBottom: 10
   }
 });

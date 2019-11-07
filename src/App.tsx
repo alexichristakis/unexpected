@@ -3,8 +3,6 @@ import { StatusBar } from "react-native";
 import { Provider } from "react-redux";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PersistGate } from "redux-persist/integration/react";
-import * as selectors from "@redux/selectors";
-import createStore from "@redux/store";
 import { ParamListBase } from "@react-navigation/core";
 import { NavigationNativeContainer } from "@react-navigation/native";
 import {
@@ -12,6 +10,9 @@ import {
   NativeStackNavigationProp
 } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import * as selectors from "@redux/selectors";
+import createStore from "@redux/store";
 
 import Navigation from "./Navigation";
 import { useReduxState } from "./hooks";
@@ -24,6 +25,7 @@ import Feed from "./screens/Home/Feed";
 import UserProfile from "./screens/Home/UserProfile";
 import Auth from "./screens/Auth";
 import Capture from "./screens/Capture";
+import CreatePost from "./screens/CreatePost";
 import Post from "./screens/Post";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
@@ -53,8 +55,12 @@ const HomeTab: React.FC<Props> = ({ navigation, component: Root, name, ...rest }
   return (
     <Stack.Navigator {...rest}>
       <Stack.Screen name={`${name}-root`} options={screenOptions} component={Root} />
-      <Stack.Screen name={routes.Profile} options={screenOptions} component={Profile} />
-      <Stack.Screen name={routes.Post} options={screenOptions} component={Post} />
+      <Stack.Screen name={routes.Profile} options={screenOptions}>
+        {props => <Profile {...props} />}
+      </Stack.Screen>
+      <Stack.Screen name={routes.Post} options={screenOptions}>
+        {props => <Post {...props} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -107,7 +113,42 @@ const Router: React.FC = () => {
           );
         }}
       </Stack.Screen>
-      <Stack.Screen name={routes.Capture} component={Capture} />
+      <Stack.Screen
+        name={routes.Capture}
+        options={{
+          headerTitle: "share",
+          headerTintColor: "#231F20"
+        }}
+      >
+        {props => (
+          <Stack.Navigator {...props}>
+            <Stack.Screen
+              name={`${routes.Capture}-root`}
+              component={Capture}
+              options={{
+                headerTitle: "capture",
+                headerTintColor: "#231F20",
+                headerStyle: {
+                  backgroundColor: "white"
+                }
+              }}
+            />
+            <Stack.Screen
+              name={routes.CreatePost}
+              component={CreatePost}
+              options={{
+                headerTitle: "share",
+                headerTintColor: "#231F20",
+                headerHideShadow: true,
+                headerStyle: {
+                  backgroundColor: "white"
+                },
+                contentStyle: { backgroundColor: "white" }
+              }}
+            />
+          </Stack.Navigator>
+        )}
+      </Stack.Screen>
       <Stack.Screen name={routes.Settings} component={Settings} />
     </Stack.Navigator>
   );

@@ -9,6 +9,7 @@ import Camera, { Shutter } from "@components/Camera";
 import * as selectors from "@redux/selectors";
 import { RootState, ReduxPropsType } from "@redux/types";
 import { Actions as ImageActions } from "@redux/modules/image";
+import { routes } from "./index";
 
 const mapStateToProps = (state: RootState) => ({
   cameraPermission: selectors.cameraPermissions(state)
@@ -38,6 +39,7 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({ takePhoto, nav
       if (data) {
         /* save to redux */
         takePhoto(data);
+        navigation.navigate(routes.CreatePost);
       }
     }
   };
