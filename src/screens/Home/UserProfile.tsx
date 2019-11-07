@@ -1,11 +1,15 @@
-import React from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Animated, ScrollView, View, Text, Button } from "react-native";
+import { useSafeArea } from "react-native-safe-area-context";
 import { connect } from "react-redux";
 import { Screen, ScreenProps } from "react-native-screens";
 
 import * as selectors from "@redux/selectors";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { RootState, ReduxPropsType } from "@redux/types";
+import { Header } from "@components/universal";
+import { ProfileTop } from "@components/Profile";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 
 const mapStateToProps = (state: RootState) => ({
   user: selectors.user(state)
@@ -21,9 +25,24 @@ export type UserProfileReduxProps = ReduxPropsType<
 export interface UserProfileProps extends ScreenProps {}
 
 const UserProfile: React.FC<UserProfileProps & UserProfileReduxProps> = ({ style, ...rest }) => {
+  const [scrollY] = useState(new Animated.Value(0));
+  const { bottom, top } = useSafeArea();
+
   return (
     <Screen {...rest} style={[style, styles.container]}>
-      <Text>UserProfile page!</Text>
+      <Animated.ScrollView
+        style={{
+          top,
+          width: SCREEN_WIDTH,
+          height: SCREEN_HEIGHT - top - bottom
+        }}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+          useNativeDriver: true
+        })}
+      >
+        <ProfileTop />
+      </Animated.ScrollView>
+      <Header title="Alexi Christakis" scrollY={scrollY} />
     </Screen>
   );
 };

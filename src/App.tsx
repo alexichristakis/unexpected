@@ -32,9 +32,6 @@ import SignUp from "./screens/SignUp";
 import FeedIcon from "./assets/svg/feed.svg";
 import ProfileIcon from "./assets/svg/profile.svg";
 import DiscoverIcon from "./assets/svg/discover.svg";
-// import ProfileUnfilled from "./assets/svg/profile_unfilled.svg";
-// import GlobeFilled from "./assets/svg/globe_filled.svg";
-// import GlobeUnfilled from "./assets/svg/globe_unfilled.svg";
 
 /* initialize navigators */
 const Stack = createNativeStackNavigator();

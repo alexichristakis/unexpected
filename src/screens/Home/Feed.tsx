@@ -12,8 +12,6 @@ import { Actions as PermissionsActions, Permissions } from "@redux/modules/permi
 import { Actions as ImageActions } from "@redux/modules/image";
 import { RootState, ReduxPropsType } from "@redux/types";
 
-import ProfileUnfilled from "../../assets/svg/profile_unfilled.svg";
-
 const mapStateToProps = (state: RootState) => ({});
 const mapDispatchToProps = {
   navigate: AppActions.navigate,
@@ -60,7 +58,6 @@ const Feed: React.FC<FeedProps & FeedReduxProps> = ({
 
       <Button title="request notifications" onPress={requestNotificationPermissions} />
       <Button title="logout" onPress={logout} />
-      <ProfileUnfilled width={50} height={50} />
     </Screen>
   );
 };

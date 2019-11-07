@@ -11,13 +11,20 @@ import * as selectors from "../selectors";
 import Navigation from "../../Navigation";
 
 export interface UserState {
-  readonly user: Partial<UserType>;
+  readonly user: UserType;
   readonly loading: boolean;
   readonly error: any;
 }
 
 const initialState: UserState = {
-  user: {},
+  user: {
+    phoneNumber: "",
+    firstName: "",
+    lastName: "",
+    deviceOS: "",
+    timezone: "",
+    following: []
+  },
   loading: false,
   error: null
 };
