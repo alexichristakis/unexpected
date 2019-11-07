@@ -1,5 +1,7 @@
 import React from "react";
+import { StatusBar } from "react-native";
 import { Provider } from "react-redux";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PersistGate } from "redux-persist/integration/react";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
@@ -13,9 +15,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Navigation from "./Navigation";
 import { useReduxState } from "./hooks";
-
 import Connection from "./components/Connection";
 
+/* screens */
 import { routes } from "./screens";
 import Discover from "./screens/Home/Discover";
 import Feed from "./screens/Home/Feed";
@@ -26,8 +28,15 @@ import Post from "./screens/Post";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
 import SignUp from "./screens/SignUp";
-import { StatusBar } from "react-native";
 
+import FeedIcon from "./assets/svg/feed.svg";
+import ProfileIcon from "./assets/svg/profile.svg";
+import DiscoverIcon from "./assets/svg/discover.svg";
+// import ProfileUnfilled from "./assets/svg/profile_unfilled.svg";
+// import GlobeFilled from "./assets/svg/globe_filled.svg";
+// import GlobeUnfilled from "./assets/svg/globe_unfilled.svg";
+
+/* initialize navigators */
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
 
@@ -65,15 +74,36 @@ const Router: React.FC = () => {
 
           return (
             <Tabs.Navigator
-              tabBarOptions={{ style: { backgroundColor: "white", borderTopWidth: 0 } }}
+              tabBarOptions={{
+                tabStyle: { paddingTop: 15 },
+                style: { backgroundColor: "white", borderTopWidth: 0 },
+                showLabel: false,
+                activeTintColor: "#231F20",
+                inactiveTintColor: "#9C9C9C"
+              }}
             >
-              <Tabs.Screen name={routes.Feed}>
+              <Tabs.Screen
+                name={routes.Feed}
+                options={{
+                  tabBarIcon: ({ color }) => <FeedIcon width={30} height={30} fill={color} />
+                }}
+              >
                 {props => <HomeTab name={routes.Feed} component={Feed} {...props} />}
               </Tabs.Screen>
-              <Tabs.Screen name={routes.UserProfile}>
+              <Tabs.Screen
+                name={routes.UserProfile}
+                options={{
+                  tabBarIcon: ({ color }) => <ProfileIcon width={45} height={45} fill={color} />
+                }}
+              >
                 {props => <HomeTab component={UserProfile} {...props} />}
               </Tabs.Screen>
-              <Tabs.Screen name={routes.Discover}>
+              <Tabs.Screen
+                name={routes.Discover}
+                options={{
+                  tabBarIcon: ({ color }) => <DiscoverIcon width={40} height={40} fill={color} />
+                }}
+              >
                 {props => <HomeTab component={Discover} {...props} />}
               </Tabs.Screen>
             </Tabs.Navigator>
@@ -118,10 +148,12 @@ const App: React.FC = () => {
 
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <Router />
-        <Connection />
-      </PersistGate>
+      <SafeAreaProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <Router />
+          <Connection />
+        </PersistGate>
+      </SafeAreaProvider>
     </Provider>
   );
 };

@@ -25,13 +25,11 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({ takePhoto, nav
   const [camera, setCamera] = useState<Camera | null>(null);
 
   useEffect(() => {
-    const lightenStatusBar = () => {
-      StatusBar.setBarStyle("light-content", true);
-    };
+    const unsubscribe = navigation.addListener("focus", () =>
+      StatusBar.setBarStyle("light-content", true)
+    );
 
-    navigation.addListener("focus", lightenStatusBar);
-
-    return () => navigation.removeListener("focus", lightenStatusBar);
+    return unsubscribe;
   }, []);
 
   const onTakePhoto = async () => {

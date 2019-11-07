@@ -4,7 +4,6 @@ import { StyleSheet, View, Text, Button } from "react-native";
 import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
 import Contacts from "react-native-contacts";
-import uuid from "uuid/v4";
 
 import { UserImage } from "@components/universal";
 import { Actions as AppActions } from "@redux/modules/app";
@@ -12,6 +11,8 @@ import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { RootState, ReduxPropsType } from "@redux/types";
+
+import ProfileUnfilled from "../../assets/svg/profile_unfilled.svg";
 
 const mapStateToProps = (state: RootState) => ({});
 const mapDispatchToProps = {
@@ -59,6 +60,7 @@ const Feed: React.FC<FeedProps & FeedReduxProps> = ({
 
       <Button title="request notifications" onPress={requestNotificationPermissions} />
       <Button title="logout" onPress={logout} />
+      <ProfileUnfilled width={50} height={50} />
     </Screen>
   );
 };
