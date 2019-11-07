@@ -4,8 +4,7 @@ import { connect } from "react-redux";
 
 import * as selectors from "@redux/selectors";
 import { Actions as AuthActions } from "@redux/modules/auth";
-import { ReduxType } from "@lib/types";
-import { RootState } from "@redux/types";
+import { RootState, ReduxPropsType } from "@redux/types";
 import { Screen, ScreenProps } from "react-native-screens";
 
 const mapStateToProps = (state: RootState) => ({
@@ -15,7 +14,7 @@ const mapDispatchToProps = {
   logout: AuthActions.logout
 };
 
-export type DiscoverReduxProps = ReduxType<typeof mapStateToProps, typeof mapDispatchToProps>;
+export type DiscoverReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
 export interface DiscoverProps extends ScreenProps {}
 
 const Discover: React.FC<DiscoverProps & DiscoverReduxProps> = ({ style, ...rest }) => {

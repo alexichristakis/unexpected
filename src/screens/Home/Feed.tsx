@@ -6,13 +6,12 @@ import { connect } from "react-redux";
 import Contacts from "react-native-contacts";
 import uuid from "uuid/v4";
 
-import { ReduxType } from "@lib/types";
 import { UserImage } from "@components/universal";
 import { Actions as AppActions } from "@redux/modules/app";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
 import { Actions as ImageActions } from "@redux/modules/image";
-import { RootState } from "@redux/types";
+import { RootState, ReduxPropsType } from "@redux/types";
 
 const mapStateToProps = (state: RootState) => ({});
 const mapDispatchToProps = {
@@ -23,7 +22,7 @@ const mapDispatchToProps = {
   uploadPhoto: ImageActions.onUploadPhoto
 };
 
-export type FeedReduxProps = ReduxType<typeof mapStateToProps, typeof mapDispatchToProps>;
+export type FeedReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
 export interface FeedProps extends ScreenProps {}
 const Feed: React.FC<FeedProps & FeedReduxProps> = ({
   requestNotificationPermissions,

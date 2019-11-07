@@ -8,7 +8,7 @@ import { TextStyles } from "@lib/styles";
 export interface CodeInputProps {
   value: string;
   editable: boolean;
-  error: string;
+  error?: string;
   onChange: (e: string) => void;
 }
 export const CodeInput: React.FC<CodeInputProps> = ({ editable, value, onChange, error }) => {

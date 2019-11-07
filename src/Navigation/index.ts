@@ -1,13 +1,4 @@
-import {
-  // NavigationActions,
-  NavigationState,
-  NavigationAction,
-  NavigationContainerRef,
-  Route
-
-  // NavigationContainerComponent,
-  // NavigationNavigateActionPayload
-} from "@react-navigation/core";
+import { NavigationState, NavigationAction, NavigationContainerRef } from "@react-navigation/core";
 
 // import { EventEmitter } from "events";
 
