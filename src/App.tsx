@@ -3,118 +3,113 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator, TransitionPresets } from "react-navigation-stack";
-import { createBottomTabNavigator } from "react-navigation-tabs";
-import { Transition } from "react-native-reanimated";
+import { ParamListBase } from "@react-navigation/core";
+import { NavigationNativeContainer } from "@react-navigation/native";
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp
+} from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import Navigation, { createAnimatedSwitchNavigator } from "./Navigation";
+import Navigation from "./Navigation";
 import { useReduxState } from "./hooks";
 
 import Connection from "./components/Connection";
 
-import Auth from "./screens/Auth";
-import SignUp from "./screens/SignUp";
-import Profile from "./screens/Profile";
-import Capture from "./screens/Capture";
-import Post from "./screens/Post";
-import Settings from "./screens/Settings";
+import { routes } from "./screens";
+import Discover from "./screens/Home/Discover";
 import Feed from "./screens/Home/Feed";
 import UserProfile from "./screens/Home/UserProfile";
-import Discover from "./screens/Home/Discover";
+import Auth from "./screens/Auth";
+import Capture from "./screens/Capture";
+import Post from "./screens/Post";
+import Profile from "./screens/Profile";
+import Settings from "./screens/Settings";
+import SignUp from "./screens/SignUp";
+import { StatusBar } from "react-native";
 
-const MAIN_ROUTES = { Post, Profile };
-const DEFAULT_STACK_CONFIG = {
-  headerMode: "none",
-  defaultNavigationOptions: {
-    cardStyle: {
-      backgroundColor: "white"
-    }
-    // gestureEnabled: true
-  }
-} as const;
+const Stack = createNativeStackNavigator();
+const Tabs = createBottomTabNavigator();
 
-const createRootNavigator = (isAuthorized: boolean) =>
-  createAppContainer(
-    createAnimatedSwitchNavigator(
-      {
-        App: createStackNavigator(
-          {
-            Home: createBottomTabNavigator(
-              {
-                Feed: createStackNavigator(
-                  {
-                    Feed,
-                    ...MAIN_ROUTES
-                  },
-                  DEFAULT_STACK_CONFIG
-                ),
-                UserProfile: createStackNavigator(
-                  {
-                    UserProfile,
-                    ...MAIN_ROUTES
-                  },
-                  DEFAULT_STACK_CONFIG
-                ),
-                Discover: createStackNavigator(
-                  {
-                    Discover,
-                    ...MAIN_ROUTES
-                  },
-                  DEFAULT_STACK_CONFIG
-                )
-              },
-              {
-                tabBarOptions: {
-                  style: {
-                    backgroundColor: "white",
-                    borderTopColor: "white",
-                    borderWidth: 0
-                  }
-                }
-              }
-            ),
-            Settings,
-            Capture
-          },
-          {
-            mode: "card",
-            headerMode: "none",
-            defaultNavigationOptions: {
-              ...TransitionPresets.ModalPresentationIOS,
-              cardStyle: {
-                backgroundColor: "white"
-              },
-              cardOverlayEnabled: true
-            }
-          }
-        ),
-        Auth: createStackNavigator({ Auth, SignUp }, DEFAULT_STACK_CONFIG)
-      },
-      {
-        transition: (
-          <Transition.Together>
-            <Transition.Out type="slide-bottom" durationMs={400} interpolation="easeIn" />
-            <Transition.In type="fade" durationMs={500} />
-          </Transition.Together>
-        ),
-        initialRouteName: isAuthorized ? "App" : "Auth"
-      }
-    )
+type Props = Partial<React.ComponentProps<typeof Stack.Navigator>> & {
+  name: string;
+  component: React.ComponentType<any>;
+  navigation: NativeStackNavigationProp<ParamListBase>;
+};
+
+const HomeTab: React.FC<Props> = ({ navigation, component: Root, name, ...rest }) => {
+  navigation.setOptions({
+    headerShown: false
+  });
+
+  const screenOptions = { headerShown: false, contentStyle: { backgroundColor: "white" } };
+
+  return (
+    <Stack.Navigator {...rest}>
+      <Stack.Screen name={`${name}-root`} options={screenOptions} component={Root} />
+      <Stack.Screen name={routes.Profile} options={screenOptions} component={Profile} />
+      <Stack.Screen name={routes.Post} options={screenOptions} component={Post} />
+    </Stack.Navigator>
   );
+};
 
 const Router: React.FC = () => {
   // get authorized state, dont re-render root component when this changes.
   const isAuthorized = useReduxState(selectors.isAuthorized, () => true);
 
-  // create App navigator
-  const AppNavigator = createRootNavigator(isAuthorized);
+  const AuthenticatedRoot = () => (
+    <Stack.Navigator screenOptions={{ presentation: "modal" }}>
+      <Stack.Screen name={routes.Home} options={{ headerShown: false }}>
+        {props => {
+          props.navigation.addListener("focus", () => StatusBar.setBarStyle("dark-content", true));
+
+          return (
+            <Tabs.Navigator
+              tabBarOptions={{ style: { backgroundColor: "white", borderTopWidth: 0 } }}
+            >
+              <Tabs.Screen name={routes.Feed}>
+                {props => <HomeTab name={routes.Feed} component={Feed} {...props} />}
+              </Tabs.Screen>
+              <Tabs.Screen name={routes.UserProfile}>
+                {props => <HomeTab component={UserProfile} {...props} />}
+              </Tabs.Screen>
+              <Tabs.Screen name={routes.Discover}>
+                {props => <HomeTab component={Discover} {...props} />}
+              </Tabs.Screen>
+            </Tabs.Navigator>
+          );
+        }}
+      </Stack.Screen>
+      <Stack.Screen name={routes.Capture} component={Capture} />
+      <Stack.Screen name={routes.Settings} component={Settings} />
+    </Stack.Navigator>
+  );
+
+  const UnathenticatedRoot = () => (
+    <Stack.Navigator>
+      <Stack.Screen name={routes.Auth} options={{ headerShown: false }} component={Auth} />
+      <Stack.Screen name={routes.SignUp} options={{ headerShown: false }} component={SignUp} />
+    </Stack.Navigator>
+  );
 
   return (
-    <AppNavigator
-      ref={navigatorRef => Navigation.setTopLevelNavigator(navigatorRef)}
-      onNavigationStateChange={Navigation.initializeNavigationEmitter}
-    />
+    <NavigationNativeContainer ref={Navigation.setTopLevelNavigator}>
+      <Stack.Navigator
+        screenOptions={{ animation: "fade" }}
+        initialRouteName={isAuthorized ? routes.Authenticated : routes.Unauthenticated}
+      >
+        <Stack.Screen
+          name={routes.Authenticated}
+          options={{ headerShown: false }}
+          component={AuthenticatedRoot}
+        />
+        <Stack.Screen
+          name={routes.Unauthenticated}
+          options={{ headerShown: false }}
+          component={UnathenticatedRoot}
+        />
+      </Stack.Navigator>
+    </NavigationNativeContainer>
   );
 };
 

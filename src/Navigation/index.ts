@@ -1,25 +1,19 @@
-import {
-  NavigationActions,
-  NavigationState,
-  NavigationAction,
-  NavigationContainerComponent,
-  NavigationNavigateActionPayload
-} from "react-navigation";
+import { NavigationState, NavigationAction, NavigationContainerRef } from "@react-navigation/core";
 
-import { EventEmitter } from "events";
+// import { EventEmitter } from "events";
 
 // export { createRootNavigator } from "./Root";
-export { createAnimatedSwitchNavigator } from "./AnimatedSwitch";
+// export { createAnimatedSwitchNavigator } from "./AnimatedSwitch";
 
-let _navigator: NavigationContainerComponent | null;
-const navigationEmitter = new EventEmitter();
+let _navigator: NavigationContainerRef | null;
+// const navigationEmitter = new EventEmitter();
 
-function setTopLevelNavigator(navigatorRef: NavigationContainerComponent | null) {
+function setTopLevelNavigator(navigatorRef: NavigationContainerRef | null) {
   _navigator = navigatorRef;
 }
 
-function navigate(payload: NavigationNavigateActionPayload) {
-  if (_navigator) _navigator.dispatch(NavigationActions.navigate(payload));
+function navigate(route: string) {
+  if (_navigator) _navigator.navigate(route);
 }
 
 function initializeNavigationEmitter(
@@ -27,7 +21,7 @@ function initializeNavigationEmitter(
   nextState: NavigationState,
   action: NavigationAction
 ) {
-  navigationEmitter.emit("state-change", { prevState, nextState, action });
+  // navigationEmitter.emit("state-change", { prevState, nextState, action });
 }
 
 export interface NavigationEmitterPayload {
@@ -40,6 +34,6 @@ export interface NavigationEmitterPayload {
 export default {
   navigate,
   initializeNavigationEmitter,
-  navigationEmitter,
+  // navigationEmitter,
   setTopLevelNavigator
 };

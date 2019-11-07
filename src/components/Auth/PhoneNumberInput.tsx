@@ -32,7 +32,7 @@ export interface PhoneNumberInputProps {
   value: string;
   editable: boolean;
   loading: boolean;
-  error: string;
+  error?: string;
   onChange: (e: string) => void;
   onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
 }

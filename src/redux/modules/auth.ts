@@ -8,6 +8,7 @@ import { VerifyPhoneReturnType, CheckCodeReturnType } from "@api/controllers/ver
 import { Actions as UserActions } from "./user";
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 import Navigation from "../../Navigation";
+import { routes } from "../../screens";
 
 export interface AuthState {
   readonly loading: boolean;
@@ -74,7 +75,7 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
     // }
 
     case ActionTypes.LOGOUT: {
-      Navigation.navigate({ routeName: "Auth" });
+      Navigation.navigate(routes.Unauthenticated);
       return {
         ...state,
         jwt: null
@@ -115,22 +116,15 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
       if (data.user) {
         yield all([
           yield put(
-            batchActions(
-              [
-                UserActions.loadUser(data.user),
-                // Actions.completedAuthFlow(),
-                Actions.setJWT(data.token)
-              ],
-              BATCH
-            )
+            batchActions([UserActions.loadUser(data.user), Actions.setJWT(data.token)], BATCH)
           ),
-          yield Navigation.navigate({ routeName: "Home" })
+          yield Navigation.navigate(routes.Authenticated)
         ]);
       } else {
         // user entity doesn't exist in DB: new user
         yield all([
           yield put(Actions.setJWT(data.token)),
-          yield Navigation.navigate({ routeName: "SignUp" })
+          yield Navigation.navigate(routes.SignUp)
         ]);
       }
     }

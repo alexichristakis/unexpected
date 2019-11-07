@@ -72,10 +72,7 @@ function* onCreateUser(action: ExtractActionFromActionCreator<typeof Actions.cre
 
     const { data: createdUser } = res;
 
-    yield all([
-      yield put(Actions.loadUser(createdUser)),
-      yield Navigation.navigate({ routeName: "Home" })
-    ]);
+    yield all([yield put(Actions.loadUser(createdUser)), yield Navigation.navigate("home")]);
   } catch (err) {
     yield put(Actions.onError(err));
   }

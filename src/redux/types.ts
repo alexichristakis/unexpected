@@ -13,3 +13,5 @@ export interface RootState {
   image: ImageStateType;
   post: PostStateType;
 }
+
+export type ReduxPropsType<S extends (state: any, props?: any) => any, D> = D & ReturnType<S>;

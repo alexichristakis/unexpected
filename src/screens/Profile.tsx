@@ -3,11 +3,10 @@ import { StyleSheet, View, Text, Button } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { withApi, ApiProps } from "@api";
 import { Actions } from "@redux/modules/auth";
 
 export interface ProfileReduxProps {
-  logout: typeof Actions.logout;
+  // logout: typeof Actions.logout;
 }
 export interface ProfileProps {}
 class Profile extends React.Component<ProfileProps & ProfileReduxProps> {

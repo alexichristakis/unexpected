@@ -4,7 +4,7 @@ import { Screen } from "react-native-screens";
 import { connect, MapStateToProps } from "react-redux";
 import { Formik } from "formik";
 
-import { RootState as RootStateType } from "@redux/types";
+import { RootState as RootStateType, ReduxPropsType } from "@redux/types";
 import { Actions as AuthActions, AuthState as AuthStateType } from "@redux/modules/auth";
 import { PhoneNumberInput, CodeInput } from "@components/Auth";
 import { Button } from "@components/universal";
@@ -19,12 +19,11 @@ const mapDispatchToProps = {
   checkCode: AuthActions.checkCode
 };
 
-export type AuthReduxProps = (typeof mapDispatchToProps) & ReturnType<typeof mapStateToProps>;
+export type AuthReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
 export interface AuthOwnProps {}
-export type AuthProps = AuthReduxProps & AuthOwnProps;
 
 const initialFormValues = { phoneNumber: "", code: "" };
-const Auth: React.FC<AuthProps> = ({
+const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
   loading,
   isAwaitingCode,
   authError,
