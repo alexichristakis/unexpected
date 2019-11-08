@@ -5,7 +5,7 @@ export interface ShutterProps {
   onPress: () => void;
   style?: ViewStyle;
 }
-const Shutter = ({ onPress, style }: ShutterProps) => {
+export const Shutter = ({ onPress, style }: ShutterProps) => {
   return <TouchableOpacity style={[styles.container, style]} onPress={onPress} />;
 };
 
@@ -17,5 +17,3 @@ const styles = StyleSheet.create({
     backgroundColor: "white"
   }
 });
-
-export default Shutter;

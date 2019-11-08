@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, ViewStyle } from "react-native";
-import { RNCamera } from "react-native-camera";
+import { RNCamera, TakePictureOptions, TakePictureResponse } from "react-native-camera";
 
 export interface CameraProps {
   style?: ViewStyle;
@@ -10,7 +10,6 @@ class Camera extends React.Component<CameraProps> {
     type: RNCamera.Constants.Type.back
   };
 
-  //   ref: Camera | null;
   private camera = React.createRef<RNCamera>();
 
   flip = () => {
@@ -24,7 +23,7 @@ class Camera extends React.Component<CameraProps> {
 
   takePhoto = async () => {
     if (this.camera.current) {
-      const options = { quality: 0.5, base64: true };
+      const options: TakePictureOptions = { quality: 0.5, base64: false };
       const data = await this.camera.current.takePictureAsync(options);
 
       return data;

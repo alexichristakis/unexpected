@@ -1,16 +1,15 @@
 import React from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
-// import { NavigationInjectedProps } from "react-navigation";
 import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
 import Contacts from "react-native-contacts";
 
-import { UserImage } from "@components/universal";
 import { Actions as AppActions } from "@redux/modules/app";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { RootState, ReduxPropsType } from "@redux/types";
+import { UserImage } from "@components/universal";
 
 const mapStateToProps = (state: RootState) => ({});
 const mapDispatchToProps = {
@@ -23,6 +22,7 @@ const mapDispatchToProps = {
 
 export type FeedReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
 export interface FeedProps extends ScreenProps {}
+
 const Feed: React.FC<FeedProps & FeedReduxProps> = ({
   requestNotificationPermissions,
   requestPermission,
@@ -64,6 +64,7 @@ const Feed: React.FC<FeedProps & FeedReduxProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center"
     // justifyContent: "center"
   }

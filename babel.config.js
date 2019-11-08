@@ -11,6 +11,8 @@ module.exports = {
           "@redux": "./src/redux",
           "@api": "./src/api",
           "@hooks": "./src/hooks",
+          "@assets": "./src/assets",
+          "@screens": "./src/screens",
           "@lib": "./src/lib"
         }
       }

@@ -2,20 +2,20 @@ import React from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import { ReduxPropsType } from "@redux/types";
 
-export interface ProfileReduxProps {}
-export interface ProfileProps {}
-class Profile extends React.Component<ProfileProps & ProfileReduxProps> {
-  state = {};
+const mapStateToProps = () => ({});
+const mapDispatchToProps = {};
 
-  render() {
-    return (
-      <Screen style={styles.container}>
-        <Text>Profile page!</Text>
-      </Screen>
-    );
-  }
-}
+export type SettingsReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
+export interface SettingsOwnProps {}
+const Settings: React.FC<SettingsReduxProps & SettingsOwnProps> = ({}) => {
+  return (
+    <Screen style={styles.container}>
+      <Text>Settings!</Text>
+    </Screen>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -25,10 +25,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = () => ({});
-const mapDispatchToProps = {};
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Profile);
+)(Settings);

@@ -6,16 +6,19 @@ import { Screen, ScreenProps } from "react-native-screens";
 
 import * as selectors from "@redux/selectors";
 import { Actions as AuthActions } from "@redux/modules/auth";
+import { Actions as AppActions } from "@redux/modules/app";
 import { RootState, ReduxPropsType } from "@redux/types";
 import { Header } from "@components/universal";
 import { ProfileTop } from "@components/Profile";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
+import { routes } from "../index";
 
 const mapStateToProps = (state: RootState) => ({
   user: selectors.user(state)
 });
 const mapDispatchToProps = {
-  logout: AuthActions.logout
+  logout: AuthActions.logout,
+  navigate: AppActions.navigate
 };
 
 export type UserProfileReduxProps = ReduxPropsType<
@@ -24,7 +27,11 @@ export type UserProfileReduxProps = ReduxPropsType<
 >;
 export interface UserProfileProps extends ScreenProps {}
 
-const UserProfile: React.FC<UserProfileProps & UserProfileReduxProps> = ({ style, ...rest }) => {
+const UserProfile: React.FC<UserProfileProps & UserProfileReduxProps> = ({
+  style,
+  navigate,
+  ...rest
+}) => {
   const [scrollY] = useState(new Animated.Value(0));
   const { bottom, top } = useSafeArea();
 
@@ -41,6 +48,7 @@ const UserProfile: React.FC<UserProfileProps & UserProfileReduxProps> = ({ style
         })}
       >
         <ProfileTop />
+        <Button title="go to settings" onPress={() => navigate(routes.Settings)} />
       </Animated.ScrollView>
       <Header title="Alexi Christakis" scrollY={scrollY} />
     </Screen>

@@ -1,6 +1,6 @@
 import React from "react";
 import { StatusBar } from "react-native";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { PersistGate } from "redux-persist/integration/react";
 import { ParamListBase } from "@react-navigation/core";
@@ -9,7 +9,7 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp
 } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator, BottomTabBar } from "@react-navigation/bottom-tabs";
 
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
@@ -34,6 +34,7 @@ import SignUp from "./screens/SignUp";
 import FeedIcon from "./assets/svg/feed.svg";
 import ProfileIcon from "./assets/svg/profile.svg";
 import DiscoverIcon from "./assets/svg/discover.svg";
+import { LaunchCameraButton } from "@components/Camera";
 
 /* initialize navigators */
 const Stack = createNativeStackNavigator();
@@ -73,6 +74,7 @@ const Router: React.FC = () => {
     <Stack.Navigator screenOptions={{ presentation: "modal" }}>
       <Stack.Screen name={routes.Home} options={{ headerShown: false }}>
         {props => {
+          // dont keep this
           props.navigation.addListener("focus", () => StatusBar.setBarStyle("dark-content", true));
 
           return (
@@ -84,6 +86,12 @@ const Router: React.FC = () => {
                 activeTintColor: "#231F20",
                 inactiveTintColor: "#9C9C9C"
               }}
+              tabBarComponent={props => (
+                <>
+                  <LaunchCameraButton />
+                  <BottomTabBar {...props} />
+                </>
+              )}
             >
               <Tabs.Screen
                 name={routes.Feed}

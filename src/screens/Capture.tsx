@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, StatusBar } from "react-native";
-import { ParamListBase } from "@react-navigation/core";
+import { ParamListBase, useIsFocused } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
@@ -10,6 +10,7 @@ import * as selectors from "@redux/selectors";
 import { RootState, ReduxPropsType } from "@redux/types";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { routes } from "./index";
+import { SCREEN_WIDTH } from "@lib/styles";
 
 const mapStateToProps = (state: RootState) => ({
   cameraPermission: selectors.cameraPermissions(state)
@@ -24,14 +25,12 @@ export interface CaptureOwnProps {
 export type CaptureReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
 const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({ takePhoto, navigation }) => {
   const [camera, setCamera] = useState<Camera | null>(null);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () =>
-      StatusBar.setBarStyle("light-content", true)
-    );
-
-    return unsubscribe;
-  }, []);
+    if (isFocused) StatusBar.setBarStyle("light-content", true);
+    else StatusBar.setBarStyle("dark-content", true);
+  }, [isFocused]);
 
   const onTakePhoto = async () => {
     if (camera) {
@@ -46,7 +45,6 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({ takePhoto, nav
 
   return (
     <Screen style={styles.container}>
-      <Text>Capture page!</Text>
       <Camera ref={setCamera} style={styles.camera} />
       <Shutter onPress={onTakePhoto} style={styles.shutter} />
     </Screen>
@@ -59,7 +57,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  camera: { width: 500, height: 600 },
+  camera: { width: SCREEN_WIDTH, height: 600 },
   shutter: { position: "absolute", bottom: 100 }
 });
 
