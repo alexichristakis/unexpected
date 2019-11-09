@@ -27,33 +27,31 @@ export type UserProfileReduxProps = ReduxPropsType<
 >;
 export interface UserProfileProps extends ScreenProps {}
 
-const UserProfile: React.FC<UserProfileProps & UserProfileReduxProps> = ({
-  style,
-  navigate,
-  ...rest
-}) => {
-  const [scrollY] = useState(new Animated.Value(0));
-  const { bottom, top } = useSafeArea();
+const UserProfile: React.FC<UserProfileProps & UserProfileReduxProps> = React.memo(
+  ({ style, navigate, ...rest }) => {
+    const [scrollY] = useState(new Animated.Value(0));
+    const { bottom, top } = useSafeArea();
 
-  return (
-    <Screen {...rest} style={[style, styles.container]}>
-      <Animated.ScrollView
-        style={{
-          top,
-          width: SCREEN_WIDTH,
-          height: SCREEN_HEIGHT - top - bottom
-        }}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-          useNativeDriver: true
-        })}
-      >
-        <ProfileTop />
-        <Button title="go to settings" onPress={() => navigate(routes.Settings)} />
-      </Animated.ScrollView>
-      <Header title="Alexi Christakis" scrollY={scrollY} />
-    </Screen>
-  );
-};
+    return (
+      <Screen {...rest} style={[style, styles.container]}>
+        <Animated.ScrollView
+          style={{
+            top,
+            width: SCREEN_WIDTH,
+            height: SCREEN_HEIGHT - top - bottom
+          }}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+            useNativeDriver: true
+          })}
+        >
+          <ProfileTop />
+          <Button title="go to settings" onPress={() => navigate(routes.Settings)} />
+        </Animated.ScrollView>
+        <Header title="Alexi Christakis" scrollY={scrollY} />
+      </Screen>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {

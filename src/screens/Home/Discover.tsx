@@ -17,13 +17,13 @@ const mapDispatchToProps = {
 export type DiscoverReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
 export interface DiscoverProps extends ScreenProps {}
 
-const Discover: React.FC<DiscoverProps & DiscoverReduxProps> = ({ style, ...rest }) => {
+const Discover: React.FC<DiscoverProps & DiscoverReduxProps> = React.memo(({ style, ...rest }) => {
   return (
     <Screen {...rest} style={[style, styles.container]}>
       <Text>Discover page!</Text>
     </Screen>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

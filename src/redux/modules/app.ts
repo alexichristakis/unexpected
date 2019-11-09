@@ -45,6 +45,10 @@ export default (state: AppState = initialState, action: AppActionTypes) => {
       return { ...state, currentRoute: route };
     }
 
+    case ActionTypes.ENABLE_CAMERA: {
+      return { ...state, camera: { enabled: true, timeOfExpiry: new Date() } };
+    }
+
     case ActionTypes.SET_CAMERA_TIMER: {
       const { time } = action.payload;
       return { ...state, camera: { enabled: true, timeOfExpiry: time } };
@@ -192,6 +196,7 @@ export enum ActionTypes {
   NAVIGATE = "app/NAVIGATE",
   PROCESS_NOTIFICATION = "app/PROCESS_NOTIFICATION",
   SET_CAMERA_TIMER = "app/SET_CAMERA_TIMER",
+  ENABLE_CAMERA = "app/ENABLE_CAMERA",
   EXPIRE_CAMERA = "app/EXPIRE_CAMERA",
   SET_APP_STATUS = "app/SET_APP_STATUS",
   SET_NET_INFO = "app/SET_NET_INFO"

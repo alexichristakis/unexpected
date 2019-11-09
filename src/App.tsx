@@ -86,7 +86,7 @@ const Router: React.FC = () => {
                 activeTintColor: "#231F20",
                 inactiveTintColor: "#9C9C9C"
               }}
-              tabBarComponent={props => (
+              tabBar={props => (
                 <>
                   <LaunchCameraButton />
                   <BottomTabBar {...props} />
@@ -107,15 +107,15 @@ const Router: React.FC = () => {
                   tabBarIcon: ({ color }) => <ProfileIcon width={45} height={45} fill={color} />
                 }}
               >
-                {props => <HomeTab component={UserProfile} {...props} />}
+                {props => <HomeTab name={routes.UserProfile} component={UserProfile} {...props} />}
               </Tabs.Screen>
               <Tabs.Screen
                 name={routes.Discover}
                 options={{
-                  tabBarIcon: ({ color }) => <DiscoverIcon width={40} height={40} fill={color} />
+                  tabBarIcon: ({ color }) => <DiscoverIcon width={35} height={35} fill={color} />
                 }}
               >
-                {props => <HomeTab component={Discover} {...props} />}
+                {props => <HomeTab name={routes.Discover} component={Discover} {...props} />}
               </Tabs.Screen>
             </Tabs.Navigator>
           );
