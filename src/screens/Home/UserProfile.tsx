@@ -28,9 +28,10 @@ export type UserProfileReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-export interface UserProfileProps {}
+export interface UserProfileOwnProps {}
+export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 
-const UserProfile: React.FC<UserProfileProps & UserProfileReduxProps> = React.memo(
+export const UserProfile: React.FC<UserProfileProps> = React.memo(
   ({ fetchUsersPosts, stale, posts }) => {
     const [scrollY] = useState(new Animated.Value(0));
     const { bottom, top } = useSafeArea();

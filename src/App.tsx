@@ -190,19 +190,26 @@ const Router: React.FC = () => {
   );
 };
 
-const App: React.FC = () => {
+export const Context: React.FC = ({ children }) => {
   const { store, persistor } = createStore();
-
   return (
     <Provider store={store}>
       <SafeAreaProvider>
         <PersistGate loading={null} persistor={persistor}>
           <StatusBar barStyle="dark-content" />
-          <Router />
-          <Connection />
+          {children}
         </PersistGate>
       </SafeAreaProvider>
     </Provider>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Context>
+      <Router />
+      <Connection />
+    </Context>
   );
 };
 

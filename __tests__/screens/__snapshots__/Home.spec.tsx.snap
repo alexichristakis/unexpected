@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`home profile renders correctly 1`] = `
+<Context>
+  <Provider
+    store={
+      Object {
+        "@@observable": [Function],
+        "dispatch": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+  >
+    <SafeAreaProvider>
+      <RNCSafeAreaView
+        onInsetsChange={[Function]}
+        style={
+          Object {
+            "flex": 1,
+          }
+        }
+      >
+        <RNCSafeAreaView
+          onInsetsChange={[Function]}
+          style={
+            Object {
+              "flex": 1,
+            }
+          }
+        />
+      </RNCSafeAreaView>
+    </SafeAreaProvider>
+  </Provider>
+</Context>
+`;

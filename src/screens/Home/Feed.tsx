@@ -10,7 +10,7 @@ import { Actions as PermissionsActions, Permissions } from "@redux/modules/permi
 import { Actions as ImageActions } from "@redux/modules/image";
 import { RootState, ReduxPropsType } from "@redux/types";
 import { UserImage } from "@components/universal";
-import { routes } from "@screens";
+import { routes } from "../index";
 
 const mapStateToProps = (state: RootState) => ({});
 const mapDispatchToProps = {
@@ -21,9 +21,10 @@ const mapDispatchToProps = {
 };
 
 export type FeedReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
-export interface FeedProps {}
+export interface FeedOwnProps {}
+export type FeedProps = FeedReduxProps & FeedOwnProps;
 
-const Feed: React.FC<FeedProps & FeedReduxProps> = React.memo(
+export const Feed: React.FC<FeedProps> = React.memo(
   ({ requestNotificationPermissions, requestPermission, uploadPhoto, logout }) => {
     const navigation = useNavigation();
 
