@@ -23,9 +23,6 @@ export class Post {
   @Format("date-time")
   @Default(Date.now)
   createdAt: Date = new Date();
-
-  @Required()
-  timezone: string;
 }
 
 export type PostType = Omit<Post, "_id" | "createdAt">;

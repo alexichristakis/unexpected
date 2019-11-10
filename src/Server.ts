@@ -11,9 +11,11 @@ import methodOverride from "method-override";
   rootDir: __dirname,
   acceptMimes: ["application/json"],
   port: process.env.PORT || 5000,
+  mount: {
+    "/": "src/controllers/*.ts"
+  },
   mongoose: {
     url: process.env.PORT ? process.env.MONGODB_URI : "mongodb://127.0.0.1:27017/db1",
-    // url: process.env.MONGODB_URI,
     connectionOptions: {}
   }
   // multer: {

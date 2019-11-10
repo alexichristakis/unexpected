@@ -1,8 +1,7 @@
 import { Controller, BodyParams, Get, Put, PathParams, UseAuth, Inject } from "@tsed/common";
-import { MongooseModel } from "@tsed/mongoose";
 
 import { PostService } from "../services/post";
-import { AuthMiddleware } from "../middlewares/auth";
+import { AuthMiddleware, Select } from "../middlewares/auth";
 import { PostType } from "../models/post";
 
 @Controller("/post")
@@ -12,7 +11,13 @@ export class PostController {
   private postService: PostService;
 
   @Put("/:phoneNumber")
+  @UseAuth(AuthMiddleware, { select: Select.phoneFromPath })
   sendPost(@PathParams("phoneNumber") phoneNumber: string, @BodyParams("post") post: PostType) {
-    return this.postService.createNewPost(post);
+    return this.postService.createNewPost({ ...post, userPhoneNumber: phoneNumber });
+  }
+
+  @Get("/:phoneNumber")
+  getUsersPosts(@PathParams("phoneNumber") phoneNumber: string) {
+    return this.postService.getUsersPosts(phoneNumber);
   }
 }
