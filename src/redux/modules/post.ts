@@ -10,7 +10,7 @@ import { Actions as ImageActions } from "./image";
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 import { AxiosResponse } from "axios";
 import Navigation from "../../Navigation";
-import { routes } from "@screens";
+import { routes } from "../../screens";
 
 export interface FeedState {
   frames: {
@@ -47,8 +47,10 @@ const initialState: PostState = {
   error: ""
 };
 
-export type StarterActionTypes = ActionsUnion<typeof Actions>;
-export default (state: PostState = initialState, action: StarterActionTypes): PostState => {
+export default (
+  state: PostState = initialState,
+  action: ActionsUnion<typeof Actions>
+): PostState => {
   switch (action.type) {
     case ActionTypes.SEND_POST || ActionTypes.FETCH_USERS_POSTS: {
       return immer(state, draft => {

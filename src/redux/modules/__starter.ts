@@ -33,6 +33,6 @@ export function* sagas() {
   yield all([]);
 }
 
-export enum ActionTypes {}
+enum ActionTypes {}
 
 export const Actions = {};

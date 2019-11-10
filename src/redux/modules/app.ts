@@ -34,8 +34,7 @@ const initialState: AppState = {
   }
 };
 
-export type AppActionTypes = ActionsUnion<typeof Actions>;
-export default (state: AppState = initialState, action: AppActionTypes) => {
+export default (state: AppState = initialState, action: ActionsUnion<typeof Actions>): AppState => {
   switch (action.type) {
     case ActionTypes.SET_CAMERA_TIMER: {
       const { time } = action.payload;
@@ -173,7 +172,6 @@ function* onRegisterNotifications() {
 export function* appSagas() {
   yield all([
     yield takeEvery(REHYDRATE, onStartup),
-    // yield takeEvery(ActionTypes.UPDATE_NAVIGATION, onNavigate),
     yield takeEvery(ActionTypes.PROCESS_NOTIFICATION, onReceiveNotification),
     yield takeLatest(PermissionsActionTypes.SET_NOTIFICATIONS, onRegisterNotifications)
   ]);

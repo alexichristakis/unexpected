@@ -55,8 +55,10 @@ export const Permissions = {
   }
 };
 
-export type PermissionsActionTypes = ActionsUnion<typeof Actions>;
-export default (state: PermissionsState = initialState, action: PermissionsActionTypes) => {
+export default (
+  state: PermissionsState = initialState,
+  action: ActionsUnion<typeof Actions>
+): PermissionsState => {
   switch (action.type) {
     case ActionTypes.SET_NOTIFICATIONS: {
       const { res } = action.payload;

@@ -17,8 +17,10 @@ const initialState: ImageState = {
   uploadError: null
 };
 
-export type ImageActionTypes = ActionsUnion<typeof Actions>;
-export default (state: ImageState = initialState, action: ImageActionTypes) => {
+export default (
+  state: ImageState = initialState,
+  action: ActionsUnion<typeof Actions>
+): ImageState => {
   switch (action.type) {
     case ActionTypes.TAKE_PHOTO: {
       const { image } = action.payload;

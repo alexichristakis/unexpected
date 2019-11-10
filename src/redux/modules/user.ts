@@ -29,8 +29,10 @@ const initialState: UserState = {
   error: null
 };
 
-export type AuthActionTypes = ActionsUnion<typeof Actions>;
-export default (state: UserState = initialState, action: AuthActionTypes) => {
+export default (
+  state: UserState = initialState,
+  action: ActionsUnion<typeof Actions>
+): UserState => {
   switch (action.type) {
     case ActionTypes.ON_CREATE_NEW_USER: {
       return { ...state, loading: true, error: null };

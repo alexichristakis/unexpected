@@ -14,7 +14,7 @@ export interface AuthState {
   readonly loading: boolean;
   readonly phoneNumber: string;
   readonly isAwaitingCode: boolean;
-  readonly authError?: string;
+  readonly authError: string;
   // readonly authFlowCompleted: boolean;
   readonly jwt: string | null;
 }
@@ -23,12 +23,14 @@ const initialState: AuthState = {
   loading: false,
   phoneNumber: "",
   isAwaitingCode: false,
-  authError: undefined,
+  authError: "",
   jwt: null
 };
 
-export type AuthActionTypes = ActionsUnion<typeof Actions>;
-export default (state: AuthState = initialState, action: AuthActionTypes) => {
+export default (
+  state: AuthState = initialState,
+  action: ActionsUnion<typeof Actions>
+): AuthState => {
   switch (action.type) {
     case REHYDRATE as any: {
       const { err, payload } = action as any;
@@ -46,7 +48,7 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
 
     case ActionTypes.REQUEST_AUTH || ActionTypes.CHECK_CODE: {
       const { phoneNumber } = action.payload;
-      return { ...state, phoneNumber, loading: true, authError: null };
+      return { ...state, phoneNumber, loading: true, authError: "" };
     }
 
     case ActionTypes.ERROR_REQUESTING_AUTH: {
@@ -54,7 +56,7 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
     }
 
     case ActionTypes.SUCCESS_TEXTING_CODE: {
-      return { ...state, loading: false, isAwaitingCode: true, authError: null };
+      return { ...state, loading: false, isAwaitingCode: true, authError: "" };
     }
 
     case ActionTypes.SET_JWT: {
@@ -62,7 +64,7 @@ export default (state: AuthState = initialState, action: AuthActionTypes) => {
         ...state,
         loading: false,
         isAwaitingCode: false,
-        authError: null,
+        authError: "",
         jwt: action.payload
       };
     }
