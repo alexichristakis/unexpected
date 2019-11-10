@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, StatusBar } from "react-native";
 import { ParamListBase, useIsFocused } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, { useEffect, useState } from "react";
+import { StatusBar, StyleSheet, Text } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import Camera, { Shutter } from "@components/Camera";
-import * as selectors from "@redux/selectors";
-import { RootState, ReduxPropsType } from "@redux/types";
-import { Actions as ImageActions } from "@redux/modules/image";
-import { routes } from "./index";
 import { SCREEN_WIDTH } from "@lib/styles";
+import { Actions as ImageActions } from "@redux/modules/image";
+import * as selectors from "@redux/selectors";
+import { ReduxPropsType, RootState } from "@redux/types";
+import { routes } from "./index";
 
 const mapStateToProps = (state: RootState) => ({
   cameraPermission: selectors.cameraPermissions(state)

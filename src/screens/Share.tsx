@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/core";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { Input, Button, PendingPostImage } from "@components/universal";
-import * as selectors from "@redux/selectors";
-import { RootState, ReduxPropsType } from "@redux/types";
+import { Button, Input, PendingPostImage } from "@components/universal";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { Actions as PostActions } from "@redux/modules/post";
+import * as selectors from "@redux/selectors";
+import { ReduxPropsType, RootState } from "@redux/types";
 import { Formik } from "formik";
 
 const mapStateToProps = (state: RootState) => ({

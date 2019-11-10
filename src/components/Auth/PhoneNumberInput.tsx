@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TextInput, NativeSyntheticEvent, TextInputFocusEventData, StyleSheet } from "react-native";
+import { NativeSyntheticEvent, StyleSheet, TextInput, TextInputFocusEventData } from "react-native";
 
 import { Input } from "@components/universal";
 import { TextStyles } from "@lib/styles";

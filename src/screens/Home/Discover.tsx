@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 
-import * as selectors from "@redux/selectors";
 import { Actions as AuthActions } from "@redux/modules/auth";
-import { RootState, ReduxPropsType } from "@redux/types";
+import * as selectors from "@redux/selectors";
+import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen, ScreenProps } from "react-native-screens";
 
 const mapStateToProps = (state: RootState) => ({});

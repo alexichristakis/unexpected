@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, ViewStyle } from "react-native";
+import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 
 export interface ShutterProps {
   onPress: () => void;

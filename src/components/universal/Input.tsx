@@ -1,8 +1,8 @@
 import React from "react";
-import { TextInput, View, Text, StyleSheet, TextInputProps } from "react-native";
+import { StyleSheet, Text, TextInput, TextInputProps, View } from "react-native";
 
 import { LoadingLine } from "@components/universal";
-import { TextStyles, Colors } from "@lib/styles";
+import { Colors, TextStyles } from "@lib/styles";
 
 export interface InputProps extends TextInputProps {
   textInputRef?: (value: TextInput | null) => void;

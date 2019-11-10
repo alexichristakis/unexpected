@@ -1,8 +1,8 @@
+import { ReduxPropsType } from "@redux/types";
 import React from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { ReduxPropsType } from "@redux/types";
 
 const mapStateToProps = () => ({});
 const mapDispatchToProps = {};

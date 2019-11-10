@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Animated, View, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Animated, StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 
+import { Colors, TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { Colors, TextStyles } from "@lib/styles";
 
 export interface ConnectionProps {
   isConnected: boolean;

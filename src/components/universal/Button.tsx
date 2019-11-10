@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-import { TextStyles, Colors } from "@lib/styles";
+import { Colors, TextStyles } from "@lib/styles";
 
 export interface ButtonProps {
   size?: "small" | "medium" | "large";

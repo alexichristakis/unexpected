@@ -3,7 +3,7 @@ import { FlatList } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
 
 import { Post } from "@components/universal";
-import { SCREEN_WIDTH, SCREEN_HEIGHT } from "@lib/styles";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 
 export interface PostsProps {
   posts: PostType[];

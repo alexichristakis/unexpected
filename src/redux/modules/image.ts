@@ -1,5 +1,5 @@
-import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 import { TakePictureResponse } from "react-native-camera/types";
+import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
 import * as selectors from "../selectors";
@@ -51,7 +51,7 @@ function* onUploadPhoto(action: ExtractActionFromActionCreator<typeof Actions.up
     const phoneNumber = yield select(selectors.phoneNumber);
     const jwt = yield select(selectors.jwt);
 
-    let body = new FormData();
+    const body = new FormData();
     body.append("image", {
       uri,
       height,

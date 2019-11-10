@@ -2,10 +2,10 @@ import { all, fork } from "redux-saga/effects";
 
 import { appSagas } from "./modules/app";
 import { authSagas } from "./modules/auth";
-import { userSagas } from "./modules/user";
-import { permissionSagas } from "./modules/permissions";
 import { imageSagas } from "./modules/image";
+import { permissionSagas } from "./modules/permissions";
 import { postSagas } from "./modules/post";
+import { userSagas } from "./modules/user";
 
 export default function* rootSaga() {
   yield all([

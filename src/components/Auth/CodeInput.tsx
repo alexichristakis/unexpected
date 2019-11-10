@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Animated, TextInput, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Animated, StyleSheet, TextInput } from "react-native";
 
 import { Input } from "@components/universal";
 import { TextStyles } from "@lib/styles";

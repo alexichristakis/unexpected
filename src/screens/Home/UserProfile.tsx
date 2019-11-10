@@ -1,17 +1,17 @@
-import React, { useState, useCallback } from "react";
-import { StyleSheet, Animated, Button } from "react-native";
-import { useNavigation, useFocusEffect, useIsFocused } from "@react-navigation/core";
+import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/core";
+import React, { useCallback, useState } from "react";
+import { Animated, Button, StyleSheet } from "react-native";
 import { useSafeArea } from "react-native-safe-area-context";
-import { connect } from "react-redux";
 import { Screen, ScreenProps } from "react-native-screens";
+import { connect } from "react-redux";
 
-import * as selectors from "@redux/selectors";
+import { Posts, Top } from "@components/Profile";
+import { Header } from "@components/universal";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
-import { RootState, ReduxPropsType } from "@redux/types";
-import { Header } from "@components/universal";
-import { Top, Posts } from "@components/Profile";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
+import * as selectors from "@redux/selectors";
+import { ReduxPropsType, RootState } from "@redux/types";
 import { routes } from "../index";
 
 const mapStateToProps = (state: RootState) => ({

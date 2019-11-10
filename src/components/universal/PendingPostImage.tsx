@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Image, View, ImageStyle } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Image, ImageStyle, View } from "react-native";
 import { TakePictureResponse } from "react-native-camera/types";
 
 import { SCREEN_WIDTH } from "@lib/styles";

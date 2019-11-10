@@ -7,8 +7,8 @@ export const LoadingLine = () => {
     <LottieView
       style={{ position: "absolute", marginTop: 10, width: "100%" }}
       source={require("../../assets/lottie/loader1.json")}
-      autoPlay
-      loop
+      autoPlay={true}
+      loop={true}
     />
   );
 };

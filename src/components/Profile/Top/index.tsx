@@ -1,11 +1,11 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 
-import { RootState, ReduxPropsType } from "@redux/types";
 import { Button, UserImage } from "@components/universal";
-import * as selectors from "@redux/selectors";
 import { TextStyles } from "@lib/styles";
+import * as selectors from "@redux/selectors";
+import { ReduxPropsType, RootState } from "@redux/types";
 
 const mapStateToProps = (state: RootState, ownProps: ProfileTopOwnProps) => ({
   ...selectors.user(state),

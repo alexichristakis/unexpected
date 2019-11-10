@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Image, StyleSheet, ImageSourcePropType } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Image, ImageSourcePropType, StyleSheet } from "react-native";
 
-import { getUserProfileURL, getHeaders } from "@api";
+import { getHeaders, getUserProfileURL } from "@api";
 import { useReduxState } from "@hooks";
 import * as selectors from "@redux/selectors";
 

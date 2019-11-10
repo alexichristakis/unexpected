@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-community/async-storage";
-import { createStore, applyMiddleware } from "redux";
-import createSagaMiddleware from "redux-saga";
+import { applyMiddleware, createStore } from "redux";
 import { batchDispatchMiddleware } from "redux-batched-actions";
-import { persistStore, persistReducer, createMigrate } from "redux-persist";
 import { composeWithDevTools } from "redux-devtools-extension";
+import { createMigrate, persistReducer, persistStore } from "redux-persist";
+import createSagaMiddleware from "redux-saga";
 
 import migrations from "./migrations";
 import reducers from "./reducers";
@@ -26,10 +26,10 @@ export default () => {
 
   const persistedReducer = persistReducer(persistConfig, reducers);
 
-  let store = createStore(persistedReducer, composeEnhancers(applyMiddleware(...middleware)));
+  const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(...middleware)));
 
   sagaMiddleware.run(sagas);
 
-  let persistor = persistStore(store);
+  const persistor = persistStore(store);
   return { store, persistor };
 };

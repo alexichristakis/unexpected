@@ -1,40 +1,45 @@
 import React from "react";
 import { StatusBar } from "react-native";
-import { Provider, useSelector } from "react-redux";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { PersistGate } from "redux-persist/integration/react";
+
+import {
+  BottomTabBar,
+  createBottomTabNavigator,
+  BottomTabBarProps
+} from "@react-navigation/bottom-tabs";
 import { ParamListBase } from "@react-navigation/core";
 import { NavigationNativeContainer } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp
 } from "@react-navigation/native-stack";
-import { createBottomTabNavigator, BottomTabBar } from "@react-navigation/bottom-tabs";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider, useSelector } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
 
-import Navigation from "./Navigation";
-import { useReduxState } from "./hooks";
 import Connection from "./components/Connection";
+import { useReduxState } from "./hooks";
+import Navigation from "./Navigation";
 
 /* screens */
 import { routes } from "./screens";
+import Auth from "./screens/Auth";
+import Capture from "./screens/Capture";
 import Discover from "./screens/Home/Discover";
 import Feed from "./screens/Home/Feed";
 import UserProfile from "./screens/Home/UserProfile";
-import Auth from "./screens/Auth";
-import Capture from "./screens/Capture";
-import Share from "./screens/Share";
 import Post from "./screens/Post";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
+import Share from "./screens/Share";
 import SignUp from "./screens/SignUp";
 
+import { LaunchCameraButton } from "@components/Camera";
+import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
 import ProfileIcon from "./assets/svg/profile.svg";
-import DiscoverIcon from "./assets/svg/discover.svg";
-import { LaunchCameraButton } from "@components/Camera";
 
 /* initialize navigators */
 const Stack = createNativeStackNavigator();
@@ -70,12 +75,21 @@ const Router: React.FC = () => {
   // get authorized state, dont re-render root component when this changes.
   const isAuthorized = useReduxState(selectors.isAuthorized, () => true);
 
+  const renderTabBar = (tabBarProps: BottomTabBarProps) => (
+    <>
+      <LaunchCameraButton />
+      <BottomTabBar {...tabBarProps} />
+    </>
+  );
+
   const AuthenticatedRoot = () => (
     <Stack.Navigator screenOptions={{ presentation: "modal" }}>
       <Stack.Screen name={routes.Home} options={{ headerShown: false }}>
-        {props => {
+        {rootStackScreenProps => {
           // dont keep this
-          props.navigation.addListener("focus", () => StatusBar.setBarStyle("dark-content", true));
+          rootStackScreenProps.navigation.addListener("focus", () =>
+            StatusBar.setBarStyle("dark-content", true)
+          );
 
           return (
             <Tabs.Navigator
@@ -86,12 +100,7 @@ const Router: React.FC = () => {
                 activeTintColor: "#231F20",
                 inactiveTintColor: "#9C9C9C"
               }}
-              tabBar={props => (
-                <>
-                  <LaunchCameraButton />
-                  <BottomTabBar {...props} />
-                </>
-              )}
+              tabBar={renderTabBar}
             >
               <Tabs.Screen
                 name={routes.Feed}
@@ -99,7 +108,9 @@ const Router: React.FC = () => {
                   tabBarIcon: ({ color }) => <FeedIcon width={30} height={30} fill={color} />
                 }}
               >
-                {props => <HomeTab name={routes.Feed} component={Feed} {...props} />}
+                {tabScreenProps => (
+                  <HomeTab name={routes.Feed} component={Feed} {...tabScreenProps} />
+                )}
               </Tabs.Screen>
               <Tabs.Screen
                 name={routes.UserProfile}
@@ -107,7 +118,9 @@ const Router: React.FC = () => {
                   tabBarIcon: ({ color }) => <ProfileIcon width={45} height={45} fill={color} />
                 }}
               >
-                {props => <HomeTab name={routes.UserProfile} component={UserProfile} {...props} />}
+                {tabScreenProps => (
+                  <HomeTab name={routes.UserProfile} component={UserProfile} {...tabScreenProps} />
+                )}
               </Tabs.Screen>
               <Tabs.Screen
                 name={routes.Discover}
@@ -115,7 +128,9 @@ const Router: React.FC = () => {
                   tabBarIcon: ({ color }) => <DiscoverIcon width={35} height={35} fill={color} />
                 }}
               >
-                {props => <HomeTab name={routes.Discover} component={Discover} {...props} />}
+                {tabScreenProps => (
+                  <HomeTab name={routes.Discover} component={Discover} {...tabScreenProps} />
+                )}
               </Tabs.Screen>
             </Tabs.Navigator>
           );
@@ -129,7 +144,7 @@ const Router: React.FC = () => {
           headerTintColor: "#231F20"
         }}
       >
-        {props => (
+        {() => (
           <Stack.Navigator>
             <Stack.Screen
               name={`${routes.Capture}-root`}

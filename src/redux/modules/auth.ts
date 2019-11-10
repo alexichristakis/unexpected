@@ -1,14 +1,14 @@
-import { AxiosResponse, AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
+import { BATCH, batchActions } from "redux-batched-actions";
 import { REHYDRATE } from "redux-persist";
-import { batchActions, BATCH } from "redux-batched-actions";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";
-import { VerifyPhoneReturnType, CheckCodeReturnType } from "@api/controllers/verify";
-import { Actions as UserActions } from "./user";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import { CheckCodeReturnType, VerifyPhoneReturnType } from "@api/controllers/verify";
 import Navigation from "../../Navigation";
 import { routes } from "../../screens";
+import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import { Actions as UserActions } from "./user";
 
 export interface AuthState {
   readonly loading: boolean;

@@ -1,15 +1,15 @@
+import { useNavigation } from "@react-navigation/core";
 import React from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
+import Contacts from "react-native-contacts";
 import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
-import Contacts from "react-native-contacts";
-import { useNavigation } from "@react-navigation/core";
 
-import { Actions as AuthActions } from "@redux/modules/auth";
-import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
-import { Actions as ImageActions } from "@redux/modules/image";
-import { RootState, ReduxPropsType } from "@redux/types";
 import { UserImage } from "@components/universal";
+import { Actions as AuthActions } from "@redux/modules/auth";
+import { Actions as ImageActions } from "@redux/modules/image";
+import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
+import { ReduxPropsType, RootState } from "@redux/types";
 import { routes } from "../index";
 
 const mapStateToProps = (state: RootState) => ({});

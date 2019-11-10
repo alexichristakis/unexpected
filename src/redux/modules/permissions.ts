@@ -1,18 +1,18 @@
 import { Platform } from "react-native";
 import {
   check,
-  request,
+  checkNotifications,
+  NotificationsResponse,
   Permission,
   PERMISSIONS,
-  checkNotifications,
-  requestNotifications,
-  NotificationsResponse,
-  PermissionStatus
+  PermissionStatus,
+  request,
+  requestNotifications
 } from "react-native-permissions";
-import { all, put, takeLatest, takeEvery } from "redux-saga/effects";
+import { all, put, takeEvery, takeLatest } from "redux-saga/effects";
 
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 import { REHYDRATE } from "redux-persist";
+import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 
 export interface PermissionsState {
   readonly loading: boolean;

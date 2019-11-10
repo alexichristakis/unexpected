@@ -1,4 +1,4 @@
-import { NavigationState, NavigationAction, NavigationContainerRef } from "@react-navigation/core";
+import { NavigationAction, NavigationContainerRef, NavigationState } from "@react-navigation/core";
 
 // import { EventEmitter } from "events";
 

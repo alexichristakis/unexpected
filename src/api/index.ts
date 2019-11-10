@@ -1,6 +1,6 @@
 /* API */
+import { CheckCodeReturnType, VerifyPhoneReturnType } from "@api/controllers/verify";
 import axios, { AxiosInstance } from "axios";
-import { VerifyPhoneReturnType, CheckCodeReturnType } from "@api/controllers/verify";
 
 /* get the server URL and instantiate the client */
 const server = __DEV__ ? "http://localhost:5000" : "https://www.api.expect.photos";

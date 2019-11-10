@@ -1,9 +1,9 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
 
-import { PostImage } from "./PostImage";
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import { PostImage } from "./PostImage";
 
 export interface PostProps {
   post: PostType;

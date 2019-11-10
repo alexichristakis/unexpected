@@ -1,12 +1,12 @@
 import { AxiosResponse } from "axios";
 import { Platform } from "react-native";
-import { all, fork, put, call, select, take, takeLatest } from "redux-saga/effects";
+import { all, call, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
 import { UserType } from "unexpected-cloud/models/user";
 
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 import * as selectors from "../selectors";
+import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 
 import Navigation from "../../Navigation";
 

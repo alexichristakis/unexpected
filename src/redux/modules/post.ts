@@ -1,23 +1,23 @@
-import { all, fork, put, select, take, takeLatest, takeEvery } from "redux-saga/effects";
-import uuid from "uuid/v4";
 import immer from "immer";
 import moment, { Moment } from "moment";
+import { all, fork, put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
 import { PostType } from "unexpected-cloud/models/post";
+import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
-import * as selectors from "../selectors";
-import { Actions as ImageActions } from "./image";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 import { AxiosResponse } from "axios";
 import Navigation from "../../Navigation";
 import { routes } from "../../screens";
+import * as selectors from "../selectors";
+import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import { Actions as ImageActions } from "./image";
 
 export interface FeedState {
-  frames: {
+  frames: Array<{
     posts: PostType[];
     start: Date;
     end: Date;
-  }[];
+  }>;
   lastFetched: Date;
   stale: boolean;
 }

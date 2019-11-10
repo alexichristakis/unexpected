@@ -1,14 +1,14 @@
+import { Formik } from "formik";
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect, MapStateToProps } from "react-redux";
-import { Formik } from "formik";
 
-import { RootState as RootStateType, ReduxPropsType } from "@redux/types";
-import { Actions as AuthActions, AuthState as AuthStateType } from "@redux/modules/auth";
-import { PhoneNumberInput, CodeInput } from "@components/Auth";
+import { CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
 import { TextStyles } from "@lib/styles";
+import { Actions as AuthActions, AuthState as AuthStateType } from "@redux/modules/auth";
+import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
 
 const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
   ...auth,

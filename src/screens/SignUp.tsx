@@ -1,12 +1,12 @@
+import { Formik } from "formik";
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { Formik } from "formik";
 
-import { RootState as RootStateType } from "@redux/types";
+import { Button, Input } from "@components/universal";
 import { Actions, UserState as UserStateType } from "@redux/modules/user";
-import { Input, Button } from "@components/universal";
+import { RootState as RootStateType } from "@redux/types";
 
 export interface SignUpReduxProps {
   createUser: typeof Actions.createUser;

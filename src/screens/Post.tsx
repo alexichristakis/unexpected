@@ -1,13 +1,13 @@
+import { Formik } from "formik";
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { Formik } from "formik";
 
-import { Actions as PostActions } from "@redux/modules/post";
-import { Actions as ImageActions } from "@redux/modules/image";
-import { Input, Button } from "@components/universal";
 import Camera, { Shutter } from "@components/Camera";
+import { Button, Input } from "@components/universal";
+import { Actions as ImageActions } from "@redux/modules/image";
+import { Actions as PostActions } from "@redux/modules/post";
 
 const mapStateToProps = () => ({});
 const mapDispatchToProps = {

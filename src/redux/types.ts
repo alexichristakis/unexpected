@@ -1,9 +1,9 @@
-import { AuthState as AuthStateType } from "./modules/auth";
-import { UserState as UserStateType } from "./modules/user";
 import { AppState as AppStateType } from "./modules/app";
-import { PermissionsState as PermissionsStateType } from "./modules/permissions";
+import { AuthState as AuthStateType } from "./modules/auth";
 import { ImageState as ImageStateType } from "./modules/image";
+import { PermissionsState as PermissionsStateType } from "./modules/permissions";
 import { PostState as PostStateType } from "./modules/post";
+import { UserState as UserStateType } from "./modules/user";
 
 export interface RootState {
   app: AppStateType;

@@ -1,10 +1,10 @@
-import { AppState as AppStatus, AppStateStatus as AppStatusType, StatusBar } from "react-native";
 import NetInfo, { NetInfoState, NetInfoStateType } from "@react-native-community/netinfo";
-import PushNotifications, { PushNotification } from "react-native-push-notification";
 import moment, { Moment } from "moment";
+import { AppState as AppStatus, AppStateStatus as AppStatusType, StatusBar } from "react-native";
+import PushNotifications, { PushNotification } from "react-native-push-notification";
 import { REHYDRATE } from "redux-persist";
 import { eventChannel } from "redux-saga";
-import { all, call, fork, put, select, take, takeLatest, takeEvery } from "redux-saga/effects";
+import { all, call, fork, put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
 
 import Navigation, { NavigationEmitterPayload } from "../../Navigation";
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";

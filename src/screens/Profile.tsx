@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
