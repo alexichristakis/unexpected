@@ -25,6 +25,8 @@ export const Button: React.FC<ButtonProps> = ({ size = "medium", title, onPress 
 
 const styles = StyleSheet.create({
   container: {
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderColor: Colors.nearBlack,

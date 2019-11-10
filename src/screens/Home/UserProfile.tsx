@@ -1,52 +1,54 @@
-import React, { useState } from "react";
-import { StyleSheet, Animated, ScrollView, View, Text, Button } from "react-native";
+import React, { useState, useCallback } from "react";
+import { StyleSheet, Animated, Button } from "react-native";
+import { useNavigation, useFocusEffect, useIsFocused } from "@react-navigation/core";
 import { useSafeArea } from "react-native-safe-area-context";
 import { connect } from "react-redux";
 import { Screen, ScreenProps } from "react-native-screens";
 
 import * as selectors from "@redux/selectors";
 import { Actions as AuthActions } from "@redux/modules/auth";
-import { Actions as AppActions } from "@redux/modules/app";
+import { Actions as PostActions } from "@redux/modules/post";
 import { RootState, ReduxPropsType } from "@redux/types";
 import { Header } from "@components/universal";
-import { ProfileTop } from "@components/Profile";
+import { Top, Posts } from "@components/Profile";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 import { routes } from "../index";
 
 const mapStateToProps = (state: RootState) => ({
-  user: selectors.user(state)
+  user: selectors.user(state),
+  posts: selectors.usersPosts(state),
+  stale: selectors.usersPostsStale(state)
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,
-  navigate: AppActions.navigate
+  fetchUsersPosts: PostActions.fetchUsersPosts
 };
 
 export type UserProfileReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-export interface UserProfileProps extends ScreenProps {}
+export interface UserProfileProps {}
 
 const UserProfile: React.FC<UserProfileProps & UserProfileReduxProps> = React.memo(
-  ({ style, navigate, ...rest }) => {
+  ({ fetchUsersPosts, stale, posts }) => {
     const [scrollY] = useState(new Animated.Value(0));
     const { bottom, top } = useSafeArea();
+    const isFocused = useIsFocused();
+
+    const navigation = useNavigation();
+
+    useFocusEffect(
+      useCallback(() => {
+        fetchUsersPosts();
+      }, [stale])
+    );
 
     return (
-      <Screen {...rest} style={[style, styles.container]}>
-        <Animated.ScrollView
-          style={{
-            top,
-            width: SCREEN_WIDTH,
-            height: SCREEN_HEIGHT - top - bottom
-          }}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-            useNativeDriver: true
-          })}
-        >
-          <ProfileTop />
-          <Button title="go to settings" onPress={() => navigate(routes.Settings)} />
-        </Animated.ScrollView>
+      <Screen style={styles.container}>
+        <Top />
+        <Button title="go to settings" onPress={() => navigation.navigate(routes.Settings)} />
+        <Posts posts={posts} />
         <Header title="Alexi Christakis" scrollY={scrollY} />
       </Screen>
     );

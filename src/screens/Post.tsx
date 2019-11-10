@@ -11,7 +11,7 @@ import Camera, { Shutter } from "@components/Camera";
 
 const mapStateToProps = () => ({});
 const mapDispatchToProps = {
-  onSendPost: PostActions.onSendPost,
+  sendPost: PostActions.sendPost,
   takePhoto: ImageActions.takePhoto
 };
 
@@ -19,7 +19,7 @@ export type PostReduxProps = (typeof mapDispatchToProps) & ReturnType<typeof map
 export interface PostProps {}
 
 const initialFormValues = { description: "" };
-const Post: React.FC<PostProps & PostReduxProps> = ({ onSendPost, takePhoto }) => {
+const Post: React.FC<PostProps & PostReduxProps> = ({ sendPost, takePhoto }) => {
   const [camera, setCamera] = useState<Camera | null>(null);
 
   const onTakePhoto = async () => {
@@ -31,7 +31,7 @@ const Post: React.FC<PostProps & PostReduxProps> = ({ onSendPost, takePhoto }) =
   };
 
   const handleSubmit = (values: typeof initialFormValues) => {
-    onSendPost(values.description);
+    sendPost(values.description);
   };
 
   return (

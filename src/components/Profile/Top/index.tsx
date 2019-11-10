@@ -19,7 +19,7 @@ export type ProfileTopReduxProps = ReduxPropsType<
 >;
 export interface ProfileTopOwnProps {}
 
-const Top: React.FC<ProfileTopOwnProps & ProfileTopReduxProps> = ({ phoneNumber }) => {
+const _Top: React.FC<ProfileTopOwnProps & ProfileTopReduxProps> = ({ phoneNumber }) => {
   return (
     <View style={styles.container}>
       <UserImage phoneNumber={phoneNumber} size={50} />
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export const ProfileTop = connect(
+export const Top = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Top);
+)(_Top);

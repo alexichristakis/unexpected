@@ -38,7 +38,7 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({ takePhoto, nav
       if (data) {
         /* save to redux */
         takePhoto(data);
-        navigation.navigate(routes.CreatePost);
+        navigation.navigate(routes.Share);
       }
     }
   };

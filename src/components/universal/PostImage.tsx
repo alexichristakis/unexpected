@@ -1,33 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Image, View, ImageStyle } from "react-native";
-import { TakePictureResponse } from "react-native-camera/types";
+import { Image, StyleSheet, ImageSourcePropType } from "react-native";
 
-import { SCREEN_WIDTH } from "@lib/styles";
+import { getPostImageURL, getHeaders } from "@api";
+import { useReduxState } from "@hooks";
+import * as selectors from "@redux/selectors";
 
 export interface PostImageProps {
+  phoneNumber: string;
+  id: string;
   width: number;
   height: number;
-  source: TakePictureResponse | { uri: string } | null;
-  style?: ImageStyle;
 }
-export const PostImage: React.FC<PostImageProps> = ({
-  source,
-  style,
-  width = SCREEN_WIDTH - 20,
-  height
-}) => {
-  const [loading, setLoading] = useState(true);
-  const [uri, setUri] = useState("");
+export const PostImage: React.FC<PostImageProps> = React.memo(
+  ({ phoneNumber, id, width, height }) => {
+    const jwt = useReduxState(selectors.jwt);
 
-  useEffect(() => {
-    if (source && source.uri !== uri) {
-      setUri(source.uri);
-    }
-  });
+    const source: ImageSourcePropType = {
+      uri: getPostImageURL(phoneNumber, id),
+      method: "GET",
+      headers: getHeaders({ jwt })
+    };
 
-  if (uri)
-    return (
-      <Image onLoad={() => setLoading(false)} style={[style, { width, height }]} source={{ uri }} />
-    );
-  else return <View style={{ width, height, backgroundColor: "gray" }} />;
-};
+    return <Image source={source} style={[styles.image, { width, height }]} />;
+  }
+);
+
+const styles = StyleSheet.create({
+  image: {
+    backgroundColor: "gray"
+  }
+});

@@ -25,7 +25,7 @@ import Feed from "./screens/Home/Feed";
 import UserProfile from "./screens/Home/UserProfile";
 import Auth from "./screens/Auth";
 import Capture from "./screens/Capture";
-import CreatePost from "./screens/CreatePost";
+import Share from "./screens/Share";
 import Post from "./screens/Post";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
@@ -121,6 +121,7 @@ const Router: React.FC = () => {
           );
         }}
       </Stack.Screen>
+
       <Stack.Screen
         name={routes.Capture}
         options={{
@@ -129,7 +130,7 @@ const Router: React.FC = () => {
         }}
       >
         {props => (
-          <Stack.Navigator {...props}>
+          <Stack.Navigator>
             <Stack.Screen
               name={`${routes.Capture}-root`}
               component={Capture}
@@ -142,8 +143,8 @@ const Router: React.FC = () => {
               }}
             />
             <Stack.Screen
-              name={routes.CreatePost}
-              component={CreatePost}
+              name={routes.Share}
+              component={Share}
               options={{
                 headerTitle: "share",
                 headerTintColor: "#231F20",

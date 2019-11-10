@@ -8,7 +8,7 @@ export const routes = {
   UserProfile: "user-profile",
   Auth: "auth",
   Capture: "capture",
-  CreatePost: "create-post",
+  Share: "share",
   Post: "post",
   Profile: "profile",
   Settings: "settings",

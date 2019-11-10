@@ -8,7 +8,7 @@ export interface InputProps extends TextInputProps {
   label?: string;
   loading?: boolean;
   error?: string;
-  size: "small" | "medium" | "large";
+  size?: "small" | "medium" | "large";
 }
 export const Input: React.FC<InputProps> = ({
   style,

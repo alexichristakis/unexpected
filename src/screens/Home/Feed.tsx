@@ -17,14 +17,14 @@ const mapDispatchToProps = {
   logout: AuthActions.logout,
   requestNotificationPermissions: PermissionsActions.requestNotifications,
   requestPermission: PermissionsActions.requestPermission,
-  uploadPhoto: ImageActions.onUploadPhoto
+  uploadPhoto: ImageActions.uploadPhoto
 };
 
 export type FeedReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
-export interface FeedProps extends ScreenProps {}
+export interface FeedProps {}
 
 const Feed: React.FC<FeedProps & FeedReduxProps> = React.memo(
-  ({ requestNotificationPermissions, requestPermission, uploadPhoto, logout, active, style }) => {
+  ({ requestNotificationPermissions, requestPermission, uploadPhoto, logout }) => {
     const navigation = useNavigation();
 
     const getContacts = () => {
@@ -34,7 +34,7 @@ const Feed: React.FC<FeedProps & FeedReduxProps> = React.memo(
     };
 
     return (
-      <Screen active={active} style={[style, styles.container]}>
+      <Screen style={styles.container}>
         <Text>Feed page!</Text>
         <UserImage size={60} phoneNumber={"2069409629"} />
         <Button title="push profile screen" onPress={() => navigation.navigate(routes.Profile)} />

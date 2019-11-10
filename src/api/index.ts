@@ -29,6 +29,10 @@ export const getUserProfileURL = (phoneNumber: string) => {
   return `${server}/image/${phoneNumber}`;
 };
 
+export const getPostImageURL = (phoneNumber: string, id: string) => {
+  return `${server}/image/${phoneNumber}/${id}`;
+};
+
 export class API {
   client: AxiosInstance;
   constructor() {
