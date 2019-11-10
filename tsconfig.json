@@ -41,8 +41,8 @@
       "@redux/*": ["src/redux/*"],
       "@lib/*": ["src/lib/*"],
       "@assets/*": ["src/assets/*"],
-      // "@screens": ["src/screens"],
-      "@screens/*": ["src/screens/*"],
+      "@screens": ["src/screens"],
+      // "@screens/*": ["src/screens/*"],
       "@api": ["src/api"],
       "@hooks": ["src/hooks"]
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
