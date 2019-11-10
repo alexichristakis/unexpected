@@ -13,7 +13,9 @@ function setTopLevelNavigator(navigatorRef: NavigationContainerRef | null) {
 }
 
 function navigate(route: string) {
-  if (_navigator) _navigator.navigate(route);
+  if (_navigator) {
+    _navigator.navigate(route);
+  }
 }
 
 function initializeNavigationEmitter(

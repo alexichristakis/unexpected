@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TextInput, NativeSyntheticEvent, TextInputFocusEventData, StyleSheet } from "react-native";
 
 import { Input } from "@components/universal";
@@ -39,11 +39,12 @@ export interface PhoneNumberInputProps {
 export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   value,
   onChange,
-  onBlur,
+  // onBlur,
   loading,
   editable,
   error
 }) => {
+  const [ref, setRef] = useState<TextInput | null>(null);
   const stripPhone = (text: string) => text.replace(/[^\d]/g, "");
 
   const handleOnChangeText = (text: string) => {
@@ -56,8 +57,15 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (value.length === 10) {
+      if (ref) ref.blur();
+    }
+  });
+
   return (
     <Input
+      textInputRef={setRef}
       style={styles.textInput}
       editable={editable}
       error={editable && !!error ? error : undefined}
@@ -69,7 +77,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
           : "enter your phone number"
       }
       value={normalizePhone(value)}
-      onBlur={onBlur}
+      // onBlur={onBlur}
       onChangeText={handleOnChangeText}
       keyboardType="number-pad"
       placeholder="(123) 456-7890"
@@ -81,6 +89,6 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 
 const styles = StyleSheet.create({
   textInput: {
-    marginTop: 40
+    // marginTop: 40
   }
 });

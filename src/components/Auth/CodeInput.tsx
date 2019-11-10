@@ -12,6 +12,7 @@ export interface CodeInputProps {
   onChange: (e: string) => void;
 }
 export const CodeInput: React.FC<CodeInputProps> = ({ editable, value, onChange, error }) => {
+  const [ref, setRef] = useState<TextInput | null>(null);
   const [entry, setEntry] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -22,7 +23,11 @@ export const CodeInput: React.FC<CodeInputProps> = ({ editable, value, onChange,
         useNativeDriver: true
       }).start();
     }
-  }, [editable]);
+
+    if (value.length === 6) {
+      if (ref) ref.blur();
+    }
+  }, [editable, value.length]);
 
   const animatedStyle = {
     opacity: entry,
@@ -30,8 +35,9 @@ export const CodeInput: React.FC<CodeInputProps> = ({ editable, value, onChange,
   };
 
   return (
-    <Animated.View style={animatedStyle}>
+    <Animated.View pointerEvents={editable ? "auto" : "none"} style={animatedStyle}>
       <Input
+        textInputRef={setRef}
         label="enter that code here"
         error={error}
         editable={editable}

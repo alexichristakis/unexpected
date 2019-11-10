@@ -7,6 +7,8 @@ import * as selectors from "../selectors";
 import { Actions as ImageActions } from "./image";
 import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
 import { AxiosResponse } from "axios";
+import Navigation from "../../Navigation";
+import { routes } from "@screens";
 
 export interface PostState {
   user: {
@@ -65,6 +67,9 @@ function* onSendPost(action: ExtractActionFromActionCreator<typeof Actions.sendP
 
     yield put(ImageActions.uploadPhoto(id));
     yield client.put(`/post/${phoneNumber}`, { post }, { headers: getHeaders({ jwt }) });
+
+    yield put(Actions.sendPostSuccess());
+    yield Navigation.navigate(routes.Home);
   } catch (err) {
     yield put(Actions.onError(err));
   }

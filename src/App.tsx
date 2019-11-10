@@ -197,6 +197,7 @@ const App: React.FC = () => {
     <Provider store={store}>
       <SafeAreaProvider>
         <PersistGate loading={null} persistor={persistor}>
+          <StatusBar barStyle="dark-content" />
           <Router />
           <Connection />
         </PersistGate>
