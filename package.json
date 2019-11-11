@@ -6,6 +6,8 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios --simulator 'iPhone 11'",
     "start": "react-native start",
+    "check-types": "tsc -p . --noEmit --skipLibCheck",
+    "lint": "tslint -c tslint.json 'src/**/*.ts*' --fix",
     "test": "jest"
   },
   "dependencies": {
@@ -57,8 +59,8 @@
     "@types/enzyme": "^3.10.3",
     "@types/jest": "^24.0.18",
     "@types/lodash": "^4.14.144",
-    "@types/react": "16.9.0",
-    "@types/react-native": "^0.60.17",
+    "@types/react": "16.9.11",
+    "@types/react-native": "^0.60.22",
     "@types/react-native-push-notification": "^3.0.6",
     "@types/react-redux": "^7.1.4",
     "@types/react-test-renderer": "16.9.0",
@@ -67,6 +69,7 @@
     "babel-plugin-module-resolver": "^3.2.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
+    "husky": "^3.0.9",
     "jest": "^24.9.0",
     "jest-enzyme": "^7.1.2",
     "metro-react-native-babel-preset": "^0.56.0",
@@ -76,6 +79,11 @@
     "tslint": "^5.20.1",
     "tslint-react": "^4.1.0",
     "typescript": "^3.7.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn lint && yarn check-types && yarn test"
+    }
   },
   "jest": {
     "preset": "react-native",

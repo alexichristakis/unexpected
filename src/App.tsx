@@ -3,8 +3,8 @@ import { StatusBar } from "react-native";
 
 import {
   BottomTabBar,
-  createBottomTabNavigator,
-  BottomTabBarProps
+  BottomTabBarProps,
+  createBottomTabNavigator
 } from "@react-navigation/bottom-tabs";
 import { ParamListBase } from "@react-navigation/core";
 import { NavigationNativeContainer } from "@react-navigation/native";
