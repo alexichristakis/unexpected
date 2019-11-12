@@ -1,5 +1,9 @@
 import { Service } from "@tsed/common";
-import { Storage, GetSignedUrlConfig, GetFilesOptions } from "@google-cloud/storage";
+import {
+  Storage,
+  GetSignedUrlConfig,
+  GetFilesOptions
+} from "@google-cloud/storage";
 import { Duplex } from "stream";
 import jimp from "jimp";
 
@@ -16,7 +20,7 @@ import jimp from "jimp";
 export class ImageService {
   private storage = new Storage({
     projectId: "expect-photos",
-    keyFilename: "certifications/google_cloud.json"
+    keyFilename: "google_cloud.json"
   });
   private bucket = this.storage.bucket(<string>process.env.GOOGLE_BUCKET_NAME);
 
@@ -90,7 +94,9 @@ export class ImageService {
       expires: Date.now() + 30 * 60 * 1000 // 30 minutes
     };
 
-    const urls = await Promise.all(files.map(file => file.getSignedUrl(downloadOptions)));
+    const urls = await Promise.all(
+      files.map(file => file.getSignedUrl(downloadOptions))
+    );
 
     return urls;
   }

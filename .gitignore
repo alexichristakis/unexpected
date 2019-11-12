@@ -17,6 +17,7 @@ dist/
 
 # keys
 certifications/
+google_cloud.json
 .env
 **/*.cer 
 **/*.p8
