@@ -1,8 +1,16 @@
-import { Controller, Inject, Put, Get, PathParams, UseAfter, UseAuth } from "@tsed/common";
+import {
+  Controller,
+  Inject,
+  Put,
+  Get,
+  PathParams,
+  UseAfter,
+  UseAuth
+} from "@tsed/common";
 import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
 import multer from "multer";
 
-import { SendFileMiddleware } from "../middlewares/send-file";
+import { SendImageMiddleware } from "../middlewares/send-image";
 import { ImageService } from "../services/images";
 import { AuthMiddleware } from "../middlewares/auth";
 
@@ -31,7 +39,7 @@ export class ImageController {
 
   @Get("/:phoneNumber/:id")
   @UseAuth(AuthMiddleware)
-  @UseAfter(SendFileMiddleware)
+  @UseAfter(SendImageMiddleware)
   async getPostImageUrl(
     @PathParams("phoneNumber") phoneNumber: string,
     @PathParams("id") id: string
@@ -61,7 +69,7 @@ export class ImageController {
   }
 
   @Get("/:phoneNumber")
-  @UseAfter(SendFileMiddleware)
+  @UseAfter(SendImageMiddleware)
   async getUserProfileImage(@PathParams("phoneNumber") phoneNumber: string) {
     const path = this.imageService.getProfilePath(phoneNumber);
 

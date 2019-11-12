@@ -1,4 +1,12 @@
-import { Controller, BodyParams, Get, Put, PathParams, UseAuth, Inject } from "@tsed/common";
+import {
+  Controller,
+  BodyParams,
+  Get,
+  Put,
+  PathParams,
+  UseAuth,
+  Inject
+} from "@tsed/common";
 
 import { PostService } from "../services/post";
 import { AuthMiddleware, Select } from "../middlewares/auth";
@@ -12,12 +20,23 @@ export class PostController {
 
   @Put("/:phoneNumber")
   @UseAuth(AuthMiddleware, { select: Select.phoneFromPath })
-  sendPost(@PathParams("phoneNumber") phoneNumber: string, @BodyParams("post") post: PostType) {
-    return this.postService.createNewPost({ ...post, userPhoneNumber: phoneNumber });
+  sendPost(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @BodyParams("post") post: PostType
+  ) {
+    return this.postService.createNewPost({
+      ...post,
+      userPhoneNumber: phoneNumber
+    });
   }
 
   @Get("/:phoneNumber")
   getUsersPosts(@PathParams("phoneNumber") phoneNumber: string) {
     return this.postService.getUsersPosts(phoneNumber);
+  }
+
+  @Get("/:phoneNumber/feed")
+  getUsersFeed(@PathParams("phoneNumber") phoneNumber: string) {
+    return this.postService.getFeedForUser(phoneNumber);
   }
 }

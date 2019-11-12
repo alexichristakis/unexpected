@@ -31,7 +31,7 @@ export class PostService extends CRUDService<PostModel, PostType> {
     const { following } = user;
 
     const posts = await this.model
-      .find({ userPhoneNumber: { $in: following } })
+      .find({ userPhoneNumber: { $in: [...following, phoneNumber] } })
       .sort({ createdAt: -1 })
       .exec();
 

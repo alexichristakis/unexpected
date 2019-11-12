@@ -1,7 +1,7 @@
-import { IMiddleware, Middleware, ResponseData, Res, ConverterService } from "@tsed/common";
+import { IMiddleware, Middleware, ResponseData, Res } from "@tsed/common";
 
 @Middleware()
-export class SendFileMiddleware implements IMiddleware {
+export class SendImageMiddleware implements IMiddleware {
   public use(@ResponseData() data: Buffer, @Res() response: Res) {
     if (data === undefined) {
       return response.send();
@@ -9,7 +9,5 @@ export class SendFileMiddleware implements IMiddleware {
 
     response.contentType("image/jpeg");
     response.end(data, "binary");
-
-    return response.send();
   }
 }
