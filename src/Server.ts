@@ -11,17 +11,17 @@ import bodyParser from "body-parser";
 import compress from "compression";
 import methodOverride from "method-override";
 
+const PROD = !!process.env.PORT;
+
 @ServerSettings({
   rootDir: __dirname,
   acceptMimes: ["application/json"],
   port: process.env.PORT || 5000,
   mount: {
-    "/": "src/controllers/*"
+    "/": PROD ? "dist/controllers/*" : "src/controllers/*"
   },
   mongoose: {
-    url: process.env.PORT
-      ? process.env.MONGODB_URI
-      : "mongodb://127.0.0.1:27017/db1",
+    url: PROD ? process.env.MONGODB_URI : "mongodb://127.0.0.1:27017/db1",
     connectionOptions: {}
   }
   // multer: {
