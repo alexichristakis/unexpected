@@ -1,6 +1,8 @@
 import { Dimensions, StyleSheet, Text, TextStyle } from "react-native";
 
-export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get(
+  "window"
+);
 
 export const Colors = {
   nearBlack: "rgb(10, 10, 10)",
@@ -33,6 +35,7 @@ export const TextStyles: { [key in TextSizes]: TextStyle } = StyleSheet.create({
   medium: {
     ...baseText,
     fontSize: 16,
+
     color: Colors.nearBlack
   },
   large: {

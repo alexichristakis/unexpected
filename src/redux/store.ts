@@ -4,9 +4,9 @@ import { batchDispatchMiddleware } from "redux-batched-actions";
 import { composeWithDevTools } from "redux-devtools-extension";
 import {
   createMigrate,
+  PersistConfig,
   persistReducer,
-  persistStore,
-  PersistConfig
+  persistStore
 } from "redux-persist";
 import createSagaMiddleware from "redux-saga";
 

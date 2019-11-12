@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, StatusBar } from "react-native";
+import { StatusBar, StyleSheet, Text, View } from "react-native";
 
+import { useIsFocused } from "@react-navigation/core";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { useIsFocused } from "@react-navigation/core";
 
 import { Button } from "@components/universal";
-import * as selectors from "@redux/selectors";
+import { SCREEN_HEIGHT, TextStyles } from "@lib/styles";
 import {
   Actions as PermissionsActions,
   Permissions as PermissionTypes
 } from "@redux/modules/permissions";
-import { RootState, ReduxPropsType } from "@redux/types";
-import { SCREEN_HEIGHT, TextStyles } from "@lib/styles";
+import * as selectors from "@redux/selectors";
+import { ReduxPropsType, RootState } from "@redux/types";
 
 const mapStateToProps = (state: RootState) => ({
   ...selectors.permissions(state)

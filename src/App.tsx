@@ -1,5 +1,5 @@
 import React from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, Text } from "react-native";
 
 import {
   BottomTabBar,
@@ -27,11 +27,11 @@ import Navigation from "./Navigation";
 /* screens */
 import { routes } from "./screens";
 import Auth from "./screens/Auth";
-import Permissions from "./screens/Permissions";
 import Capture from "./screens/Capture";
 import Discover from "./screens/Home/Discover";
 import Feed from "./screens/Home/Feed";
 import UserProfile from "./screens/Home/UserProfile";
+import Permissions from "./screens/Permissions";
 import Post from "./screens/Post";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
@@ -42,6 +42,7 @@ import { LaunchCameraButton } from "@components/Camera";
 import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
 import ProfileIcon from "./assets/svg/profile.svg";
+import { TextStyles } from "@lib/styles";
 
 /* initialize navigators */
 const Stack = createNativeStackNavigator();
@@ -183,6 +184,7 @@ const Router: React.FC = () => {
               component={Capture}
               options={{
                 headerTitle: "capture",
+                headerTitleStyle: TextStyles.large,
                 headerTintColor: "#231F20",
                 headerStyle: {
                   backgroundColor: "white"
@@ -194,6 +196,7 @@ const Router: React.FC = () => {
               component={Share}
               options={{
                 headerTitle: "share",
+                headerTitleStyle: TextStyles.large,
                 headerTintColor: "#231F20",
                 headerHideShadow: true,
                 headerStyle: {

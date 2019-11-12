@@ -1,23 +1,23 @@
 import { useNavigation } from "@react-navigation/core";
+import { useFocusEffect, useIsFocused } from "@react-navigation/core";
 import React, { useCallback } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import Contacts from "react-native-contacts";
 import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
-import { useFocusEffect, useIsFocused } from "@react-navigation/core";
 
+import { Posts } from "@components/Profile";
 import { UserImage } from "@components/universal";
-import * as selectors from "@redux/selectors";
-import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as ImageActions } from "@redux/modules/image";
 import {
   Actions as PermissionsActions,
   Permissions
 } from "@redux/modules/permissions";
+import { Actions as PostActions } from "@redux/modules/post";
+import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { routes } from "../index";
-import { Posts } from "@components/Profile";
 
 const mapStateToProps = (state: RootState) => ({
   feed: selectors.feedState(state)

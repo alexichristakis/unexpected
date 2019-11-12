@@ -56,7 +56,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           title="go to settings"
           onPress={() => navigation.navigate(routes.Settings)}
         />
-        <Posts posts={posts} />
+        <Posts style={{ marginTop: 100 }} posts={posts} />
         <Header title={user.firstName} scrollY={scrollY} />
       </Screen>
     );
@@ -67,6 +67,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "blue",
+    paddingTop: 100,
     alignItems: "center",
     justifyContent: "center"
   }
