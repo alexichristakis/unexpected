@@ -15,6 +15,8 @@ export const PostImage: React.FC<PostImageProps> = React.memo(
   ({ phoneNumber, id, width, height }) => {
     const jwt = useReduxState(selectors.jwt);
 
+    console.log("render post image", id);
+
     const source: ImageSourcePropType = {
       uri: getPostImageURL(phoneNumber, id),
       method: "GET",

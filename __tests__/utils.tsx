@@ -12,5 +12,7 @@ export const useNavigation = (component: any) => (
 );
 
 // export const useRedux = (component: any) => <Provider store={{} as any}>{component}</Provider>;
-export const useContext = (component: any) => <Context>{component}</Context>;
+export const useContext = (component: any) => (
+  <Context>{useNavigation(component)}</Context>
+);
 // export const useContext = (component: any) => component;

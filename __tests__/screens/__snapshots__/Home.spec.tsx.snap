@@ -1,37 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`home profile renders correctly 1`] = `
-<Context>
-  <Provider
-    store={
-      Object {
-        "@@observable": [Function],
-        "dispatch": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-      }
-    }
-  >
+exports[`home <UserProfile /> displays the users name 1`] = `
+"<Context>
+  <Provider store={{...}}>
     <SafeAreaProvider>
-      <RNCSafeAreaView
-        onInsetsChange={[Function]}
-        style={
-          Object {
-            "flex": 1,
-          }
-        }
-      >
-        <RNCSafeAreaView
-          onInsetsChange={[Function]}
-          style={
-            Object {
-              "flex": 1,
-            }
-          }
-        />
+      <RNCSafeAreaView style={{...}} onInsetsChange={[Function]}>
+        <RNCSafeAreaView style={{...}} onInsetsChange={[Function]} />
       </RNCSafeAreaView>
     </SafeAreaProvider>
   </Provider>
-</Context>
+</Context>"
 `;

@@ -15,11 +15,15 @@ const mapDispatchToProps = {
   takePhoto: ImageActions.takePhoto
 };
 
-export type PostReduxProps = (typeof mapDispatchToProps) & ReturnType<typeof mapStateToProps>;
+export type PostReduxProps = typeof mapDispatchToProps &
+  ReturnType<typeof mapStateToProps>;
 export interface PostProps {}
 
 const initialFormValues = { description: "" };
-const Post: React.FC<PostProps & PostReduxProps> = ({ sendPost, takePhoto }) => {
+const Post: React.FC<PostProps & PostReduxProps> = ({
+  sendPost,
+  takePhoto
+}) => {
   const [camera, setCamera] = useState<Camera | null>(null);
 
   const onTakePhoto = async () => {
@@ -37,10 +41,18 @@ const Post: React.FC<PostProps & PostReduxProps> = ({ sendPost, takePhoto }) => 
   return (
     <Screen style={styles.container}>
       <Text>Post page!</Text>
-      <Camera ref={camera => setCamera(camera)} style={styles.camera} />
+      <Camera ref={setCamera} style={styles.camera} />
       <Button title="take photo" onPress={onTakePhoto} />
       <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
-        {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => {
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting
+        }) => {
           return (
             <>
               <Input
@@ -70,7 +82,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Post);
+export default connect(mapStateToProps, mapDispatchToProps)(Post);

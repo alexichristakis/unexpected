@@ -1,6 +1,14 @@
 import immer from "immer";
 import moment, { Moment } from "moment";
-import { all, fork, put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
+import {
+  all,
+  fork,
+  put,
+  select,
+  take,
+  takeEvery,
+  takeLatest
+} from "redux-saga/effects";
 import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
 
@@ -9,15 +17,20 @@ import { AxiosResponse } from "axios";
 import Navigation from "../../Navigation";
 import { routes } from "../../screens";
 import * as selectors from "../selectors";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import {
+  ActionsUnion,
+  createAction,
+  ExtractActionFromActionCreator
+} from "../utils";
 import { Actions as ImageActions } from "./image";
 
 export interface FeedState {
-  frames: Array<{
-    posts: PostType[];
-    start: Date;
-    end: Date;
-  }>;
+  // frames: Array<{
+  //   posts: PostType[];
+  //   start: Date;
+  //   end: Date;
+  // }>;
+  posts: PostType[];
   lastFetched: Date;
   stale: boolean;
 }
@@ -39,7 +52,8 @@ const initialState: PostState = {
     stale: true
   },
   feed: {
-    frames: [],
+    // frames: [],
+    posts: [],
     lastFetched: new Date(0),
     stale: true
   },
@@ -79,6 +93,14 @@ export default (
       });
     }
 
+    case ActionTypes.FETCH_FEED_SUCCESS: {
+      const { posts } = action.payload;
+      return immer(state, draft => {
+        draft.loading = false;
+        draft.feed = { posts, stale: false, lastFetched: new Date() };
+      });
+    }
+
     case ActionTypes.ON_ERROR: {
       const { error } = action.payload;
       return immer(state, draft => {
@@ -94,7 +116,9 @@ export default (
   }
 };
 
-function* onSendPost(action: ExtractActionFromActionCreator<typeof Actions.sendPost>) {
+function* onSendPost(
+  action: ExtractActionFromActionCreator<typeof Actions.sendPost>
+) {
   const { description } = action.payload;
 
   try {
@@ -108,7 +132,11 @@ function* onSendPost(action: ExtractActionFromActionCreator<typeof Actions.sendP
     };
 
     yield put(ImageActions.uploadPhoto(id));
-    yield client.put(`/post/${phoneNumber}`, { post }, { headers: getHeaders({ jwt }) });
+    yield client.put(
+      `/post/${phoneNumber}`,
+      { post },
+      { headers: getHeaders({ jwt }) }
+    );
 
     yield put(Actions.sendPostSuccess());
     yield Navigation.navigate(routes.Home);
@@ -122,9 +150,12 @@ function* onFetchUsersPosts() {
     const jwt = yield select(selectors.jwt);
     const phoneNumber = yield select(selectors.phoneNumber);
 
-    const posts: AxiosResponse<PostType[]> = yield client.get(`/post/${phoneNumber}`, {
-      headers: getHeaders({ jwt })
-    });
+    const posts: AxiosResponse<PostType[]> = yield client.get(
+      `/post/${phoneNumber}`,
+      {
+        headers: getHeaders({ jwt })
+      }
+    );
 
     yield put(Actions.fetchUsersPostsSuccess(posts.data));
   } catch (err) {
@@ -132,7 +163,9 @@ function* onFetchUsersPosts() {
   }
 }
 
-function* onFetchFeed(action: ExtractActionFromActionCreator<typeof Actions.fetchFeed>) {
+function* onFetchFeed(
+  action: ExtractActionFromActionCreator<typeof Actions.fetchFeed>
+) {
   const { fromDate } = action.payload;
 
   try {
@@ -143,13 +176,15 @@ function* onFetchFeed(action: ExtractActionFromActionCreator<typeof Actions.fetc
     const from = fromDate ? fromDate : feedState.lastFetched;
 
     const res: AxiosResponse<PostType[]> = yield client.get(
-      `/post/${phoneNumber}/feed?from=${from}`,
+      `post/${phoneNumber}/feed`,
       {
         headers: getHeaders({ jwt })
       }
     );
 
     const { data: posts } = res;
+
+    yield put(Actions.fetchFeedSuccess(posts));
 
     // TODO: load the posts
   } catch (err) {
@@ -179,9 +214,12 @@ export const Actions = {
   fetchUsersPosts: () => createAction(ActionTypes.FETCH_USERS_POSTS),
   fetchUsersPostsSuccess: (posts: PostType[]) =>
     createAction(ActionTypes.FETCH_USERS_POSTS_SUCCESS, { posts }),
-  fetchFeed: (fromDate?: Date) => createAction(ActionTypes.FETCH_FEED, { fromDate }),
-  fetchFeedSuccess: (posts: PostType[]) => createAction(ActionTypes.FETCH_FEED_SUCCESS, { posts }),
-  sendPost: (description: string) => createAction(ActionTypes.SEND_POST, { description }),
+  fetchFeed: (fromDate?: Date) =>
+    createAction(ActionTypes.FETCH_FEED, { fromDate }),
+  fetchFeedSuccess: (posts: PostType[]) =>
+    createAction(ActionTypes.FETCH_FEED_SUCCESS, { posts }),
+  sendPost: (description: string) =>
+    createAction(ActionTypes.SEND_POST, { description }),
   sendPostSuccess: () => createAction(ActionTypes.SEND_POST_SUCCESS),
   onError: (error: string) => createAction(ActionTypes.ON_ERROR, { error })
 };

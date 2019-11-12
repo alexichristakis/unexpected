@@ -1,32 +1,58 @@
 import { useNavigation } from "@react-navigation/core";
-import React from "react";
+import React, { useCallback } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import Contacts from "react-native-contacts";
 import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
+import { useFocusEffect, useIsFocused } from "@react-navigation/core";
 
 import { UserImage } from "@components/universal";
+import * as selectors from "@redux/selectors";
+import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as ImageActions } from "@redux/modules/image";
-import { Actions as PermissionsActions, Permissions } from "@redux/modules/permissions";
+import {
+  Actions as PermissionsActions,
+  Permissions
+} from "@redux/modules/permissions";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { routes } from "../index";
+import { Posts } from "@components/Profile";
 
-const mapStateToProps = (state: RootState) => ({});
+const mapStateToProps = (state: RootState) => ({
+  feed: selectors.feedState(state)
+});
 const mapDispatchToProps = {
+  fetchFeed: PostActions.fetchFeed,
   logout: AuthActions.logout,
   requestNotificationPermissions: PermissionsActions.requestNotifications,
   requestPermission: PermissionsActions.requestPermission,
   uploadPhoto: ImageActions.uploadPhoto
 };
 
-export type FeedReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
+export type FeedReduxProps = ReduxPropsType<
+  typeof mapStateToProps,
+  typeof mapDispatchToProps
+>;
 export interface FeedOwnProps {}
 export type FeedProps = FeedReduxProps & FeedOwnProps;
 
 export const Feed: React.FC<FeedProps> = React.memo(
-  ({ requestNotificationPermissions, requestPermission, uploadPhoto, logout }) => {
+  ({
+    feed,
+    fetchFeed,
+    requestNotificationPermissions,
+    requestPermission,
+    uploadPhoto,
+    logout
+  }) => {
     const navigation = useNavigation();
+
+    useFocusEffect(
+      useCallback(() => {
+        if (feed.stale) fetchFeed();
+      }, [feed.stale])
+    );
 
     const getContacts = () => {
       Contacts.getAllWithoutPhotos((err, contacts) => {
@@ -34,25 +60,17 @@ export const Feed: React.FC<FeedProps> = React.memo(
       });
     };
 
+    const getPosts = () => {
+      return feed.posts;
+    };
+
     return (
       <Screen style={styles.container}>
-        <Text>Feed page!</Text>
-        <UserImage size={60} phoneNumber={"2069409629"} />
-        <Button title="push profile screen" onPress={() => navigation.navigate(routes.Profile)} />
-        <Button title="upload profile picture" onPress={() => uploadPhoto()} />
-        <Button title="upload photo" onPress={() => uploadPhoto("some id")} />
         <Button
-          title="request camera permissions"
-          onPress={() => requestPermission(Permissions.CAMERA)}
+          title="permissions"
+          onPress={() => navigation.navigate(routes.Permissions)}
         />
-        <Button
-          title="request contact permissions"
-          onPress={() => requestPermission(Permissions.CONTACTS)}
-        />
-        <Button title="push post screen" onPress={() => navigation.navigate(routes.Post)} />
-
-        <Button title="request notifications" onPress={requestNotificationPermissions} />
-        <Button title="logout" onPress={logout} />
+        <Posts posts={getPosts()} />
       </Screen>
     );
   }
@@ -61,12 +79,10 @@ export const Feed: React.FC<FeedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center"
+    alignItems: "center",
+    paddingTop: 100
     // justifyContent: "center"
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Feed);
+export default connect(mapStateToProps, mapDispatchToProps)(Feed);

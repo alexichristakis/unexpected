@@ -6,6 +6,7 @@ import { Button, UserImage } from "@components/universal";
 import { TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { UserType } from "unexpected-cloud/models/user";
 
 const mapStateToProps = (state: RootState, ownProps: ProfileTopOwnProps) => ({
   ...selectors.user(state),
@@ -17,9 +18,13 @@ export type ProfileTopReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-export interface ProfileTopOwnProps {}
+export interface ProfileTopOwnProps {
+  user: UserType;
+}
 
-const _Top: React.FC<ProfileTopOwnProps & ProfileTopReduxProps> = ({ phoneNumber }) => {
+export const Top: React.FC<ProfileTopOwnProps> = ({
+  user: { phoneNumber }
+}) => {
   return (
     <View style={styles.container}>
       <UserImage phoneNumber={phoneNumber} size={50} />
@@ -34,7 +39,7 @@ const styles = StyleSheet.create({
   }
 });
 
-export const Top = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(_Top);
+// export const Top = connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(_Top);

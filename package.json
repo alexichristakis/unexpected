@@ -69,6 +69,8 @@
     "babel-plugin-module-resolver": "^3.2.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
+    "enzyme-context": "^1.1.2",
+    "enzyme-context-redux": "^2.0.0",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
     "jest-enzyme": "^7.1.2",

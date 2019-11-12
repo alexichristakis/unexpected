@@ -12,7 +12,11 @@ import {
 import { all, put, takeEvery, takeLatest } from "redux-saga/effects";
 
 import { REHYDRATE } from "redux-persist";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import {
+  ActionsUnion,
+  createAction,
+  ExtractActionFromActionCreator
+} from "../utils";
 
 export interface PermissionsState {
   readonly loading: boolean;
@@ -85,7 +89,10 @@ export default (
 
 function* onStartup() {
   try {
-    const { status, settings }: NotificationsResponse = yield checkNotifications();
+    const {
+      status,
+      settings
+    }: NotificationsResponse = yield checkNotifications();
     if (status === "granted") {
       yield put(Actions.setNotifications({ status, settings }));
     }
@@ -96,7 +103,10 @@ function* onStartup() {
 
 function* onRequestNotifications() {
   try {
-    let { status, settings }: NotificationsResponse = yield checkNotifications();
+    let {
+      status,
+      settings
+    }: NotificationsResponse = yield checkNotifications();
 
     if (status !== "granted") {
       ({ status, settings } = yield requestNotifications(["alert", "badge"]));
@@ -113,7 +123,7 @@ function* onRequestPermission(
 ) {
   const { type } = action.payload;
   try {
-    const permission = Platform.OS == "ios" ? type.ios : type.android;
+    const permission = Platform.OS === "ios" ? type.ios : type.android;
     console.log(permission);
     let status: PermissionStatus = yield check(permission);
 
@@ -151,5 +161,6 @@ export const Actions = {
     createAction(ActionTypes.REQUEST_PERMISSION, { type }),
   setPermission: (type: PermissionType, status: PermissionStatus) =>
     createAction(ActionTypes.SET_PERMISSION, { type, status }),
-  errorRequestingPermissions: (err: string) => createAction(ActionTypes.ERROR_REQUESTING, { err })
+  errorRequestingPermissions: (err: string) =>
+    createAction(ActionTypes.ERROR_REQUESTING, { err })
 };

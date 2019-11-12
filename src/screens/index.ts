@@ -3,6 +3,7 @@ export const routes = {
   Unauthenticated: "unauthenticated",
   Home: "home",
 
+  Permissions: "permissions",
   Discover: "discover",
   Feed: "feed",
   UserProfile: "user-profile",

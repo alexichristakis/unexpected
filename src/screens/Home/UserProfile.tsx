@@ -1,4 +1,8 @@
-import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/core";
+import {
+  useFocusEffect,
+  useIsFocused,
+  useNavigation
+} from "@react-navigation/core";
 import React, { useCallback, useState } from "react";
 import { Animated, Button, StyleSheet } from "react-native";
 import { useSafeArea } from "react-native-safe-area-context";
@@ -32,28 +36,32 @@ export interface UserProfileOwnProps {}
 export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 
 export const UserProfile: React.FC<UserProfileProps> = React.memo(
-  ({ fetchUsersPosts, stale, posts }) => {
+  ({ fetchUsersPosts, stale, posts, user }) => {
     const [scrollY] = useState(new Animated.Value(0));
-    const { bottom, top } = useSafeArea();
-    const isFocused = useIsFocused();
 
     const navigation = useNavigation();
 
     useFocusEffect(
       useCallback(() => {
-        fetchUsersPosts();
+        if (stale) fetchUsersPosts();
       }, [stale])
     );
 
+    console.log("render user profile");
+
     return (
       <Screen style={styles.container}>
-        <Top />
-        <Button title="go to settings" onPress={() => navigation.navigate(routes.Settings)} />
+        <Top user={user} />
+        <Button
+          title="go to settings"
+          onPress={() => navigation.navigate(routes.Settings)}
+        />
         <Posts posts={posts} />
-        <Header title="Alexi Christakis" scrollY={scrollY} />
+        <Header title={user.firstName} scrollY={scrollY} />
       </Screen>
     );
-  }
+  },
+  (prevProps, nextProps) => prevProps.stale === nextProps.stale
 );
 
 const styles = StyleSheet.create({
@@ -64,7 +72,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);

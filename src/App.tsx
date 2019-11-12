@@ -14,6 +14,7 @@ import {
 } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider, useSelector } from "react-redux";
+import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
 import * as selectors from "@redux/selectors";
@@ -26,6 +27,7 @@ import Navigation from "./Navigation";
 /* screens */
 import { routes } from "./screens";
 import Auth from "./screens/Auth";
+import Permissions from "./screens/Permissions";
 import Capture from "./screens/Capture";
 import Discover from "./screens/Home/Discover";
 import Feed from "./screens/Home/Feed";
@@ -51,16 +53,28 @@ type Props = Partial<React.ComponentProps<typeof Stack.Navigator>> & {
   navigation: NativeStackNavigationProp<ParamListBase>;
 };
 
-const HomeTab: React.FC<Props> = ({ navigation, component: Root, name, ...rest }) => {
+const HomeTab: React.FC<Props> = ({
+  navigation,
+  component: Root,
+  name,
+  ...rest
+}) => {
   navigation.setOptions({
     headerShown: false
   });
 
-  const screenOptions = { headerShown: false, contentStyle: { backgroundColor: "white" } };
+  const screenOptions = {
+    headerShown: false,
+    contentStyle: { backgroundColor: "white" }
+  };
 
   return (
     <Stack.Navigator {...rest}>
-      <Stack.Screen name={`${name}-root`} options={screenOptions} component={Root} />
+      <Stack.Screen
+        name={`${name}-root`}
+        options={screenOptions}
+        component={Root}
+      />
       <Stack.Screen name={routes.Profile} options={screenOptions}>
         {props => <Profile {...props} />}
       </Stack.Screen>
@@ -105,31 +119,49 @@ const Router: React.FC = () => {
               <Tabs.Screen
                 name={routes.Feed}
                 options={{
-                  tabBarIcon: ({ color }) => <FeedIcon width={30} height={30} fill={color} />
+                  tabBarIcon: ({ color }) => (
+                    <FeedIcon width={30} height={30} fill={color} />
+                  )
                 }}
               >
                 {tabScreenProps => (
-                  <HomeTab name={routes.Feed} component={Feed} {...tabScreenProps} />
+                  <HomeTab
+                    name={routes.Feed}
+                    component={Feed}
+                    {...tabScreenProps}
+                  />
                 )}
               </Tabs.Screen>
               <Tabs.Screen
                 name={routes.UserProfile}
                 options={{
-                  tabBarIcon: ({ color }) => <ProfileIcon width={45} height={45} fill={color} />
+                  tabBarIcon: ({ color }) => (
+                    <ProfileIcon width={45} height={45} fill={color} />
+                  )
                 }}
               >
                 {tabScreenProps => (
-                  <HomeTab name={routes.UserProfile} component={UserProfile} {...tabScreenProps} />
+                  <HomeTab
+                    name={routes.UserProfile}
+                    component={UserProfile}
+                    {...tabScreenProps}
+                  />
                 )}
               </Tabs.Screen>
               <Tabs.Screen
                 name={routes.Discover}
                 options={{
-                  tabBarIcon: ({ color }) => <DiscoverIcon width={35} height={35} fill={color} />
+                  tabBarIcon: ({ color }) => (
+                    <DiscoverIcon width={35} height={35} fill={color} />
+                  )
                 }}
               >
                 {tabScreenProps => (
-                  <HomeTab name={routes.Discover} component={Discover} {...tabScreenProps} />
+                  <HomeTab
+                    name={routes.Discover}
+                    component={Discover}
+                    {...tabScreenProps}
+                  />
                 )}
               </Tabs.Screen>
             </Tabs.Navigator>
@@ -173,14 +205,38 @@ const Router: React.FC = () => {
           </Stack.Navigator>
         )}
       </Stack.Screen>
-      <Stack.Screen name={routes.Settings} component={Settings} />
+      <Stack.Screen
+        options={{
+          headerTitle: "share",
+          headerTintColor: "#231F20"
+        }}
+        name={routes.Settings}
+        component={Settings}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerTitle: "share",
+          headerTintColor: "#231F20"
+        }}
+        name={routes.Permissions}
+        component={Permissions}
+      />
     </Stack.Navigator>
   );
 
   const UnathenticatedRoot = () => (
     <Stack.Navigator>
-      <Stack.Screen name={routes.Auth} options={{ headerShown: false }} component={Auth} />
-      <Stack.Screen name={routes.SignUp} options={{ headerShown: false }} component={SignUp} />
+      <Stack.Screen
+        name={routes.Auth}
+        options={{ headerShown: false }}
+        component={Auth}
+      />
+      <Stack.Screen
+        name={routes.SignUp}
+        options={{ headerShown: false }}
+        component={SignUp}
+      />
     </Stack.Navigator>
   );
 
@@ -188,7 +244,9 @@ const Router: React.FC = () => {
     <NavigationNativeContainer ref={Navigation.setTopLevelNavigator}>
       <Stack.Navigator
         screenOptions={{ animation: "fade" }}
-        initialRouteName={isAuthorized ? routes.Authenticated : routes.Unauthenticated}
+        initialRouteName={
+          isAuthorized ? routes.Authenticated : routes.Unauthenticated
+        }
       >
         <Stack.Screen
           name={routes.Authenticated}
@@ -206,7 +264,8 @@ const Router: React.FC = () => {
 };
 
 export const Context: React.FC = ({ children }) => {
-  const { store, persistor } = createStore();
+  const store = createStore();
+  const persistor = persistStore(store);
   return (
     <Provider store={store}>
       <SafeAreaProvider>
