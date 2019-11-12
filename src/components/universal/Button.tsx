@@ -1,19 +1,24 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, ViewProps } from "react-native";
 
 import { Colors, TextStyles } from "@lib/styles";
 
-export interface ButtonProps {
+export interface ButtonProps extends ViewProps {
   size?: "small" | "medium" | "large";
   title: string;
   onPress: () => void;
 }
-export const Button: React.FC<ButtonProps> = ({ size = "medium", title, onPress }) => {
+export const Button: React.FC<ButtonProps> = ({
+  style,
+  size = "medium",
+  title,
+  onPress
+}) => {
   const [touched, onTouch] = useState(false);
 
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[styles.container, style]}
       onPress={onPress}
       onPressIn={() => onTouch(true)}
       onPressOut={() => onTouch(false)}

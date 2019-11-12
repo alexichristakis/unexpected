@@ -6,7 +6,7 @@ import {
   BottomTabBarProps,
   createBottomTabNavigator
 } from "@react-navigation/bottom-tabs";
-import { ParamListBase } from "@react-navigation/core";
+import { ParamListBase, RouteProp } from "@react-navigation/core";
 import { NavigationNativeContainer } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
@@ -25,7 +25,6 @@ import { useReduxState } from "./hooks";
 import Navigation from "./Navigation";
 
 /* screens */
-import { routes } from "./screens";
 import Auth from "./screens/Auth";
 import Capture from "./screens/Capture";
 import Discover from "./screens/Home/Discover";
@@ -44,15 +43,38 @@ import FeedIcon from "./assets/svg/feed.svg";
 import ProfileIcon from "./assets/svg/profile.svg";
 import { TextStyles } from "@lib/styles";
 
-/* initialize navigators */
-const Stack = createNativeStackNavigator();
-const Tabs = createBottomTabNavigator();
+export type StackParamList = {
+  AUTHENTICATED: undefined;
+  UNAUTHENTICATED: undefined;
+  HOME: undefined;
+  PERMISSIONS: undefined;
+  DISCOVER: undefined;
+  FEED: undefined;
+  USER_PROFILE: undefined;
+  AUTH: undefined;
+  SHARE: undefined;
+  POST: undefined;
+  PROFILE: undefined;
+  SETTINGS: undefined;
+  SIGN_UP: undefined;
+  CAPTURE: { nextRoute: keyof StackParamList };
+};
+
+export type TabParamList = {
+  FEED: undefined;
+  USER_PROFILE: undefined;
+  DISCOVER: undefined;
+};
 
 type Props = Partial<React.ComponentProps<typeof Stack.Navigator>> & {
-  name: string;
+  name: keyof StackParamList;
   component: React.ComponentType<any>;
   navigation: NativeStackNavigationProp<ParamListBase>;
 };
+
+/* initialize navigators */
+const Stack = createNativeStackNavigator<StackParamList>();
+const Tabs = createBottomTabNavigator<TabParamList>();
 
 const HomeTab: React.FC<Props> = ({
   navigation,
@@ -71,17 +93,13 @@ const HomeTab: React.FC<Props> = ({
 
   return (
     <Stack.Navigator {...rest}>
+      <Stack.Screen name={name} options={screenOptions} component={Root} />
       <Stack.Screen
-        name={`${name}-root`}
+        name={"PROFILE"}
         options={screenOptions}
-        component={Root}
+        component={Profile}
       />
-      <Stack.Screen name={routes.Profile} options={screenOptions}>
-        {props => <Profile {...props} />}
-      </Stack.Screen>
-      <Stack.Screen name={routes.Post} options={screenOptions}>
-        {props => <Post {...props} />}
-      </Stack.Screen>
+      <Stack.Screen name={"POST"} options={screenOptions} component={Post} />
     </Stack.Navigator>
   );
 };
@@ -99,7 +117,7 @@ const Router: React.FC = () => {
 
   const AuthenticatedRoot = () => (
     <Stack.Navigator screenOptions={{ presentation: "modal" }}>
-      <Stack.Screen name={routes.Home} options={{ headerShown: false }}>
+      <Stack.Screen name={"HOME"} options={{ headerShown: false }}>
         {rootStackScreenProps => {
           // dont keep this
           rootStackScreenProps.navigation.addListener("focus", () =>
@@ -118,7 +136,7 @@ const Router: React.FC = () => {
               tabBar={renderTabBar}
             >
               <Tabs.Screen
-                name={routes.Feed}
+                name="FEED"
                 options={{
                   tabBarIcon: ({ color }) => (
                     <FeedIcon width={30} height={30} fill={color} />
@@ -126,15 +144,11 @@ const Router: React.FC = () => {
                 }}
               >
                 {tabScreenProps => (
-                  <HomeTab
-                    name={routes.Feed}
-                    component={Feed}
-                    {...tabScreenProps}
-                  />
+                  <HomeTab name="FEED" component={Feed} {...tabScreenProps} />
                 )}
               </Tabs.Screen>
               <Tabs.Screen
-                name={routes.UserProfile}
+                name="USER_PROFILE"
                 options={{
                   tabBarIcon: ({ color }) => (
                     <ProfileIcon width={45} height={45} fill={color} />
@@ -143,14 +157,14 @@ const Router: React.FC = () => {
               >
                 {tabScreenProps => (
                   <HomeTab
-                    name={routes.UserProfile}
+                    name="USER_PROFILE"
                     component={UserProfile}
                     {...tabScreenProps}
                   />
                 )}
               </Tabs.Screen>
               <Tabs.Screen
-                name={routes.Discover}
+                name="DISCOVER"
                 options={{
                   tabBarIcon: ({ color }) => (
                     <DiscoverIcon width={35} height={35} fill={color} />
@@ -159,7 +173,7 @@ const Router: React.FC = () => {
               >
                 {tabScreenProps => (
                   <HomeTab
-                    name={routes.Discover}
+                    name="DISCOVER"
                     component={Discover}
                     {...tabScreenProps}
                   />
@@ -171,7 +185,7 @@ const Router: React.FC = () => {
       </Stack.Screen>
 
       <Stack.Screen
-        name={routes.Capture}
+        name={"CAPTURE"}
         options={{
           headerTitle: "share",
           headerTintColor: "#231F20"
@@ -180,8 +194,7 @@ const Router: React.FC = () => {
         {() => (
           <Stack.Navigator>
             <Stack.Screen
-              name={`${routes.Capture}-root`}
-              component={Capture}
+              name={"CAPTURE"}
               options={{
                 headerTitle: "capture",
                 headerTitleStyle: TextStyles.large,
@@ -190,9 +203,10 @@ const Router: React.FC = () => {
                   backgroundColor: "white"
                 }
               }}
+              component={Capture}
             />
             <Stack.Screen
-              name={routes.Share}
+              name={"SHARE"}
               component={Share}
               options={{
                 headerTitle: "share",
@@ -213,7 +227,7 @@ const Router: React.FC = () => {
           headerTitle: "share",
           headerTintColor: "#231F20"
         }}
-        name={routes.Settings}
+        name={"SETTINGS"}
         component={Settings}
       />
       <Stack.Screen
@@ -222,7 +236,7 @@ const Router: React.FC = () => {
           headerTitle: "share",
           headerTintColor: "#231F20"
         }}
-        name={routes.Permissions}
+        name={"PERMISSIONS"}
         component={Permissions}
       />
     </Stack.Navigator>
@@ -231,12 +245,12 @@ const Router: React.FC = () => {
   const UnathenticatedRoot = () => (
     <Stack.Navigator>
       <Stack.Screen
-        name={routes.Auth}
+        name={"AUTH"}
         options={{ headerShown: false }}
         component={Auth}
       />
       <Stack.Screen
-        name={routes.SignUp}
+        name={"SIGN_UP"}
         options={{ headerShown: false }}
         component={SignUp}
       />
@@ -247,17 +261,15 @@ const Router: React.FC = () => {
     <NavigationNativeContainer ref={Navigation.setTopLevelNavigator}>
       <Stack.Navigator
         screenOptions={{ animation: "fade" }}
-        initialRouteName={
-          isAuthorized ? routes.Authenticated : routes.Unauthenticated
-        }
+        initialRouteName={isAuthorized ? "AUTHENTICATED" : "UNAUTHENTICATED"}
       >
         <Stack.Screen
-          name={routes.Authenticated}
+          name={"AUTHENTICATED"}
           options={{ headerShown: false }}
           component={AuthenticatedRoot}
         />
         <Stack.Screen
-          name={routes.Unauthenticated}
+          name={"UNAUTHENTICATED"}
           options={{ headerShown: false }}
           component={UnathenticatedRoot}
         />

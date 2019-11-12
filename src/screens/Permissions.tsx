@@ -47,41 +47,53 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
 
     return (
       <Screen style={styles.container}>
-        <Text style={TextStyles.medium}>
-          we need your permission for a couple of things.
+        <Text style={[TextStyles.medium, styles.header]}>
+          we need your permission for a couple of things:
         </Text>
         <View style={styles.table}>
-          <View style={styles.left}>
-            <Text style={TextStyles.small}>
+          <View style={styles.row}>
+            <Text style={[styles.text, TextStyles.small]}>
               notifications are needed so you know when you can post
             </Text>
-            <Text style={TextStyles.small}>
-              the camera is needed so you can take photos
-            </Text>
-            <Text style={TextStyles.small}>
-              contacts are helpful so that you can find your friends
-            </Text>
-            <Text style={TextStyles.small}>
-              location is helpful so that you dont need to set your timezone
-            </Text>
-          </View>
-          <View style={styles.right}>
             <Button
+              style={styles.button}
               size="small"
               title="notifications"
               onPress={requestNotifications}
             />
+          </View>
+          <View style={styles.row}>
+            <Text style={[styles.text, TextStyles.small]}>
+              the camera is needed so you can take photos
+            </Text>
             <Button
+              style={styles.button}
               size="small"
               title="camera"
               onPress={() => request(PermissionTypes.CAMERA)}
             />
+          </View>
+          <Text style={[TextStyles.medium, styles.header]}>
+            the following are useful but not required:
+          </Text>
+          <View style={styles.row}>
+            <Text style={[styles.text, TextStyles.small]}>
+              contacts are helpful so that you can find your friends
+            </Text>
             <Button
+              style={styles.button}
               size="small"
               title="contacts"
               onPress={() => request(PermissionTypes.CONTACTS)}
             />
+          </View>
+          <View style={styles.row}>
+            <Text style={[styles.text, TextStyles.small]}>
+              location is helpful so that you dont need to set your timezone
+            </Text>
+
             <Button
+              style={styles.button}
               size="small"
               title="location"
               onPress={() => request(PermissionTypes.LOCATION)}
@@ -96,25 +108,27 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    alignItems: "center"
+    padding: 20
+    // alignItems: "center"
   },
   table: {
     flex: 1,
     maxHeight: SCREEN_HEIGHT / 2,
-    alignSelf: "stretch",
-    flexDirection: "row"
+    alignSelf: "stretch"
   },
-  left: {
+  header: {
+    marginBottom: 40
+  },
+  text: {
     flex: 2,
-    paddingRight: 20,
-    alignSelf: "stretch",
-    justifyContent: "space-around"
+    marginRight: 20
   },
-  right: {
-    flex: 1.5,
-    alignSelf: "stretch",
-    justifyContent: "space-around"
+  button: {
+    flex: 1
+  },
+  row: {
+    flexDirection: "row",
+    marginBottom: 40
   }
 });
 

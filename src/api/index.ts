@@ -1,18 +1,30 @@
 /* API */
-import { CheckCodeReturnType, VerifyPhoneReturnType } from "@api/controllers/verify";
+import {
+  CheckCodeReturnType,
+  VerifyPhoneReturnType
+} from "@api/controllers/verify";
 import axios, { AxiosInstance } from "axios";
 
 /* get the server URL and instantiate the client */
-const server = __DEV__ ? "http://localhost:5000" : "https://www.api.expect.photos";
-// const server = "https://www.api.expect.photos";
+// const server = __DEV__ ? "http://localhost:5000" : "https://www.api.expect.photos";
+const server = "https://www.api.expect.photos";
 // const server = "http://172.27.34.211:5000";
 
 // export * from "./context";
 
 export default axios.create({ baseURL: server });
 
-export const getHeaders = ({ jwt, image }: { jwt: string | null; image?: boolean }) => {
-  const imageHeaders = { Accept: "application/json", "Content-Type": "multipart/form-data" };
+export const getHeaders = ({
+  jwt,
+  image
+}: {
+  jwt: string | null;
+  image?: boolean;
+}) => {
+  const imageHeaders = {
+    Accept: "application/json",
+    "Content-Type": "multipart/form-data"
+  };
 
   let headers = {
     Authorization: jwt ? `Bearer ${jwt}` : ""
@@ -54,9 +66,13 @@ export class API {
     );
   };
 
-  requestAuthentication = async (phoneNumber: string): Promise<VerifyPhoneReturnType> => {
+  requestAuthentication = async (
+    phoneNumber: string
+  ): Promise<VerifyPhoneReturnType> => {
     try {
-      const res = await this.client.post<VerifyPhoneReturnType>(`/verify/${phoneNumber}`);
+      const res = await this.client.post<VerifyPhoneReturnType>(
+        `/verify/${phoneNumber}`
+      );
       console.log("inAPI:", res);
       return res.data;
     } catch (err) {
@@ -70,7 +86,9 @@ export class API {
     code: string
   ): Promise<CheckCodeReturnType> => {
     try {
-      const res = await this.client.post<CheckCodeReturnType>(`/verify/${phoneNumber}/${code}`);
+      const res = await this.client.post<CheckCodeReturnType>(
+        `/verify/${phoneNumber}/${code}`
+      );
       console.log("verify return:", res);
       return res.data;
     } catch (err) {

@@ -2,10 +2,13 @@ import { useNavigation } from "@react-navigation/core";
 import { useFocusEffect, useIsFocused } from "@react-navigation/core";
 import React, { useCallback } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import Contacts from "react-native-contacts";
+
+import { RouteProp } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
 
+import { StackParamList } from "../../App";
 import { Posts } from "@components/Profile";
 import { UserImage } from "@components/universal";
 import { Actions as AuthActions } from "@redux/modules/auth";
@@ -17,48 +20,31 @@ import {
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { routes } from "../index";
 
 const mapStateToProps = (state: RootState) => ({
   feed: selectors.feedState(state)
 });
 const mapDispatchToProps = {
-  fetchFeed: PostActions.fetchFeed,
-  logout: AuthActions.logout,
-  requestNotificationPermissions: PermissionsActions.requestNotifications,
-  requestPermission: PermissionsActions.requestPermission,
-  uploadPhoto: ImageActions.uploadPhoto
+  fetchFeed: PostActions.fetchFeed
 };
 
 export type FeedReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-export interface FeedOwnProps {}
+export interface FeedOwnProps {
+  navigation: NativeStackNavigationProp<StackParamList, "FEED">;
+  route: RouteProp<StackParamList, "FEED">;
+}
 export type FeedProps = FeedReduxProps & FeedOwnProps;
 
 export const Feed: React.FC<FeedProps> = React.memo(
-  ({
-    feed,
-    fetchFeed,
-    requestNotificationPermissions,
-    requestPermission,
-    uploadPhoto,
-    logout
-  }) => {
-    const navigation = useNavigation();
-
+  ({ navigation, feed, fetchFeed }) => {
     useFocusEffect(
       useCallback(() => {
         if (feed.stale) fetchFeed();
       }, [feed.stale])
     );
-
-    const getContacts = () => {
-      Contacts.getAllWithoutPhotos((err, contacts) => {
-        console.log(contacts);
-      });
-    };
 
     const getPosts = () => {
       return feed.posts;
@@ -68,7 +54,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
       <Screen style={styles.container}>
         <Button
           title="permissions"
-          onPress={() => navigation.navigate(routes.Permissions)}
+          onPress={() => navigation.navigate("PERMISSIONS")}
         />
         <Posts posts={getPosts()} />
       </Screen>

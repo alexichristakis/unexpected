@@ -1,12 +1,24 @@
 import { AxiosResponse } from "axios";
 import { Platform } from "react-native";
-import { all, call, fork, put, select, take, takeLatest } from "redux-saga/effects";
+import {
+  all,
+  call,
+  fork,
+  put,
+  select,
+  take,
+  takeLatest
+} from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
 import { UserType } from "unexpected-cloud/models/user";
 
 import * as selectors from "../selectors";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import {
+  ActionsUnion,
+  createAction,
+  ExtractActionFromActionCreator
+} from "../utils";
 
 import Navigation from "../../Navigation";
 
@@ -39,7 +51,11 @@ export default (
     }
 
     case ActionTypes.ON_UPDATE_USER: {
-      return { ...state, user: { ...state.user, ...action.payload.user }, loading: true };
+      return {
+        ...state,
+        user: { ...state.user, ...action.payload.user },
+        loading: true
+      };
     }
 
     case ActionTypes.ON_UPDATE_COMPLETE: {
@@ -56,7 +72,9 @@ export default (
   }
 };
 
-function* onCreateUser(action: ExtractActionFromActionCreator<typeof Actions.createUser>) {
+function* onCreateUser(
+  action: ExtractActionFromActionCreator<typeof Actions.createUser>
+) {
   const jwt = yield select(selectors.jwt);
   const phoneNumber = yield select(selectors.authPhoneNumber);
 
@@ -81,13 +99,18 @@ function* onCreateUser(action: ExtractActionFromActionCreator<typeof Actions.cre
 
     const { data: createdUser } = res;
 
-    yield all([yield put(Actions.loadUser(createdUser)), yield Navigation.navigate("home")]);
+    yield all([
+      yield put(Actions.loadUser(createdUser)),
+      yield Navigation.navigate("AUTHENTICATED")
+    ]);
   } catch (err) {
     yield put(Actions.onError(err));
   }
 }
 
-function* onUpdateUser(action: ExtractActionFromActionCreator<typeof Actions.updateUser>) {
+function* onUpdateUser(
+  action: ExtractActionFromActionCreator<typeof Actions.updateUser>
+) {
   const jwt = yield select(selectors.jwt);
   const phoneNumber = yield select(selectors.phoneNumber);
 
@@ -128,6 +151,7 @@ export const Actions = {
     createAction(ActionTypes.ON_CREATE_NEW_USER, { name }),
   loadUser: (user: UserType) => createAction(ActionTypes.LOAD_USER, { user }),
   onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err }),
-  updateUser: (user: Partial<UserType>) => createAction(ActionTypes.ON_UPDATE_USER, { user }),
+  updateUser: (user: Partial<UserType>) =>
+    createAction(ActionTypes.ON_UPDATE_USER, { user }),
   updateComplete: () => createAction(ActionTypes.ON_UPDATE_COMPLETE)
 };

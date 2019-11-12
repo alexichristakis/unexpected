@@ -1,6 +1,7 @@
 import immer from "immer";
 import moment, { Moment } from "moment";
 import {
+  call,
   all,
   fork,
   put,
@@ -15,7 +16,6 @@ import uuid from "uuid/v4";
 import client, { getHeaders } from "@api";
 import { AxiosResponse } from "axios";
 import Navigation from "../../Navigation";
-import { routes } from "../../screens";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
@@ -23,6 +23,7 @@ import {
   ExtractActionFromActionCreator
 } from "../utils";
 import { Actions as ImageActions } from "./image";
+import { TakePictureResponse } from "react-native-camera/types";
 
 export interface FeedState {
   // frames: Array<{
@@ -124,6 +125,9 @@ function* onSendPost(
   try {
     const jwt = yield select(selectors.jwt);
     const phoneNumber = yield select(selectors.phoneNumber);
+    const { uri, width, height }: TakePictureResponse = yield select(
+      selectors.currentImage
+    );
     const id = uuid();
 
     const post = {
@@ -131,15 +135,31 @@ function* onSendPost(
       description
     };
 
-    yield put(ImageActions.uploadPhoto(id));
-    yield client.put(
-      `/post/${phoneNumber}`,
-      { post },
-      { headers: getHeaders({ jwt }) }
-    );
+    const body = new FormData();
+    body.append("image", {
+      uri,
+      height,
+      width,
+      type: "image/jpeg",
+      name: `${phoneNumber}-${Date.now()}.jpg`
+    });
+
+    yield all([
+      yield call(client.put, `/image/${phoneNumber}/${id}`, body, {
+        headers: getHeaders({ jwt, image: true })
+      }),
+      yield call(
+        client.put,
+        `/post/${phoneNumber}`,
+        { post },
+        {
+          headers: getHeaders({ jwt })
+        }
+      )
+    ]);
 
     yield put(Actions.sendPostSuccess());
-    yield Navigation.navigate(routes.Home);
+    yield Navigation.navigate("HOME");
   } catch (err) {
     yield put(Actions.onError(err));
   }

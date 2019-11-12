@@ -1,4 +1,9 @@
-import { NavigationAction, NavigationContainerRef, NavigationState } from "@react-navigation/core";
+import {
+  NavigationAction,
+  NavigationContainerRef,
+  NavigationState
+} from "@react-navigation/core";
+import { StackParamList } from "App";
 
 // import { EventEmitter } from "events";
 
@@ -12,7 +17,7 @@ function setTopLevelNavigator(navigatorRef: NavigationContainerRef | null) {
   _navigator = navigatorRef;
 }
 
-function navigate(route: string) {
+function navigate(route: keyof StackParamList) {
   if (_navigator) {
     _navigator.navigate(route);
   }

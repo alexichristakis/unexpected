@@ -4,10 +4,16 @@ import { REHYDRATE } from "redux-persist";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";
-import { CheckCodeReturnType, VerifyPhoneReturnType } from "@api/controllers/verify";
+import {
+  CheckCodeReturnType,
+  VerifyPhoneReturnType
+} from "@api/controllers/verify";
 import Navigation from "../../Navigation";
-import { routes } from "../../screens";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import {
+  ActionsUnion,
+  createAction,
+  ExtractActionFromActionCreator
+} from "../utils";
 import { Actions as UserActions } from "./user";
 
 export interface AuthState {
@@ -77,7 +83,7 @@ export default (
     // }
 
     case ActionTypes.LOGOUT: {
-      Navigation.navigate(routes.Unauthenticated);
+      Navigation.navigate("UNAUTHENTICATED");
       return {
         ...state,
         jwt: null
@@ -89,11 +95,15 @@ export default (
   }
 };
 
-function* onLoginRequest(action: ExtractActionFromActionCreator<typeof Actions.requestAuth>) {
+function* onLoginRequest(
+  action: ExtractActionFromActionCreator<typeof Actions.requestAuth>
+) {
   const { phoneNumber } = action.payload;
 
   try {
-    const res: AxiosResponse<VerifyPhoneReturnType> = yield client.post(`/verify/${phoneNumber}`);
+    const res: AxiosResponse<VerifyPhoneReturnType> = yield client.post(
+      `/verify/${phoneNumber}`
+    );
     if (res.data) {
       yield put(Actions.successTextingCode());
     }
@@ -102,7 +112,9 @@ function* onLoginRequest(action: ExtractActionFromActionCreator<typeof Actions.r
   }
 }
 
-function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Actions.checkCode>) {
+function* onVerifyCodeRequest(
+  action: ExtractActionFromActionCreator<typeof Actions.checkCode>
+) {
   const { phoneNumber, code } = action.payload;
 
   try {
@@ -118,15 +130,18 @@ function* onVerifyCodeRequest(action: ExtractActionFromActionCreator<typeof Acti
       if (data.user) {
         yield all([
           yield put(
-            batchActions([UserActions.loadUser(data.user), Actions.setJWT(data.token)], BATCH)
+            batchActions(
+              [UserActions.loadUser(data.user), Actions.setJWT(data.token)],
+              BATCH
+            )
           ),
-          yield Navigation.navigate(routes.Authenticated)
+          yield Navigation.navigate("AUTHENTICATED")
         ]);
       } else {
         // user entity doesn't exist in DB: new user
         yield all([
           yield put(Actions.setJWT(data.token)),
-          yield Navigation.navigate(routes.SignUp)
+          yield Navigation.navigate("SIGN_UP")
         ]);
       }
     }
@@ -153,10 +168,12 @@ export enum ActionTypes {
 }
 
 export const Actions = {
-  requestAuth: (phoneNumber: string) => createAction(ActionTypes.REQUEST_AUTH, { phoneNumber }),
+  requestAuth: (phoneNumber: string) =>
+    createAction(ActionTypes.REQUEST_AUTH, { phoneNumber }),
   checkCode: (phoneNumber: string, code: string) =>
     createAction(ActionTypes.CHECK_CODE, { phoneNumber, code }),
-  errorRequestingAuth: (err: string) => createAction(ActionTypes.ERROR_REQUESTING_AUTH, { err }),
+  errorRequestingAuth: (err: string) =>
+    createAction(ActionTypes.ERROR_REQUESTING_AUTH, { err }),
   successTextingCode: () => createAction(ActionTypes.SUCCESS_TEXTING_CODE),
   // completedAuthFlow: () => createAction(ActionTypes.COMPLETED_AUTH_FLOW),
   setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt),

@@ -6,6 +6,7 @@ import Contacts from "react-native-contacts";
 import { ReduxPropsType } from "@redux/types";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import { TextStyles } from "@lib/styles";
 
 const mapStateToProps = () => ({});
 const mapDispatchToProps = {};
@@ -25,7 +26,7 @@ const Settings: React.FC<SettingsProps> = React.memo(({}) => {
 
   return (
     <Screen style={styles.container}>
-      <Text>Settings!</Text>
+      <Text style={[TextStyles.medium, styles.header]}>settings:</Text>
     </Screen>
   );
 });
@@ -33,8 +34,10 @@ const Settings: React.FC<SettingsProps> = React.memo(({}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    padding: 20
+  },
+  header: {
+    marginBottom: 40
   }
 });
 

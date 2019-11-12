@@ -3,7 +3,11 @@ import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
 import * as selectors from "../selectors";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import {
+  ActionsUnion,
+  createAction,
+  ExtractActionFromActionCreator
+} from "../utils";
 
 export interface ImageState {
   currentImage: TakePictureResponse | null;
@@ -44,10 +48,14 @@ export default (
   }
 };
 
-function* onUploadPhoto(action: ExtractActionFromActionCreator<typeof Actions.uploadPhoto>) {
+function* onUploadPhoto(
+  action: ExtractActionFromActionCreator<typeof Actions.uploadPhoto>
+) {
   const { id } = action.payload;
   try {
-    const { uri, width, height }: TakePictureResponse = yield select(selectors.currentImage);
+    const { uri, width, height }: TakePictureResponse = yield select(
+      selectors.currentImage
+    );
     const phoneNumber = yield select(selectors.phoneNumber);
     const jwt = yield select(selectors.jwt);
 
@@ -85,8 +93,10 @@ export enum ActionTypes {
 }
 
 export const Actions = {
-  takePhoto: (image: TakePictureResponse) => createAction(ActionTypes.TAKE_PHOTO, { image }),
+  takePhoto: (image: TakePictureResponse) =>
+    createAction(ActionTypes.TAKE_PHOTO, { image }),
   uploadPhoto: (id?: string) => createAction(ActionTypes.UPLOAD_PHOTO, { id }),
   uploadPhotoSuccess: () => createAction(ActionTypes.UPLOAD_PHOTO_SUCCESS),
-  uploadPhotoError: (err: any) => createAction(ActionTypes.UPLOAD_PHOTO_ERROR, { err })
+  uploadPhotoError: (err: any) =>
+    createAction(ActionTypes.UPLOAD_PHOTO_ERROR, { err })
 };

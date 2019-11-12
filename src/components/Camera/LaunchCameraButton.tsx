@@ -5,7 +5,6 @@ import { Animated, StyleSheet, TouchableOpacity } from "react-native";
 import SVG from "@assets/svg/camera_button.svg";
 import { useReduxState } from "@hooks";
 import * as selectors from "@redux/selectors";
-import { routes } from "@screens";
 
 export const LaunchCameraButton: React.FC = React.memo(() => {
   const [visible, setVisible] = useState(false);
@@ -30,7 +29,8 @@ export const LaunchCameraButton: React.FC = React.memo(() => {
     }
   }, [enabled]);
 
-  const handleOnPress = () => navigation.navigate(routes.Capture);
+  const handleOnPress = () =>
+    navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
 
   if (visible)
     return (
