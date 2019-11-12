@@ -1,4 +1,8 @@
-import { GlobalAcceptMimesMiddleware, ServerLoader, ServerSettings } from "@tsed/common";
+import {
+  GlobalAcceptMimesMiddleware,
+  ServerLoader,
+  ServerSettings
+} from "@tsed/common";
 import "@tsed/multipartfiles";
 import "@tsed/mongoose";
 
@@ -12,10 +16,12 @@ import methodOverride from "method-override";
   acceptMimes: ["application/json"],
   port: process.env.PORT || 5000,
   mount: {
-    "/": "src/controllers/*.ts"
+    "/": "src/controllers/*"
   },
   mongoose: {
-    url: process.env.PORT ? process.env.MONGODB_URI : "mongodb://127.0.0.1:27017/db1",
+    url: process.env.PORT
+      ? process.env.MONGODB_URI
+      : "mongodb://127.0.0.1:27017/db1",
     connectionOptions: {}
   }
   // multer: {
