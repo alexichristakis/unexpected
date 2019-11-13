@@ -1,6 +1,7 @@
-import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+
+import { useNavigation } from "@react-navigation/core";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
@@ -20,12 +21,13 @@ const mapDispatchToProps = {
 };
 
 export interface SharePostOwnProps {}
-export type SharePostReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
+export type SharePostReduxProps = ReduxPropsType<
+  typeof mapStateToProps,
+  typeof mapDispatchToProps
+>;
 const initialFormValues = { description: "" };
 const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
   ({ sendPost, image, sending }) => {
-    const navigation = useNavigation();
-
     useEffect(() => {});
 
     const handleSubmit = (values: typeof initialFormValues) => {
@@ -34,7 +36,12 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
 
     return (
       <Screen style={styles.container}>
-        <PendingPostImage source={image} style={{ marginTop: 100 }} width={100} height={130} />
+        <PendingPostImage
+          source={image}
+          style={{ marginTop: 100 }}
+          width={100}
+          height={130}
+        />
         <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
           {({ values, errors, handleChange, handleSubmit }) => (
             <View style={styles.form}>
@@ -72,7 +79,4 @@ const styles = StyleSheet.create({
   shutter: { position: "absolute", bottom: 100 }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SharePost);
+export default connect(mapStateToProps, mapDispatchToProps)(SharePost);

@@ -32,7 +32,10 @@ export const UserImage = ({ phoneNumber, size }: UserImageProps) => {
       //   onLoad={() => setLoaded(true)}
       //   onError={() => setError(true)}
       source={source}
-      style={[styles.image, { width: size, height: size, borderRadius: size / 2 }]}
+      style={[
+        styles.image,
+        { width: size, height: size, borderRadius: size / 2 }
+      ]}
     />
   );
 };

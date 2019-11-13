@@ -1,13 +1,22 @@
 import React from "react";
-import { StyleSheet, ViewStyle } from "react-native";
-import { RNCamera, TakePictureOptions, TakePictureResponse } from "react-native-camera";
+import {
+  StyleSheet,
+  ViewStyle,
+  TouchableWithoutFeedback,
+  GestureResponderEvent,
+  LayoutChangeEvent
+} from "react-native";
+
+import { RNCamera, TakePictureOptions } from "react-native-camera";
 
 export interface CameraProps {
   style?: ViewStyle;
 }
 class Camera extends React.Component<CameraProps> {
   state = {
-    type: RNCamera.Constants.Type.back
+    type: RNCamera.Constants.Type.back,
+    focus: { x: 0.5, y: 0.5 },
+    layout: { width: 0, height: 0 }
   };
 
   private camera = React.createRef<RNCamera>();
@@ -32,11 +41,37 @@ class Camera extends React.Component<CameraProps> {
     return null;
   };
 
+  handleCameraLayout = ({ nativeEvent }: LayoutChangeEvent) => {
+    const { layout } = nativeEvent;
+
+    this.setState({ layout });
+  };
+
+  handleOnPress = ({ nativeEvent }: GestureResponderEvent) => {
+    const { locationX, locationY } = nativeEvent;
+
+    const {
+      layout: { width, height }
+    } = this.state;
+
+    this.setState({ focus: { x: locationX / width, y: locationY / height } });
+  };
+
   render() {
-    const { type } = this.state;
+    const { type, focus } = this.state;
     const { style } = this.props;
     return (
-      <RNCamera ref={this.camera} style={[styles.camera, style]} type={type} captureAudio={false} />
+      <TouchableWithoutFeedback onPress={this.handleOnPress}>
+        <RNCamera
+          ref={this.camera}
+          onLayout={this.handleCameraLayout}
+          autoFocus="on"
+          autoFocusPointOfInterest={focus}
+          style={[styles.camera, style]}
+          type={type}
+          captureAudio={false}
+        />
+      </TouchableWithoutFeedback>
     );
   }
 }

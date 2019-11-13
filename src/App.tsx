@@ -13,7 +13,7 @@ import {
   NativeStackNavigationProp
 } from "@react-navigation/native-stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
@@ -35,6 +35,7 @@ import Post from "./screens/Post";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
 import Share from "./screens/Share";
+import NewProfilePicture from "./screens/NewProfilePicture";
 import SignUp from "./screens/SignUp";
 
 import { LaunchCameraButton } from "@components/Camera";
@@ -58,6 +59,7 @@ export type StackParamList = {
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: { nextRoute: keyof StackParamList };
+  NEW_PROFILE_PICTURE: undefined;
 };
 
 export type TabParamList = {
@@ -184,14 +186,8 @@ const Router: React.FC = () => {
         }}
       </Stack.Screen>
 
-      <Stack.Screen
-        name={"CAPTURE"}
-        options={{
-          headerTitle: "share",
-          headerTintColor: "#231F20"
-        }}
-      >
-        {() => (
+      <Stack.Screen name={"CAPTURE"}>
+        {({ route }) => (
           <Stack.Navigator>
             <Stack.Screen
               name={"CAPTURE"}
@@ -203,11 +199,28 @@ const Router: React.FC = () => {
                   backgroundColor: "white"
                 }
               }}
-              component={Capture}
-            />
+            >
+              {({ navigation }) => (
+                <Capture navigation={navigation} route={route} />
+              )}
+            </Stack.Screen>
             <Stack.Screen
               name={"SHARE"}
               component={Share}
+              options={{
+                headerTitle: "share",
+                headerTitleStyle: TextStyles.large,
+                headerTintColor: "#231F20",
+                headerHideShadow: true,
+                headerStyle: {
+                  backgroundColor: "white"
+                },
+                contentStyle: { backgroundColor: "white" }
+              }}
+            />
+            <Stack.Screen
+              name={"NEW_PROFILE_PICTURE"}
+              component={NewProfilePicture}
               options={{
                 headerTitle: "share",
                 headerTitleStyle: TextStyles.large,

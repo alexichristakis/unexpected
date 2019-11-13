@@ -1,7 +1,10 @@
-import { useNavigation } from "@react-navigation/core";
 import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, TouchableOpacity } from "react-native";
 
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/core";
+
+import { StackParamList } from "../../App";
 import SVG from "@assets/svg/camera_button.svg";
 import { useReduxState } from "@hooks";
 import * as selectors from "@redux/selectors";
@@ -11,7 +14,7 @@ export const LaunchCameraButton: React.FC = React.memo(() => {
   const [scale] = useState(new Animated.Value(0));
 
   const { enabled, timeOfExpiry } = useReduxState(selectors.camera);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   useEffect(() => {
     if (enabled) {
