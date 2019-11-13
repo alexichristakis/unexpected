@@ -35,7 +35,9 @@ export default (
       return { ...state, uploading: true };
     }
 
+    case ActionTypes.CLEAR_PHOTO:
     case ActionTypes.UPLOAD_PHOTO_SUCCESS: {
+      console.log("clear photo in reducer");
       return { ...state, uploading: false, currentImage: null };
     }
 
@@ -89,12 +91,14 @@ export enum ActionTypes {
   TAKE_PHOTO = "image/TAKE_PHOTO",
   UPLOAD_PHOTO = "image/UPLOAD_PHOTO",
   UPLOAD_PHOTO_SUCCESS = "image/UPLOAD_PHOTO_SUCCESS",
-  UPLOAD_PHOTO_ERROR = "image/ON_UPLOAD_ERROR"
+  UPLOAD_PHOTO_ERROR = "image/ON_UPLOAD_ERROR",
+  CLEAR_PHOTO = "image/CLEAR_PHOTO"
 }
 
 export const Actions = {
   takePhoto: (image: TakePictureResponse) =>
     createAction(ActionTypes.TAKE_PHOTO, { image }),
+  clearPhoto: () => createAction(ActionTypes.CLEAR_PHOTO),
   uploadPhoto: (id?: string) => createAction(ActionTypes.UPLOAD_PHOTO, { id }),
   uploadPhotoSuccess: () => createAction(ActionTypes.UPLOAD_PHOTO_SUCCESS),
   uploadPhotoError: (err: any) =>

@@ -11,6 +11,7 @@ import { Button, UserImage } from "@components/universal";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { TextStyles } from "@lib/styles";
+import { useLightStatusBar } from "@hooks";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state)
@@ -27,6 +28,8 @@ export interface SettingsProps extends SettingsReduxProps {
 
 const Settings: React.FC<SettingsProps> = React.memo(
   ({ navigation, phoneNumber }) => {
+    useLightStatusBar();
+
     const getContacts = () => {
       Contacts.getAllWithoutPhotos((err, contacts) => {
         console.log(contacts);
@@ -34,7 +37,8 @@ const Settings: React.FC<SettingsProps> = React.memo(
     };
 
     const navigateToNewProfilePicture = () => {
-      navigation.navigate("CAPTURE", { nextRoute: "NEW_PROFILE_PICTURE" });
+      console.log("navigate");
+      navigation.navigate("NEW_PROFILE_PICTURE");
     };
 
     return (

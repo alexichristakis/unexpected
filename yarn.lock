@@ -957,39 +957,39 @@
   dependencies:
     invariant "^2.2.4"
 
-"@react-navigation/bottom-tabs@@next":
-  version "5.0.0-alpha.20"
-  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.0.0-alpha.20.tgz#9f6ed0eb1ca952fd5ee005ff3c7824a821c211ff"
-  integrity sha512-YY1EDNjlbLaZHPN7Fl4/L6eidEj0HdtB+YCv7Hj5jvXq2h5/LUz2rj2W5aR8/ZGI/tIuUAnuPtXRHveKjAAf2Q==
-  dependencies:
-    "@react-navigation/routers" "^5.0.0-alpha.13"
-
-"@react-navigation/core@@next":
+"@react-navigation/bottom-tabs@^5.0.0-alpha.21":
   version "5.0.0-alpha.21"
-  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.0.0-alpha.21.tgz#adf746e4c8c4471bbc041743728b0c9f97f830a2"
-  integrity sha512-RLD9A/GvAbaF27qm8JDsimX6o3VrDJGbTpK4R0HvX2Hy59gGUxVif5SxmosZQKk4wRd5rU2LOyFqDmB9Xc05dw==
+  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.0.0-alpha.21.tgz#ca90c933a6f6e7ee68734246f44f4942681e5799"
+  integrity sha512-xWA8CVTpe+fswztBIgkbeacjKRQnghbNE+NhtKbyBk1fpSge4aaaPLlxzQL618DS3gML2Aquvm60Mz5YEEvCtg==
+  dependencies:
+    "@react-navigation/routers" "^5.0.0-alpha.14"
+
+"@react-navigation/core@^5.0.0-alpha.22":
+  version "5.0.0-alpha.22"
+  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.0.0-alpha.22.tgz#dc9a021e5bb693f35d2b1a96992f9f43cf5bb64b"
+  integrity sha512-TDPUSCJeBzbAx+heEfe0tet84TOn0CNZGlP1dwJIn/0ZTb9wEdpf7FSqTGDKt7jWfmqeorp4SEcl4W5v3RXu4g==
   dependencies:
     escape-string-regexp "^2.0.0"
     query-string "^6.8.3"
     shortid "^2.2.15"
     use-subscription "^1.1.1"
 
-"@react-navigation/native-stack@@next":
-  version "5.0.0-alpha.11"
-  resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-5.0.0-alpha.11.tgz#d64e88e98547db33ea69905034aaa2370eb8cef5"
-  integrity sha512-oi/oAsqAddUyPZgvQ81palcEF0PAAcx7mw5Ks1onf5FFTuMT5FiOXUH3ukPlzS9FXLrKObzpJyHhCNNd4cjcSw==
+"@react-navigation/native-stack@^5.0.0-alpha.12":
+  version "5.0.0-alpha.12"
+  resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-5.0.0-alpha.12.tgz#c40d0633840a508de1a3cbd8945ef31f094065f9"
+  integrity sha512-CNb38Uc0ZpDSLBNDqPAjYaYy6YXQIvFAi2iYIa6T8ftlqrfnI3gMCZkXbobfLt+6PHLQGZx8GHol4+2lFo7l0w==
   dependencies:
-    "@react-navigation/routers" "^5.0.0-alpha.13"
+    "@react-navigation/routers" "^5.0.0-alpha.14"
 
-"@react-navigation/native@@next":
+"@react-navigation/native@^5.0.0-alpha.15":
   version "5.0.0-alpha.15"
   resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.0.0-alpha.15.tgz#db404654ef92471e97a0b684000b7b9e24d0818f"
   integrity sha512-kUwYmKMA7G91fPFGn+yfNPqPAaBrVYR3J9pqMIRdJzKNZ7Wut/iUaFbjHPtXHDwOPzaFiOz0OvEfVmggbGiIYQ==
 
-"@react-navigation/routers@^5.0.0-alpha.13":
-  version "5.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@react-navigation/routers/-/routers-5.0.0-alpha.13.tgz#2dd2791bcad7044e2027aafffe5d33b95154a70e"
-  integrity sha512-55viExqHxSDeZT482tXrKyOThcX83GQx40UzOMiZtGdB6couU4h9FBRQ/NYI6mLJSdcfUEe0B4BKl+ID5y5X9A==
+"@react-navigation/routers@^5.0.0-alpha.14":
+  version "5.0.0-alpha.14"
+  resolved "https://registry.yarnpkg.com/@react-navigation/routers/-/routers-5.0.0-alpha.14.tgz#f68970c3f46a33d1c4d32df1736993d168719b1c"
+  integrity sha512-jvxW0X5plvftdQQQq6F2nnCJTVLvHBlqlxfPgiUWdE7Zcpzc2OmlZaA6tu8AwCmY4DBkV6XynZrWeMc2POlEyg==
   dependencies:
     shortid "^2.2.15"
 
@@ -5930,9 +5930,9 @@ qs@~6.5.2:
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
 
 query-string@^6.8.3:
-  version "6.8.3"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.8.3.tgz#fd9fb7ffb068b79062b43383685611ee47777d4b"
-  integrity sha512-llcxWccnyaWlODe7A9hRjkvdCKamEKTh+wH8ITdTc3OhchaqUZteiSCX/2ablWHVrkVIe04dntnaZJ7BdyW0lQ==
+  version "6.9.0"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.9.0.tgz#1c3b727c370cf00f177c99f328fda2108f8fa3dd"
+  integrity sha512-KG4bhCFYapExLsUHrFt+kQVEegF2agm4cpF/VNc6pZVthIfCc/GK8t8VyNIE3nyXG9DK3Tf2EGkxjR6/uRdYsA==
   dependencies:
     decode-uri-component "^0.2.0"
     split-on-first "^1.0.0"

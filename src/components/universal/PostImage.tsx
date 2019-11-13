@@ -29,6 +29,7 @@ export const PostImage: React.FC<PostImageProps> = React.memo(
 
 const styles = StyleSheet.create({
   image: {
+    resizeMode: "contain",
     backgroundColor: "gray"
   }
 });

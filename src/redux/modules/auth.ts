@@ -52,7 +52,8 @@ export default (
       else return { ...initialState };
     }
 
-    case ActionTypes.REQUEST_AUTH || ActionTypes.CHECK_CODE: {
+    case ActionTypes.CHECK_CODE:
+    case ActionTypes.REQUEST_AUTH: {
       const { phoneNumber } = action.payload;
       return { ...state, phoneNumber, loading: true, authError: "" };
     }

@@ -5,14 +5,18 @@ import { TakePictureResponse } from "react-native-camera/types";
 import { SCREEN_WIDTH } from "@lib/styles";
 
 export interface PendingPostImageProps {
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
+  round?: boolean;
+  size?: number;
   source: TakePictureResponse | { uri: string } | null;
   style?: ImageStyle;
 }
 export const PendingPostImage: React.FC<PendingPostImageProps> = ({
   source,
-  style,
+  style = {},
+  round = false,
+  size = 0,
   width = SCREEN_WIDTH - 20,
   height
 }) => {
@@ -25,9 +29,20 @@ export const PendingPostImage: React.FC<PendingPostImageProps> = ({
     }
   });
 
+  let imageStyle: ImageStyle = { ...style, width, height };
+  if (size && round) {
+    imageStyle.borderRadius = size / 2;
+    imageStyle.width = size;
+    imageStyle.height = size;
+  }
+
   if (uri)
     return (
-      <Image onLoad={() => setLoading(false)} style={[style, { width, height }]} source={{ uri }} />
+      <Image
+        onLoad={() => setLoading(false)}
+        style={imageStyle}
+        source={{ uri }}
+      />
     );
-  else return <View style={{ width, height, backgroundColor: "gray" }} />;
+  else return <View style={[imageStyle, { backgroundColor: "gray" }]} />;
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import {
   StyleSheet,
+  View,
   ViewStyle,
   TouchableWithoutFeedback,
   GestureResponderEvent,
@@ -10,6 +11,9 @@ import {
 import { RNCamera, TakePictureOptions } from "react-native-camera";
 
 export interface CameraProps {
+  round?: boolean;
+  size?: number;
+  containerStyle?: ViewStyle;
   style?: ViewStyle;
 }
 class Camera extends React.Component<CameraProps> {
@@ -54,31 +58,46 @@ class Camera extends React.Component<CameraProps> {
       layout: { width, height }
     } = this.state;
 
+    console.log({ x: locationX / width, y: locationY / height });
+
     this.setState({ focus: { x: locationX / width, y: locationY / height } });
   };
 
   render() {
     const { type, focus } = this.state;
-    const { style } = this.props;
+    const { style, round, size } = this.props;
+
+    let cameraStyle: ViewStyle = { ...style };
+    if (size && round) {
+      cameraStyle.width = size;
+      cameraStyle.height = size;
+    }
+
     return (
-      <TouchableWithoutFeedback onPress={this.handleOnPress}>
-        <RNCamera
-          ref={this.camera}
-          onLayout={this.handleCameraLayout}
-          autoFocus="on"
-          autoFocusPointOfInterest={focus}
-          style={[styles.camera, style]}
-          type={type}
-          captureAudio={false}
-        />
-      </TouchableWithoutFeedback>
+      <View
+        style={[
+          { overflow: "hidden", borderRadius: round && !!size ? size / 2 : 0 }
+        ]}
+      >
+        <TouchableWithoutFeedback onPress={this.handleOnPress}>
+          <RNCamera
+            ref={this.camera}
+            onLayout={this.handleCameraLayout}
+            autoFocus="on"
+            autoFocusPointOfInterest={focus}
+            style={[styles.camera, cameraStyle]}
+            type={type}
+            captureAudio={false}
+          />
+        </TouchableWithoutFeedback>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   camera: {
-    flex: 1
+    // flex: 1
   }
 });
 

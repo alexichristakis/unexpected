@@ -11,6 +11,7 @@ import { SCREEN_WIDTH } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { useLightStatusBar } from "@hooks";
 
 const mapStateToProps = (state: RootState) => ({
   cameraPermission: selectors.cameraPermissions(state)
@@ -33,12 +34,8 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
   route
 }) => {
   const [camera, setCamera] = useState<Camera | null>(null);
-  const isFocused = useIsFocused();
 
-  useEffect(() => {
-    if (isFocused) StatusBar.setBarStyle("light-content", true);
-    else StatusBar.setBarStyle("dark-content", true);
-  }, [isFocused]);
+  useLightStatusBar();
 
   const onTakePhoto = async () => {
     if (camera) {
