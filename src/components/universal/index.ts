@@ -6,3 +6,7 @@ export * from "./Header";
 export * from "./PendingPostImage";
 export * from "./PostImage";
 export * from "./Post";
+
+import UserImage from "./UserImage";
+
+export { UserImage };

@@ -2,19 +2,19 @@ import React, { useCallback } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
 import {
-  useFocusEffect,
   RouteProp,
+  useFocusEffect,
   useIsFocused
 } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { StackParamList } from "../../App";
 import { Posts } from "@components/Profile";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   feed: selectors.feedState(state)

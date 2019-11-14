@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { StackParamList } from "../App";
 import Camera, { Shutter } from "@components/Camera";
 import { Button, Input, PendingPostImage } from "@components/universal";
+import { useLightStatusBar } from "@hooks";
+import { TextStyles } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { TextStyles } from "@lib/styles";
-import { useLightStatusBar } from "@hooks";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
   image: selectors.currentImage(state),
@@ -21,7 +21,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   takePhoto: ImageActions.takePhoto,
   clearPhoto: ImageActions.clearPhoto,
-  uploadPhoto: ImageActions.uploadPhoto
+  uploadPhoto: ImageActions.uploadProfilePhoto
 };
 
 export type NewProfilePictureReduxProps = ReduxPropsType<
@@ -42,7 +42,7 @@ const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
     }, []);
 
     const onLooksGood = () => {
-      uploadPhoto(undefined, () => navigation.goBack());
+      uploadPhoto(() => navigation.goBack());
     };
 
     const onTakePhoto = async () => {
@@ -65,9 +65,9 @@ const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
         <View style={styles.center}>
           <View style={{ flex: 4 }}>
             {image ? (
-              <PendingPostImage round size={300} source={image} />
+              <PendingPostImage round={true} size={300} source={image} />
             ) : (
-              <Camera front round size={300} ref={setCamera} />
+              <Camera front={true} round={true} size={300} ref={setCamera} />
             )}
           </View>
           <View style={{ flex: 1, alignSelf: "stretch" }}>

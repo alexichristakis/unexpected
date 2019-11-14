@@ -1,8 +1,8 @@
 import immer from "immer";
 import moment, { Moment } from "moment";
 import {
-  call,
   all,
+  call,
   fork,
   put,
   select,
@@ -15,6 +15,7 @@ import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
 import { AxiosResponse } from "axios";
+import { TakePictureResponse } from "react-native-camera/types";
 import Navigation from "../../Navigation";
 import * as selectors from "../selectors";
 import {
@@ -23,7 +24,6 @@ import {
   ExtractActionFromActionCreator
 } from "../utils";
 import { Actions as ImageActions } from "./image";
-import { TakePictureResponse } from "react-native-camera/types";
 
 export interface FeedState {
   // frames: Array<{

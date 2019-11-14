@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, TouchableOpacity } from "react-native";
 
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import { StackParamList } from "../../App";
 import SVG from "@assets/svg/camera_button.svg";
 import { useReduxState } from "@hooks";
 import * as selectors from "@redux/selectors";
+import { StackParamList } from "../../App";
 
 export const LaunchCameraButton: React.FC = React.memo(() => {
   const [visible, setVisible] = useState(false);

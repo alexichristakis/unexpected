@@ -7,7 +7,6 @@ import { useSafeArea } from "react-native-safe-area-context";
 import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { StackParamList } from "../../App";
 import { Posts, Top } from "@components/Profile";
 import { Header } from "@components/universal";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
@@ -15,6 +14,7 @@ import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   user: selectors.user(state),

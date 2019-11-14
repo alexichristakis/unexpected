@@ -1,35 +1,44 @@
+import immer from "immer";
 import { TakePictureResponse } from "react-native-camera/types";
-import {
-  all,
-  fork,
-  call,
-  put,
-  select,
-  take,
-  takeLatest
-} from "redux-saga/effects";
 import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
+import { all, put, select, takeLatest } from "redux-saga/effects";
+import RNFS, { DownloadResult } from "react-native-fs";
 
-import client, { getHeaders } from "@api";
+import client, { getHeaders, getUserProfileURL } from "@api";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
+import { Platform } from "react-native";
+
+export interface CacheEntry {
+  ts: Date;
+  uri: string;
+  fallback: string;
+}
 
 export interface ImageState {
   currentImage: TakePictureResponse | null;
   uploading: boolean;
   uploadError: any;
+  cache: {
+    profile: {
+      [phoneNumber: string]: CacheEntry;
+    };
+  };
 }
 
 const initialState: ImageState = {
   currentImage: null,
   uploading: false,
-  uploadError: null
+  uploadError: null,
+  cache: {
+    profile: {}
+  }
 };
 
 export default (
@@ -42,8 +51,25 @@ export default (
       return { ...state, currentImage: image };
     }
 
-    case ActionTypes.UPLOAD_PHOTO: {
+    case ActionTypes.UPLOAD_PROFILE_PHOTO: {
       return { ...state, uploading: true };
+    }
+
+    case ActionTypes.CACHE_PHOTO: {
+      const { uri, phoneNumber, id } = action.payload;
+
+      if (phoneNumber)
+        immer(state, draft => {
+          draft.cache.profile[phoneNumber] = {
+            ts: new Date(),
+            uri,
+            fallback: getUserProfileURL(phoneNumber)
+          };
+
+          return draft;
+        });
+
+      return state;
     }
 
     case ActionTypes.CLEAR_PHOTO:
@@ -60,10 +86,10 @@ export default (
   }
 };
 
-function* onUploadPhoto(
-  action: ExtractActionFromActionCreator<typeof Actions.uploadPhoto>
+function* onUploadProfilePhoto(
+  action: ExtractActionFromActionCreator<typeof Actions.uploadProfilePhoto>
 ) {
-  const { id, cb } = action.payload;
+  const { cb } = action.payload;
   try {
     const { uri, width, height }: TakePictureResponse = yield select(
       selectors.currentImage
@@ -88,29 +114,60 @@ function* onUploadPhoto(
       name: `${phoneNumber}-${Date.now()}.jpg`
     });
 
-    let endpoint = `/image/${phoneNumber}`;
-    if (id) endpoint += `/${id}`;
+    const endpoint = `/image/${phoneNumber}`;
 
     yield client.put(endpoint, body, {
       headers: getHeaders({ jwt, image: true })
     });
 
     yield put(Actions.uploadPhotoSuccess());
+    yield put(Actions.cachePhoto(image.uri, phoneNumber));
     if (cb) yield cb();
   } catch (err) {
     yield put(Actions.uploadPhotoError(err.message));
   }
 }
 
+const getFileName = (name: string) => {
+  const FILE = Platform.OS === "ios" ? "" : "file://";
+  return `${FILE}${RNFS.DocumentDirectoryPath}/${name}.jpg`;
+};
+
+function* onRequestCache(
+  action: ExtractActionFromActionCreator<typeof Actions.requestCache>
+) {
+  const { phoneNumber, id } = action.payload;
+  const jwt = yield select(selectors.jwt);
+
+  try {
+    const download = getFileName(`/profile/${phoneNumber}`);
+
+    const response: DownloadResult = yield RNFS.downloadFile({
+      fromUrl: getUserProfileURL(phoneNumber),
+      toFile: download,
+      headers: getHeaders({ jwt })
+    }).promise;
+
+    yield put(Actions.cachePhoto(download, phoneNumber));
+  } catch (err) {
+    yield put(Actions.uploadPhotoError(err));
+  }
+}
+
 export function* imageSagas() {
-  yield all([yield takeLatest(ActionTypes.UPLOAD_PHOTO, onUploadPhoto)]);
+  yield all([
+    yield takeLatest(ActionTypes.UPLOAD_PROFILE_PHOTO, onUploadProfilePhoto),
+    yield takeLatest(ActionTypes.CACHE_PHOTO, onRequestCache)
+  ]);
 }
 
 export enum ActionTypes {
   TAKE_PHOTO = "image/TAKE_PHOTO",
-  UPLOAD_PHOTO = "image/UPLOAD_PHOTO",
+  UPLOAD_PROFILE_PHOTO = "image/UPLOAD_PROFILE_PHOTO",
   UPLOAD_PHOTO_SUCCESS = "image/UPLOAD_PHOTO_SUCCESS",
   UPLOAD_PHOTO_ERROR = "image/ON_UPLOAD_ERROR",
+  CACHE_PHOTO = "image/CACHE_PHOTO",
+  REQUEST_CACHE = "image/REQUEST_CACHE",
   CLEAR_PHOTO = "image/CLEAR_PHOTO"
 }
 
@@ -118,8 +175,12 @@ export const Actions = {
   takePhoto: (image: TakePictureResponse) =>
     createAction(ActionTypes.TAKE_PHOTO, { image }),
   clearPhoto: () => createAction(ActionTypes.CLEAR_PHOTO),
-  uploadPhoto: (id?: string, cb?: () => void) =>
-    createAction(ActionTypes.UPLOAD_PHOTO, { id, cb }),
+  requestCache: (phoneNumber: string, id?: string) =>
+    createAction(ActionTypes.REQUEST_CACHE, { phoneNumber, id }),
+  cachePhoto: (uri: string, phoneNumber?: string, id?: string) =>
+    createAction(ActionTypes.CACHE_PHOTO, { uri, phoneNumber, id }),
+  uploadProfilePhoto: (cb?: () => void) =>
+    createAction(ActionTypes.UPLOAD_PROFILE_PHOTO, { cb }),
   uploadPhotoSuccess: () => createAction(ActionTypes.UPLOAD_PHOTO_SUCCESS),
   uploadPhotoError: (err: any) =>
     createAction(ActionTypes.UPLOAD_PHOTO_ERROR, { err })

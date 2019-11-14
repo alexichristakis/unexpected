@@ -5,13 +5,13 @@ import { StatusBar, StyleSheet, Text } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { StackParamList } from "../App";
 import Camera, { Shutter } from "@components/Camera";
+import { useLightStatusBar } from "@hooks";
 import { SCREEN_WIDTH } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { useLightStatusBar } from "@hooks";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
   cameraPermission: selectors.cameraPermissions(state)

@@ -1,17 +1,17 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import Contacts from "react-native-contacts";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Contacts from "react-native-contacts";
 
-import { StackParamList } from "../App";
+import { Button, UserImage } from "@components/universal";
+import { useLightStatusBar } from "@hooks";
+import { TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { Button, UserImage } from "@components/universal";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { TextStyles } from "@lib/styles";
-import { useLightStatusBar } from "@hooks";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state)

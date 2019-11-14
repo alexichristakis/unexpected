@@ -29,7 +29,7 @@ export const PendingPostImage: React.FC<PendingPostImageProps> = ({
     }
   });
 
-  let imageStyle: ImageStyle = { ...style, width, height };
+  const imageStyle: ImageStyle = { ...style, width, height };
   if (size && round) {
     imageStyle.borderRadius = size / 2;
     imageStyle.width = size;

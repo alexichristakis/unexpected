@@ -20,11 +20,11 @@ import { PersistGate } from "redux-persist/integration/react";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
 
+import { LaunchCameraButton } from "@components/Camera";
+import { TextStyles } from "@lib/styles";
 import Connection from "./components/Connection";
 import { useReduxState } from "./hooks";
 import Navigation from "./Navigation";
-import { LaunchCameraButton } from "@components/Camera";
-import { TextStyles } from "@lib/styles";
 
 /* screens */
 import Auth from "./screens/Auth";
@@ -32,19 +32,19 @@ import Capture from "./screens/Capture";
 import Discover from "./screens/Home/Discover";
 import Feed from "./screens/Home/Feed";
 import UserProfile from "./screens/Home/UserProfile";
+import NewProfilePicture from "./screens/NewProfilePicture";
 import Permissions from "./screens/Permissions";
 import Post from "./screens/Post";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
 import Share from "./screens/Share";
-import NewProfilePicture from "./screens/NewProfilePicture";
 import SignUp from "./screens/SignUp";
 
 import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
 import ProfileIcon from "./assets/svg/profile.svg";
 
-export type StackParamList = {
+export interface StackParamList {
   AUTHENTICATED: undefined;
   UNAUTHENTICATED: undefined;
   HOME: undefined;
@@ -60,13 +60,13 @@ export type StackParamList = {
   SIGN_UP: undefined;
   CAPTURE: { nextRoute: keyof StackParamList };
   NEW_PROFILE_PICTURE: undefined;
-};
+}
 
-export type TabParamList = {
+export interface TabParamList {
   FEED: undefined;
   USER_PROFILE: undefined;
   DISCOVER: undefined;
-};
+}
 
 type Props = Partial<React.ComponentProps<typeof Stack.Navigator>> & {
   name: keyof StackParamList;

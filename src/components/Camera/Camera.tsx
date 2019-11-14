@@ -1,11 +1,11 @@
 import React from "react";
 import {
-  StyleSheet,
-  View,
-  ViewStyle,
-  TouchableWithoutFeedback,
   GestureResponderEvent,
-  LayoutChangeEvent
+  LayoutChangeEvent,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  ViewStyle
 } from "react-native";
 
 import { RNCamera, TakePictureOptions } from "react-native-camera";
@@ -25,6 +25,8 @@ export interface CameraState {
 }
 
 class Camera extends React.Component<CameraProps, CameraState> {
+
+  private camera = React.createRef<RNCamera>();
   constructor(props: CameraProps) {
     super(props);
 
@@ -37,8 +39,6 @@ class Camera extends React.Component<CameraProps, CameraState> {
       layout: { width: 0, height: 0 }
     };
   }
-
-  private camera = React.createRef<RNCamera>();
 
   flip = () => {
     const { type } = this.state;
@@ -80,7 +80,7 @@ class Camera extends React.Component<CameraProps, CameraState> {
     const { type, focus } = this.state;
     const { style, round, size } = this.props;
 
-    let cameraStyle: ViewStyle = { ...style };
+    const cameraStyle: ViewStyle = { ...style };
     if (size && round) {
       cameraStyle.width = size;
       cameraStyle.height = size;
