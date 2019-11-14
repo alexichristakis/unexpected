@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { Button, UserImage } from "@components/universal";
 import { TextStyles } from "@lib/styles";

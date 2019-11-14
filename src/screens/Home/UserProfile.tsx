@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Animated, Button, Text, StyleSheet } from "react-native";
+import { Animated, Button, StyleSheet, Text } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";

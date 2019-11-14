@@ -37,7 +37,6 @@ const Settings: React.FC<SettingsProps> = React.memo(
     };
 
     const navigateToNewProfilePicture = () => {
-      console.log("navigate");
       navigation.navigate("NEW_PROFILE_PICTURE");
     };
 

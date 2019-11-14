@@ -2,13 +2,13 @@ import { Platform } from "react-native";
 
 import immer from "immer";
 import { TakePictureResponse } from "react-native-camera/types";
+import RNFS, { DownloadResult } from "react-native-fs";
 import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
-import { all, put, select, takeLatest, takeEvery } from "redux-saga/effects";
-import RNFS, { DownloadResult } from "react-native-fs";
+import { all, put, select, takeEvery, takeLatest } from "redux-saga/effects";
 
-import client, { getHeaders, getUserProfileURL, getPostImageURL } from "@api";
+import client, { getHeaders, getPostImageURL, getUserProfileURL } from "@api";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
