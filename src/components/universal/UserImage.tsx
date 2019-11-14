@@ -16,7 +16,7 @@ const mapDispatchToProps = {
   requestCache: ImageActions.requestCache
 };
 
-type UserImageReduxProps = ReduxPropsType<
+export type UserImageReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
@@ -25,7 +25,7 @@ export interface UserImageProps extends UserImageReduxProps {
   phoneNumber: string;
   size: number;
 }
-const UserImage: React.FC<UserImageProps> = React.memo(
+export const _UserImage: React.FC<UserImageProps> = React.memo(
   ({ phoneNumber, size, cache, jwt, requestCache }) => {
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
@@ -95,4 +95,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserImage);
+export default connect(mapStateToProps, mapDispatchToProps)(_UserImage);

@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import { PostImage } from "./PostImage";
+import PostImage from "./PostImage";
 
 export interface PostProps {
   post: PostType;

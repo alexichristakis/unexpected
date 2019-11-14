@@ -8,7 +8,7 @@ import ImageResizer, {
 import { all, put, select, takeLatest } from "redux-saga/effects";
 import RNFS, { DownloadResult } from "react-native-fs";
 
-import client, { getHeaders, getUserProfileURL } from "@api";
+import client, { getHeaders, getUserProfileURL, getPostImageURL } from "@api";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
@@ -30,6 +30,11 @@ export interface ImageState {
     profile: {
       [phoneNumber: string]: CacheEntry;
     };
+    feed: {
+      [phoneNumber: string]: {
+        [id: string]: CacheEntry;
+      };
+    };
   };
 }
 
@@ -38,7 +43,8 @@ const initialState: ImageState = {
   uploading: false,
   uploadError: null,
   cache: {
-    profile: {}
+    profile: {},
+    feed: {}
   }
 };
 
@@ -59,19 +65,27 @@ export default (
     case ActionTypes.CACHE_PHOTO: {
       const { uri, phoneNumber, id } = action.payload;
 
-      if (phoneNumber) {
+      if (id) {
+        return immer(state, draft => {
+          draft.cache.feed[phoneNumber][id] = {
+            uri,
+            ts: new Date().getTime(),
+            fallback: getPostImageURL(phoneNumber, id)
+          };
+
+          return draft;
+        });
+      } else {
         return immer(state, draft => {
           draft.cache.profile[phoneNumber] = {
-            ts: new Date().getTime(),
             uri,
+            ts: new Date().getTime(),
             fallback: getUserProfileURL(phoneNumber)
           };
 
           return draft;
         });
       }
-
-      return state;
     }
 
     case ActionTypes.CLEAR_PHOTO:
@@ -130,7 +144,7 @@ function* onUploadProfilePhoto(
   }
 }
 
-const getFileName = (name: string) => {
+const getFilePath = (name: string) => {
   // const FILE = Platform.OS === "ios" ? "" : "file://";
   return `${RNFS.CachesDirectoryPath}/${name}.jpg`;
 };
@@ -142,15 +156,20 @@ function* onRequestCache(
   const jwt = yield select(selectors.jwt);
 
   try {
-    const download = getFileName(`${phoneNumber}`);
+    const fileName = id ? `${phoneNumber}_${id}` : `${phoneNumber}`;
+    const filePath = getFilePath(fileName);
+
+    const url = id
+      ? getPostImageURL(phoneNumber, id)
+      : getUserProfileURL(phoneNumber);
 
     const response: DownloadResult = yield RNFS.downloadFile({
-      fromUrl: getUserProfileURL(phoneNumber),
-      toFile: download,
+      fromUrl: url,
+      toFile: filePath,
       headers: getHeaders({ jwt })
     }).promise;
 
-    yield put(Actions.cachePhoto(download, phoneNumber));
+    yield put(Actions.cachePhoto(filePath, phoneNumber, id));
   } catch (err) {
     yield put(Actions.uploadPhotoError(err));
   }
@@ -179,7 +198,7 @@ export const Actions = {
   clearPhoto: () => createAction(ActionTypes.CLEAR_PHOTO),
   requestCache: (phoneNumber: string, id?: string) =>
     createAction(ActionTypes.REQUEST_CACHE, { phoneNumber, id }),
-  cachePhoto: (uri: string, phoneNumber?: string, id?: string) =>
+  cachePhoto: (uri: string, phoneNumber: string, id?: string) =>
     createAction(ActionTypes.CACHE_PHOTO, { uri, phoneNumber, id }),
   uploadProfilePhoto: (cb?: () => void) =>
     createAction(ActionTypes.UPLOAD_PROFILE_PHOTO, { cb }),

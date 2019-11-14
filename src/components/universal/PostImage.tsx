@@ -1,9 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Image, ImageSourcePropType, StyleSheet } from "react-native";
+import { Image, View, StyleSheet } from "react-native";
 
-import { getHeaders, getPostImageURL } from "@api";
-import { useReduxState } from "@hooks";
+import { connect } from "react-redux";
+
+import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
+import { RootState, ReduxPropsType } from "@redux/types";
+
+const mapStateToProps = (state: RootState, props: PostImageProps) => ({
+  jwt: selectors.jwt(state),
+  cache: selectors.feedPhotoCacheForUser(state, props.phoneNumber)
+});
+
+const mapDispatchToProps = {
+  requestCache: ImageActions.requestCache
+};
+
+export type PostImageReduxProps = ReduxPropsType<
+  typeof mapStateToProps,
+  typeof mapDispatchToProps
+>;
 
 export interface PostImageProps {
   phoneNumber: string;
@@ -11,21 +27,44 @@ export interface PostImageProps {
   width: number;
   height: number;
 }
-export const PostImage: React.FC<PostImageProps> = React.memo(
-  ({ phoneNumber, id, width, height }) => {
-    const jwt = useReduxState(selectors.jwt);
+export const _PostImage: React.FC<PostImageProps &
+  PostImageReduxProps> = React.memo(
+  ({ phoneNumber, id, width, height, cache, requestCache }) => {
+    useEffect(() => {
+      if (!cache[id]) {
+        requestCache(phoneNumber, id);
+      }
+    });
 
-    console.log("render post image", id);
+    if (cache[phoneNumber]) {
+      return (
+        <Image
+          source={{ uri: cache[id].uri }}
+          style={[styles.image, { width, height }]}
+        />
+      );
+    } else {
+      return <View style={[styles.image, { width, height }]} />;
+    }
+  },
+  (prevProps, nextProps) => {
+    const { cache: prevCache } = prevProps;
+    const { id, cache: nextCache } = nextProps;
 
-    const source: ImageSourcePropType = {
-      uri: getPostImageURL(phoneNumber, id),
-      method: "GET",
-      headers: getHeaders({ jwt })
-    };
+    if (!nextCache[id]) return true;
 
-    return <Image source={source} style={[styles.image, { width, height }]} />;
+    if (!prevCache[id] && !!nextCache[id]) return false;
+
+    if (prevCache[id] && nextCache[id].ts > prevCache[id].ts) {
+      return false;
+    }
+
+    // otherwise props are equal
+    return true;
   }
 );
+
+export default connect(mapStateToProps, mapDispatchToProps)(_PostImage);
 
 const styles = StyleSheet.create({
   image: {

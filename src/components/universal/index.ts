@@ -8,5 +8,6 @@ export * from "./PostImage";
 export * from "./Post";
 
 import UserImage from "./UserImage";
+import PostImage from "./PostImage";
 
-export { UserImage };
+export { UserImage, PostImage };
