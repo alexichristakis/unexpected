@@ -44,7 +44,7 @@ import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
 import ProfileIcon from "./assets/svg/profile.svg";
 
-export interface StackParamList {
+export type StackParamList = {
   AUTHENTICATED: undefined;
   UNAUTHENTICATED: undefined;
   HOME: undefined;
@@ -60,13 +60,13 @@ export interface StackParamList {
   SIGN_UP: undefined;
   CAPTURE: { nextRoute: keyof StackParamList };
   NEW_PROFILE_PICTURE: undefined;
-}
+};
 
-export interface TabParamList {
+export type TabParamList = {
   FEED: undefined;
   USER_PROFILE: undefined;
   DISCOVER: undefined;
-}
+};
 
 type Props = Partial<React.ComponentProps<typeof Stack.Navigator>> & {
   name: keyof StackParamList;
@@ -294,6 +294,7 @@ const Router: React.FC = () => {
 export const Context: React.FC = ({ children }) => {
   const store = createStore();
   const persistor = persistStore(store);
+  persistor.purge();
   return (
     <Provider store={store}>
       <SafeAreaProvider>

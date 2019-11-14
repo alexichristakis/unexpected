@@ -3,8 +3,6 @@ import { Image, View, ImageSourcePropType, StyleSheet } from "react-native";
 
 import { connect } from "react-redux";
 
-import { getHeaders, getUserProfileURL } from "@api";
-import { useReduxState } from "@hooks";
 import * as selectors from "@redux/selectors";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -31,16 +29,14 @@ const UserImage: React.FC<UserImageProps> = React.memo(
   ({ phoneNumber, size, cache, jwt, requestCache }) => {
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
-    // const jwt = useReduxState(selectors.jwt);
-    // const cache = useReduxState(selectors.profilePhotoCache);
 
-    let source: ImageSourcePropType = {
-      uri: getUserProfileURL(phoneNumber),
-      method: "GET",
-      headers: getHeaders({ jwt }),
-      // cache: "only-if-cached"
-      cache: "reload"
-    };
+    // let source: ImageSourcePropType = {
+    //   uri: getUserProfileURL(phoneNumber),
+    //   method: "GET",
+    //   headers: getHeaders({ jwt }),
+    //   // cache: "only-if-cached"
+    //   cache: "reload"
+    // };
 
     useEffect(() => {
       if (!cache[phoneNumber]) {
@@ -48,18 +44,6 @@ const UserImage: React.FC<UserImageProps> = React.memo(
         requestCache(phoneNumber);
       }
     }, []);
-
-    // return (
-    //   <Image
-    //     //   onLoad={() => setLoaded(true)}
-    //     //   onError={() => setError(true)}
-    //     source={source}
-    // style={[
-    //   styles.image,
-    //   { width: size, height: size, borderRadius: size / 2 }
-    // ]}
-    //   />
-    // );
 
     if (cache[phoneNumber]) {
       return (
@@ -86,10 +70,22 @@ const UserImage: React.FC<UserImageProps> = React.memo(
     const { cache: prevCache } = prevProps;
     const { phoneNumber, cache: nextCache } = nextProps;
 
-    return (
-      nextCache[phoneNumber] &&
-      prevCache[phoneNumber].ts !== nextCache[phoneNumber].ts
-    );
+    // if we dont have a cache dont rerender
+    if (!nextCache[phoneNumber]) return true;
+
+    // if we didnt have a cache but now do rerender
+    if (!prevCache[phoneNumber] && !!nextCache[phoneNumber]) return false;
+
+    // if we had a cache but now it's newer rerender
+    if (
+      prevCache[phoneNumber] &&
+      nextCache[phoneNumber].ts > prevCache[phoneNumber].ts
+    ) {
+      return false;
+    }
+
+    // otherwise props are equal
+    return true;
   }
 );
 

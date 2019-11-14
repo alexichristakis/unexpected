@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 import immer from "immer";
 import { TakePictureResponse } from "react-native-camera/types";
 import ImageResizer, {
@@ -13,10 +15,9 @@ import {
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
-import { Platform } from "react-native";
 
 export interface CacheEntry {
-  ts: Date;
+  ts: number;
   uri: string;
   fallback: string;
 }
@@ -58,16 +59,17 @@ export default (
     case ActionTypes.CACHE_PHOTO: {
       const { uri, phoneNumber, id } = action.payload;
 
-      if (phoneNumber)
-        immer(state, draft => {
+      if (phoneNumber) {
+        return immer(state, draft => {
           draft.cache.profile[phoneNumber] = {
-            ts: new Date(),
+            ts: new Date().getTime(),
             uri,
             fallback: getUserProfileURL(phoneNumber)
           };
 
           return draft;
         });
+      }
 
       return state;
     }
@@ -129,8 +131,8 @@ function* onUploadProfilePhoto(
 }
 
 const getFileName = (name: string) => {
-  const FILE = Platform.OS === "ios" ? "" : "file://";
-  return `${FILE}${RNFS.DocumentDirectoryPath}/${name}.jpg`;
+  // const FILE = Platform.OS === "ios" ? "" : "file://";
+  return `${RNFS.CachesDirectoryPath}/${name}.jpg`;
 };
 
 function* onRequestCache(
@@ -140,7 +142,7 @@ function* onRequestCache(
   const jwt = yield select(selectors.jwt);
 
   try {
-    const download = getFileName(`/profile/${phoneNumber}`);
+    const download = getFileName(`${phoneNumber}`);
 
     const response: DownloadResult = yield RNFS.downloadFile({
       fromUrl: getUserProfileURL(phoneNumber),
@@ -157,7 +159,7 @@ function* onRequestCache(
 export function* imageSagas() {
   yield all([
     yield takeLatest(ActionTypes.UPLOAD_PROFILE_PHOTO, onUploadProfilePhoto),
-    yield takeLatest(ActionTypes.CACHE_PHOTO, onRequestCache)
+    yield takeLatest(ActionTypes.REQUEST_CACHE, onRequestCache)
   ]);
 }
 

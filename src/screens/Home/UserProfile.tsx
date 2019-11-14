@@ -8,7 +8,7 @@ import { Screen, ScreenProps } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Posts, Top } from "@components/Profile";
-import { Header } from "@components/universal";
+import { Header, UserImage } from "@components/universal";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
