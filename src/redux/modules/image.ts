@@ -5,7 +5,7 @@ import { TakePictureResponse } from "react-native-camera/types";
 import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
-import { all, put, select, takeLatest } from "redux-saga/effects";
+import { all, put, select, takeLatest, takeEvery } from "redux-saga/effects";
 import RNFS, { DownloadResult } from "react-native-fs";
 
 import client, { getHeaders, getUserProfileURL, getPostImageURL } from "@api";
@@ -67,11 +67,19 @@ export default (
 
       if (id) {
         return immer(state, draft => {
-          draft.cache.feed[phoneNumber][id] = {
+          console.log("draft:", draft.cache.feed[phoneNumber]);
+
+          const entry = {
             uri,
             ts: new Date().getTime(),
             fallback: getPostImageURL(phoneNumber, id)
           };
+
+          if (draft.cache.feed[phoneNumber]) {
+            draft.cache.feed[phoneNumber][id] = entry;
+          } else {
+            draft.cache.feed[phoneNumber] = { [id]: entry };
+          }
 
           return draft;
         });
@@ -163,11 +171,15 @@ function* onRequestCache(
       ? getPostImageURL(phoneNumber, id)
       : getUserProfileURL(phoneNumber);
 
+    console.log("before download");
+
     const response: DownloadResult = yield RNFS.downloadFile({
       fromUrl: url,
       toFile: filePath,
       headers: getHeaders({ jwt })
     }).promise;
+
+    console.log("complete:", response);
 
     yield put(Actions.cachePhoto(filePath, phoneNumber, id));
   } catch (err) {
@@ -178,7 +190,7 @@ function* onRequestCache(
 export function* imageSagas() {
   yield all([
     yield takeLatest(ActionTypes.UPLOAD_PROFILE_PHOTO, onUploadProfilePhoto),
-    yield takeLatest(ActionTypes.REQUEST_CACHE, onRequestCache)
+    yield takeEvery(ActionTypes.REQUEST_CACHE, onRequestCache)
   ]);
 }
 

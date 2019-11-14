@@ -34,9 +34,9 @@ export const _PostImage: React.FC<PostImageProps &
       if (!cache[id]) {
         requestCache(phoneNumber, id);
       }
-    });
+    }, []);
 
-    if (cache[phoneNumber]) {
+    if (cache[id]) {
       return (
         <Image
           source={{ uri: cache[id].uri }}
