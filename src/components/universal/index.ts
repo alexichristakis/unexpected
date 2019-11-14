@@ -7,7 +7,7 @@ export * from "./PendingPostImage";
 export * from "./PostImage";
 export * from "./Post";
 
-import UserImage from "./UserImage";
 import PostImage from "./PostImage";
+import UserImage from "./UserImage";
 
 export { UserImage, PostImage };

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Image, View, StyleSheet } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 import { connect } from "react-redux";
 
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
-import { RootState, ReduxPropsType } from "@redux/types";
+import { ReduxPropsType, RootState } from "@redux/types";
 
 const mapStateToProps = (state: RootState, props: PostImageProps) => ({
   jwt: selectors.jwt(state),

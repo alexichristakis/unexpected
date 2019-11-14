@@ -1,15 +1,14 @@
 import React, { useCallback, useState } from "react";
-import { Animated, Button, StyleSheet } from "react-native";
+import { Animated, Button, Text, StyleSheet } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useSafeArea } from "react-native-safe-area-context";
-import { Screen, ScreenProps } from "react-native-screens";
+import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Posts, Top } from "@components/Profile";
 import { Header, UserImage } from "@components/universal";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
+import { SCREEN_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
@@ -46,15 +45,28 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       }, [stale])
     );
 
+    const goToNewProfilePicture = () => {
+      navigation.navigate("NEW_PROFILE_PICTURE");
+    };
+
+    const goToSettings = () => {
+      navigation.navigate("SETTINGS");
+    };
+
     return (
       <Screen style={styles.container}>
-        <Top user={user} />
-        <Button
-          title="go to settings"
-          onPress={() => navigation.navigate("SETTINGS")}
+        <Posts
+          ListHeaderComponentStyle={styles.headerContainer}
+          ListHeaderComponent={() => (
+            <Top
+              user={user}
+              onPressImage={goToNewProfilePicture}
+              onPressName={goToSettings}
+            />
+          )}
+          posts={posts}
         />
-        <Posts style={{ marginTop: 100 }} posts={posts} />
-        <Header title={user.firstName} scrollY={scrollY} />
+        {/* <Header title={user.firstName} scrollY={scrollY} /> */}
       </Screen>
     );
   },
@@ -63,10 +75,14 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "blue",
-    paddingTop: 100,
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    alignItems: "center"
+    // justifyContent: "center"
+  },
+  headerContainer: {
     alignItems: "center",
-    justifyContent: "center"
+    alignSelf: "stretch"
   }
 });
 

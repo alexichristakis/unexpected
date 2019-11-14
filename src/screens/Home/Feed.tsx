@@ -7,7 +7,7 @@ import {
   useIsFocused
 } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Screen, ScreenProps } from "react-native-screens";
+import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Posts } from "@components/Profile";
@@ -46,11 +46,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
 
     return (
       <Screen style={styles.container}>
-        <Button
-          title="permissions"
-          onPress={() => navigation.navigate("PERMISSIONS")}
-        />
-        <Posts posts={getPosts()} />
+        <Posts posts={feed.posts} />
       </Screen>
     );
   }

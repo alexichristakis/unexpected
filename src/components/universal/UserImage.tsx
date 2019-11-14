@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Image, View, ImageSourcePropType, StyleSheet } from "react-native";
+import { Image, ImageSourcePropType, StyleSheet, View } from "react-native";
 
 import { connect } from "react-redux";
 
-import * as selectors from "@redux/selectors";
 import { Actions as ImageActions } from "@redux/modules/image";
+import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
 const mapStateToProps = (state: RootState) => ({

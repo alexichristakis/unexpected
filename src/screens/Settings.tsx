@@ -44,8 +44,16 @@ const Settings: React.FC<SettingsProps> = React.memo(
     return (
       <Screen style={styles.container}>
         <Text style={[TextStyles.medium, styles.header]}>settings:</Text>
-        <UserImage phoneNumber={phoneNumber} size={100} />
-        <Button title="update picture" onPress={navigateToNewProfilePicture} />
+        <Button
+          title="update picture"
+          style={styles.button}
+          onPress={navigateToNewProfilePicture}
+        />
+        <Button
+          title="permissions"
+          style={styles.button}
+          onPress={() => navigation.navigate("PERMISSIONS")}
+        />
       </Screen>
     );
   }
@@ -57,7 +65,10 @@ const styles = StyleSheet.create({
     padding: 20
   },
   header: {
-    marginBottom: 40
+    marginBottom: 20
+  },
+  button: {
+    marginBottom: 20
   }
 });
 

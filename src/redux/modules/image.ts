@@ -67,8 +67,6 @@ export default (
 
       if (id) {
         return immer(state, draft => {
-          console.log("draft:", draft.cache.feed[phoneNumber]);
-
           const entry = {
             uri,
             ts: new Date().getTime(),
