@@ -11,17 +11,32 @@ import {
 import { RNCamera, TakePictureOptions } from "react-native-camera";
 
 export interface CameraProps {
+  front?: boolean;
   round?: boolean;
   size?: number;
   containerStyle?: ViewStyle;
   style?: ViewStyle;
 }
-class Camera extends React.Component<CameraProps> {
-  state = {
-    type: RNCamera.Constants.Type.back,
-    focus: { x: 0.5, y: 0.5 },
-    layout: { width: 0, height: 0 }
-  };
+
+export interface CameraState {
+  type: keyof typeof RNCamera.Constants.Type;
+  focus: { x: number; y: number };
+  layout: { width: number; height: number };
+}
+
+class Camera extends React.Component<CameraProps, CameraState> {
+  constructor(props: CameraProps) {
+    super(props);
+
+    const { front } = props;
+    this.state = {
+      type: front
+        ? RNCamera.Constants.Type.front
+        : RNCamera.Constants.Type.back,
+      focus: { x: 0.5, y: 0.5 },
+      layout: { width: 0, height: 0 }
+    };
+  }
 
   private camera = React.createRef<RNCamera>();
 
@@ -57,8 +72,6 @@ class Camera extends React.Component<CameraProps> {
     const {
       layout: { width, height }
     } = this.state;
-
-    console.log({ x: locationX / width, y: locationY / height });
 
     this.setState({ focus: { x: locationX / width, y: locationY / height } });
   };

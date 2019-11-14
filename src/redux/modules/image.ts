@@ -1,5 +1,16 @@
 import { TakePictureResponse } from "react-native-camera/types";
-import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
+import {
+  all,
+  fork,
+  call,
+  put,
+  select,
+  take,
+  takeLatest
+} from "redux-saga/effects";
+import ImageResizer, {
+  Response as ImageResizerResponse
+} from "react-native-image-resizer";
 
 import client, { getHeaders } from "@api";
 import * as selectors from "../selectors";
@@ -37,7 +48,6 @@ export default (
 
     case ActionTypes.CLEAR_PHOTO:
     case ActionTypes.UPLOAD_PHOTO_SUCCESS: {
-      console.log("clear photo in reducer");
       return { ...state, uploading: false, currentImage: null };
     }
 
@@ -53,7 +63,7 @@ export default (
 function* onUploadPhoto(
   action: ExtractActionFromActionCreator<typeof Actions.uploadPhoto>
 ) {
-  const { id } = action.payload;
+  const { id, cb } = action.payload;
   try {
     const { uri, width, height }: TakePictureResponse = yield select(
       selectors.currentImage
@@ -61,9 +71,17 @@ function* onUploadPhoto(
     const phoneNumber = yield select(selectors.phoneNumber);
     const jwt = yield select(selectors.jwt);
 
+    const image: ImageResizerResponse = yield ImageResizer.createResizedImage(
+      uri,
+      200,
+      200,
+      "JPEG",
+      100
+    );
+
     const body = new FormData();
     body.append("image", {
-      uri,
+      uri: image.uri,
       height,
       width,
       type: "image/jpeg",
@@ -78,6 +96,7 @@ function* onUploadPhoto(
     });
 
     yield put(Actions.uploadPhotoSuccess());
+    if (cb) yield cb();
   } catch (err) {
     yield put(Actions.uploadPhotoError(err.message));
   }
@@ -99,7 +118,8 @@ export const Actions = {
   takePhoto: (image: TakePictureResponse) =>
     createAction(ActionTypes.TAKE_PHOTO, { image }),
   clearPhoto: () => createAction(ActionTypes.CLEAR_PHOTO),
-  uploadPhoto: (id?: string) => createAction(ActionTypes.UPLOAD_PHOTO, { id }),
+  uploadPhoto: (id?: string, cb?: () => void) =>
+    createAction(ActionTypes.UPLOAD_PHOTO, { id, cb }),
   uploadPhotoSuccess: () => createAction(ActionTypes.UPLOAD_PHOTO_SUCCESS),
   uploadPhotoError: (err: any) =>
     createAction(ActionTypes.UPLOAD_PHOTO_ERROR, { err })

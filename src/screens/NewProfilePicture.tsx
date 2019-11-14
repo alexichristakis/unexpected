@@ -1,47 +1,48 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { useNavigation, useFocusEffect } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
+import { StackParamList } from "../App";
 import Camera, { Shutter } from "@components/Camera";
 import { Button, Input, PendingPostImage } from "@components/universal";
 import { Actions as ImageActions } from "@redux/modules/image";
-import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { TextStyles } from "@lib/styles";
-import { TakePictureOptions } from "react-native-camera/types";
 import { useLightStatusBar } from "@hooks";
 
 const mapStateToProps = (state: RootState) => ({
   image: selectors.currentImage(state),
-  sending: selectors.isUploadingImage(state)
+  uploading: selectors.isUploadingImage(state)
 });
 const mapDispatchToProps = {
   takePhoto: ImageActions.takePhoto,
-  clearPhoto: ImageActions.clearPhoto
+  clearPhoto: ImageActions.clearPhoto,
+  uploadPhoto: ImageActions.uploadPhoto
 };
 
 export type NewProfilePictureReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-export interface NewProfilePictureProps extends NewProfilePictureReduxProps {}
+export interface NewProfilePictureProps extends NewProfilePictureReduxProps {
+  navigation: NativeStackNavigationProp<StackParamList>;
+}
 
 const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
-  ({ image, takePhoto, clearPhoto }) => {
+  ({ image, takePhoto, clearPhoto, uploadPhoto, uploading, navigation }) => {
     const [camera, setCamera] = useState<Camera | null>(null);
 
     useLightStatusBar();
-
     useEffect(() => {
       clearPhoto();
     }, []);
 
-    const onTryAgain = () => {
-      clearPhoto();
+    const onLooksGood = () => {
+      uploadPhoto(undefined, () => navigation.goBack());
     };
 
     const onTakePhoto = async () => {
@@ -62,19 +63,25 @@ const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
           change profile picture:
         </Text>
         <View style={styles.center}>
-          {image ? (
-            <PendingPostImage round size={300} source={image} />
-          ) : (
-            <Camera round size={300} ref={setCamera} />
-          )}
-          {image ? (
-            <View style={styles.buttonContainer}>
-              <Button title="try again" onPress={clearPhoto} />
-              <Button title="looks good" onPress={clearPhoto} />
-            </View>
-          ) : (
-            <Button title="take photo" onPress={onTakePhoto} />
-          )}
+          <View style={{ flex: 4 }}>
+            {image ? (
+              <PendingPostImage round size={300} source={image} />
+            ) : (
+              <Camera front round size={300} ref={setCamera} />
+            )}
+          </View>
+          <View style={{ flex: 1, alignSelf: "stretch" }}>
+            {uploading ? (
+              <Text style={TextStyles.medium}>uploading...</Text>
+            ) : image ? (
+              <View style={styles.buttonContainer}>
+                <Button title="try again" onPress={clearPhoto} />
+                <Button title="looks good" onPress={onLooksGood} />
+              </View>
+            ) : (
+              <Button title="take photo" onPress={onTakePhoto} />
+            )}
+          </View>
         </View>
       </Screen>
     );

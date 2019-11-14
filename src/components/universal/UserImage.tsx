@@ -18,7 +18,8 @@ export const UserImage = ({ phoneNumber, size }: UserImageProps) => {
     uri: getUserProfileURL(phoneNumber),
     method: "GET",
     headers: getHeaders({ jwt }),
-    cache: "only-if-cached"
+    // cache: "only-if-cached"
+    cache: "reload"
   };
 
   useEffect(() => {
