@@ -1,4 +1,10 @@
-import { EndpointInfo, IMiddleware, Middleware, Req, UseAuth } from "@tsed/common";
+import {
+  EndpointInfo,
+  IMiddleware,
+  Middleware,
+  Req,
+  UseAuth
+} from "@tsed/common";
 import { Forbidden, Unauthorized } from "ts-httpexceptions";
 import jwt from "jsonwebtoken";
 
