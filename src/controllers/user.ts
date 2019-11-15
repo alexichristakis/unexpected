@@ -20,11 +20,6 @@ export class UserController {
   @Inject(UserService)
   private userService: UserService;
 
-  @Get()
-  findAll(): string {
-    return "This action returns all calendars";
-  }
-
   // @Delete()
   // async deleteUser() {
   //   return this.userService.delete("5db875fc6db5000021871f3d");
@@ -34,7 +29,9 @@ export class UserController {
   @UseAuth(AuthMiddleware, {
     select: Select.phoneFromUserFromBody
   })
-  async createUser(@BodyParams("user") user: UserType): Promise<UserModel | void> {
+  async createUser(
+    @BodyParams("user") user: UserType
+  ): Promise<UserModel | void> {
     return this.userService.createNewUser(user);
   }
 
