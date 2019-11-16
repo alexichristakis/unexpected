@@ -21,6 +21,7 @@ import { StackParamList } from "../../App";
 import uuid from "uuid/v4";
 
 const mapStateToProps = (state: RootState) => ({
+  phoneNumber: selectors.phoneNumber(state),
   feed: selectors.feedState(state)
 });
 const mapDispatchToProps = {
@@ -37,7 +38,7 @@ export interface FeedProps extends FeedReduxProps {
 }
 
 export const Feed: React.FC<FeedProps> = React.memo(
-  ({ navigation, feed, fetchFeed }) => {
+  ({ navigation, phoneNumber, feed, fetchFeed }) => {
     useFocusEffect(
       useCallback(() => {
         if (feed.stale) fetchFeed();
@@ -53,7 +54,11 @@ export const Feed: React.FC<FeedProps> = React.memo(
     };
 
     const handleOnPressUser = (user: UserType) => {
-      navigation.navigate({ name: "PROFILE", key: uuid(), params: { user } });
+      if (phoneNumber === user.phoneNumber) {
+        navigation.navigate("USER_PROFILE");
+      } else {
+        navigation.navigate({ name: "PROFILE", key: uuid(), params: { user } });
+      }
     };
 
     return (

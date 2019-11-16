@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
+import { FeedPostType } from "unexpected-cloud/controllers/post";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import PostImage from "./PostImage";
@@ -10,7 +11,7 @@ import { TouchableScale } from "./TouchableScale";
 export interface PostProps {
   onPressPhoto?: () => void;
   onPressName?: () => void;
-  post: PostType;
+  post: FeedPostType;
 }
 export const Post: React.FC<PostProps> = ({
   post,
@@ -23,7 +24,7 @@ export const Post: React.FC<PostProps> = ({
     <View style={{ marginBottom: 40 }}>
       <TouchableOpacity onPress={onPressName}>
         <Text style={[TextStyles.large, styles.name]}>
-          {"Alexi Christakis"}
+          {`${post.user.firstName} ${post.user.lastName}`}
         </Text>
       </TouchableOpacity>
       <TouchableScale onPress={onPressPhoto}>

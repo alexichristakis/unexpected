@@ -5,6 +5,8 @@ import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import { PostType } from "unexpected-cloud/models/post";
+import uuid from "uuid/v4";
 
 import { Posts } from "@components/Feed";
 import { Top } from "@components/Profile";
@@ -18,7 +20,6 @@ import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
-  user: selectors.user(state),
   posts: selectors.usersPosts(state),
   stale: selectors.usersPostsStale(state)
 });
@@ -42,7 +43,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
   fetchUsersPosts,
   stale,
   posts,
-  user
+  route
 }) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [onScroll] = useState(
@@ -51,11 +52,22 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
     })
   );
 
+  const { user } = route.params;
+
   const renderTop = () => <Top user={user} scrollY={scrollY} />;
+
+  const handleOnPressPost = (post: PostType) => {
+    navigation.navigate({
+      name: "POST",
+      key: uuid(),
+      params: { post: { ...post, user } }
+    });
+  };
 
   return (
     <Screen style={styles.container}>
       <Grid
+        onPressPost={handleOnPressPost}
         onScroll={onScroll}
         ListHeaderComponentStyle={styles.headerContainer}
         ListHeaderComponent={renderTop}
@@ -67,9 +79,9 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    alignItems: "center"
   },
   headerContainer: {
     zIndex: 1,

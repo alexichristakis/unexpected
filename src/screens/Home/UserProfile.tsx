@@ -5,6 +5,8 @@ import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import { PostType } from "unexpected-cloud/models/post";
+import uuid from "uuid/v4";
 
 import { Posts } from "@components/Feed";
 import { Top } from "@components/Profile";
@@ -69,9 +71,18 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       />
     );
 
+    const handleOnPressPost = (post: PostType) => {
+      navigation.navigate({
+        name: "POST",
+        key: uuid(),
+        params: { post: { ...post, user } }
+      });
+    };
+
     return (
       <Screen style={styles.container}>
         <Grid
+          onPressPost={handleOnPressPost}
           onScroll={onScroll}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}

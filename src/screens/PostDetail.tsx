@@ -8,13 +8,16 @@ import { connect } from "react-redux";
 
 import Camera, { Shutter } from "@components/Camera";
 import { Post } from "@components/universal";
+import * as selectors from "@redux/selectors";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { Actions as PostActions } from "@redux/modules/post";
-import { ReduxPropsType } from "@redux/types";
+import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
 import uuid from "uuid/v4";
 
-const mapStateToProps = () => ({});
+const mapStateToProps = (state: RootState) => ({
+  phoneNumber: selectors.phoneNumber(state)
+});
 const mapDispatchToProps = {
   sendPost: PostActions.sendPost,
   takePhoto: ImageActions.takePhoto
@@ -30,19 +33,24 @@ export interface PostProps {
 }
 
 const PostDetail: React.FC<PostProps & PostReduxProps> = ({
+  phoneNumber,
   navigation,
   route
 }) => {
   const { post } = route.params;
 
   const handleOnPressName = () => {
-    navigation.navigate({
-      name: "PROFILE",
-      key: uuid(),
-      params: {
-        user: post.user
-      }
-    });
+    if (phoneNumber === post.userPhoneNumber) {
+      navigation.navigate("USER_PROFILE");
+    } else {
+      navigation.navigate({
+        name: "PROFILE",
+        key: uuid(),
+        params: {
+          user: post.user
+        }
+      });
+    }
   };
 
   return (
