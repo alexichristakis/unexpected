@@ -10,7 +10,9 @@ import {
 
 import { PostService } from "../services/post";
 import { AuthMiddleware, Select } from "../middlewares/auth";
-import { PostType } from "../models/post";
+import { PostType, FeedPostType } from "../models/post";
+
+export type FeedReturnType = FeedPostType[];
 
 @Controller("/post")
 @UseAuth(AuthMiddleware)
@@ -36,7 +38,11 @@ export class PostController {
   }
 
   @Get("/:phoneNumber/feed")
-  getUsersFeed(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.postService.getFeedForUser(phoneNumber);
+  async getUsersFeed(
+    @PathParams("phoneNumber") phoneNumber: string
+  ): Promise<FeedReturnType> {
+    const feed = await this.postService.getFeedForUser(phoneNumber);
+
+    return feed;
   }
 }

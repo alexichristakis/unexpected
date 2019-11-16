@@ -1,5 +1,6 @@
 import { Default, Format, Required, Schema, Property } from "@tsed/common";
 import { Model, ObjectID, Indexed, Unique } from "@tsed/mongoose";
+import { UserType } from "./user";
 
 @Model()
 export class Post {
@@ -25,4 +26,5 @@ export class Post {
   createdAt: Date = new Date();
 }
 
-export type PostType = Omit<Post, "_id" | "createdAt">;
+export type PostType = Omit<Post, "_id">;
+export type FeedPostType = PostType & { id: string; user: UserType };

@@ -1,8 +1,13 @@
 import { Service, Inject } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
+import { Document } from "mongoose";
+import uniqBy from "lodash/uniqBy";
+import keyBy from "lodash/keyBy";
+import assign from "lodash/assign";
 
 import { CRUDService } from "./crud";
-import { Post as PostModel, PostType } from "../models/post";
+import { Post as PostModel, PostType, FeedPostType } from "../models/post";
+import { User as UserModel, UserType } from "../models/user";
 import { UserService } from "./user";
 
 @Service()
@@ -23,10 +28,10 @@ export class PostService extends CRUDService<PostModel, PostType> {
     return posts;
   };
 
-  getFeedForUser = async (phoneNumber: string) => {
+  async getFeedForUser(phoneNumber: string) {
     const user = await this.userService.findOne({ phoneNumber }, ["following"]);
 
-    if (!user) return;
+    if (!user) return [];
 
     const { following } = user;
 
@@ -35,16 +40,30 @@ export class PostService extends CRUDService<PostModel, PostType> {
       .sort({ createdAt: -1 })
       .exec();
 
-    return posts;
-    // const posts = this.find({userPhoneNumber: following})
+    const usersToFetch = uniqBy(posts, post => post.userPhoneNumber).reduce(
+      (prev, curr) => [...prev, curr.userPhoneNumber],
+      [] as string[]
+    );
 
-    // const promises: Promise<(PostModel & Document)[]>[] = [];
-    // user.following.forEach(userPhoneNumber => {
-    //   promises.push(this.getUsersPosts(phoneNumber));
-    // });
+    const users = keyBy(
+      await this.userService.getByPhoneNumber(usersToFetch),
+      ({ phoneNumber }) => phoneNumber
+    );
 
-    // const Promise.all(posts).then(res => {
+    let ret: FeedPostType[] = [];
+    posts.forEach(
+      ({ id, description, userPhoneNumber, createdAt, photoId }) => {
+        ret.push({
+          id,
+          description,
+          userPhoneNumber,
+          createdAt,
+          photoId,
+          user: users[userPhoneNumber]
+        });
+      }
+    );
 
-    // });
-  };
+    return ret;
+  }
 }

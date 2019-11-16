@@ -1,5 +1,6 @@
 import { Service, Inject } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
+import { Document } from "mongoose";
 
 import { CRUDService } from "./crud";
 import { User as UserModel, UserType } from "../models/user";
@@ -9,16 +10,23 @@ export class UserService extends CRUDService<UserModel, UserType> {
   @Inject(UserModel)
   model: MongooseModel<UserModel>;
 
-  createNewUser = async (newUser: UserType) => {
-    console.log(newUser);
+  async createNewUser(newUser: UserType) {
     const user = await this.getByPhoneNumber(newUser.phoneNumber);
 
     if (user) return user;
 
     return this.create(newUser);
-  };
+  }
 
-  getByPhoneNumber = async (phoneNumber: string) => {
+  async getByPhoneNumber(phoneNumber: string): Promise<UserModel & Document>;
+  async getByPhoneNumber(
+    phoneNumbers: string[]
+  ): Promise<(UserModel & Document)[]>;
+  async getByPhoneNumber(phoneNumber: string | string[]) {
+    if (phoneNumber instanceof Array) {
+      return this.model.find({ phoneNumber: { $in: phoneNumber } });
+    }
+
     return this.findOne({ phoneNumber });
-  };
+  }
 }
