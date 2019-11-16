@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // import { SquarePost } from "./SquarePost";
-import { PostImage } from "@components/universal";
+import { PostImage, TouchableScale } from "@components/universal";
 import { SCREEN_WIDTH } from "@lib/styles";
 import { StackParamList } from "../../../App";
 import uuid from "uuid/v4";
@@ -35,6 +35,7 @@ const Grid: React.FC<GridProps> = ({
 
   const renderPost = ({ item }: ListRenderItemInfo<FeedPostType>) => (
     <TouchableOpacity
+      activeOpacity={0.9}
       onPress={() =>
         navigation.navigate({
           name: "POST",

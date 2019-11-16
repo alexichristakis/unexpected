@@ -28,8 +28,6 @@ export const Posts: React.FC<PostsProps> = React.memo(
     ListHeaderComponentStyle,
     style
   }) => {
-    console.log("render posts");
-
     const renderPost = ({ item }: ListRenderItemInfo<FeedPostType>) => (
       <Post
         onPressPhoto={() => onPressPost(item)}
@@ -42,7 +40,8 @@ export const Posts: React.FC<PostsProps> = React.memo(
       <FlatList
         ListHeaderComponentStyle={ListHeaderComponentStyle}
         ListHeaderComponent={ListHeaderComponent}
-        contentContainerStyle={{ paddingBottom: 100, alignItems: "center" }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 50, alignItems: "center" }}
         data={posts}
         renderItem={renderPost}
       />

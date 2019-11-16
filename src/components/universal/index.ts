@@ -6,6 +6,7 @@ export * from "./Header";
 export * from "./PendingPostImage";
 export * from "./PostImage";
 export * from "./Post";
+export * from "./TouchableScale";
 
 import PostImage from "./PostImage";
 import UserImage from "./UserImage";

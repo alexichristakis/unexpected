@@ -1,10 +1,11 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import PostImage from "./PostImage";
 import { StackParamList } from "../../App";
+import { TouchableScale } from "./TouchableScale";
 
 export interface PostProps {
   onPressPhoto?: () => void;
@@ -19,19 +20,27 @@ export const Post: React.FC<PostProps> = ({
   const { userPhoneNumber, photoId, description } = post;
 
   return (
-    <View>
+    <View style={{ marginBottom: 40 }}>
       <TouchableOpacity onPress={onPressName}>
-        <Text style={TextStyles.large}>{"Alexi Christakis"}</Text>
+        <Text style={[TextStyles.large, styles.name]}>
+          {"Alexi Christakis"}
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={onPressPhoto}>
+      <TouchableScale onPress={onPressPhoto}>
         <PostImage
           width={SCREEN_WIDTH - 40}
           height={(SCREEN_WIDTH - 40) * 1.2}
           phoneNumber={userPhoneNumber}
           id={photoId}
         />
-      </TouchableOpacity>
+      </TouchableScale>
       <Text style={TextStyles.medium}>{description}</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  name: {
+    marginBottom: 10
+  }
+});
