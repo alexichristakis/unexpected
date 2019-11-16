@@ -6,10 +6,10 @@ import {
 import axios, { AxiosInstance } from "axios";
 
 /* get the server URL and instantiate the client */
-const server = __DEV__
-  ? "http://localhost:5000"
-  : "https://www.api.expect.photos";
-// const server = "https://www.api.expect.photos";
+// const server = __DEV__
+//   ? "http://localhost:5000"
+//   : "https://www.api.expect.photos";
+const server = "https://www.api.expect.photos";
 // const server = "http://172.27.34.211:5000";
 
 // export * from "./context";

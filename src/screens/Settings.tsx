@@ -53,6 +53,11 @@ const Settings: React.FC<SettingsProps> = React.memo(
           style={styles.button}
           onPress={() => navigation.navigate("PERMISSIONS")}
         />
+        <Button
+          title="sync contacts"
+          style={styles.button}
+          onPress={getContacts}
+        />
       </Screen>
     );
   }

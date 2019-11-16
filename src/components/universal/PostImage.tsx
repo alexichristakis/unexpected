@@ -68,7 +68,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(_PostImage);
 
 const styles = StyleSheet.create({
   image: {
-    resizeMode: "contain",
+    resizeMode: "cover",
     backgroundColor: "gray"
   }
 });

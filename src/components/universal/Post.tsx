@@ -13,6 +13,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
 
   return (
     <View>
+      <Text style={TextStyles.large}>{"Alexi Christakis"}</Text>
       <PostImage
         width={SCREEN_WIDTH - 40}
         height={(SCREEN_WIDTH - 40) * 1.2}

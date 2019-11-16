@@ -6046,10 +6046,6 @@ react-native-image-resizer@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-native-image-resizer/-/react-native-image-resizer-1.1.0.tgz#90646bb6dbf0ccc81e53cba69130479e9198d88b"
   integrity sha512-OgDOV/0J5ERy6qqu9PTSEiJmNkDrsJluqGM20Tj3JX1836VPO3oeIzQvd8pVdvBiuDq+Z6ZKrsy5SdxP8/O+Ig==
 
-"react-native-interactable@https://github.com/alexichristakis/react-native-interactable":
-  version "1.0.0"
-  resolved "https://github.com/alexichristakis/react-native-interactable#27b8d9628c5787f2e4f49fb0c1f9850257d7d39b"
-
 react-native-permissions@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-2.0.3.tgz#b6da83e5e313e41ba5f70ff2c4567291766b0140"
@@ -6079,10 +6075,10 @@ react-native-safe-modules@^1.0.0:
   dependencies:
     dedent "^0.6.0"
 
-react-native-screens@^2.0.0-alpha.7:
-  version "2.0.0-alpha.7"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.7.tgz#7cc2e4000591613cfc9cd92c2e2d83e9b2104a2e"
-  integrity sha512-Lst3pOrtXgVrC6GFRO86MMhlFYwCZd0Jz3JBDHnnmWcYb1mzgPmMvooCDv6OdoU2Rv2WZXiaUZh4RQdoyr6YeQ==
+react-native-screens@^2.0.0-alpha.11:
+  version "2.0.0-alpha.11"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.11.tgz#077674284e0f80130cf971ba8eacc4f969724eea"
+  integrity sha512-Sw01mMTvqMgNl4stk7rdcE8LRiISTx7DhXMeBgvmlI4uF1rIZBFcTV5tH/wZ8ld6Pa/H5ASKWAiaaMMxgv1fBw==
   dependencies:
     debounce "^1.2.0"
 

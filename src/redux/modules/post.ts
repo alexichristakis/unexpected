@@ -10,12 +10,12 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
+import { TakePictureResponse } from "react-native-camera/types";
 import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
 import { AxiosResponse } from "axios";
-import { TakePictureResponse } from "react-native-camera/types";
 import Navigation from "../../Navigation";
 import * as selectors from "../selectors";
 import {
@@ -23,7 +23,7 @@ import {
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
-import { Actions as ImageActions } from "./image";
+import { Actions as AppActions } from "./app";
 
 export interface FeedState {
   // frames: Array<{
@@ -158,8 +158,11 @@ function* onSendPost(
       )
     ]);
 
-    yield put(Actions.sendPostSuccess());
-    yield Navigation.navigate("HOME");
+    yield all([
+      yield put(Actions.sendPostSuccess()),
+      yield put(AppActions.expireCamera()),
+      yield Navigation.navigate("HOME")
+    ]);
   } catch (err) {
     yield put(Actions.onError(err));
   }

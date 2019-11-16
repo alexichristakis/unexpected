@@ -6,7 +6,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { Posts, Top } from "@components/Profile";
+import { Posts } from "@components/Feed";
+import { Top } from "@components/Profile";
 import { Header, UserImage } from "@components/universal";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
@@ -14,6 +15,7 @@ import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../../App";
+import { Grid } from "@components/Profile/Grid";
 
 const mapStateToProps = (state: RootState) => ({
   user: selectors.user(state),
@@ -38,6 +40,11 @@ export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 export const UserProfile: React.FC<UserProfileProps> = React.memo(
   ({ navigation, fetchUsersPosts, stale, posts, user }) => {
     const [scrollY] = useState(new Animated.Value(0));
+    const [onScroll] = useState(
+      Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+        useNativeDriver: true
+      })
+    );
 
     useFocusEffect(
       useCallback(() => {
@@ -53,17 +60,21 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       navigation.navigate("SETTINGS");
     };
 
+    const renderTop = () => (
+      <Top
+        user={user}
+        scrollY={scrollY}
+        onPressImage={goToNewProfilePicture}
+        onPressName={goToSettings}
+      />
+    );
+
     return (
       <Screen style={styles.container}>
-        <Posts
+        <Grid
+          onScroll={onScroll}
           ListHeaderComponentStyle={styles.headerContainer}
-          ListHeaderComponent={() => (
-            <Top
-              user={user}
-              onPressImage={goToNewProfilePicture}
-              onPressName={goToSettings}
-            />
-          )}
+          ListHeaderComponent={renderTop}
           posts={posts}
         />
         {/* <Header title={user.firstName} scrollY={scrollY} /> */}
@@ -81,6 +92,7 @@ const styles = StyleSheet.create({
     // justifyContent: "center"
   },
   headerContainer: {
+    zIndex: 1,
     alignItems: "center",
     alignSelf: "stretch"
   }

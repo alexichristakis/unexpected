@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, ImageSourcePropType, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 import { connect } from "react-redux";
 
@@ -29,14 +29,6 @@ export const _UserImage: React.FC<UserImageProps> = React.memo(
   ({ phoneNumber, size, cache, jwt, requestCache }) => {
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
-
-    // let source: ImageSourcePropType = {
-    //   uri: getUserProfileURL(phoneNumber),
-    //   method: "GET",
-    //   headers: getHeaders({ jwt }),
-    //   // cache: "only-if-cached"
-    //   cache: "reload"
-    // };
 
     useEffect(() => {
       if (!cache[phoneNumber]) {

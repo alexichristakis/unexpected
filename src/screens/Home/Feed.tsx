@@ -10,7 +10,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { Posts } from "@components/Profile";
+import { Posts } from "@components/Feed";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    paddingTop: 100
+    paddingTop: 40
     // justifyContent: "center"
   }
 });
