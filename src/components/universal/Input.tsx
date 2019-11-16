@@ -1,5 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, TextInput, TextInputProps, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View
+} from "react-native";
 
 import { LoadingLine } from "@components/universal";
 import { Colors, TextStyles } from "@lib/styles";
@@ -21,15 +27,16 @@ export const Input: React.FC<InputProps> = ({
   ...rest
 }) => {
   return (
-    <View>
+    <View style={style}>
       <TextInput
         ref={textInputRef}
         placeholderTextColor="gray"
         style={[styles.textInput, style, TextStyles[size]]}
         {...rest}
       />
-      {/* <LoadingLine /> */}
-      <Text style={[error ? styles.error : styles.label]}>{error ? error : label}</Text>
+      <Text style={[error ? styles.error : styles.label]}>
+        {error ? error : label}
+      </Text>
     </View>
   );
 };
