@@ -3,24 +3,39 @@ import {
   FlatList,
   ListRenderItemInfo,
   ViewProps,
-  ViewStyle
+  ViewStyle,
+  TouchableOpacity
 } from "react-native";
-import { PostType } from "unexpected-cloud/models/post";
+import { FeedPostType } from "unexpected-cloud/controllers/post";
+import { UserType } from "unexpected-cloud/models/user";
 
 import { Post } from "@components/universal";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 
 export interface PostsProps extends ViewProps {
+  onPressPost?: (post: FeedPostType) => void;
+  onPressUser?: (user: UserType) => void;
   ListHeaderComponentStyle?: ViewStyle;
   ListHeaderComponent?: React.ComponentType<any>;
-  posts: PostType[];
+  posts: FeedPostType[];
 }
 export const Posts: React.FC<PostsProps> = React.memo(
-  ({ posts, ListHeaderComponent, ListHeaderComponentStyle, style }) => {
+  ({
+    posts,
+    onPressPost = () => {},
+    onPressUser = () => {},
+    ListHeaderComponent,
+    ListHeaderComponentStyle,
+    style
+  }) => {
     console.log("render posts");
 
-    const renderPost = ({ item }: ListRenderItemInfo<PostType>) => (
-      <Post post={item} />
+    const renderPost = ({ item }: ListRenderItemInfo<FeedPostType>) => (
+      <Post
+        onPressPhoto={() => onPressPost(item)}
+        onPressName={() => onPressUser(item.user)}
+        post={item}
+      />
     );
 
     return (

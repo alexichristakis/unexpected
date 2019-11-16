@@ -1,5 +1,6 @@
 import immer from "immer";
 import moment, { Moment } from "moment";
+import { TakePictureResponse } from "react-native-camera/types";
 import {
   all,
   call,
@@ -10,8 +11,11 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { TakePictureResponse } from "react-native-camera/types";
 import { PostType } from "unexpected-cloud/models/post";
+import {
+  FeedReturnType,
+  FeedPostType
+} from "unexpected-cloud/controllers/post";
 import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
@@ -31,7 +35,7 @@ export interface FeedState {
   //   start: Date;
   //   end: Date;
   // }>;
-  posts: PostType[];
+  posts: FeedPostType[];
   lastFetched: Date;
   stale: boolean;
 }
@@ -40,6 +44,9 @@ export interface PostState {
     posts: PostType[];
     lastFetched: Date;
     stale: boolean;
+  };
+  users: {
+    [phoneNumber: string]: { posts: PostType[]; lastFetched: Date };
   };
   feed: FeedState;
   loading: boolean;
@@ -52,6 +59,7 @@ const initialState: PostState = {
     lastFetched: new Date(0),
     stale: true
   },
+  users: {},
   feed: {
     // frames: [],
     posts: [],
@@ -67,7 +75,8 @@ export default (
   action: ActionsUnion<typeof Actions>
 ): PostState => {
   switch (action.type) {
-    case ActionTypes.SEND_POST || ActionTypes.FETCH_USERS_POSTS: {
+    case ActionTypes.FETCH_USERS_POSTS:
+    case ActionTypes.SEND_POST: {
       return immer(state, draft => {
         draft.loading = true;
         draft.error = "";
@@ -84,11 +93,21 @@ export default (
       });
     }
 
-    case ActionTypes.FETCH_USERS_POSTS_SUCCESS: {
+    case ActionTypes.FETCH_CURRENT_USERS_POSTS_SUCCESS: {
       const { posts } = action.payload;
       return immer(state, draft => {
         draft.loading = false;
         draft.user = { posts, stale: false, lastFetched: new Date() };
+
+        return draft;
+      });
+    }
+
+    case ActionTypes.FETCH_USERS_POSTS_SUCCESS: {
+      const { phoneNumber, posts } = action.payload;
+      return immer(state, draft => {
+        draft.loading = false;
+        draft.users[phoneNumber] = { posts, lastFetched: new Date() };
 
         return draft;
       });
@@ -168,19 +187,28 @@ function* onSendPost(
   }
 }
 
-function* onFetchUsersPosts() {
+function* onFetchUsersPosts(
+  action: ExtractActionFromActionCreator<typeof Actions.fetchUsersPosts>
+) {
+  const { phoneNumber } = action.payload;
   try {
     const jwt = yield select(selectors.jwt);
-    const phoneNumber = yield select(selectors.phoneNumber);
+    const userPhoneNumber = yield select(selectors.phoneNumber);
 
+    // default to fetching authenticated user's feed
+    const userFetched = phoneNumber ? phoneNumber : userPhoneNumber;
     const posts: AxiosResponse<PostType[]> = yield client.get(
-      `/post/${phoneNumber}`,
+      `/post/${userFetched}`,
       {
         headers: getHeaders({ jwt })
       }
     );
 
-    yield put(Actions.fetchUsersPostsSuccess(posts.data));
+    if (userFetched === userPhoneNumber) {
+      yield put(Actions.fetchCurrentUsersPostsSuccess(posts.data));
+    } else {
+      yield put(Actions.fetchUsersPostsSuccess(userFetched, posts.data));
+    }
   } catch (err) {
     yield put(Actions.onError(err.message));
   }
@@ -198,7 +226,7 @@ function* onFetchFeed(
 
     const from = fromDate ? fromDate : feedState.lastFetched;
 
-    const res: AxiosResponse<PostType[]> = yield client.get(
+    const res: AxiosResponse<FeedReturnType> = yield client.get(
       `post/${phoneNumber}/feed`,
       {
         headers: getHeaders({ jwt })
@@ -226,6 +254,7 @@ export function* postSagas() {
 export enum ActionTypes {
   FETCH_USERS_POSTS = "post/FETCH_USERS_POSTS",
   FETCH_USERS_POSTS_SUCCESS = "post/FETCH_USERS_POSTS_SUCCESS",
+  FETCH_CURRENT_USERS_POSTS_SUCCESS = "post/FETCH_CURRENT_USERS_POSTS_SUCCESS",
   FETCH_FEED = "post/FETCH_FEED",
   FETCH_FEED_SUCCESS = "post/FETCH_FEED_SUCCESS",
   SEND_POST = "post/SEND_POST",
@@ -234,12 +263,15 @@ export enum ActionTypes {
 }
 
 export const Actions = {
-  fetchUsersPosts: () => createAction(ActionTypes.FETCH_USERS_POSTS),
-  fetchUsersPostsSuccess: (posts: PostType[]) =>
-    createAction(ActionTypes.FETCH_USERS_POSTS_SUCCESS, { posts }),
+  fetchUsersPosts: (phoneNumber?: string) =>
+    createAction(ActionTypes.FETCH_USERS_POSTS, { phoneNumber }),
+  fetchUsersPostsSuccess: (phoneNumber: string, posts: PostType[]) =>
+    createAction(ActionTypes.FETCH_USERS_POSTS_SUCCESS, { phoneNumber, posts }),
+  fetchCurrentUsersPostsSuccess: (posts: PostType[]) =>
+    createAction(ActionTypes.FETCH_CURRENT_USERS_POSTS_SUCCESS, { posts }),
   fetchFeed: (fromDate?: Date) =>
     createAction(ActionTypes.FETCH_FEED, { fromDate }),
-  fetchFeedSuccess: (posts: PostType[]) =>
+  fetchFeedSuccess: (posts: FeedReturnType) =>
     createAction(ActionTypes.FETCH_FEED_SUCCESS, { posts }),
   sendPost: (description: string) =>
     createAction(ActionTypes.SEND_POST, { description }),

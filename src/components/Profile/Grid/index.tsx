@@ -3,13 +3,20 @@ import {
   Animated,
   FlatList,
   ListRenderItemInfo,
-  ViewStyle
+  ViewStyle,
+  TouchableOpacity
 } from "react-native";
+import { FeedPostType } from "unexpected-cloud/controllers/post";
 import { PostType } from "unexpected-cloud/models/post";
+
+import { useNavigation } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // import { SquarePost } from "./SquarePost";
 import { PostImage } from "@components/universal";
 import { SCREEN_WIDTH } from "@lib/styles";
+import { StackParamList } from "../../../App";
+import uuid from "uuid/v4";
 
 export interface GridProps {
   onScroll?: any;
@@ -24,13 +31,25 @@ const Grid: React.FC<GridProps> = ({
   onScroll,
   posts
 }) => {
-  const renderPost = ({ item }: ListRenderItemInfo<PostType>) => (
-    <PostImage
-      width={(SCREEN_WIDTH - 40) / 3}
-      height={(SCREEN_WIDTH - 40) / 3}
-      phoneNumber={item.userPhoneNumber}
-      id={item.photoId}
-    />
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
+  const renderPost = ({ item }: ListRenderItemInfo<FeedPostType>) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate({
+          name: "POST",
+          key: uuid(),
+          params: { post: item }
+        })
+      }
+    >
+      <PostImage
+        width={(SCREEN_WIDTH - 40) / 3}
+        height={(SCREEN_WIDTH - 40) / 3}
+        phoneNumber={item.userPhoneNumber}
+        id={item.photoId}
+      />
+    </TouchableOpacity>
   );
 
   return (

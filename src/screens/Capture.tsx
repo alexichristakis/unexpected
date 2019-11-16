@@ -1,7 +1,8 @@
-import { ParamListBase, RouteProp, useIsFocused } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { StatusBar, StyleSheet, Text } from "react-native";
+
+import { ParamListBase, RouteProp, useIsFocused } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 

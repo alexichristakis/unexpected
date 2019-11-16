@@ -1,14 +1,14 @@
 import React from "react";
 import {
+  Animated,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  Animated
+  View
 } from "react-native";
 
 import { Button, UserImage } from "@components/universal";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, SCREEN_WIDTH } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
 
 export interface ProfileTopProps {
@@ -50,7 +50,7 @@ export const Top: React.FC<ProfileTopProps> = ({
     <>
       <Animated.View style={[styles.container, animatedStyle]}>
         <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
-          <UserImage phoneNumber={phoneNumber} size={100} />
+          <UserImage phoneNumber={phoneNumber} size={(SCREEN_WIDTH - 40) / 3} />
         </TouchableOpacity>
         <TouchableOpacity disabled={!onPressName} onPress={onPressName}>
           <Text

@@ -16,6 +16,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
+import { FeedPostType } from "unexpected-cloud/controllers/post";
+import { PostType } from "unexpected-cloud/models/post";
+import { UserType } from "unexpected-cloud/models/user";
 
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
@@ -34,7 +37,7 @@ import Feed from "./screens/Home/Feed";
 import UserProfile from "./screens/Home/UserProfile";
 import NewProfilePicture from "./screens/NewProfilePicture";
 import Permissions from "./screens/Permissions";
-import Post from "./screens/Post";
+import PostDetail from "./screens/PostDetail";
 import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
 import Share from "./screens/Share";
@@ -54,8 +57,8 @@ export type StackParamList = {
   USER_PROFILE: undefined;
   AUTH: undefined;
   SHARE: undefined;
-  POST: undefined;
-  PROFILE: undefined;
+  POST: { post: FeedPostType };
+  PROFILE: { user: UserType };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: { nextRoute: keyof StackParamList };
@@ -101,7 +104,11 @@ const HomeTab: React.FC<Props> = ({
         options={screenOptions}
         component={Profile}
       />
-      <Stack.Screen name={"POST"} options={screenOptions} component={Post} />
+      <Stack.Screen
+        name={"POST"}
+        options={screenOptions}
+        component={PostDetail}
+      />
     </Stack.Navigator>
   );
 };

@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 
 import { Posts } from "@components/Feed";
 import { Top } from "@components/Profile";
+import { Grid } from "@components/Profile/Grid";
 import { Header, UserImage } from "@components/universal";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
@@ -15,7 +16,6 @@ import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../../App";
-import { Grid } from "@components/Profile/Grid";
 
 const mapStateToProps = (state: RootState) => ({
   user: selectors.user(state),
