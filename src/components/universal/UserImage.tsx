@@ -63,7 +63,7 @@ export const _UserImage: React.FC<UserImageProps> = React.memo(
     const { phoneNumber, cache: nextCache } = nextProps;
 
     // if we dont have a cache dont rerender
-    if (!nextCache[phoneNumber]) return true;
+    if (!nextCache || !nextCache[phoneNumber]) return true;
 
     // if we didnt have a cache but now do rerender
     if (!prevCache[phoneNumber] && !!nextCache[phoneNumber]) return false;

@@ -51,7 +51,7 @@ export const _PostImage: React.FC<PostImageProps &
     const { cache: prevCache } = prevProps;
     const { id, cache: nextCache } = nextProps;
 
-    if (!nextCache[id]) return true;
+    if (!nextCache || !nextCache[id]) return true;
 
     if (!prevCache[id] && !!nextCache[id]) return false;
 

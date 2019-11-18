@@ -6,7 +6,7 @@ import {
   ViewStyle,
   TouchableOpacity
 } from "react-native";
-import { FeedPostType } from "unexpected-cloud/controllers/post";
+import { FeedPostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
 import { Post } from "@components/universal";

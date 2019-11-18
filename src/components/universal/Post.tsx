@@ -1,7 +1,6 @@
 import React from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { PostType } from "unexpected-cloud/models/post";
-import { FeedPostType } from "unexpected-cloud/controllers/post";
+import { PostType, FeedPostType } from "unexpected-cloud/models/post";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import PostImage from "./PostImage";
