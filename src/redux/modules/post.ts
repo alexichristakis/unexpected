@@ -11,11 +11,11 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { PostType } from "unexpected-cloud/models/post";
 import {
-  FeedReturnType,
-  FeedPostType
+  FeedPostType,
+  FeedReturnType
 } from "unexpected-cloud/controllers/post";
+import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";

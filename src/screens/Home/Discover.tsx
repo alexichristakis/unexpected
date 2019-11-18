@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 
+import { Input } from "@components/universal";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen, ScreenProps } from "react-native-screens";
-import { Input } from "@components/universal";
 
 const mapStateToProps = (state: RootState) => ({});
 const mapDispatchToProps = {};

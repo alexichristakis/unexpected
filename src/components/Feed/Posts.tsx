@@ -2,9 +2,9 @@ import React from "react";
 import {
   FlatList,
   ListRenderItemInfo,
+  TouchableOpacity,
   ViewProps,
-  ViewStyle,
-  TouchableOpacity
+  ViewStyle
 } from "react-native";
 import { FeedPostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";

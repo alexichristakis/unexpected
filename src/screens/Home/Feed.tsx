@@ -17,8 +17,8 @@ import { Posts } from "@components/Feed";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { StackParamList } from "../../App";
 import uuid from "uuid/v4";
+import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),

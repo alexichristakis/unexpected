@@ -1,10 +1,10 @@
 import React from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { PostType, FeedPostType } from "unexpected-cloud/models/post";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import PostImage from "./PostImage";
 import { StackParamList } from "../../App";
+import PostImage from "./PostImage";
 import { TouchableScale } from "./TouchableScale";
 
 export interface PostProps {

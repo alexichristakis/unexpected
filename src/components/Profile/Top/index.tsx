@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { Button, UserImage } from "@components/universal";
-import { TextStyles, SCREEN_WIDTH } from "@lib/styles";
+import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
 
 export interface ProfileTopProps {

@@ -8,12 +8,12 @@ import { connect } from "react-redux";
 
 import Camera, { Shutter } from "@components/Camera";
 import { Post } from "@components/universal";
-import * as selectors from "@redux/selectors";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { Actions as PostActions } from "@redux/modules/post";
+import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { StackParamList } from "../App";
 import uuid from "uuid/v4";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state)

@@ -3,8 +3,8 @@ import {
   Animated,
   FlatList,
   ListRenderItemInfo,
-  ViewStyle,
-  TouchableOpacity
+  TouchableOpacity,
+  ViewStyle
 } from "react-native";
 import { FeedPostType } from "unexpected-cloud/controllers/post";
 import { PostType } from "unexpected-cloud/models/post";
