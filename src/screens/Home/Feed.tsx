@@ -9,8 +9,7 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { FeedPostType } from "unexpected-cloud/controllers/post";
-import { PostType } from "unexpected-cloud/models/post";
+import { PostType, FeedPostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
 import { Posts } from "@components/Feed";

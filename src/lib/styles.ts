@@ -6,6 +6,7 @@ export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get(
 
 export const Colors = {
   nearBlack: "rgb(10, 10, 10)",
+  gray: "rgb(120,120,120)",
   lightGray: "rgb(245, 245, 245)",
   red: "rgb(255, 0, 0)",
   yellow: "rgb(0, 0, 0)",

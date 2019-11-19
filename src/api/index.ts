@@ -2,7 +2,7 @@
 import {
   CheckCodeReturnType,
   VerifyPhoneReturnType
-} from "@api/controllers/verify";
+} from "unexpected-cloud/controllers/verify";
 import axios, { AxiosInstance } from "axios";
 
 /* get the server URL and instantiate the client */

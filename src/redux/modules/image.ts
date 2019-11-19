@@ -152,7 +152,7 @@ function* onUploadProfilePhoto(
 
 const getFilePath = (name: string) => {
   // const FILE = Platform.OS === "ios" ? "" : "file://";
-  return `${RNFS.CachesDirectoryPath}/${name}.jpg`;
+  return `${RNFS.DocumentDirectoryPath}/${name}.jpg`;
 };
 
 function* onRequestCache(
@@ -169,15 +169,11 @@ function* onRequestCache(
       ? getPostImageURL(phoneNumber, id)
       : getUserProfileURL(phoneNumber);
 
-    console.log("before download");
-
     const response: DownloadResult = yield RNFS.downloadFile({
       fromUrl: url,
       toFile: filePath,
       headers: getHeaders({ jwt })
     }).promise;
-
-    console.log("complete:", response);
 
     yield put(Actions.cachePhoto(filePath, phoneNumber, id));
   } catch (err) {

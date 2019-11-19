@@ -28,8 +28,9 @@ export const Posts: React.FC<PostsProps> = React.memo(
     ListHeaderComponentStyle,
     style
   }) => {
-    const renderPost = ({ item }: ListRenderItemInfo<FeedPostType>) => (
+    const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => (
       <Post
+        index={index}
         onPressPhoto={() => onPressPost(item)}
         onPressName={() => onPressUser(item.user)}
         post={item}

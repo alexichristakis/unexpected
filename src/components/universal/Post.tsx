@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 
@@ -6,21 +6,33 @@ import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { StackParamList } from "../../App";
 import PostImage from "./PostImage";
 import { TouchableScale } from "./TouchableScale";
+import Animated from "react-native-reanimated";
 
 export interface PostProps {
+  // entranceAnimatedValue: typeof Animated.Value;
+  index: number;
+  post: FeedPostType;
   onPressPhoto?: () => void;
   onPressName?: () => void;
-  post: FeedPostType;
 }
 export const Post: React.FC<PostProps> = ({
+  // entranceAnimatedValue,
+  index,
   post,
   onPressName,
   onPressPhoto
 }) => {
+  // const [translateX] = useState(new Animated.Value(0));
   const { userPhoneNumber, photoId, description } = post;
 
+  // useEffect(() => {
+
+  // });
+
+  // const translateX = entranceAnimatedValue.
+
   return (
-    <View style={{ marginBottom: 40 }}>
+    <Animated.View style={styles.container}>
       <TouchableOpacity onPress={onPressName}>
         <Text style={[TextStyles.large, styles.name]}>
           {`${post.user.firstName} ${post.user.lastName}`}
@@ -35,11 +47,14 @@ export const Post: React.FC<PostProps> = ({
         />
       </TouchableScale>
       <Text style={TextStyles.medium}>{description}</Text>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 40
+  },
   name: {
     marginBottom: 10
   }

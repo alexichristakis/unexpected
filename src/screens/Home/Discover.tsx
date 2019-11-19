@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 
-import { Input } from "@components/universal";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen, ScreenProps } from "react-native-screens";
+import { Input } from "@components/universal";
 
 const mapStateToProps = (state: RootState) => ({});
 const mapDispatchToProps = {};
@@ -25,6 +25,7 @@ export const Discover: React.FC<DiscoverProps> = React.memo(() => {
     <Screen style={styles.container}>
       <Input
         style={{ width: "100%" }}
+        returnKeyType={"search"}
         label="enter a name or phone number"
         placeholder="search"
         onChangeText={setSearch}

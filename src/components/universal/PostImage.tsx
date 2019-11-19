@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View, ActivityIndicator } from "react-native";
 
 import { connect } from "react-redux";
 
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { Colors } from "@lib/styles";
 
 const mapStateToProps = (state: RootState, props: PostImageProps) => ({
   jwt: selectors.jwt(state),
@@ -44,7 +45,16 @@ export const _PostImage: React.FC<PostImageProps &
         />
       );
     } else {
-      return <View style={[styles.image, { width, height }]} />;
+      return (
+        <View
+          style={[
+            styles.image,
+            { width, height, alignItems: "center", justifyContent: "center" }
+          ]}
+        >
+          <ActivityIndicator color={Colors.lightGray} size={"large"} />
+        </View>
+      );
     }
   },
   (prevProps, nextProps) => {
@@ -69,6 +79,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(_PostImage);
 const styles = StyleSheet.create({
   image: {
     resizeMode: "cover",
-    backgroundColor: "gray"
+    backgroundColor: Colors.gray
   }
 });
