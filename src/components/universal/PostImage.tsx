@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, View, ActivityIndicator } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 
 import { connect } from "react-redux";
 
+import { Colors } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { Colors } from "@lib/styles";
 
 const mapStateToProps = (state: RootState, props: PostImageProps) => ({
   jwt: selectors.jwt(state),

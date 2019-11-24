@@ -12,20 +12,20 @@ import {
   takeLatest
 } from "redux-saga/effects";
 import { FeedReturnType } from "unexpected-cloud/controllers/post";
-import { PostType, FeedPostType } from "unexpected-cloud/models/post";
+import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
 import { AxiosResponse } from "axios";
 import Navigation from "../../Navigation";
 import * as selectors from "../selectors";
+import { phoneNumber } from "../selectors";
 import {
   ActionsUnion,
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
 import { Actions as AppActions } from "./app";
-import { phoneNumber } from "../selectors";
 
 export interface FeedState {
   // frames: Array<{

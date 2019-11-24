@@ -1,26 +1,26 @@
 import React, { useCallback, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
-import Animated from "react-native-reanimated";
-import { onScroll } from "react-native-redash";
 import {
   RouteProp,
   useFocusEffect,
   useIsFocused
 } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Animated from "react-native-reanimated";
+import { onScroll } from "react-native-redash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { PostType, FeedPostType } from "unexpected-cloud/models/post";
+import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
 import { Posts } from "@components/Feed";
+import { Top } from "@components/Feed/Top";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
-import { Top } from "@components/Feed/Top";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),

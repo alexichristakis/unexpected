@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
+  FlatListProps,
   ListRenderItemInfo,
+  ScrollViewProps,
   TouchableOpacity,
   ViewProps,
-  ViewStyle,
-  FlatListProps,
-  ScrollViewProps
+  ViewStyle
 } from "react-native";
 
 import Animated, { Easing } from "react-native-reanimated";

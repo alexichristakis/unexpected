@@ -1,9 +1,9 @@
 /* API */
+import axios, { AxiosInstance } from "axios";
 import {
   CheckCodeReturnType,
   VerifyPhoneReturnType
 } from "unexpected-cloud/controllers/verify";
-import axios, { AxiosInstance } from "axios";
 
 /* get the server URL and instantiate the client */
 const server = __DEV__

@@ -3,9 +3,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import Animated, { Easing } from "react-native-reanimated";
 import PostImage from "./PostImage";
 import { TouchableScale } from "./TouchableScale";
-import Animated, { Easing } from "react-native-reanimated";
 
 export interface PostProps {
   entranceAnimatedValue?: Animated.Value<number>;
