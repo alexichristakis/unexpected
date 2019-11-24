@@ -49,14 +49,35 @@ export const Top: React.FC<ProfileTopProps> = ({
   return (
     <>
       <Animated.View style={[styles.container, animatedStyle]}>
-        <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
-          <UserImage phoneNumber={phoneNumber} size={(SCREEN_WIDTH - 40) / 3} />
+        <TouchableOpacity
+          style={[styles.row, { marginBottom: 20 }]}
+          disabled={!onPressName}
+          onPress={onPressName}
+        >
+          <Text style={TextStyles.title}>{`${firstName} ${lastName}`}</Text>
         </TouchableOpacity>
-        <TouchableOpacity disabled={!onPressName} onPress={onPressName}>
-          <Text
-            style={[TextStyles.large, { marginLeft: 20 }]}
-          >{`${firstName} ${lastName}`}</Text>
-        </TouchableOpacity>
+        <View style={[styles.row, { marginBottom: 20 }]}>
+          <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
+            <UserImage
+              phoneNumber={phoneNumber}
+              size={(SCREEN_WIDTH - 40) / 3}
+            />
+          </TouchableOpacity>
+          <View style={styles.bio}>
+            <View style={styles.row}>
+              <Text style={[TextStyles.medium, { marginRight: 50 }]}>
+                120<Text>{"\n"}moments</Text>
+              </Text>
+              <Text style={TextStyles.medium}>
+                200<Text>{"\n"}following</Text>
+              </Text>
+            </View>
+            <Text style={[TextStyles.small, { flex: 1 }]}>
+              Some content for a bio maybe also that is really long to see what
+              a long piece of text looks like in the bio field.
+            </Text>
+          </View>
+        </View>
       </Animated.View>
       <Animated.View style={[styles.header, animatedHeaderStyle]}>
         <Text style={TextStyles.large}>{`${firstName} ${lastName}`}</Text>
@@ -68,9 +89,22 @@ export const Top: React.FC<ProfileTopProps> = ({
 const styles = StyleSheet.create({
   container: {
     alignSelf: "stretch",
-    flexDirection: "row",
+    // flexDirection: "row",
     alignItems: "center",
     paddingVertical: 20
+  },
+  row: {
+    alignSelf: "stretch",
+    // alignItems: "flex-start",
+    // justifyContent: "space-around",
+    flexDirection: "row",
+    flex: 1
+    // marginBottom: 20
+  },
+  bio: {
+    flex: 1,
+    // justifyContent: "space-around",
+    marginLeft: 20
   },
   header: {
     backgroundColor: "white",
