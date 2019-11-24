@@ -7,6 +7,7 @@ export * from "./PendingPostImage";
 export * from "./PostImage";
 export * from "./Post";
 export * from "./TouchableScale";
+export * from "./LoadingCircle";
 
 import PostImage from "./PostImage";
 import UserImage from "./UserImage";

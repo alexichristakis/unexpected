@@ -25,7 +25,7 @@ export const Post: React.FC<PostProps> = ({
 
   const translateY = Animated.interpolate(entranceAnimatedValue, {
     inputRange: [0, 1],
-    outputRange: [40 * (index + 1), 0]
+    outputRange: [150 * (index + 1), 0]
   });
 
   return (

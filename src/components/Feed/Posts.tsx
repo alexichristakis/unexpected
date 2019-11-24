@@ -17,9 +17,11 @@ import { UserType } from "unexpected-cloud/models/user";
 import { Post } from "@components/universal";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+const AnimatedFlatList: typeof FlatList = Animated.createAnimatedComponent(
+  FlatList
+);
 
-export interface PostsProps extends ViewProps {
+export interface PostsProps extends Partial<FlatListProps<FeedPostType>> {
   scrollY?: Animated.Value<number>;
   onPressPost?: (post: FeedPostType) => void;
   onPressUser?: (user: UserType) => void;
@@ -43,8 +45,8 @@ export const Posts: React.FC<PostsProps> = React.memo(
     useEffect(() => {
       Animated.timing(animatedValue, {
         toValue: 1,
-        duration: 150,
-        easing: Easing.ease
+        duration: 300,
+        easing: Easing.quad
       }).start();
     }, [posts.length]);
 

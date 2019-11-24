@@ -1,26 +1,36 @@
 import React, { useCallback, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
+import Animated from "react-native-reanimated";
 import {
   RouteProp,
   useFocusEffect,
   useIsFocused
 } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Animated from "react-native-reanimated";
-import { onScroll } from "react-native-redash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { FeedPostType, PostType } from "unexpected-cloud/models/post";
+import { PostType, FeedPostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
 import { Posts } from "@components/Feed";
-import { Top } from "@components/Feed/Top";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
+import { Top } from "@components/Feed/Top";
+
+const {
+  Value,
+  block,
+  cond,
+  call,
+  and,
+  lessThan,
+  greaterOrEq,
+  useCode
+} = Animated;
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -41,18 +51,35 @@ export interface FeedProps extends FeedReduxProps {
 
 export const Feed: React.FC<FeedProps> = React.memo(
   ({ navigation, phoneNumber, feed, fetchFeed }) => {
-    const [scrollY] = useState(new Animated.Value(0));
-    // const [onScroll] = useState(
-    //   Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-    //     useNativeDriver: true
-    //   })
-    // );
+    const [readyForRefresh, setReadyForRefresh] = useState(1);
+    const [scrollY] = useState(new Value(0));
 
     useFocusEffect(
       useCallback(() => {
         if (feed.stale) fetchFeed();
       }, [feed.stale])
     );
+
+    useCode(
+      () =>
+        block([
+          cond(
+            and(readyForRefresh, lessThan(scrollY, -100)),
+            call([], refresh)
+          ),
+          cond(
+            greaterOrEq(scrollY, 0),
+            call([], ([]) => setReadyForRefresh(1))
+          )
+        ]),
+      [readyForRefresh]
+    );
+
+    const refresh = () => {
+      console.log("refresh");
+      setReadyForRefresh(0);
+      fetchFeed();
+    };
 
     const getPosts = () => {
       return feed.posts;
@@ -75,7 +102,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     return (
       <Screen style={styles.container}>
         <Posts
-          onScroll={onScroll({ y: scrollY })}
+          scrollY={scrollY}
           onPressPost={handleOnPressPost}
           onPressUser={handleOnPressUser}
           ListHeaderComponentStyle={styles.headerContainer}

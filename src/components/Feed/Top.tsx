@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text } from "react-native";
 import Animated from "react-native-reanimated";
 
+import { LoadingCircle } from "@components/universal";
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 
 export interface FeedTopProps {
@@ -13,7 +14,22 @@ export const Top: React.FC<FeedTopProps> = ({ scrollY }) => {
       {
         translateY: scrollY.interpolate({
           inputRange: [-50, 0, 50],
-          outputRange: [-50, 0, 0]
+          outputRange: [-100, 0, 0]
+        })
+      }
+    ]
+  };
+
+  const animatedLoaderStyle = {
+    opacity: scrollY.interpolate({
+      inputRange: [-100, 0, 50],
+      outputRange: [1, 0, 0]
+    }),
+    transform: [
+      {
+        translateY: scrollY.interpolate({
+          inputRange: [-50, 0, 50],
+          outputRange: [-35, 0, 50]
         })
       }
     ]
@@ -31,16 +47,32 @@ export const Top: React.FC<FeedTopProps> = ({ scrollY }) => {
   };
 
   return (
-    <Animated.View style={[styles.container, animatedStyle]}>
-      <Text style={TextStyles.title}>Today</Text>
-      <Text style={TextStyles.large}>Monday, November 25th</Text>
-    </Animated.View>
+    <>
+      <Animated.View
+        style={[
+          { position: "absolute", height: 100, top: 0, left: 0, right: 0 },
+          animatedLoaderStyle
+        ]}
+      >
+        <LoadingCircle
+          progress={scrollY.interpolate({
+            inputRange: [-100, 0],
+            outputRange: [1, 0]
+          })}
+        />
+      </Animated.View>
+      <Animated.View style={[styles.container, animatedStyle]}>
+        <Text style={TextStyles.title}>Today</Text>
+        <Text style={TextStyles.large}>Monday, November 25th</Text>
+      </Animated.View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     alignSelf: "stretch",
+    backgroundColor: "white",
     // flexDirection: "row",
     // alignItems: "center",
     paddingVertical: 20
