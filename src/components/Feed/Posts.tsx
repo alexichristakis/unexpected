@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
 import {
-  Animated as RNAnimated,
   FlatList,
   ListRenderItemInfo,
   TouchableOpacity,
   ViewProps,
-  ViewStyle
+  ViewStyle,
+  FlatListProps,
+  ScrollViewProps
 } from "react-native";
+
 import Animated, { Easing } from "react-native-reanimated";
+import { onScroll } from "react-native-redash";
 import { FeedPostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
 import { Post } from "@components/universal";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 export interface PostsProps extends ViewProps {
+  scrollY?: Animated.Value<number>;
   onPressPost?: (post: FeedPostType) => void;
   onPressUser?: (user: UserType) => void;
   ListHeaderComponentStyle?: ViewStyle;
@@ -23,6 +29,7 @@ export interface PostsProps extends ViewProps {
 }
 export const Posts: React.FC<PostsProps> = React.memo(
   ({
+    scrollY,
     posts,
     onPressPost = () => {},
     onPressUser = () => {},
@@ -52,8 +59,10 @@ export const Posts: React.FC<PostsProps> = React.memo(
     );
 
     return (
-      <FlatList
+      <AnimatedFlatList
         style={style}
+        onScroll={onScroll({ y: scrollY })}
+        scrollEventThrottle={16}
         ListHeaderComponentStyle={ListHeaderComponentStyle}
         ListHeaderComponent={ListHeaderComponent}
         showsVerticalScrollIndicator={false}

@@ -1,6 +1,8 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
+import Animated from "react-native-reanimated";
+import { onScroll } from "react-native-redash";
 import {
   RouteProp,
   useFocusEffect,
@@ -18,6 +20,7 @@ import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
+import { Top } from "@components/Feed/Top";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -38,6 +41,13 @@ export interface FeedProps extends FeedReduxProps {
 
 export const Feed: React.FC<FeedProps> = React.memo(
   ({ navigation, phoneNumber, feed, fetchFeed }) => {
+    const [scrollY] = useState(new Animated.Value(0));
+    // const [onScroll] = useState(
+    //   Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+    //     useNativeDriver: true
+    //   })
+    // );
+
     useFocusEffect(
       useCallback(() => {
         if (feed.stale) fetchFeed();
@@ -60,11 +70,16 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
+    const renderTop = () => <Top scrollY={scrollY} />;
+
     return (
       <Screen style={styles.container}>
         <Posts
+          onScroll={onScroll({ y: scrollY })}
           onPressPost={handleOnPressPost}
           onPressUser={handleOnPressUser}
+          ListHeaderComponentStyle={styles.headerContainer}
+          ListHeaderComponent={renderTop}
           posts={feed.posts}
         />
       </Screen>
@@ -78,6 +93,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 40
     // justifyContent: "center"
+  },
+  headerContainer: {
+    zIndex: 1,
+    alignSelf: "stretch"
   }
 });
 
