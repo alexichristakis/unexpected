@@ -3,36 +3,38 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import { StackParamList } from "../../App";
 import PostImage from "./PostImage";
 import { TouchableScale } from "./TouchableScale";
-import Animated from "react-native-reanimated";
+import Animated, { Easing } from "react-native-reanimated";
 
 export interface PostProps {
-  // entranceAnimatedValue: typeof Animated.Value;
-  index: number;
+  entranceAnimatedValue?: Animated.Value<number>;
+  index?: number;
   post: FeedPostType;
   onPressPhoto?: () => void;
   onPressName?: () => void;
 }
 export const Post: React.FC<PostProps> = ({
-  // entranceAnimatedValue,
-  index,
+  entranceAnimatedValue = 1,
+  index = 0,
   post,
   onPressName,
   onPressPhoto
 }) => {
-  // const [translateX] = useState(new Animated.Value(0));
   const { userPhoneNumber, photoId, description } = post;
 
-  // useEffect(() => {
-
-  // });
-
-  // const translateX = entranceAnimatedValue.
+  const translateY = Animated.interpolate(entranceAnimatedValue, {
+    inputRange: [0, 1],
+    outputRange: [40 * (index + 1), 0]
+  });
 
   return (
-    <Animated.View style={styles.container}>
+    <Animated.View
+      style={[
+        styles.container,
+        { transform: [{ translateY }], opacity: entranceAnimatedValue }
+      ]}
+    >
       <TouchableOpacity onPress={onPressName}>
         <Text style={[TextStyles.large, styles.name]}>
           {`${post.user.firstName} ${post.user.lastName}`}

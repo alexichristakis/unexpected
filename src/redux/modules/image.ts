@@ -16,6 +16,10 @@ import {
   ExtractActionFromActionCreator
 } from "../utils";
 
+// export type Cache = {
+//   [phoneNumber: string]: Proxy<CacheEntry>;
+// };
+
 export interface CacheEntry {
   ts: number;
   uri: string;
@@ -99,7 +103,7 @@ export default (
       return { ...state, uploading: false, currentImage: null };
     }
 
-    case ActionTypes.UPLOAD_PHOTO_ERROR: {
+    case ActionTypes.ON_ERROR: {
       return { ...state, uploadError: action.payload.err };
     }
 
@@ -146,7 +150,7 @@ function* onUploadProfilePhoto(
     yield put(Actions.cachePhoto(image.uri, phoneNumber));
     if (cb) yield cb();
   } catch (err) {
-    yield put(Actions.uploadPhotoError(err.message));
+    yield put(Actions.onError(err.message));
   }
 }
 
@@ -161,23 +165,28 @@ function* onRequestCache(
   const { phoneNumber, id } = action.payload;
   const jwt = yield select(selectors.jwt);
 
-  try {
-    const fileName = id ? `${phoneNumber}_${id}` : `${phoneNumber}`;
-    const filePath = getFilePath(fileName);
+  const network = yield select(selectors.isInternetReachable);
+  if (!network) {
+    yield put(Actions.onError("network error"));
+  } else {
+    try {
+      const fileName = id ? `${phoneNumber}_${id}` : `${phoneNumber}`;
+      const filePath = getFilePath(fileName);
 
-    const url = id
-      ? getPostImageURL(phoneNumber, id)
-      : getUserProfileURL(phoneNumber);
+      const url = id
+        ? getPostImageURL(phoneNumber, id)
+        : getUserProfileURL(phoneNumber);
 
-    const response: DownloadResult = yield RNFS.downloadFile({
-      fromUrl: url,
-      toFile: filePath,
-      headers: getHeaders({ jwt })
-    }).promise;
+      const response: DownloadResult = yield RNFS.downloadFile({
+        fromUrl: url,
+        toFile: filePath,
+        headers: getHeaders({ jwt })
+      }).promise;
 
-    yield put(Actions.cachePhoto(filePath, phoneNumber, id));
-  } catch (err) {
-    yield put(Actions.uploadPhotoError(err));
+      yield put(Actions.cachePhoto(filePath, phoneNumber, id));
+    } catch (err) {
+      yield put(Actions.onError(err));
+    }
   }
 }
 
@@ -192,7 +201,7 @@ export enum ActionTypes {
   TAKE_PHOTO = "image/TAKE_PHOTO",
   UPLOAD_PROFILE_PHOTO = "image/UPLOAD_PROFILE_PHOTO",
   UPLOAD_PHOTO_SUCCESS = "image/UPLOAD_PHOTO_SUCCESS",
-  UPLOAD_PHOTO_ERROR = "image/ON_UPLOAD_ERROR",
+  ON_ERROR = "image/ON_ERROR",
   CACHE_PHOTO = "image/CACHE_PHOTO",
   REQUEST_CACHE = "image/REQUEST_CACHE",
   CLEAR_PHOTO = "image/CLEAR_PHOTO"
@@ -209,6 +218,5 @@ export const Actions = {
   uploadProfilePhoto: (cb?: () => void) =>
     createAction(ActionTypes.UPLOAD_PROFILE_PHOTO, { cb }),
   uploadPhotoSuccess: () => createAction(ActionTypes.UPLOAD_PHOTO_SUCCESS),
-  uploadPhotoError: (err: any) =>
-    createAction(ActionTypes.UPLOAD_PHOTO_ERROR, { err })
+  onError: (err: any) => createAction(ActionTypes.ON_ERROR, { err })
 };

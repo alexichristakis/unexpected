@@ -21,8 +21,8 @@ import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   user: selectors.user(state),
-  posts: selectors.usersPosts(state),
-  stale: selectors.usersPostsStale(state)
+  posts: selectors.currentUsersPosts(state),
+  stale: selectors.currentUsersPostsStale(state)
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,

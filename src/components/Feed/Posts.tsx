@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
+  Animated as RNAnimated,
   FlatList,
   ListRenderItemInfo,
   TouchableOpacity,
   ViewProps,
   ViewStyle
 } from "react-native";
+import Animated, { Easing } from "react-native-reanimated";
 import { FeedPostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
@@ -26,10 +28,22 @@ export const Posts: React.FC<PostsProps> = React.memo(
     onPressUser = () => {},
     ListHeaderComponent,
     ListHeaderComponentStyle,
-    style
+    style,
+    ...rest
   }) => {
+    const [animatedValue] = useState(new Animated.Value(0));
+
+    useEffect(() => {
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 150,
+        easing: Easing.ease
+      }).start();
+    }, [posts.length]);
+
     const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => (
       <Post
+        entranceAnimatedValue={animatedValue}
         index={index}
         onPressPhoto={() => onPressPost(item)}
         onPressName={() => onPressUser(item.user)}
@@ -39,12 +53,14 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
     return (
       <FlatList
+        style={style}
         ListHeaderComponentStyle={ListHeaderComponentStyle}
         ListHeaderComponent={ListHeaderComponent}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50, alignItems: "center" }}
         data={posts}
         renderItem={renderPost}
+        {...rest}
       />
     );
   },

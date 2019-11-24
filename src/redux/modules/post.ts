@@ -11,11 +11,8 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import {
-  FeedPostType,
-  FeedReturnType
-} from "unexpected-cloud/controllers/post";
-import { PostType } from "unexpected-cloud/models/post";
+import { FeedReturnType } from "unexpected-cloud/controllers/post";
+import { PostType, FeedPostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
@@ -28,6 +25,7 @@ import {
   ExtractActionFromActionCreator
 } from "../utils";
 import { Actions as AppActions } from "./app";
+import { phoneNumber } from "../selectors";
 
 export interface FeedState {
   // frames: Array<{
@@ -40,13 +38,12 @@ export interface FeedState {
   stale: boolean;
 }
 export interface PostState {
-  user: {
-    posts: PostType[];
-    lastFetched: Date;
-    stale: boolean;
-  };
   users: {
-    [phoneNumber: string]: { posts: PostType[]; lastFetched: Date };
+    [phoneNumber: string]: {
+      posts: PostType[];
+      lastFetched: Date;
+      stale: boolean;
+    };
   };
   feed: FeedState;
   loading: boolean;
@@ -54,11 +51,6 @@ export interface PostState {
 }
 
 const initialState: PostState = {
-  user: {
-    posts: [],
-    lastFetched: new Date(0),
-    stale: true
-  },
   users: {},
   feed: {
     // frames: [],
@@ -85,19 +77,10 @@ export default (
     }
 
     case ActionTypes.SEND_POST_SUCCESS: {
+      const { phoneNumber } = action.payload;
       return immer(state, draft => {
         draft.loading = false;
-        draft.user.stale = true;
-
-        return draft;
-      });
-    }
-
-    case ActionTypes.FETCH_CURRENT_USERS_POSTS_SUCCESS: {
-      const { posts } = action.payload;
-      return immer(state, draft => {
-        draft.loading = false;
-        draft.user = { posts, stale: false, lastFetched: new Date() };
+        draft.users[phoneNumber].stale = true;
 
         return draft;
       });
@@ -107,7 +90,11 @@ export default (
       const { phoneNumber, posts } = action.payload;
       return immer(state, draft => {
         draft.loading = false;
-        draft.users[phoneNumber] = { posts, lastFetched: new Date() };
+        draft.users[phoneNumber] = {
+          posts,
+          lastFetched: new Date(),
+          stale: false
+        };
 
         return draft;
       });
@@ -178,7 +165,7 @@ function* onSendPost(
     ]);
 
     yield all([
-      yield put(Actions.sendPostSuccess()),
+      yield put(Actions.sendPostSuccess(phoneNumber)),
       yield put(AppActions.expireCamera()),
       yield Navigation.navigate("HOME")
     ]);
@@ -204,11 +191,7 @@ function* onFetchUsersPosts(
       }
     );
 
-    if (userFetched === userPhoneNumber) {
-      yield put(Actions.fetchCurrentUsersPostsSuccess(posts.data));
-    } else {
-      yield put(Actions.fetchUsersPostsSuccess(userFetched, posts.data));
-    }
+    yield put(Actions.fetchUsersPostsSuccess(userFetched, posts.data));
   } catch (err) {
     yield put(Actions.onError(err.message));
   }
@@ -254,7 +237,6 @@ export function* postSagas() {
 export enum ActionTypes {
   FETCH_USERS_POSTS = "post/FETCH_USERS_POSTS",
   FETCH_USERS_POSTS_SUCCESS = "post/FETCH_USERS_POSTS_SUCCESS",
-  FETCH_CURRENT_USERS_POSTS_SUCCESS = "post/FETCH_CURRENT_USERS_POSTS_SUCCESS",
   FETCH_FEED = "post/FETCH_FEED",
   FETCH_FEED_SUCCESS = "post/FETCH_FEED_SUCCESS",
   SEND_POST = "post/SEND_POST",
@@ -267,14 +249,13 @@ export const Actions = {
     createAction(ActionTypes.FETCH_USERS_POSTS, { phoneNumber }),
   fetchUsersPostsSuccess: (phoneNumber: string, posts: PostType[]) =>
     createAction(ActionTypes.FETCH_USERS_POSTS_SUCCESS, { phoneNumber, posts }),
-  fetchCurrentUsersPostsSuccess: (posts: PostType[]) =>
-    createAction(ActionTypes.FETCH_CURRENT_USERS_POSTS_SUCCESS, { posts }),
   fetchFeed: (fromDate?: Date) =>
     createAction(ActionTypes.FETCH_FEED, { fromDate }),
   fetchFeedSuccess: (posts: FeedReturnType) =>
     createAction(ActionTypes.FETCH_FEED_SUCCESS, { posts }),
   sendPost: (description: string) =>
     createAction(ActionTypes.SEND_POST, { description }),
-  sendPostSuccess: () => createAction(ActionTypes.SEND_POST_SUCCESS),
+  sendPostSuccess: (phoneNumber: string) =>
+    createAction(ActionTypes.SEND_POST_SUCCESS, { phoneNumber }),
   onError: (error: string) => createAction(ActionTypes.ON_ERROR, { error })
 };

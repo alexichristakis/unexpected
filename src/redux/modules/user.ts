@@ -85,7 +85,7 @@ function* onCreateUser(
     phoneNumber,
     following: [],
     deviceOS: Platform.OS,
-    timezone: "Americas/New_York"
+    timezone: "America/New_York"
   };
 
   try {
