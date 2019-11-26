@@ -4,7 +4,8 @@ import {
   FlatList,
   ListRenderItemInfo,
   TouchableOpacity,
-  ViewStyle
+  ViewStyle,
+  StyleSheet
 } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
 
@@ -43,7 +44,7 @@ const Grid: React.FC<GridProps> = ({
 
   return (
     <Animated.FlatList
-      style={{ height: "100%", width: "100%" }}
+      style={styles.list}
       onScroll={onScroll}
       ListHeaderComponentStyle={ListHeaderComponentStyle}
       ListHeaderComponent={ListHeaderComponent}
@@ -53,5 +54,9 @@ const Grid: React.FC<GridProps> = ({
     />
   );
 };
+
+const styles = StyleSheet.create({
+  list: { height: "100%", width: "100%" }
+});
 
 export { Grid };

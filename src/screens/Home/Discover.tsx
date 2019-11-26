@@ -18,11 +18,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import uuid from "uuid/v4";
 
 import { StackParamList } from "../../App";
-import { Input, UserRow } from "@components/universal";
-import { Actions as AuthActions } from "@redux/modules/auth";
+import { Input, UserRow, ItemSeparator } from "@components/universal";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { Screen, ScreenProps } from "react-native-screens";
+import { Screen } from "react-native-screens";
 import { TextSizes } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
 
@@ -44,7 +43,6 @@ export const Discover: React.FC<DiscoverProps &
   DiscoverReduxProps> = React.memo(({ phoneNumber, jwt, navigation }) => {
   const [responses, setResponses] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(false);
-  // const [search, setSearch] = useState("");
 
   const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => (
     <UserRow onPress={handleOnPressUser} user={item} />
@@ -69,7 +67,10 @@ export const Discover: React.FC<DiscoverProps &
   }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
     setLoading(true);
     const response = await client.get<UserType[]>(
-      `/user/search/${nativeEvent.text}`
+      `/user/search/${nativeEvent.text}`,
+      {
+        headers: getHeaders({ jwt })
+      }
     );
 
     const { data } = response;
@@ -77,6 +78,8 @@ export const Discover: React.FC<DiscoverProps &
     setResponses(data);
     setLoading(false);
   };
+
+  const renderSeparatorComponent = () => <ItemSeparator />;
 
   return (
     <Screen style={styles.container}>
@@ -91,7 +94,12 @@ export const Discover: React.FC<DiscoverProps &
       {loading ? (
         <ActivityIndicator size="large" />
       ) : (
-        <FlatList renderItem={renderUserRow} data={responses} />
+        <FlatList
+          style={styles.list}
+          renderItem={renderUserRow}
+          ItemSeparatorComponent={renderSeparatorComponent}
+          data={responses}
+        />
       )}
     </Screen>
   );
@@ -102,7 +110,8 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingHorizontal: 20,
     alignItems: "center"
-  }
+  },
+  list: { height: "100%", width: "100%" }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Discover);

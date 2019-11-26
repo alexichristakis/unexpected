@@ -99,6 +99,7 @@ function* onCreateUser(
     ...name,
     phoneNumber,
     following: [],
+    followRequests: [],
     deviceOS: Platform.OS,
     timezone: "America/New_York"
   };
