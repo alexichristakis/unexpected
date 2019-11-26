@@ -76,6 +76,12 @@ export default (
       });
     }
 
+    case ActionTypes.ON_ERROR: {
+      const { err } = action.payload;
+
+      return { ...state, error: err };
+    }
+
     default:
       return state;
   }

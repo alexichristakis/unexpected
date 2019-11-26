@@ -20,7 +20,6 @@ import client, { getHeaders } from "@api";
 import { AxiosResponse } from "axios";
 import Navigation from "../../Navigation";
 import * as selectors from "../selectors";
-import { phoneNumber } from "../selectors";
 import {
   ActionsUnion,
   createAction,
@@ -220,10 +219,7 @@ function* onFetchFeed(
 
     const { data: posts } = res;
 
-    yield delay(5000);
     yield put(Actions.fetchFeedSuccess(posts));
-
-    // TODO: load the posts
   } catch (err) {
     yield put(Actions.onError(err.message));
   }

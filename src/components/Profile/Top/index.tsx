@@ -14,6 +14,7 @@ import { UserType } from "unexpected-cloud/models/user";
 export interface ProfileTopProps {
   user: UserType;
   scrollY: Animated.Value;
+  onPressFollowing: () => void;
   onPressImage?: () => void;
   onPressName?: () => void;
 }
@@ -21,6 +22,7 @@ export interface ProfileTopProps {
 export const Top: React.FC<ProfileTopProps> = ({
   user: { phoneNumber, firstName, lastName },
   scrollY,
+  onPressFollowing,
   onPressImage,
   onPressName
 }) => {
@@ -55,7 +57,10 @@ export const Top: React.FC<ProfileTopProps> = ({
           onPress={onPressName}
         >
           <Text style={TextStyles.title}>{`${firstName} ${lastName}`}</Text>
-          <Text style={[TextStyles.large]}>120 moments, 200 following</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={[TextStyles.large]}>120 moments</Text>
+            <Button title={"200 following"} onPress={onPressFollowing} />
+          </View>
         </TouchableOpacity>
         <View style={[styles.row, { marginBottom: 20 }]}>
           <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
