@@ -27,7 +27,7 @@ import { LaunchCameraButton } from "@components/Camera";
 import { TextStyles } from "@lib/styles";
 import Connection from "./components/Connection";
 import { useReduxState } from "./hooks";
-import Navigation from "./Navigation";
+import Navigation from "./navigation";
 
 /* screens */
 import Auth from "./screens/Auth";

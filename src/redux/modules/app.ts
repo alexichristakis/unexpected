@@ -1,13 +1,34 @@
-import NetInfo, { NetInfoState, NetInfoStateType } from "@react-native-community/netinfo";
+import NetInfo, {
+  NetInfoState,
+  NetInfoStateType
+} from "@react-native-community/netinfo";
 import moment, { Moment } from "moment";
-import { AppState as AppStatus, AppStateStatus as AppStatusType, StatusBar } from "react-native";
-import PushNotifications, { PushNotification } from "react-native-push-notification";
+import {
+  AppState as AppStatus,
+  AppStateStatus as AppStatusType,
+  StatusBar
+} from "react-native";
+import PushNotifications, {
+  PushNotification
+} from "react-native-push-notification";
 import { REHYDRATE } from "redux-persist";
 import { eventChannel } from "redux-saga";
-import { all, call, fork, put, select, take, takeEvery, takeLatest } from "redux-saga/effects";
+import {
+  all,
+  call,
+  fork,
+  put,
+  select,
+  take,
+  takeEvery,
+  takeLatest
+} from "redux-saga/effects";
 
-import Navigation, { NavigationEmitterPayload } from "../../Navigation";
-import { ActionsUnion, createAction, ExtractActionFromActionCreator } from "../utils";
+import {
+  ActionsUnion,
+  createAction,
+  ExtractActionFromActionCreator
+} from "../utils";
 import { ActionTypes as PermissionsActionTypes } from "./permissions";
 import { Actions as UserActions } from "./user";
 
@@ -34,7 +55,10 @@ const initialState: AppState = {
   }
 };
 
-export default (state: AppState = initialState, action: ActionsUnion<typeof Actions>): AppState => {
+export default (
+  state: AppState = initialState,
+  action: ActionsUnion<typeof Actions>
+): AppState => {
   switch (action.type) {
     case ActionTypes.SET_CAMERA_TIMER: {
       const { time } = action.payload;
@@ -85,7 +109,8 @@ function* onReceiveNotification(
 
 const appEmitter = () => {
   return eventChannel(emit => {
-    const appStatusHandler = (state: AppStatusType) => emit({ appStatus: state });
+    const appStatusHandler = (state: AppStatusType) =>
+      emit({ appStatus: state });
     const netInfoHandler = (state: NetInfoState) => emit({ netInfo: state });
     // const navigationHandler = (state: NavigationEmitterPayload) => emit({ navigation: state });
 
@@ -160,7 +185,9 @@ function* onRegisterNotifications() {
     const { token, notification } = yield take(tokenChannel);
 
     if (token) {
-      yield put(UserActions.updateUser({ deviceToken: token.token, deviceOS: token.os }));
+      yield put(
+        UserActions.updateUser({ deviceToken: token.token, deviceOS: token.os })
+      );
     }
 
     if (notification) {
@@ -173,7 +200,10 @@ export function* appSagas() {
   yield all([
     yield takeEvery(REHYDRATE, onStartup),
     yield takeEvery(ActionTypes.PROCESS_NOTIFICATION, onReceiveNotification),
-    yield takeLatest(PermissionsActionTypes.SET_NOTIFICATIONS, onRegisterNotifications)
+    yield takeLatest(
+      PermissionsActionTypes.SET_NOTIFICATIONS,
+      onRegisterNotifications
+    )
   ]);
 }
 
@@ -190,8 +220,11 @@ export enum ActionTypes {
 export const Actions = {
   processNotification: (notification: PushNotification) =>
     createAction(ActionTypes.PROCESS_NOTIFICATION, { notification }),
-  setCameraTimer: (time: Moment) => createAction(ActionTypes.SET_CAMERA_TIMER, { time }),
+  setCameraTimer: (time: Moment) =>
+    createAction(ActionTypes.SET_CAMERA_TIMER, { time }),
   expireCamera: () => createAction(ActionTypes.EXPIRE_CAMERA),
-  setAppStatus: (status: AppStatusType) => createAction(ActionTypes.SET_APP_STATUS, { status }),
-  setNetInfo: (netInfo: NetInfoState) => createAction(ActionTypes.SET_NET_INFO, { netInfo })
+  setAppStatus: (status: AppStatusType) =>
+    createAction(ActionTypes.SET_APP_STATUS, { status }),
+  setNetInfo: (netInfo: NetInfoState) =>
+    createAction(ActionTypes.SET_NET_INFO, { netInfo })
 };

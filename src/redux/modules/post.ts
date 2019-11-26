@@ -18,7 +18,7 @@ import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
 import { AxiosResponse } from "axios";
-import Navigation from "../../Navigation";
+import Navigation from "../../navigation";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,

@@ -8,7 +8,7 @@ import {
   CheckCodeReturnType,
   VerifyPhoneReturnType
 } from "unexpected-cloud/controllers/verify";
-import Navigation from "../../Navigation";
+import Navigation from "../../navigation";
 import {
   ActionsUnion,
   createAction,

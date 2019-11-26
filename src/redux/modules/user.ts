@@ -22,7 +22,7 @@ import {
   ExtractActionFromActionCreator
 } from "../utils";
 
-import Navigation from "../../Navigation";
+import Navigation from "../../navigation";
 
 export interface UserState {
   // readonly user: UserType;
