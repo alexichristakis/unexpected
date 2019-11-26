@@ -3,7 +3,6 @@ import {
   BodyParams,
   Get,
   Put,
-  Delete,
   PathParams,
   UseAuth,
   Inject,
@@ -92,6 +91,16 @@ export class UserController {
     return this.userService.denyFriendRequest(phoneNumber, to);
   }
 
+  @Patch("/:phoneNumber/delete/:to")
+  @UseAuth(AuthMiddleware, {
+    select: Select.phoneFromPath
+  })
+  async deleteFriend(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("to") to: string
+  ) {
+    return this.userService.unfriend(phoneNumber, to);
+  }
   // @Put()
   // async unFollowUser() {}
 }

@@ -39,7 +39,7 @@ export class UserService extends CRUDService<UserModel, UserType> {
   }
 
   async friend(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to]);
+    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
 
     await Promise.all([
       this.model
@@ -56,25 +56,20 @@ export class UserService extends CRUDService<UserModel, UserType> {
         .exec(),
       this.notificationService.notifyPhoneNumber(
         to,
-        `${userFrom.firstName} ${userFrom.lastName} requested to friend you.`
+        `${userFrom.firstName} ${userFrom.lastName} sent you a friend request.`
       )
     ]);
   }
 
   async unfriend(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to]);
-  }
-
-  async acceptFriendRequest(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to]);
+    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
 
     await Promise.all([
       this.model
         .updateOne(
           { phoneNumber: to },
           {
-            followRequests: _.remove(userTo.friendRequests, from),
-            following: [...userFrom.friends, from]
+            friends: _.remove(userTo.friends, from)
           }
         )
         .exec(),
@@ -82,32 +77,56 @@ export class UserService extends CRUDService<UserModel, UserType> {
         .updateOne(
           { phoneNumber: from },
           {
-            requestedFollows: _.remove(userFrom.requestedFriends, to),
-            following: [...userFrom.friends, to]
+            friends: _.remove(userFrom.friends, to)
+          }
+        )
+        .exec()
+    ]);
+  }
+
+  async acceptFriendRequest(from: string, to: string) {
+    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
+
+    await Promise.all([
+      this.model
+        .updateOne(
+          { phoneNumber: to },
+          {
+            friendRequests: _.remove(userTo.friendRequests, from),
+            friends: [...userTo.friends, from]
+          }
+        )
+        .exec(),
+      this.model
+        .updateOne(
+          { phoneNumber: from },
+          {
+            requestedFriends: _.remove(userFrom.requestedFriends, to),
+            friends: [...userFrom.friends, to]
           }
         )
         .exec(),
       this.notificationService.notifyPhoneNumber(
         from,
-        `${userTo.firstName} ${userTo.lastName} accepted your follow request.`
+        `${userTo.firstName} ${userTo.lastName} accepted your friend request.`
       )
     ]);
   }
 
   async denyFriendRequest(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to]);
+    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
 
     await Promise.all([
       this.model
         .updateOne(
           { phoneNumber: to },
-          { followRequests: _.remove(userTo.friendRequests, from) }
+          { friendRequests: _.remove(userTo.friendRequests, from) }
         )
         .exec(),
       this.model
         .updateOne(
           { phoneNumber: from },
-          { requestedFollows: _.remove(userFrom.requestedFriends, to) }
+          { requestedFriends: _.remove(userFrom.requestedFriends, to) }
         )
         .exec()
     ]);
