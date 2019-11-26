@@ -50,11 +50,12 @@ export const Top: React.FC<ProfileTopProps> = ({
     <>
       <Animated.View style={[styles.container, animatedStyle]}>
         <TouchableOpacity
-          style={[styles.row, { marginBottom: 20 }]}
+          style={[styles.row, { flexDirection: "column", marginBottom: 20 }]}
           disabled={!onPressName}
           onPress={onPressName}
         >
           <Text style={TextStyles.title}>{`${firstName} ${lastName}`}</Text>
+          <Text style={[TextStyles.large]}>120 moments, 200 following</Text>
         </TouchableOpacity>
         <View style={[styles.row, { marginBottom: 20 }]}>
           <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
@@ -64,15 +65,15 @@ export const Top: React.FC<ProfileTopProps> = ({
             />
           </TouchableOpacity>
           <View style={styles.bio}>
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
               <Text style={[TextStyles.medium, { marginRight: 50 }]}>
                 120<Text>{"\n"}moments</Text>
               </Text>
               <Text style={TextStyles.medium}>
                 200<Text>{"\n"}following</Text>
               </Text>
-            </View>
-            <Text style={[TextStyles.small, { flex: 1 }]}>
+            </View> */}
+            <Text style={[TextStyles.medium, { flex: 1 }]}>
               Some content for a bio maybe also that is really long to see what
               a long piece of text looks like in the bio field.
             </Text>

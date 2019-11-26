@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Animated, Button, StyleSheet, Text } from "react-native";
+import { Animated, Button, StyleSheet, Text, StatusBar } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -50,6 +50,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     useFocusEffect(
       useCallback(() => {
+        StatusBar.setHidden(false);
         if (stale) fetchUsersPosts();
       }, [stale])
     );

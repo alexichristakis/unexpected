@@ -1,16 +1,11 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import {
-  Button,
-  ScrollView,
   StyleSheet,
   ListRenderItemInfo,
-  RefreshControl,
-  Text,
-  View,
-  Animated as RNAnimated,
   FlatList,
   NativeSyntheticEvent,
-  NativeScrollEvent
+  NativeScrollEvent,
+  StatusBar
 } from "react-native";
 
 import Animated, { Easing } from "react-native-reanimated";
@@ -70,15 +65,20 @@ export interface FeedProps extends FeedReduxProps {
 export const Feed: React.FC<FeedProps> = React.memo(
   ({ navigation, phoneNumber, feed, fetchFeed, refreshing }) => {
     const [readyForRefresh, setReadyForRefresh] = useState<0 | 1>(1);
-
+    const [statusBarVisible, setStatusBarVisible] = useState(true);
     const [scrollY] = useState(new Value(0));
-    const [animatedValue] = useState(new Animated.Value(0));
-    const postsRef = useRef<typeof AnimatedFlatList>(null);
+    const [entranceAnimatedValue] = useState(new Animated.Value(0));
+    const [statusBarAnimatedValue] = useState(new Animated.Value(0));
 
     useFocusEffect(
       useCallback(() => {
+        if (statusBarVisible) {
+          StatusBar.setHidden(false);
+        } else {
+          StatusBar.setHidden(true);
+        }
         if (feed.stale) fetchFeed();
-      }, [feed.stale])
+      }, [feed.stale, statusBarVisible])
     );
 
     useCode(
@@ -91,13 +91,18 @@ export const Feed: React.FC<FeedProps> = React.memo(
           cond(
             greaterOrEq(scrollY, -100),
             call([], ([]) => setReadyForRefresh(0))
+          ),
+          cond(
+            greaterOrEq(scrollY, 40),
+            call([], ([]) => hideStatusBar()),
+            call([], ([]) => showStatusBar())
           )
         ]),
       [readyForRefresh]
     );
 
     useEffect(() => {
-      Animated.timing(animatedValue, {
+      Animated.timing(entranceAnimatedValue, {
         toValue: 1,
         duration: 300,
         easing: Easing.quad
@@ -117,13 +122,37 @@ export const Feed: React.FC<FeedProps> = React.memo(
 
     const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => (
       <Post
-        entranceAnimatedValue={animatedValue}
+        entranceAnimatedValue={entranceAnimatedValue}
         index={index}
         onPressPhoto={() => handleOnPressPost(item)}
         onPressName={() => handleOnPressUser(item.user)}
         post={item}
       />
     );
+
+    const animatedStatusBarStyle = {
+      transform: [{ translateY: statusBarAnimatedValue }]
+    };
+
+    const showStatusBar = () => {
+      setStatusBarVisible(true);
+      StatusBar.setHidden(false, "slide");
+      Animated.timing(statusBarAnimatedValue, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.ease
+      }).start();
+    };
+
+    const hideStatusBar = () => {
+      setStatusBarVisible(false);
+      StatusBar.setHidden(true, "slide");
+      Animated.timing(statusBarAnimatedValue, {
+        toValue: -40,
+        duration: 200,
+        easing: Easing.ease
+      }).start();
+    };
 
     const getPosts = () => {
       return feed.posts;
@@ -158,10 +187,15 @@ export const Feed: React.FC<FeedProps> = React.memo(
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 50, alignItems: "center" }}
-          data={feed.posts}
+          contentContainerStyle={{
+            paddingTop: 40,
+            paddingBottom: 50,
+            alignItems: "center"
+          }}
+          data={getPosts()}
           renderItem={renderPost}
         />
+        <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
       </Screen>
     );
   }
@@ -170,9 +204,15 @@ export const Feed: React.FC<FeedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    paddingTop: 40
-    // justifyContent: "center"
+    alignItems: "center"
+  },
+  statusBar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    height: 40,
+    backgroundColor: "red"
   },
   headerContainer: {
     zIndex: 1,
