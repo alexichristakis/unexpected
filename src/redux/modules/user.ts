@@ -1,28 +1,27 @@
 import { Platform } from "react-native";
 
-import { AxiosResponse } from "axios";
+import { AxiosResponse, AxiosRequestConfig } from "axios";
 import {
   all,
   call,
-  fork,
   put,
   select,
-  take,
-  takeLatest
+  takeLatest,
+  takeEvery
 } from "redux-saga/effects";
 import immer from "immer";
+import _ from "lodash";
 
 import client, { getHeaders } from "@api";
 import { UserType } from "unexpected-cloud/models/user";
 
+import Navigation from "../../navigation";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
-
-import Navigation from "../../navigation";
 
 export interface UserState {
   // readonly user: UserType;
@@ -44,8 +43,9 @@ export default (
   action: ActionsUnion<typeof Actions>
 ): UserState => {
   switch (action.type) {
+    case ActionTypes.FETCH_USER:
+    case ActionTypes.FETCH_USERS:
     case ActionTypes.UPDATE_USER:
-    case ActionTypes.FETCH_FRIENDS:
     case ActionTypes.CREATE_NEW_USER: {
       return { ...state, loading: true, error: null };
     }
@@ -79,7 +79,11 @@ export default (
 
       return immer(state, draft => {
         users.forEach(user => {
-          draft.users[user.phoneNumber] = user;
+          if (user.phoneNumber)
+            draft.users[user.phoneNumber] = _.merge(
+              draft.users[user.phoneNumber],
+              user
+            );
         });
 
         draft.loading = false;
@@ -98,6 +102,30 @@ export default (
       return state;
   }
 };
+
+function* onFetchUser(
+  action: ExtractActionFromActionCreator<typeof Actions.fetchUser>
+) {
+  const jwt = yield select(selectors.jwt);
+  const userPhoneNumber = yield select(selectors.phoneNumber);
+
+  try {
+    const { phoneNumber } = action.payload;
+
+    const endpoint = phoneNumber
+      ? `/user/${phoneNumber}`
+      : `/user/${userPhoneNumber}`;
+
+    const res: AxiosResponse<UserType> = yield call(client.get, endpoint, {
+      headers: getHeaders({ jwt })
+    });
+
+    const { data } = res;
+    yield put(Actions.loadUsers([data]));
+  } catch (err) {
+    yield put(Actions.onError(err));
+  }
+}
 
 function* onCreateUser(
   action: ExtractActionFromActionCreator<typeof Actions.createUser>
@@ -163,24 +191,38 @@ function* onUpdateUser(
   }
 }
 
-function* onFetchFriends(
-  action: ExtractActionFromActionCreator<typeof Actions.fetchFriends>
+function* onFetchUsers(
+  action: ExtractActionFromActionCreator<typeof Actions.fetchUsers>
 ) {
   const jwt = yield select(selectors.jwt);
-  const { phoneNumber } = action.payload;
+  const { phoneNumbers, selectOn } = action.payload;
 
   try {
-    const res: AxiosResponse<UserType[]> = yield client.get(
-      `user/${phoneNumber}/friends`,
-      {
-        headers: getHeaders({ jwt })
-      }
-    );
+    let endpoint = `/user?phoneNumbers=${phoneNumbers.join(",")}`;
+    if (selectOn) endpoint += `&select=${selectOn.join(",")}`;
+
+    const res: AxiosResponse<Partial<UserType>[]> = yield client.get(endpoint, {
+      headers: getHeaders({ jwt })
+    });
 
     const { data } = res;
 
     yield put(Actions.loadUsers(data));
-  } catch (err) {}
+  } catch (err) {
+    yield put(Actions.onError(err));
+  }
+}
+
+function* onAcceptRequest(
+  action: ExtractActionFromActionCreator<typeof Actions.acceptRequest>
+) {
+  //
+}
+
+function* onDenyRequest(
+  action: ExtractActionFromActionCreator<typeof Actions.denyRequest>
+) {
+  //
 }
 
 function* onFriendUser(
@@ -191,9 +233,17 @@ function* onFriendUser(
   const { user } = action.payload;
 
   try {
-    yield call(client.patch, `user/${phoneNumber}/friend/${user.phoneNumber}`, {
-      headers: getHeaders({ jwt })
-    });
+    console.log(getHeaders({ jwt }));
+    yield call(
+      client.patch,
+      `user/${phoneNumber}/friend/${user.phoneNumber}`,
+      {},
+      {
+        headers: getHeaders({ jwt })
+      }
+    );
+
+    console.log(getHeaders({ jwt }));
 
     yield put(Actions.friendComplete(phoneNumber, user.phoneNumber));
   } catch (err) {
@@ -203,40 +253,62 @@ function* onFriendUser(
 
 export function* userSagas() {
   yield all([
+    yield takeLatest(ActionTypes.FETCH_USER, onFetchUser),
+    yield takeLatest(ActionTypes.FETCH_USERS, onFetchUsers),
     yield takeLatest(ActionTypes.CREATE_NEW_USER, onCreateUser),
     yield takeLatest(ActionTypes.UPDATE_USER, onUpdateUser),
-    yield takeLatest(ActionTypes.FETCH_FRIENDS, onFetchFriends),
-    yield takeLatest(ActionTypes.FRIEND_USER, onFriendUser)
+    // yield takeLatest(ActionTypes.FETCH_FRIENDS, onFetchFriends),
+    yield takeLatest(ActionTypes.FRIEND_USER, onFriendUser),
+    yield takeEvery(ActionTypes.ACCEPT_REQUEST, onAcceptRequest),
+    yield takeEvery(ActionTypes.DENY_REQUEST, onDenyRequest)
   ]);
 }
 
 export enum ActionTypes {
   CREATE_NEW_USER = "user/CREATE_NEW_USER",
   CREATE_USER_COMPLETE = "user/CREATE_USER_COMPLETE",
+  FETCH_USER = "user/FETCH_USER",
+  FETCH_USERS = "user/FETCH_USERS",
   UPDATE_USER = "user/UPDATE_USER",
   UPDATE_COMPLETE = "user/UPDATE_COMPLETE",
   FRIEND_USER = "user/FRIEND_USER",
   FRIEND_USER_COMPLETE = "user/FRIEND_USER_COMPLETE",
-  FETCH_FRIENDS = "user/FETCH_FRIENDS",
+  ACCEPT_REQUEST = "user/ACCEPT_REQUEST",
+  ACCEPT_REQUEST_COMPLETE = "user/ACCEPT_REQUEST_COMPLETE",
+  DENY_REQUEST = "user/DENY_REQUEST",
+  DENY_REQUEST_COMPLETE = "user/DENY_REQUEST_COMPLETE",
+  // FETCH_FRIENDS = "user/FETCH_FRIENDS",
   LOAD_USERS = "user/LOAD_USERS",
   ON_ERROR = "user/ON_ERROR"
 }
 
 export const Actions = {
+  fetchUser: (phoneNumber?: string) =>
+    createAction(ActionTypes.FETCH_USER, { phoneNumber }),
+  fetchUsers: (phoneNumbers: string[], selectOn?: string[]) =>
+    createAction(ActionTypes.FETCH_USERS, { phoneNumbers, selectOn }),
   createUser: (name: { firstName: string; lastName: string }) =>
     createAction(ActionTypes.CREATE_NEW_USER, { name }),
   createUserComplete: (user: UserType) =>
     createAction(ActionTypes.CREATE_USER_COMPLETE, { user }),
-  loadUsers: (users: UserType[]) =>
+  loadUsers: (users: Partial<UserType>[]) =>
     createAction(ActionTypes.LOAD_USERS, { users }),
   friendUser: (user: UserType) =>
     createAction(ActionTypes.FRIEND_USER, { user }),
   friendComplete: (from: string, to: string) =>
     createAction(ActionTypes.FRIEND_USER_COMPLETE, { from, to }),
+  acceptRequest: (user: UserType) =>
+    createAction(ActionTypes.ACCEPT_REQUEST, { user }),
+  acceptRequestComplete: (from: string, to: string) =>
+    createAction(ActionTypes.ACCEPT_REQUEST_COMPLETE, { from, to }),
+  denyRequest: (user: UserType) =>
+    createAction(ActionTypes.DENY_REQUEST, { user }),
+  denyRequestComplete: (from: string, to: string) =>
+    createAction(ActionTypes.DENY_REQUEST_COMPLETE, { from, to }),
   updateUser: (user: Partial<UserType>) =>
     createAction(ActionTypes.UPDATE_USER, { user }),
   updateComplete: () => createAction(ActionTypes.UPDATE_COMPLETE),
-  fetchFriends: (phoneNumber: string) =>
-    createAction(ActionTypes.FETCH_FRIENDS, { phoneNumber }),
+  // fetchFriends: (phoneNumber: string) =>
+  //   createAction(ActionTypes.FETCH_FRIENDS, { phoneNumber }),
   onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err })
 };

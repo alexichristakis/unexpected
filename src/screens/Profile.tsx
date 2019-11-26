@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Animated, Button, StyleSheet, Text, View } from "react-native";
+import React, { useState, useCallback } from "react";
+import { Animated, StatusBar, StyleSheet, Text, View } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -19,9 +19,8 @@ import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
 
-const mapStateToProps = (state: RootState) => ({
-  posts: selectors.usersPosts(state),
-  stale: selectors.usersPostsStale(state)
+const mapStateToProps = (state: RootState, props: ProfileProps) => ({
+  posts: selectors.usersPosts(state, props.route.params.user)
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,
@@ -32,16 +31,14 @@ export type ProfileReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-export interface ProfileOwnProps {
+export interface ProfileProps {
   navigation: NativeStackNavigationProp<StackParamList, "PROFILE">;
   route: RouteProp<StackParamList, "PROFILE">;
 }
-export type ProfileProps = ProfileOwnProps & ProfileReduxProps;
 
 const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
   navigation,
   fetchUsersPosts,
-  stale,
   posts,
   route
 }) => {
@@ -54,7 +51,25 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
 
   const { user } = route.params;
 
-  const renderTop = () => <Top user={user} scrollY={scrollY} />;
+  useFocusEffect(
+    useCallback(() => {
+      StatusBar.setHidden(false);
+      fetchUsersPosts(user.phoneNumber);
+    }, [])
+  );
+
+  const goToFriends = () => {
+    navigation.navigate("FRIENDS", { user });
+  };
+
+  const renderTop = () => (
+    <Top
+      numPosts={posts.length}
+      user={user}
+      scrollY={scrollY}
+      onPressFriends={goToFriends}
+    />
+  );
 
   const handleOnPressPost = (post: PostType) => {
     navigation.navigate({

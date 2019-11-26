@@ -27,7 +27,7 @@ export const UserRow: React.FC<UserRowProps> = ({
       <Text style={styles.name}>{`${user.firstName} ${user.lastName}`}</Text>
       <View style={{ flex: 1 }} />
       {actions.map(({ title, onPress }) => (
-        <Button title={title} onPress={onPress} />
+        <Button style={styles.button} title={title} onPress={onPress} />
       ))}
     </TouchableOpacity>
   );
@@ -39,6 +39,9 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "center",
     marginTop: 10
+  },
+  button: {
+    marginLeft: 10
   },
   name: {
     ...TextStyles.medium,

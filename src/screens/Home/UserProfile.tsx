@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Animated, Button, StyleSheet, Text, StatusBar } from "react-native";
+import { Animated, StyleSheet, StatusBar } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -11,6 +11,7 @@ import uuid from "uuid/v4";
 
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
+import { Actions as UserActions } from "@redux/modules/user";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
@@ -24,6 +25,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,
+  fetchUser: UserActions.fetchUser,
   fetchUsersPosts: PostActions.fetchUsersPosts
 };
 
@@ -38,7 +40,7 @@ export interface UserProfileOwnProps {
 export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 
 export const UserProfile: React.FC<UserProfileProps> = React.memo(
-  ({ navigation, fetchUsersPosts, stale, posts, user }) => {
+  ({ navigation, fetchUser, fetchUsersPosts, stale, posts, user }) => {
     const [scrollY] = useState(new Animated.Value(0));
     const [onScroll] = useState(
       Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
@@ -49,6 +51,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     useFocusEffect(
       useCallback(() => {
         StatusBar.setHidden(false);
+        fetchUser();
         if (stale) fetchUsersPosts();
       }, [stale])
     );
@@ -71,6 +74,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
+        isUser
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}

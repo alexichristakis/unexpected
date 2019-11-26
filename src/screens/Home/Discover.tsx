@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import {
-  Button,
   StyleSheet,
-  Text,
-  View,
   FlatList,
   ActivityIndicator,
   ListRenderItemInfo,
@@ -13,7 +10,7 @@ import {
 
 import client, { getHeaders } from "@api";
 import { connect } from "react-redux";
-import { RouteProp, useFocusEffect } from "@react-navigation/core";
+import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import uuid from "uuid/v4";
 

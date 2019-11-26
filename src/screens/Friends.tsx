@@ -1,11 +1,5 @@
-import React, { useCallback, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  ListRenderItemInfo
-} from "react-native";
+import React, { useCallback } from "react";
+import { StyleSheet, FlatList, ListRenderItemInfo } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -27,7 +21,7 @@ const mapStateToProps = (state: RootState, props: FriendsProps) => ({
   users: selectors.users(state)
 });
 const mapDispatchToProps = {
-  fetchFriends: UserActions.fetchFriends
+  fetchUsers: UserActions.fetchUsers
 };
 
 export type FriendsReduxProps = ReduxPropsType<
@@ -45,13 +39,13 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
   loading,
   users,
   route,
-  fetchFriends
+  fetchUsers
 }) => {
   const { user } = route.params;
 
   useFocusEffect(
     useCallback(() => {
-      fetchFriends(user.phoneNumber);
+      fetchUsers(user.friends, ["firstName", "lastName"]);
     }, [])
   );
 

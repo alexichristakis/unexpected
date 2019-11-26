@@ -13,6 +13,7 @@ import { UserType } from "unexpected-cloud/models/user";
 
 export interface ProfileTopProps {
   user: UserType;
+  isUser: boolean; // is currently signed in user
   numPosts: number;
   scrollY: Animated.Value;
   onPressFriends: () => void;
@@ -22,7 +23,8 @@ export interface ProfileTopProps {
 }
 
 export const Top: React.FC<ProfileTopProps> = ({
-  user: { phoneNumber, firstName, lastName, friends, bio },
+  user: { phoneNumber, firstName, lastName, friends, friendRequests, bio },
+  isUser,
   numPosts,
   scrollY,
   onPressAddBio,
@@ -52,6 +54,18 @@ export const Top: React.FC<ProfileTopProps> = ({
     ]
   };
 
+  const renderNotificationIndicator = () => {
+    if (!isUser || !friendRequests.length) return null;
+
+    return (
+      <View style={styles.notificationIndicator}>
+        <Text style={[TextStyles.medium, { color: "white" }]}>
+          {friendRequests.length}
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <>
       <Animated.View style={[styles.container, animatedStyle]}>
@@ -60,7 +74,10 @@ export const Top: React.FC<ProfileTopProps> = ({
           disabled={!onPressName}
           onPress={onPressName}
         >
-          <Text style={TextStyles.title}>{`${firstName} ${lastName}`}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={TextStyles.title}>{`${firstName} ${lastName}`}</Text>
+            {renderNotificationIndicator()}
+          </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={[TextStyles.large]}>{`${numPosts} moments, `}</Text>
             <Text
@@ -78,7 +95,7 @@ export const Top: React.FC<ProfileTopProps> = ({
           </TouchableOpacity>
           <View style={styles.bio}>
             {bio.length || !onPressAddBio ? (
-              <Text style={[TextStyles.medium, { flex: 1 }]}>{bio}</Text>
+              <Text style={styles.bioText}>{bio}</Text>
             ) : (
               <Button title="add a bio" onPress={onPressAddBio} />
             )}
@@ -107,6 +124,21 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 20
     // justifyContent: "center"
+  },
+  notificationIndicator: {
+    marginLeft: 10,
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+
+    padding: 5,
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  bioText: {
+    ...TextStyles.medium,
+    flex: 1
   },
   header: {
     backgroundColor: "white",

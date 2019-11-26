@@ -1,22 +1,39 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useCallback } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  ListRenderItemInfo
+} from "react-native";
 
+import { useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Contacts from "react-native-contacts";
+import _ from "lodash";
+import uuid from "uuid/v4";
 
-import { Button, UserImage } from "@components/universal";
+import { Button, UserImage, UserRow } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
+import { Actions as UserActions } from "@redux/modules/user";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { StackParamList } from "../App";
+import { UserType } from "unexpected-cloud/models/user";
 
 const mapStateToProps = (state: RootState) => ({
-  phoneNumber: selectors.phoneNumber(state)
+  phoneNumber: selectors.phoneNumber(state),
+  user: selectors.user(state),
+  users: selectors.users(state)
 });
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  acceptRequest: UserActions.acceptRequest,
+  denyRequest: UserActions.denyRequest,
+  fetchUsers: UserActions.fetchUsers
+};
 
 export type SettingsReduxProps = ReduxPropsType<
   typeof mapStateToProps,
@@ -27,8 +44,22 @@ export interface SettingsProps extends SettingsReduxProps {
 }
 
 const Settings: React.FC<SettingsProps> = React.memo(
-  ({ navigation, phoneNumber }) => {
+  ({
+    navigation,
+    user,
+    users,
+    fetchUsers,
+    acceptRequest,
+    denyRequest,
+    phoneNumber
+  }) => {
     useLightStatusBar();
+
+    useFocusEffect(
+      useCallback(() => {
+        fetchUsers(user.friendRequests, ["firstName", "lastName"]);
+      }, [])
+    );
 
     const getContacts = () => {
       Contacts.getAllWithoutPhotos((err, contacts) => {
@@ -44,9 +75,38 @@ const Settings: React.FC<SettingsProps> = React.memo(
       navigation.navigate("EDIT_BIO");
     };
 
-    return (
-      <Screen style={styles.container}>
-        <Text style={[TextStyles.medium, styles.header]}>settings:</Text>
+    const getUsers = () => {
+      return _.filter(users, o =>
+        _.includes(user.friendRequests, o.phoneNumber)
+      );
+    };
+
+    const handleOnPressUser = (toUser: UserType) => {
+      if (phoneNumber === toUser.phoneNumber) {
+        navigation.navigate("USER_PROFILE");
+      } else {
+        navigation.navigate({
+          name: "PROFILE",
+          key: uuid(),
+          params: {
+            user: toUser
+          }
+        });
+      }
+    };
+
+    const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
+      const actions = [
+        { title: "accept", onPress: () => acceptRequest(item) },
+        { title: "deny", onPress: () => denyRequest(item) }
+      ];
+      return (
+        <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
+      );
+    };
+
+    const renderListFooter = () => (
+      <View style={styles.buttonContainer}>
         <Button
           title="update picture"
           style={styles.button}
@@ -67,6 +127,17 @@ const Settings: React.FC<SettingsProps> = React.memo(
           style={styles.button}
           onPress={getContacts}
         />
+      </View>
+    );
+
+    return (
+      <Screen style={styles.container}>
+        <Text style={[TextStyles.medium, styles.header]}>settings:</Text>
+        <FlatList
+          renderItem={renderUserRow}
+          data={getUsers()}
+          ListFooterComponent={renderListFooter()}
+        />
       </Screen>
     );
   }
@@ -82,6 +153,9 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 20
+  },
+  buttonContainer: {
+    marginTop: 20
   }
 });
 

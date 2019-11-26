@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,20 +8,18 @@ import {
   ActivityIndicator
 } from "react-native";
 
-import { RouteProp, useFocusEffect } from "@react-navigation/core";
+import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import uuid from "uuid/v4";
 import _ from "lodash";
 
-import { SCREEN_HEIGHT, TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Actions as UserActions } from "@redux/modules/user";
 import { StackParamList } from "../App";
-import { UserType } from "unexpected-cloud/models/user";
-import { UserRow, Input } from "@components/universal";
+import { Input } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 
 const mapStateToProps = (state: RootState, props: EditBioProps) => ({
