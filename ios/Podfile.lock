@@ -20,7 +20,7 @@ PODS:
     - glog
   - glog (0.3.5)
   - lottie-ios (3.1.5)
-  - lottie-react-native (3.3.2):
+  - lottie-react-native (3.3.1):
     - lottie-ios (~> 3.1.3)
     - React
   - Permission-Camera (2.0.3):
@@ -429,7 +429,7 @@ SPEC CHECKSUMS:
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   lottie-ios: 32bf84389337d86fbc8b12266e88452e0abf1dee
-  lottie-react-native: 2a1a82bb326ae51331a5520de0cf706733c6db69
+  lottie-react-native: d2ab8b6a8f759cabf8e5805dd0682db538194dd3
   Permission-Camera: 731959b8ffb5757e1ee85893fb49c3aa021ef512
   Permission-Contacts: e5a4e0fed2dfecd10376fdeb15417dc7746cd9b2
   Permission-LocationWhenInUse: 5cb8e0df1463dfab567d2a3d2589ab557fda68cb

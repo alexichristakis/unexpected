@@ -114,6 +114,7 @@ function* onCreateUser(
     friendRequests: [],
     requestedFriends: [],
     deviceOS: Platform.OS,
+    bio: "",
     timezone: "America/New_York"
   };
 

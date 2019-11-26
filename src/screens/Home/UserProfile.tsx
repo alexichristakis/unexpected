@@ -64,10 +64,16 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       navigation.navigate("FRIENDS", { user });
     };
 
+    const goToEditBio = () => {
+      navigation.navigate("EDIT_BIO");
+    };
+
     const renderTop = () => (
       <Top
         user={user}
+        numPosts={posts.length}
         scrollY={scrollY}
+        onPressAddBio={goToEditBio}
         onPressFriends={goToFriends}
         onPressImage={goToNewProfilePicture}
         onPressName={goToSettings}

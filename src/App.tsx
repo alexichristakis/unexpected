@@ -43,6 +43,7 @@ import Settings from "./screens/Settings";
 import Share from "./screens/Share";
 import SignUp from "./screens/SignUp";
 import Friends from "./screens/Friends";
+import EditBio from "./screens/EditBio";
 
 import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
@@ -65,6 +66,7 @@ export type StackParamList = {
   CAPTURE: { nextRoute: keyof StackParamList };
   NEW_PROFILE_PICTURE: undefined;
   FRIENDS: { user: UserType };
+  EDIT_BIO: undefined;
 };
 
 export type TabParamList = {
@@ -249,23 +251,9 @@ const Router: React.FC = () => {
           </Stack.Navigator>
         )}
       </Stack.Screen>
-      <Stack.Screen
-        options={{
-          headerTitle: "share",
-          headerTintColor: "#231F20"
-        }}
-        name={"SETTINGS"}
-        component={Settings}
-      />
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          headerTitle: "share",
-          headerTintColor: "#231F20"
-        }}
-        name={"PERMISSIONS"}
-        component={Permissions}
-      />
+      <Stack.Screen name={"SETTINGS"} component={Settings} />
+      <Stack.Screen name={"PERMISSIONS"} component={Permissions} />
+      <Stack.Screen name={"EDIT_BIO"} component={EditBio} />
     </Stack.Navigator>
   );
 

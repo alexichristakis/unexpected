@@ -13,15 +13,19 @@ import { UserType } from "unexpected-cloud/models/user";
 
 export interface ProfileTopProps {
   user: UserType;
+  numPosts: number;
   scrollY: Animated.Value;
   onPressFriends: () => void;
   onPressImage?: () => void;
   onPressName?: () => void;
+  onPressAddBio?: () => void;
 }
 
 export const Top: React.FC<ProfileTopProps> = ({
-  user: { phoneNumber, firstName, lastName },
+  user: { phoneNumber, firstName, lastName, friends, bio = "" },
+  numPosts,
   scrollY,
+  onPressAddBio,
   onPressFriends,
   onPressImage,
   onPressName
@@ -58,8 +62,11 @@ export const Top: React.FC<ProfileTopProps> = ({
         >
           <Text style={TextStyles.title}>{`${firstName} ${lastName}`}</Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[TextStyles.large]}>120 moments</Text>
-            <Button title={"200 Friends"} onPress={onPressFriends} />
+            <Text style={[TextStyles.large]}>{`${numPosts} moments, `}</Text>
+            <Text
+              style={[TextStyles.large]}
+              onPress={onPressFriends}
+            >{`${friends.length} friends`}</Text>
           </View>
         </TouchableOpacity>
         <View style={[styles.row, { marginBottom: 20 }]}>
@@ -70,18 +77,11 @@ export const Top: React.FC<ProfileTopProps> = ({
             />
           </TouchableOpacity>
           <View style={styles.bio}>
-            {/* <View style={styles.row}>
-              <Text style={[TextStyles.medium, { marginRight: 50 }]}>
-                120<Text>{"\n"}moments</Text>
-              </Text>
-              <Text style={TextStyles.medium}>
-                200<Text>{"\n"}following</Text>
-              </Text>
-            </View> */}
-            <Text style={[TextStyles.medium, { flex: 1 }]}>
-              Some content for a bio maybe also that is really long to see what
-              a long piece of text looks like in the bio field.
-            </Text>
+            {bio.length || !onPressAddBio ? (
+              <Text style={[TextStyles.medium, { flex: 1 }]}>{bio}</Text>
+            ) : (
+              <Button title="add a bio" onPress={onPressAddBio} />
+            )}
           </View>
         </View>
       </Animated.View>
@@ -95,22 +95,18 @@ export const Top: React.FC<ProfileTopProps> = ({
 const styles = StyleSheet.create({
   container: {
     alignSelf: "stretch",
-    // flexDirection: "row",
     alignItems: "center",
     paddingTop: 5
   },
   row: {
     alignSelf: "stretch",
-    // alignItems: "flex-start",
-    // justifyContent: "space-around",
     flexDirection: "row",
     flex: 1
-    // marginBottom: 20
   },
   bio: {
     flex: 1,
-    // justifyContent: "space-around",
     marginLeft: 20
+    // justifyContent: "center"
   },
   header: {
     backgroundColor: "white",
