@@ -37,7 +37,7 @@ export default () => {
     composeEnhancers(applyMiddleware(...middleware))
   );
 
-  sagaMiddleware.run(sagas as any);
+  sagaMiddleware.run(sagas);
 
   return store;
 };

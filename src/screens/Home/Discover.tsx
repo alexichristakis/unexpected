@@ -20,6 +20,7 @@ import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
 import { Input, UserRow, ItemSeparator } from "@components/universal";
 import * as selectors from "@redux/selectors";
+import { Actions as UserActions } from "@redux/modules/user";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen } from "react-native-screens";
 import { TextSizes } from "@lib/styles";
@@ -29,7 +30,9 @@ const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
   jwt: selectors.jwt(state)
 });
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  followUser: UserActions.followUser
+};
 
 export type DiscoverReduxProps = ReduxPropsType<
   typeof mapStateToProps,
@@ -40,70 +43,75 @@ export interface DiscoverProps {
   route: RouteProp<StackParamList, "DISCOVER">;
 }
 export const Discover: React.FC<DiscoverProps &
-  DiscoverReduxProps> = React.memo(({ phoneNumber, jwt, navigation }) => {
-  const [responses, setResponses] = useState<UserType[]>([]);
-  const [loading, setLoading] = useState(false);
+  DiscoverReduxProps> = React.memo(
+  ({ phoneNumber, jwt, followUser, navigation }) => {
+    const [responses, setResponses] = useState<UserType[]>([]);
+    const [loading, setLoading] = useState(false);
 
-  const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => (
-    <UserRow onPress={handleOnPressUser} user={item} />
-  );
+    const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
+      const actions = [{ title: "follow", onPress: () => followUser(item) }];
+      return (
+        <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
+      );
+    };
 
-  const handleOnPressUser = (toUser: UserType) => {
-    if (phoneNumber === toUser.phoneNumber) {
-      navigation.navigate("USER_PROFILE");
-    } else {
-      navigation.navigate({
-        name: "PROFILE",
-        key: uuid(),
-        params: {
-          user: toUser
-        }
-      });
-    }
-  };
-
-  const handleOnPressKey = async ({
-    nativeEvent
-  }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
-    setLoading(true);
-    const response = await client.get<UserType[]>(
-      `/user/search/${nativeEvent.text}`,
-      {
-        headers: getHeaders({ jwt })
+    const handleOnPressUser = (toUser: UserType) => {
+      if (phoneNumber === toUser.phoneNumber) {
+        navigation.navigate("USER_PROFILE");
+      } else {
+        navigation.navigate({
+          name: "PROFILE",
+          key: uuid(),
+          params: {
+            user: toUser
+          }
+        });
       }
-    );
+    };
 
-    const { data } = response;
+    const handleOnPressKey = async ({
+      nativeEvent
+    }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+      setLoading(true);
+      const response = await client.get<UserType[]>(
+        `/user/search/${nativeEvent.text}`,
+        {
+          headers: getHeaders({ jwt })
+        }
+      );
 
-    setResponses(data);
-    setLoading(false);
-  };
+      const { data } = response;
 
-  const renderSeparatorComponent = () => <ItemSeparator />;
+      setResponses(data);
+      setLoading(false);
+    };
 
-  return (
-    <Screen style={styles.container}>
-      <Input
-        size={TextSizes.title}
-        style={{ width: "100%" }}
-        returnKeyType={"search"}
-        label="enter a name or phone number"
-        placeholder="search"
-        onSubmitEditing={handleOnPressKey}
-      />
-      {loading ? (
-        <ActivityIndicator size="large" />
-      ) : (
-        <FlatList
-          style={styles.list}
-          renderItem={renderUserRow}
-          ItemSeparatorComponent={renderSeparatorComponent}
-          data={responses}
+    const renderSeparatorComponent = () => <ItemSeparator />;
+
+    return (
+      <Screen style={styles.container}>
+        <Input
+          size={TextSizes.title}
+          style={{ width: "100%" }}
+          returnKeyType={"search"}
+          label="enter a name or phone number"
+          placeholder="search"
+          onSubmitEditing={handleOnPressKey}
         />
-      )}
-    </Screen>
-  );
-});
+        {loading ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <FlatList
+            style={styles.list}
+            renderItem={renderUserRow}
+            ItemSeparatorComponent={renderSeparatorComponent}
+            data={responses}
+          />
+        )}
+      </Screen>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {

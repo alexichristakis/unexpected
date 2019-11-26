@@ -62,6 +62,18 @@ export default (
       });
     }
 
+    case ActionTypes.FOLLOW_USER_COMPLETE: {
+      const { from, to } = action.payload;
+
+      return immer(state, draft => {
+        draft.users[from].requestedFollows.push(to);
+        draft.users[to].followRequests.push(from);
+        draft.loading = false;
+
+        return draft;
+      });
+    }
+
     case ActionTypes.LOAD_USERS: {
       const { users } = action.payload;
 
@@ -100,6 +112,7 @@ function* onCreateUser(
     phoneNumber,
     following: [],
     followRequests: [],
+    requestedFollows: [],
     deviceOS: Platform.OS,
     timezone: "America/New_York"
   };
@@ -169,11 +182,30 @@ function* onFetchFollowing(
   } catch (err) {}
 }
 
+function* onFollowUser(
+  action: ExtractActionFromActionCreator<typeof Actions.followUser>
+) {
+  const jwt = yield select(selectors.jwt);
+  const phoneNumber = yield select(selectors.phoneNumber);
+  const { user } = action.payload;
+
+  try {
+    yield call(client.patch, `user/${phoneNumber}/follow/${user.phoneNumber}`, {
+      headers: getHeaders({ jwt })
+    });
+
+    yield put(Actions.followComplete(phoneNumber, user.phoneNumber));
+  } catch (err) {
+    yield put(Actions.onError(err));
+  }
+}
+
 export function* userSagas() {
   yield all([
     yield takeLatest(ActionTypes.CREATE_NEW_USER, onCreateUser),
     yield takeLatest(ActionTypes.UPDATE_USER, onUpdateUser),
-    yield takeLatest(ActionTypes.FETCH_FOLLOWING, onFetchFollowing)
+    yield takeLatest(ActionTypes.FETCH_FOLLOWING, onFetchFollowing),
+    yield takeLatest(ActionTypes.FOLLOW_USER, onFollowUser)
   ]);
 }
 
@@ -182,6 +214,8 @@ export enum ActionTypes {
   CREATE_USER_COMPLETE = "user/CREATE_USER_COMPLETE",
   UPDATE_USER = "user/UPDATE_USER",
   UPDATE_COMPLETE = "user/UPDATE_COMPLETE",
+  FOLLOW_USER = "user/FOLLOW_USER",
+  FOLLOW_USER_COMPLETE = "user/FOLLOW_USER_COMPLETE",
   FETCH_FOLLOWING = "user/FETCH_FOLLOWING",
   LOAD_USERS = "user/LOAD_USERS",
   ON_ERROR = "user/ON_ERROR"
@@ -194,6 +228,10 @@ export const Actions = {
     createAction(ActionTypes.CREATE_USER_COMPLETE, { user }),
   loadUsers: (users: UserType[]) =>
     createAction(ActionTypes.LOAD_USERS, { users }),
+  followUser: (user: UserType) =>
+    createAction(ActionTypes.FOLLOW_USER, { user }),
+  followComplete: (from: string, to: string) =>
+    createAction(ActionTypes.FOLLOW_USER_COMPLETE, { from, to }),
   updateUser: (user: Partial<UserType>) =>
     createAction(ActionTypes.UPDATE_USER, { user }),
   updateComplete: () => createAction(ActionTypes.UPDATE_COMPLETE),
