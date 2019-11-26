@@ -1,7 +1,7 @@
 import { $log, Inject, Service } from "@tsed/common";
 import { MongooseService } from "@tsed/mongoose";
 import Agenda from "agenda";
-import moment, { Moment } from "moment-timezone";
+import moment, { Moment, MomentTimezone } from "moment-timezone";
 
 import { UserService } from "./user";
 import { NotificationService } from "./notification";
@@ -25,7 +25,10 @@ export class SchedulerService {
   private agenda: Agenda;
 
   async $afterRoutesInit() {
-    this.agenda = new Agenda().mongo(this.mongooseService.get()!.connection.db, "jobs");
+    this.agenda = new Agenda().mongo(
+      this.mongooseService.get()!.connection.db,
+      "jobs"
+    );
 
     this.agenda.processEvery("5 minutes");
 
@@ -39,7 +42,10 @@ export class SchedulerService {
 
         this.agenda.define(AgendaJobs.SEND_NOTIFICATION, args => {
           const { to } = args.attrs.data;
-          this.notificationService.notifyUserModel(to, "time to take & share a photo");
+          this.notificationService.notifyUserModel(
+            to,
+            "time to take & share a photo"
+          );
         });
 
         this.agenda.define(AgendaJobs.GENERATE_NOTIFICATIONS, async () => {
@@ -63,7 +69,11 @@ export class SchedulerService {
                 )}`
               );
 
-              this.agenda.schedule(time.toDate(), AgendaJobs.SEND_NOTIFICATION, { to: user });
+              this.agenda.schedule(
+                time.toDate(),
+                AgendaJobs.SEND_NOTIFICATION,
+                { to: user }
+              );
             }
           });
         });
@@ -82,7 +92,8 @@ export class SchedulerService {
 
     const endTime = +end;
 
-    const randomNumber = (to: number, from = 0) => Math.floor(Math.random() * (to - from) + from);
+    const randomNumber = (to: number, from = 0) =>
+      Math.floor(Math.random() * (to - from) + from);
 
     const startTime = +start;
 

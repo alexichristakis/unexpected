@@ -18,6 +18,15 @@ export class UserService extends CRUDService<UserModel, UserType> {
     return this.create(newUser);
   }
 
+  async search(query: string) {}
+
+  async getUserFollowing(phoneNumber: string) {
+    const user = await this.getByPhoneNumber(phoneNumber);
+    const { following } = user;
+
+    return this.getByPhoneNumber(following);
+  }
+
   async getByPhoneNumber(phoneNumber: string): Promise<UserModel & Document>;
   async getByPhoneNumber(
     phoneNumbers: string[]

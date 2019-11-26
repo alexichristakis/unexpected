@@ -20,10 +20,23 @@ export class UserController {
   @Inject(UserService)
   private userService: UserService;
 
-  // @Delete()
-  // async deleteUser() {
-  //   return this.userService.delete("5db875fc6db5000021871f3d");
-  // }
+  @Get("/search/:query")
+  @UseAuth(AuthMiddleware)
+  async search(@PathParams("query") query: string) {
+    return this.userService.search(query);
+  }
+
+  @Get("/:phoneNumber")
+  @UseAuth(AuthMiddleware)
+  async getUser(@PathParams("phoneNumber") phoneNumber: string) {
+    return this.userService.getByPhoneNumber(phoneNumber);
+  }
+
+  @Get("/:phoneNumber/following")
+  @UseAuth(AuthMiddleware)
+  async getUserFollowing(@PathParams("phoneNumber") phoneNumber: string) {
+    return this.userService.getUserFollowing(phoneNumber);
+  }
 
   @Put()
   @UseAuth(AuthMiddleware, {

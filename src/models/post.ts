@@ -26,5 +26,5 @@ export class Post {
   createdAt: Date = new Date();
 }
 
-export type PostType = Omit<Post, "_id">;
-export type FeedPostType = PostType & { id: string; user: UserType };
+export type PostType = Omit<Post, "_id"> & { id: string };
+export type FeedPostType = PostType & { user: UserType };
