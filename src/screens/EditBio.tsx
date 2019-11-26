@@ -3,8 +3,9 @@ import {
   StyleSheet,
   Text,
   View,
-  FlatList,
-  ListRenderItemInfo
+  NativeSyntheticEvent,
+  TextInputSubmitEditingEventData,
+  ActivityIndicator
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
@@ -14,18 +15,21 @@ import { connect } from "react-redux";
 import uuid from "uuid/v4";
 import _ from "lodash";
 
+import { SCREEN_HEIGHT, TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Actions as UserActions } from "@redux/modules/user";
 import { StackParamList } from "../App";
 import { UserType } from "unexpected-cloud/models/user";
-import { UserRow } from "@components/universal";
+import { UserRow, Input } from "@components/universal";
+import { useLightStatusBar } from "@hooks";
 
 const mapStateToProps = (state: RootState, props: EditBioProps) => ({
-  user: selectors.user(state)
+  user: selectors.user(state),
+  loading: selectors.userLoading(state)
 });
 const mapDispatchToProps = {
-  //   fetchEditBio: UserActions.fetchEditBio
+  updateUser: UserActions.updateUser
 };
 
 export type EditBioReduxProps = ReduxPropsType<
@@ -37,10 +41,40 @@ export interface EditBioProps {
   route: RouteProp<StackParamList, "EDIT_BIO">;
 }
 
-const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({ user }) => {
+const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
+  user: { bio },
+  loading,
+  updateUser
+}) => {
+  const [text, setText] = useState(bio);
+
+  useLightStatusBar();
+
+  const handleOnPressSubmit = async ({
+    nativeEvent
+  }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+    const { text } = nativeEvent;
+
+    updateUser({ bio: text });
+  };
+
   return (
     <Screen style={styles.container}>
-      <Text>edit bio screen</Text>
+      <View style={styles.header}>
+        <Text style={[TextStyles.medium]}>
+          {bio.length ? "edit bio:" : "add a bio:"}
+        </Text>
+        {loading ? <ActivityIndicator size="small" /> : null}
+      </View>
+      <Input
+        multiline
+        label="up to 200 characters"
+        value={text}
+        onChangeText={setText}
+        maxLength={200}
+        returnKeyType={"done"}
+        onSubmitEditing={handleOnPressSubmit}
+      />
     </Screen>
   );
 };
@@ -48,8 +82,12 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({ user }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    padding: 20
+  },
+  header: {
+    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-between"
   }
 });
 

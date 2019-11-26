@@ -40,6 +40,10 @@ const Settings: React.FC<SettingsProps> = React.memo(
       navigation.navigate("NEW_PROFILE_PICTURE");
     };
 
+    const navigateToEditBio = () => {
+      navigation.navigate("EDIT_BIO");
+    };
+
     return (
       <Screen style={styles.container}>
         <Text style={[TextStyles.medium, styles.header]}>settings:</Text>
@@ -47,6 +51,11 @@ const Settings: React.FC<SettingsProps> = React.memo(
           title="update picture"
           style={styles.button}
           onPress={navigateToNewProfilePicture}
+        />
+        <Button
+          title="edit bio"
+          style={styles.button}
+          onPress={navigateToEditBio}
         />
         <Button
           title="permissions"

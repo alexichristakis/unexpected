@@ -22,7 +22,7 @@ export interface ProfileTopProps {
 }
 
 export const Top: React.FC<ProfileTopProps> = ({
-  user: { phoneNumber, firstName, lastName, friends, bio = "" },
+  user: { phoneNumber, firstName, lastName, friends, bio },
   numPosts,
   scrollY,
   onPressAddBio,

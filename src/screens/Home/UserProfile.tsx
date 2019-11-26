@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { PostType } from "unexpected-cloud/models/post";
+import _ from "lodash";
 import uuid from "uuid/v4";
 
 import { Top } from "@components/Profile";
@@ -97,11 +98,12 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           ListHeaderComponent={renderTop}
           posts={posts}
         />
-        {/* <Header title={user.firstName} scrollY={scrollY} /> */}
       </Screen>
     );
   },
-  (prevProps, nextProps) => prevProps.stale === nextProps.stale
+  (prevProps, nextProps) =>
+    prevProps.stale === nextProps.stale &&
+    _.isEqual(prevProps.user, nextProps.user)
 );
 
 const styles = StyleSheet.create({

@@ -71,7 +71,7 @@ export const Discover: React.FC<DiscoverProps &
       }
     };
 
-    const handleOnPressKey = async ({
+    const handleOnPressSubmit = async ({
       nativeEvent
     }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
       setLoading(true);
@@ -98,7 +98,7 @@ export const Discover: React.FC<DiscoverProps &
           returnKeyType={"search"}
           label="enter a name or phone number"
           placeholder="search"
-          onSubmitEditing={handleOnPressKey}
+          onSubmitEditing={handleOnPressSubmit}
         />
         {loading ? (
           <ActivityIndicator size="large" />
