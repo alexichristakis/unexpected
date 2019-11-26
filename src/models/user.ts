@@ -43,8 +43,15 @@ export class User {
   @Required()
   timezone: string;
 
+  // mutual, more like "friends"
   @Property()
-  following: string[];
+  friends: string[];
+
+  @Property()
+  friendRequests: string[];
+
+  @Property()
+  requestedFriends: string[];
 
   // @Required()
   // notificationPreferences: NotificationPreferences;

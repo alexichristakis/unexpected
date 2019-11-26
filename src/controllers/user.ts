@@ -35,7 +35,7 @@ export class UserController {
   @Get("/:phoneNumber/following")
   @UseAuth(AuthMiddleware)
   async getUserFollowing(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.userService.getUserFollowing(phoneNumber);
+    return this.userService.getUserFriends(phoneNumber);
   }
 
   @Put()
@@ -59,8 +59,38 @@ export class UserController {
     return this.userService.updateOne({ phoneNumber }, user);
   }
 
-  // @Put()
-  // async followUser() {}
+  @Patch("/:phoneNumber/friend/:to")
+  @UseAuth(AuthMiddleware, {
+    select: Select.phoneFromPath
+  })
+  async friendUser(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("to") to: string
+  ) {
+    return this.userService.friend(phoneNumber, to);
+  }
+
+  @Patch("/:phoneNumber/accept/:to")
+  @UseAuth(AuthMiddleware, {
+    select: Select.phoneFromPath
+  })
+  async acceptFriendRequest(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("to") to: string
+  ) {
+    return this.userService.acceptFriendRequest(phoneNumber, to);
+  }
+
+  @Patch("/:phoneNumber/deny/:to")
+  @UseAuth(AuthMiddleware, {
+    select: Select.phoneFromPath
+  })
+  async denyFriendRequest(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("to") to: string
+  ) {
+    return this.userService.denyFriendRequest(phoneNumber, to);
+  }
 
   // @Put()
   // async unFollowUser() {}
