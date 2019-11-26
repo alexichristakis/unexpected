@@ -42,6 +42,7 @@ import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
 import Share from "./screens/Share";
 import SignUp from "./screens/SignUp";
+import Following from "./screens/Following";
 
 import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
@@ -63,6 +64,7 @@ export type StackParamList = {
   SIGN_UP: undefined;
   CAPTURE: { nextRoute: keyof StackParamList };
   NEW_PROFILE_PICTURE: undefined;
+  FOLLOWING: { user: UserType };
 };
 
 export type TabParamList = {
@@ -103,6 +105,11 @@ const HomeTab: React.FC<Props> = ({
         name={"PROFILE"}
         options={screenOptions}
         component={Profile}
+      />
+      <Stack.Screen
+        name={"FOLLOWING"}
+        options={screenOptions}
+        component={Following}
       />
       <Stack.Screen
         name={"POST"}

@@ -77,8 +77,8 @@ export const Feed: React.FC<FeedProps> = React.memo(
         } else {
           StatusBar.setHidden(true);
         }
-        if (feed.stale) fetchFeed();
-      }, [feed.stale, statusBarVisible])
+        fetchFeed();
+      }, [statusBarVisible])
     );
 
     useCode(
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: 40,
-    backgroundColor: "red"
+    backgroundColor: "white"
   },
   headerContainer: {
     zIndex: 1,

@@ -8,14 +8,14 @@ import {
 } from "react-native";
 
 import { LoadingLine } from "@components/universal";
-import { Colors, TextStyles } from "@lib/styles";
+import { Colors, TextStyles, TextSizes } from "@lib/styles";
 
 export interface InputProps extends TextInputProps {
   textInputRef?: (value: TextInput | null) => void;
   label?: string;
   loading?: boolean;
   error?: string;
-  size?: "small" | "medium" | "large";
+  size?: TextSizes;
 }
 export const Input: React.FC<InputProps> = ({
   style,
@@ -23,7 +23,7 @@ export const Input: React.FC<InputProps> = ({
   loading,
   error,
   textInputRef = null,
-  size = "large",
+  size = TextSizes.large,
   ...rest
 }) => {
   return (

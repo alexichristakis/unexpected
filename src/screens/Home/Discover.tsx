@@ -7,6 +7,7 @@ import { Actions as AuthActions } from "@redux/modules/auth";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen, ScreenProps } from "react-native-screens";
+import { TextSizes } from "@lib/styles";
 
 const mapStateToProps = (state: RootState) => ({});
 const mapDispatchToProps = {};
@@ -24,6 +25,7 @@ export const Discover: React.FC<DiscoverProps> = React.memo(() => {
   return (
     <Screen style={styles.container}>
       <Input
+        size={TextSizes.title}
         style={{ width: "100%" }}
         returnKeyType={"search"}
         label="enter a name or phone number"

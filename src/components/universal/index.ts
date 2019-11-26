@@ -8,6 +8,7 @@ export * from "./PostImage";
 export * from "./Post";
 export * from "./TouchableScale";
 export * from "./LoadingCircle";
+export * from "./UserRow";
 
 import PostImage from "./PostImage";
 import UserImage from "./UserImage";

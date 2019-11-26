@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     // flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 20
+    paddingTop: 5
   },
   row: {
     alignSelf: "stretch",

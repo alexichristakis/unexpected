@@ -83,7 +83,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "stretch",
     backgroundColor: "white",
-    paddingVertical: 20
+    paddingTop: 5,
+    paddingBottom: 20
   },
   textContainer: {
     flex: 1

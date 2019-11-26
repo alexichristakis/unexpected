@@ -1,5 +1,6 @@
-import { AxiosResponse } from "axios";
 import { Platform } from "react-native";
+
+import { AxiosResponse } from "axios";
 import {
   all,
   call,
@@ -9,6 +10,7 @@ import {
   take,
   takeLatest
 } from "redux-saga/effects";
+import immer from "immer";
 
 import client, { getHeaders } from "@api";
 import { UserType } from "unexpected-cloud/models/user";
@@ -23,20 +25,16 @@ import {
 import Navigation from "../../Navigation";
 
 export interface UserState {
-  readonly user: UserType;
+  // readonly user: UserType;
+  readonly phoneNumber: string;
+  readonly users: { [phoneNumber: string]: UserType };
   readonly loading: boolean;
   readonly error: any;
 }
 
 const initialState: UserState = {
-  user: {
-    phoneNumber: "",
-    firstName: "",
-    lastName: "",
-    deviceOS: "",
-    timezone: "",
-    following: []
-  },
+  phoneNumber: "",
+  users: {},
   loading: false,
   error: null
 };
@@ -46,25 +44,36 @@ export default (
   action: ActionsUnion<typeof Actions>
 ): UserState => {
   switch (action.type) {
-    case ActionTypes.ON_CREATE_NEW_USER: {
+    case ActionTypes.UPDATE_USER:
+    case ActionTypes.FETCH_FOLLOWING:
+    case ActionTypes.CREATE_NEW_USER: {
       return { ...state, loading: true, error: null };
     }
 
-    case ActionTypes.ON_UPDATE_USER: {
-      return {
-        ...state,
-        user: { ...state.user, ...action.payload.user },
-        loading: true
-      };
-    }
-
-    case ActionTypes.ON_UPDATE_COMPLETE: {
-      return { ...state, loading: false, error: null };
-    }
-
-    case ActionTypes.LOAD_USER: {
+    case ActionTypes.CREATE_USER_COMPLETE: {
       const { user } = action.payload;
-      return { ...state, loading: false, user };
+
+      return immer(state, draft => {
+        draft.loading = false;
+        draft.phoneNumber = user.phoneNumber;
+        draft.users[user.phoneNumber] = user;
+
+        return draft;
+      });
+    }
+
+    case ActionTypes.LOAD_USERS: {
+      const { users } = action.payload;
+
+      return immer(state, draft => {
+        users.forEach(user => {
+          draft.users[user.phoneNumber] = user;
+        });
+
+        draft.loading = false;
+
+        return draft;
+      });
     }
 
     default:
@@ -100,7 +109,7 @@ function* onCreateUser(
     const { data: createdUser } = res;
 
     yield all([
-      yield put(Actions.loadUser(createdUser)),
+      yield put(Actions.createUserComplete(createdUser)),
       yield Navigation.navigate("AUTHENTICATED")
     ]);
   } catch (err) {
@@ -117,7 +126,7 @@ function* onUpdateUser(
   const { user } = action.payload;
 
   try {
-    yield client.patch(
+    const res: AxiosResponse<UserType> = yield client.patch(
       `/user/${phoneNumber}`,
       { user: { ...user } },
       {
@@ -125,33 +134,63 @@ function* onUpdateUser(
       }
     );
 
-    yield put(Actions.updateComplete());
+    const { data } = res;
+
+    yield put(Actions.loadUsers([data]));
   } catch (err) {
     yield put(Actions.onError(err));
   }
 }
 
+function* onFetchFollowing(
+  action: ExtractActionFromActionCreator<typeof Actions.fetchFollowing>
+) {
+  const jwt = yield select(selectors.jwt);
+  const { phoneNumber } = action.payload;
+
+  try {
+    const res: AxiosResponse<UserType[]> = yield client.get(
+      `user/${phoneNumber}/following`,
+      {
+        headers: getHeaders({ jwt })
+      }
+    );
+
+    const { data } = res;
+
+    yield put(Actions.loadUsers(data));
+  } catch (err) {}
+}
+
 export function* userSagas() {
   yield all([
-    yield takeLatest(ActionTypes.ON_CREATE_NEW_USER, onCreateUser),
-    yield takeLatest(ActionTypes.ON_UPDATE_USER, onUpdateUser)
+    yield takeLatest(ActionTypes.CREATE_NEW_USER, onCreateUser),
+    yield takeLatest(ActionTypes.UPDATE_USER, onUpdateUser),
+    yield takeLatest(ActionTypes.FETCH_FOLLOWING, onFetchFollowing)
   ]);
 }
 
 export enum ActionTypes {
-  ON_CREATE_NEW_USER = "user/ON_CREATE_NEW_USER",
-  ON_UPDATE_USER = "user/ON_UPDATE_USER",
-  ON_UPDATE_COMPLETE = "user/ON_UPDATE_COMPLETE",
-  LOAD_USER = "user/LOAD_USER",
+  CREATE_NEW_USER = "user/CREATE_NEW_USER",
+  CREATE_USER_COMPLETE = "user/CREATE_USER_COMPLETE",
+  UPDATE_USER = "user/UPDATE_USER",
+  UPDATE_COMPLETE = "user/UPDATE_COMPLETE",
+  FETCH_FOLLOWING = "user/FETCH_FOLLOWING",
+  LOAD_USERS = "user/LOAD_USERS",
   ON_ERROR = "user/ON_ERROR"
 }
 
 export const Actions = {
   createUser: (name: { firstName: string; lastName: string }) =>
-    createAction(ActionTypes.ON_CREATE_NEW_USER, { name }),
-  loadUser: (user: UserType) => createAction(ActionTypes.LOAD_USER, { user }),
-  onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err }),
+    createAction(ActionTypes.CREATE_NEW_USER, { name }),
+  createUserComplete: (user: UserType) =>
+    createAction(ActionTypes.CREATE_USER_COMPLETE, { user }),
+  loadUsers: (users: UserType[]) =>
+    createAction(ActionTypes.LOAD_USERS, { users }),
   updateUser: (user: Partial<UserType>) =>
-    createAction(ActionTypes.ON_UPDATE_USER, { user }),
-  updateComplete: () => createAction(ActionTypes.ON_UPDATE_COMPLETE)
+    createAction(ActionTypes.UPDATE_USER, { user }),
+  updateComplete: () => createAction(ActionTypes.UPDATE_COMPLETE),
+  fetchFollowing: (phoneNumber: string) =>
+    createAction(ActionTypes.FETCH_FOLLOWING, { phoneNumber }),
+  onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err })
 };

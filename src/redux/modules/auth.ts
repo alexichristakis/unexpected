@@ -7,7 +7,7 @@ import client from "@api";
 import {
   CheckCodeReturnType,
   VerifyPhoneReturnType
-} from "@api/controllers/verify";
+} from "unexpected-cloud/controllers/verify";
 import Navigation from "../../Navigation";
 import {
   ActionsUnion,
@@ -132,7 +132,10 @@ function* onVerifyCodeRequest(
         yield all([
           yield put(
             batchActions(
-              [UserActions.loadUser(data.user), Actions.setJWT(data.token)],
+              [
+                UserActions.createUserComplete(data.user),
+                Actions.setJWT(data.token)
+              ],
               BATCH
             )
           ),
