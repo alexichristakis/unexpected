@@ -1,93 +1,107 @@
-import React from "react";
-import { StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { LoadingCircle } from "@components/universal";
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 
+const {
+  Value,
+  block,
+  cond,
+  set,
+  sub,
+  onChange,
+  call,
+  and,
+  lessThan,
+  greaterOrEq,
+  useCode
+} = Animated;
+
 export interface FeedTopProps {
+  readyForRefresh: 0 | 1;
+  refreshing: boolean;
   scrollY: Animated.Value<number>;
 }
-export const Top: React.FC<FeedTopProps> = ({ scrollY }) => {
-  const animatedStyle = {
-    transform: [
-      {
-        translateY: scrollY.interpolate({
-          inputRange: [-50, 0, 50],
-          outputRange: [-100, 0, 0]
-        })
-      }
-    ]
-  };
+export const Top: React.FC<FeedTopProps> = React.memo(
+  ({ scrollY, readyForRefresh, refreshing }) => {
+    const animatedStyle = {
+      transform: [
+        {
+          translateY: scrollY.interpolate({
+            inputRange: [-50, 0, 50],
+            outputRange: [-50, 0, 0]
+          })
+        }
+      ]
+    };
 
-  const animatedLoaderStyle = {
-    opacity: scrollY.interpolate({
-      inputRange: [-100, 0, 50],
-      outputRange: [1, 0, 0]
-    }),
-    transform: [
-      {
-        translateY: scrollY.interpolate({
-          inputRange: [-50, 0, 50],
-          outputRange: [-35, 0, 50]
-        })
-      }
-    ]
-  };
+    const animatedLoaderStyle = {
+      opacity: scrollY.interpolate({
+        inputRange: [-100, 0, 50],
+        outputRange: [1, 0, 0]
+      }),
+      transform: [
+        {
+          translateY: scrollY.interpolate({
+            inputRange: [-50, 0, 50],
+            outputRange: [-15, 0, 0]
+          })
+        }
+      ]
+    };
 
-  const animatedHeaderStyle = {
-    transform: [
-      {
-        translateY: scrollY.interpolate({
-          inputRange: [-50, 0, 100, 200],
-          outputRange: [-200, -100, 100, 200]
-        })
-      }
-    ]
-  };
-
-  return (
-    <>
-      <Animated.View
-        style={[
-          { position: "absolute", height: 100, top: 0, left: 0, right: 0 },
-          animatedLoaderStyle
-        ]}
-      >
-        <LoadingCircle
-          progress={scrollY.interpolate({
-            inputRange: [-100, 0],
-            outputRange: [1, 0]
-          })}
-        />
-      </Animated.View>
-      <Animated.View style={[styles.container, animatedStyle]}>
-        <Text style={TextStyles.title}>Today</Text>
-        <Text style={TextStyles.large}>Monday, November 25th</Text>
-      </Animated.View>
-    </>
-  );
-};
+    return (
+      <>
+        <Animated.Text
+          style={[
+            TextStyles.large,
+            styles.loaderContainer,
+            animatedLoaderStyle
+          ]}
+        >
+          {readyForRefresh === 1 ? "release to refresh" : "pull to refresh"}
+        </Animated.Text>
+        <Animated.View style={[styles.container, animatedStyle]}>
+          <View style={styles.textContainer}>
+            <Text style={TextStyles.title}>Today</Text>
+            <Text style={TextStyles.large}>Monday, November 25th</Text>
+          </View>
+          {refreshing && <ActivityIndicator size="large" />}
+        </Animated.View>
+      </>
+    );
+  },
+  (prevProps, nextProps) =>
+    prevProps.refreshing === nextProps.refreshing &&
+    prevProps.readyForRefresh === nextProps.readyForRefresh
+);
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: "row",
     alignSelf: "stretch",
     backgroundColor: "white",
-    // flexDirection: "row",
-    // alignItems: "center",
     paddingVertical: 20
+  },
+  textContainer: {
+    flex: 1
+  },
+  loaderContainer: {
+    position: "absolute",
+    height: 100,
+    top: 40,
+    left: 0,
+    right: 0
   },
   row: {
     alignSelf: "stretch",
-    // alignItems: "flex-start",
-    // justifyContent: "space-around",
     flexDirection: "row",
     flex: 1
-    // marginBottom: 20
   },
   bio: {
     flex: 1,
-    // justifyContent: "space-around",
     marginLeft: 20
   },
   header: {

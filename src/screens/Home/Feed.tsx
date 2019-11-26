@@ -1,7 +1,19 @@
-import React, { useCallback, useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useState, useRef, useEffect } from "react";
+import {
+  Button,
+  ScrollView,
+  StyleSheet,
+  ListRenderItemInfo,
+  RefreshControl,
+  Text,
+  View,
+  Animated as RNAnimated,
+  FlatList,
+  NativeSyntheticEvent,
+  NativeScrollEvent
+} from "react-native";
 
-import Animated from "react-native-reanimated";
+import Animated, { Easing } from "react-native-reanimated";
 import {
   RouteProp,
   useFocusEffect,
@@ -12,14 +24,15 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { PostType, FeedPostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
+import { onScroll } from "react-native-redash";
 
-import { Posts } from "@components/Feed";
+import { Post } from "@components/universal";
+import { Top, Posts } from "@components/Feed";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
-import { Top } from "@components/Feed/Top";
 
 const {
   Value,
@@ -32,9 +45,14 @@ const {
   useCode
 } = Animated;
 
+const AnimatedFlatList: typeof FlatList = Animated.createAnimatedComponent(
+  FlatList
+);
+
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
-  feed: selectors.feedState(state)
+  feed: selectors.feedState(state),
+  refreshing: selectors.postLoading(state)
 });
 const mapDispatchToProps = {
   fetchFeed: PostActions.fetchFeed
@@ -50,9 +68,12 @@ export interface FeedProps extends FeedReduxProps {
 }
 
 export const Feed: React.FC<FeedProps> = React.memo(
-  ({ navigation, phoneNumber, feed, fetchFeed }) => {
-    const [readyForRefresh, setReadyForRefresh] = useState(1);
+  ({ navigation, phoneNumber, feed, fetchFeed, refreshing }) => {
+    const [readyForRefresh, setReadyForRefresh] = useState<0 | 1>(1);
+
     const [scrollY] = useState(new Value(0));
+    const [animatedValue] = useState(new Animated.Value(0));
+    const postsRef = useRef<typeof AnimatedFlatList>(null);
 
     useFocusEffect(
       useCallback(() => {
@@ -64,22 +85,45 @@ export const Feed: React.FC<FeedProps> = React.memo(
       () =>
         block([
           cond(
-            and(readyForRefresh, lessThan(scrollY, -100)),
-            call([], refresh)
+            lessThan(scrollY, -100),
+            call([], ([]) => setReadyForRefresh(1))
           ),
           cond(
-            greaterOrEq(scrollY, 0),
-            call([], ([]) => setReadyForRefresh(1))
+            greaterOrEq(scrollY, -100),
+            call([], ([]) => setReadyForRefresh(0))
           )
         ]),
       [readyForRefresh]
     );
 
-    const refresh = () => {
-      console.log("refresh");
-      setReadyForRefresh(0);
-      fetchFeed();
+    useEffect(() => {
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 300,
+        easing: Easing.quad
+      }).start();
+    }, [feed.posts.length]);
+
+    const handleScrollEndDrag = ({
+      nativeEvent
+    }: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const {
+        contentOffset: { y }
+      } = nativeEvent;
+      if (y < -100) {
+        fetchFeed();
+      }
     };
+
+    const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => (
+      <Post
+        entranceAnimatedValue={animatedValue}
+        index={index}
+        onPressPhoto={() => handleOnPressPost(item)}
+        onPressName={() => handleOnPressUser(item.user)}
+        post={item}
+      />
+    );
 
     const getPosts = () => {
       return feed.posts;
@@ -97,17 +141,26 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const renderTop = () => <Top scrollY={scrollY} />;
+    const renderTop = () => (
+      <Top
+        readyForRefresh={readyForRefresh}
+        refreshing={refreshing}
+        scrollY={scrollY}
+      />
+    );
 
     return (
       <Screen style={styles.container}>
-        <Posts
-          scrollY={scrollY}
-          onPressPost={handleOnPressPost}
-          onPressUser={handleOnPressUser}
+        <AnimatedFlatList
+          onScrollEndDrag={handleScrollEndDrag}
+          onScroll={onScroll({ y: scrollY })}
+          scrollEventThrottle={16}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
-          posts={feed.posts}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 50, alignItems: "center" }}
+          data={feed.posts}
+          renderItem={renderPost}
         />
       </Screen>
     );

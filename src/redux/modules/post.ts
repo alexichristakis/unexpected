@@ -9,7 +9,8 @@ import {
   select,
   take,
   takeEvery,
-  takeLatest
+  takeLatest,
+  delay
 } from "redux-saga/effects";
 import { FeedReturnType } from "unexpected-cloud/controllers/post";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
@@ -67,6 +68,7 @@ export default (
   action: ActionsUnion<typeof Actions>
 ): PostState => {
   switch (action.type) {
+    case ActionTypes.FETCH_FEED:
     case ActionTypes.FETCH_USERS_POSTS:
     case ActionTypes.SEND_POST: {
       return immer(state, draft => {
@@ -218,6 +220,7 @@ function* onFetchFeed(
 
     const { data: posts } = res;
 
+    yield delay(5000);
     yield put(Actions.fetchFeedSuccess(posts));
 
     // TODO: load the posts

@@ -6,7 +6,8 @@ import {
   ScrollViewProps,
   TouchableOpacity,
   ViewProps,
-  ViewStyle
+  ViewStyle,
+  RefreshControl
 } from "react-native";
 
 import Animated, { Easing } from "react-native-reanimated";
@@ -37,7 +38,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
     onPressUser = () => {},
     ListHeaderComponent,
     ListHeaderComponentStyle,
-    style,
+    contentContainerStyle,
     ...rest
   }) => {
     const [animatedValue] = useState(new Animated.Value(0));
@@ -62,19 +63,21 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
     return (
       <AnimatedFlatList
-        style={style}
         onScroll={onScroll({ y: scrollY })}
         scrollEventThrottle={16}
         ListHeaderComponentStyle={ListHeaderComponentStyle}
         ListHeaderComponent={ListHeaderComponent}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 50, alignItems: "center" }}
+        contentContainerStyle={[
+          contentContainerStyle,
+          { paddingBottom: 50, alignItems: "center" }
+        ]}
         data={posts}
         renderItem={renderPost}
         {...rest}
       />
     );
-  },
-  ({ posts: prevPosts }, { posts: nextPosts }) =>
-    prevPosts.length === nextPosts.length
+  }
+  // ({ posts: prevPosts }, { posts: nextPosts }) =>
+  //   prevPosts.length === nextPosts.length
 );

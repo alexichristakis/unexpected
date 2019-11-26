@@ -6,7 +6,7 @@ import { phoneNumber as phoneNumberSelector } from "./user";
 const s = (state: RootState) => state.post || {};
 const usersSelector = createSelector(s, state => state.users);
 
-export const isSendingPost = (state: RootState) => s(state).loading;
+export const postLoading = (state: RootState) => s(state).loading;
 
 export const errorSendingPost = (state: RootState) => s(state).error;
 
