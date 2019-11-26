@@ -31,7 +31,7 @@ const mapStateToProps = (state: RootState) => ({
   jwt: selectors.jwt(state)
 });
 const mapDispatchToProps = {
-  followUser: UserActions.followUser
+  friendUser: UserActions.friendUser
 };
 
 export type DiscoverReduxProps = ReduxPropsType<
@@ -44,12 +44,14 @@ export interface DiscoverProps {
 }
 export const Discover: React.FC<DiscoverProps &
   DiscoverReduxProps> = React.memo(
-  ({ phoneNumber, jwt, followUser, navigation }) => {
+  ({ phoneNumber, jwt, friendUser, navigation }) => {
     const [responses, setResponses] = useState<UserType[]>([]);
     const [loading, setLoading] = useState(false);
 
     const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-      const actions = [{ title: "follow", onPress: () => followUser(item) }];
+      const actions = [
+        { title: "add friend", onPress: () => friendUser(item) }
+      ];
       return (
         <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
       );

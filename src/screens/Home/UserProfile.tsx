@@ -60,15 +60,15 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       navigation.navigate("SETTINGS");
     };
 
-    const goToFollowing = () => {
-      navigation.navigate("FOLLOWING", { user });
+    const goToFriends = () => {
+      navigation.navigate("FRIENDS", { user });
     };
 
     const renderTop = () => (
       <Top
         user={user}
         scrollY={scrollY}
-        onPressFollowing={goToFollowing}
+        onPressFriends={goToFriends}
         onPressImage={goToNewProfilePicture}
         onPressName={goToSettings}
       />

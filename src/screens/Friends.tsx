@@ -21,37 +21,37 @@ import { StackParamList } from "../App";
 import { UserType } from "unexpected-cloud/models/user";
 import { UserRow } from "@components/universal";
 
-const mapStateToProps = (state: RootState, props: FollowingProps) => ({
+const mapStateToProps = (state: RootState, props: FriendsProps) => ({
   phoneNumber: selectors.phoneNumber(state),
   loading: selectors.userLoading(state),
   users: selectors.users(state)
 });
 const mapDispatchToProps = {
-  fetchFollowing: UserActions.fetchFollowing
+  fetchFriends: UserActions.fetchFriends
 };
 
-export type FollowingReduxProps = ReduxPropsType<
+export type FriendsReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-export interface FollowingProps {
-  navigation: NativeStackNavigationProp<StackParamList, "FOLLOWING">;
-  route: RouteProp<StackParamList, "FOLLOWING">;
+export interface FriendsProps {
+  navigation: NativeStackNavigationProp<StackParamList, "FRIENDS">;
+  route: RouteProp<StackParamList, "FRIENDS">;
 }
 
-const Following: React.FC<FollowingProps & FollowingReduxProps> = ({
+const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
   phoneNumber,
   navigation,
   loading,
   users,
   route,
-  fetchFollowing
+  fetchFriends
 }) => {
   const { user } = route.params;
 
   useFocusEffect(
     useCallback(() => {
-      fetchFollowing(user.phoneNumber);
+      fetchFriends(user.phoneNumber);
     }, [])
   );
 
@@ -70,7 +70,7 @@ const Following: React.FC<FollowingProps & FollowingReduxProps> = ({
   };
 
   const getUsers = () => {
-    return _.filter(users, o => _.includes(user.following, o.phoneNumber));
+    return _.filter(users, o => _.includes(user.friends, o.phoneNumber));
   };
 
   const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => (
@@ -92,4 +92,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Following);
+export default connect(mapStateToProps, mapDispatchToProps)(Friends);

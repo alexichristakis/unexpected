@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 15,
+    paddingVertical: 10,
     paddingHorizontal: 30,
     borderColor: Colors.nearBlack,
     borderWidth: 1
