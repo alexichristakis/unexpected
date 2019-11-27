@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
@@ -13,6 +12,9 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7A286274236DF61F004A66A6 /* swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A286273236DF61F004A66A6 /* swift.swift */; };
 		F239BB04716766405EF848D5 /* libPods-unexpected.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55775DE683C25CB8462B660A /* libPods-unexpected.a */; };
+		0B5507E7880A47EC98E76A39 /* AvenirNext-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 337D6C9369584019A2FC0803 /* AvenirNext-Medium.ttf */; };
+		198BEA6B167449CAB105F0F8 /* AvenirNext-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BAE51561691B40BCA398D40B /* AvenirNext-Regular.ttf */; };
+		3D2E86A856FD439E8EAA74BC /* AvenirNext-UltraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5D82186227F643CFA9818759 /* AvenirNext-UltraLight.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,9 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F5737640F8B2C571563C2793 /* libPods-unexpectedTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-unexpectedTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		337D6C9369584019A2FC0803 /* AvenirNext-Medium.ttf */ = {isa = PBXFileReference; name = "AvenirNext-Medium.ttf"; path = "../src/assets/fonts/AvenirNext-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BAE51561691B40BCA398D40B /* AvenirNext-Regular.ttf */ = {isa = PBXFileReference; name = "AvenirNext-Regular.ttf"; path = "../src/assets/fonts/AvenirNext-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5D82186227F643CFA9818759 /* AvenirNext-UltraLight.ttf */ = {isa = PBXFileReference; name = "AvenirNext-UltraLight.ttf"; path = "../src/assets/fonts/AvenirNext-UltraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +128,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				061DD05511D53A3520CE9FB7 /* Pods */,
+				F6647F3FE91045DA9CDA0941 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -136,6 +142,17 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
+		};
+		F6647F3FE91045DA9CDA0941 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				337D6C9369584019A2FC0803 /* AvenirNext-Medium.ttf */,
+				BAE51561691B40BCA398D40B /* AvenirNext-Regular.ttf */,
+				5D82186227F643CFA9818759 /* AvenirNext-UltraLight.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -166,7 +183,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 940;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
@@ -201,6 +218,9 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				0B5507E7880A47EC98E76A39 /* AvenirNext-Medium.ttf in Resources */,
+				198BEA6B167449CAB105F0F8 /* AvenirNext-Regular.ttf in Resources */,
+				3D2E86A856FD439E8EAA74BC /* AvenirNext-UltraLight.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

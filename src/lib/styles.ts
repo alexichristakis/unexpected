@@ -37,7 +37,7 @@ export const Colors = {
 };
 
 const baseText: TextStyle = {
-  // fontFamily:
+  fontFamily: "AvenirNext-Regular"
 };
 
 export enum TextSizes {
