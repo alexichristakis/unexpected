@@ -20,7 +20,7 @@ import * as selectors from "@redux/selectors";
 import { Actions as UserActions } from "@redux/modules/user";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen } from "react-native-screens";
-import { TextSizes } from "@lib/styles";
+import { TextSizes, SB_HEIGHT } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
 
 const mapStateToProps = (state: RootState) => ({
@@ -114,7 +114,7 @@ export const Discover: React.FC<DiscoverProps &
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
+    paddingTop: SB_HEIGHT(),
     paddingHorizontal: 20,
     alignItems: "center"
   },

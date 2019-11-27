@@ -7,7 +7,7 @@ import { connect, MapStateToProps } from "react-redux";
 import { CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
 import { TextStyles } from "@lib/styles";
-import { Actions as AuthActions, AuthState as AuthStateType } from "@redux/modules/auth";
+import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
 
 const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
@@ -19,7 +19,10 @@ const mapDispatchToProps = {
   checkCode: AuthActions.checkCode
 };
 
-export type AuthReduxProps = ReduxPropsType<typeof mapStateToProps, typeof mapDispatchToProps>;
+export type AuthReduxProps = ReduxPropsType<
+  typeof mapStateToProps,
+  typeof mapDispatchToProps
+>;
 export interface AuthOwnProps {}
 
 const initialFormValues = { phoneNumber: "", code: "" };
@@ -42,7 +45,15 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
     <Screen style={styles.container}>
       <Text style={TextStyles.large}>expect.photos</Text>
       <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
-        {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => {
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting
+        }) => {
           return (
             <>
               <View style={styles.formFields}>
@@ -84,7 +95,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

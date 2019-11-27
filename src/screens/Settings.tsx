@@ -13,7 +13,12 @@ import Contacts from "react-native-contacts";
 import _ from "lodash";
 import uuid from "uuid/v4";
 
-import { Button, UserImage, UserRow } from "@components/universal";
+import {
+  Button,
+  UserImage,
+  UserRow,
+  ItemSeparator
+} from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
@@ -105,12 +110,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
         { title: "deny", onPress: () => denyRequest(item) }
       ];
       return (
-        <UserRow
-          key={index}
-          onPress={handleOnPressUser}
-          user={item}
-          actions={actions}
-        />
+        <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
       );
     };
 
@@ -139,12 +139,15 @@ const Settings: React.FC<SettingsProps> = React.memo(
       </View>
     );
 
+    const renderSeparatorComponent = () => <ItemSeparator />;
+
     return (
       <Screen style={styles.container}>
         <Text style={[TextStyles.medium, styles.header]}>settings:</Text>
         <FlatList
           renderItem={renderUserRow}
           data={getUsers()}
+          ItemSeparatorComponent={renderSeparatorComponent}
           ListFooterComponent={renderListFooter()}
         />
       </Screen>
@@ -164,7 +167,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   buttonContainer: {
-    marginTop: 20
+    // marginTop: 20
   }
 });
 

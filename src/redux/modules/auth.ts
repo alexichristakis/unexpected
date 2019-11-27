@@ -139,7 +139,8 @@ function* onVerifyCodeRequest(
               BATCH
             )
           ),
-          yield Navigation.navigate("AUTHENTICATED")
+          yield Navigation.navigate("AUTHENTICATED"),
+          yield Navigation.navigate("PERMISSIONS")
         ]);
       } else {
         // user entity doesn't exist in DB: new user

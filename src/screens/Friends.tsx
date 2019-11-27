@@ -13,7 +13,8 @@ import { ReduxPropsType, RootState } from "@redux/types";
 import { Actions as UserActions } from "@redux/modules/user";
 import { StackParamList } from "../App";
 import { UserType } from "unexpected-cloud/models/user";
-import { UserRow } from "@components/universal";
+import { UserRow, ItemSeparator } from "@components/universal";
+import { SB_HEIGHT } from "@lib/styles";
 
 const mapStateToProps = (state: RootState, props: FriendsProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -71,9 +72,16 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
     <UserRow onPress={handleOnPressUser} user={item} />
   );
 
+  const renderSeparatorComponent = () => <ItemSeparator />;
+
   return (
     <Screen style={styles.container}>
-      <FlatList renderItem={renderUserRow} data={getUsers()} />
+      <FlatList
+        style={styles.list}
+        renderItem={renderUserRow}
+        ItemSeparatorComponent={renderSeparatorComponent}
+        data={getUsers()}
+      />
     </Screen>
   );
 };
@@ -81,8 +89,13 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    paddingTop: SB_HEIGHT(),
+    paddingHorizontal: 20,
     justifyContent: "center"
+  },
+  list: {
+    height: "100%",
+    width: "100%"
   }
 });
 

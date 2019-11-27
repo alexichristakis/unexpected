@@ -24,7 +24,7 @@ import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
 
 import { LaunchCameraButton } from "@components/Camera";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, isIPhoneX } from "@lib/styles";
 import Connection from "./components/Connection";
 import { useReduxState } from "./hooks";
 import Navigation from "./navigation";
@@ -145,7 +145,7 @@ const Router: React.FC = () => {
           return (
             <Tabs.Navigator
               tabBarOptions={{
-                tabStyle: { paddingTop: 15 },
+                tabStyle: { paddingTop: isIPhoneX ? 15 : 0 },
                 style: { backgroundColor: "white", borderTopWidth: 0 },
                 showLabel: false,
                 activeTintColor: "#231F20",

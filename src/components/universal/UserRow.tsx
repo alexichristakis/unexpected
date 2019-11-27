@@ -27,7 +27,12 @@ export const UserRow: React.FC<UserRowProps> = ({
       <Text style={styles.name}>{`${user.firstName} ${user.lastName}`}</Text>
       <View style={{ flex: 1 }} />
       {actions.map(({ title, onPress }) => (
-        <Button style={styles.button} title={title} onPress={onPress} />
+        <Button
+          key={title}
+          style={styles.button}
+          title={title}
+          onPress={onPress}
+        />
       ))}
     </TouchableOpacity>
   );

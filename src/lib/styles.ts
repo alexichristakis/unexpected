@@ -1,8 +1,32 @@
-import { Dimensions, StyleSheet, Text, TextStyle } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  StatusBar,
+  Platform,
+  Text,
+  TextStyle
+} from "react-native";
 
 export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get(
   "window"
 );
+
+const X_WIDTH = 375;
+const X_HEIGHT = 812;
+
+const XSMAX_WIDTH = 414;
+const XSMAX_HEIGHT = 896;
+
+export const isIPhoneX =
+  (SCREEN_WIDTH === X_WIDTH && SCREEN_HEIGHT === X_HEIGHT) ||
+  (SCREEN_WIDTH === XSMAX_WIDTH && SCREEN_HEIGHT === XSMAX_HEIGHT);
+
+export const SB_HEIGHT = () =>
+  Platform.select({
+    ios: isIPhoneX ? 44 : 20,
+    android: StatusBar.currentHeight,
+    default: 0
+  });
 
 export const Colors = {
   nearBlack: "rgb(10, 10, 10)",

@@ -22,12 +22,13 @@ import { UserType } from "unexpected-cloud/models/user";
 import { onScroll } from "react-native-redash";
 
 import { Post } from "@components/universal";
-import { Top, Posts } from "@components/Feed";
+import { Top } from "@components/Feed";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
+import { SB_HEIGHT } from "@lib/styles";
 
 const {
   Value,
@@ -148,7 +149,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
       setStatusBarVisible(false);
       StatusBar.setHidden(true, "slide");
       Animated.timing(statusBarAnimatedValue, {
-        toValue: -40,
+        toValue: -SB_HEIGHT(),
         duration: 200,
         easing: Easing.ease
       }).start();
@@ -188,7 +189,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
           ListHeaderComponent={renderTop}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            paddingTop: 40,
+            paddingTop: SB_HEIGHT(),
             paddingBottom: 50,
             alignItems: "center"
           }}
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    height: 40,
+    height: SB_HEIGHT(),
     backgroundColor: "white"
   },
   headerContainer: {

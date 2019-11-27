@@ -120,7 +120,6 @@ export default (
 
       return immer(state, draft => {
         users.forEach(user => {
-          if (!user.phoneNumber) return;
           if (complete) {
             draft.users[user.phoneNumber] = user;
           } else {
@@ -247,7 +246,7 @@ function* onFetchUsers(
     let endpoint = `/user?phoneNumbers=${phoneNumbers.join(",")}`;
     if (selectOn) endpoint += `&select=${selectOn.join(",")}`;
 
-    const res: AxiosResponse<Partial<UserType>[]> = yield client.get(endpoint, {
+    const res: AxiosResponse<UserType[]> = yield client.get(endpoint, {
       headers: getHeaders({ jwt })
     });
 
@@ -369,7 +368,7 @@ export const Actions = {
     createAction(ActionTypes.CREATE_NEW_USER, { name }),
   createUserComplete: (user: UserType) =>
     createAction(ActionTypes.CREATE_USER_COMPLETE, { user }),
-  loadUsers: (users: Partial<UserType>[], complete?: boolean) =>
+  loadUsers: (users: UserType[], complete?: boolean) =>
     createAction(ActionTypes.LOAD_USERS, { users, complete }),
   friendUser: (user: UserType) =>
     createAction(ActionTypes.FRIEND_USER, { user }),
