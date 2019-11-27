@@ -5,11 +5,13 @@ import { Colors, TextStyles } from "@lib/styles";
 
 export interface ButtonProps extends ViewProps {
   size?: "small" | "medium" | "large";
+  disabled?: boolean;
   title: string;
   onPress: () => void;
 }
 export const Button: React.FC<ButtonProps> = ({
   style,
+  disabled,
   size = "medium",
   title,
   onPress
@@ -18,6 +20,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <TouchableOpacity
+      disabled={disabled}
       style={[styles.container, style]}
       onPress={onPress}
       onPressIn={() => onTouch(true)}

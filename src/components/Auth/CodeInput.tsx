@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, TextInput } from "react-native";
 
 import { Input } from "@components/universal";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, TextSizes } from "@lib/styles";
 // import , { Easing } from "react-native-reanimated";
 
 export interface CodeInputProps {
@@ -11,7 +11,12 @@ export interface CodeInputProps {
   error?: string;
   onChange: (e: string) => void;
 }
-export const CodeInput: React.FC<CodeInputProps> = ({ editable, value, onChange, error }) => {
+export const CodeInput: React.FC<CodeInputProps> = ({
+  editable,
+  value,
+  onChange,
+  error
+}) => {
   const [ref, setRef] = useState<TextInput | null>(null);
   const [entry, setEntry] = useState(new Animated.Value(0));
 
@@ -31,12 +36,23 @@ export const CodeInput: React.FC<CodeInputProps> = ({ editable, value, onChange,
 
   const animatedStyle = {
     opacity: entry,
-    transform: [{ translateY: entry.interpolate({ inputRange: [0, 1], outputRange: [-50, 0] }) }]
+    transform: [
+      {
+        translateY: entry.interpolate({
+          inputRange: [0, 1],
+          outputRange: [-50, 0]
+        })
+      }
+    ]
   };
 
   return (
-    <Animated.View pointerEvents={editable ? "auto" : "none"} style={animatedStyle}>
+    <Animated.View
+      pointerEvents={editable ? "auto" : "none"}
+      style={animatedStyle}
+    >
       <Input
+        size={TextSizes.title}
         textInputRef={setRef}
         label="enter that code here"
         error={error}

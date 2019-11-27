@@ -25,9 +25,16 @@ const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
 
   return (
     <Screen style={styles.container}>
-      <Text>sign up page!</Text>
       <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
-        {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => {
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting
+        }) => {
           return (
             <>
               <View style={styles.formFields}>
@@ -56,15 +63,22 @@ const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    padding: 50,
+    justifyContent: "space-around"
+    // alignItems: "center",
+    // justifyContent: "center"
   },
   formFields: {
-    marginVertical: 100
+    flex: 1,
+    marginVertical: 100,
+    justifyContent: "space-around"
   }
 });
 
-const mapStateToProps = ({ user }: RootStateType, ownProps: SignUpOwnProps) => ({
+const mapStateToProps = (
+  { user }: RootStateType,
+  ownProps: SignUpOwnProps
+) => ({
   ...user,
   ...ownProps
 });
@@ -72,7 +86,4 @@ const mapDispatchToProps = {
   ...Actions
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

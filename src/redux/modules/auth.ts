@@ -109,7 +109,7 @@ function* onLoginRequest(
       yield put(Actions.successTextingCode());
     }
   } catch (err) {
-    yield put(Actions.errorRequestingAuth(err));
+    yield put(Actions.errorRequestingAuth(err.message));
   }
 }
 

@@ -43,7 +43,10 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 
   return (
     <Screen style={styles.container}>
-      <Text style={TextStyles.large}>expect.photos</Text>
+      <View>
+        <Text style={TextStyles.title}>expect.photos</Text>
+        <Text style={TextStyles.large}>random photo sharing</Text>
+      </View>
       <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
         {({
           values,
@@ -72,7 +75,8 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
                 />
               </View>
               <Button
-                size="large"
+                disabled={values.phoneNumber.length !== 10}
+                size="medium"
                 title={isAwaitingCode ? "verify code" : "send text message"}
                 onPress={handleSubmit}
               />
@@ -87,11 +91,14 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    padding: 50,
+    paddingTop: 40,
+    justifyContent: "space-around"
   },
   formFields: {
-    marginVertical: 100
+    flex: 1,
+    maxHeight: 200,
+    justifyContent: "space-around"
   }
 });
 

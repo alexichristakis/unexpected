@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { NativeSyntheticEvent, StyleSheet, TextInput, TextInputFocusEventData } from "react-native";
+import {
+  NativeSyntheticEvent,
+  StyleSheet,
+  TextInput,
+  TextInputFocusEventData
+} from "react-native";
 
 import { Input } from "@components/universal";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, TextSizes } from "@lib/styles";
 
 export const normalizePhone = (value: string, previousValue?: string) => {
   if (!value) {
@@ -25,7 +30,10 @@ export const normalizePhone = (value: string, previousValue?: string) => {
   if (onlyNums.length <= 6) {
     return `(${onlyNums.slice(0, 3)}) ${onlyNums.slice(3)}`;
   }
-  return `(${onlyNums.slice(0, 3)}) ${onlyNums.slice(3, 6)}-${onlyNums.slice(6, 10)}`;
+  return `(${onlyNums.slice(0, 3)}) ${onlyNums.slice(3, 6)}-${onlyNums.slice(
+    6,
+    10
+  )}`;
 };
 
 export interface PhoneNumberInputProps {
@@ -65,6 +73,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 
   return (
     <Input
+      size={TextSizes.title}
       textInputRef={setRef}
       style={styles.textInput}
       editable={editable}
@@ -77,10 +86,10 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
           : "enter your phone number"
       }
       value={normalizePhone(value)}
-      // onBlur={onBlur}
       onChangeText={handleOnChangeText}
       keyboardType="number-pad"
       placeholder="(123) 456-7890"
+      autoCompleteType="tel"
       textContentType="telephoneNumber"
       maxLength={14}
     />
