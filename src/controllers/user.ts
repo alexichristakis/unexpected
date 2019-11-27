@@ -6,7 +6,8 @@ import {
   PathParams,
   UseAuth,
   Inject,
-  Patch
+  Patch,
+  QueryParams
 } from "@tsed/common";
 
 import { UserService } from "../services/user";
@@ -25,15 +26,31 @@ export class UserController {
     return this.userService.search(query);
   }
 
+  @Get()
+  @UseAuth(AuthMiddleware)
+  async getUsers(
+    @QueryParams("phoneNumbers") phoneNumbers: string,
+    @QueryParams("select") select: string
+  ) {
+    const userPhoneNumbers = phoneNumbers.split(",");
+    const selectOn = select.split(",").join(" ");
+
+    return this.userService.getByPhoneNumber(
+      userPhoneNumbers,
+      false,
+      selectOn + " phoneNumber"
+    );
+  }
+
   @Get("/:phoneNumber")
   @UseAuth(AuthMiddleware)
   async getUser(@PathParams("phoneNumber") phoneNumber: string) {
     return this.userService.getByPhoneNumber(phoneNumber);
   }
 
-  @Get("/:phoneNumber/following")
+  @Get("/:phoneNumber/friends")
   @UseAuth(AuthMiddleware)
-  async getUserFollowing(@PathParams("phoneNumber") phoneNumber: string) {
+  async getUserFriends(@PathParams("phoneNumber") phoneNumber: string) {
     return this.userService.getUserFriends(phoneNumber);
   }
 
@@ -54,8 +71,10 @@ export class UserController {
   async updateUser(
     @PathParams("phoneNumber") phoneNumber: string,
     @BodyParams("user") user: Partial<UserType>
-  ): Promise<void> {
-    return this.userService.updateOne({ phoneNumber }, user);
+  ): Promise<UserModel> {
+    await this.userService.updateOne({ phoneNumber }, user);
+
+    return this.userService.getByPhoneNumber(phoneNumber);
   }
 
   @Patch("/:phoneNumber/friend/:to")

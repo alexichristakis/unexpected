@@ -2,10 +2,10 @@ import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import { Provider, Notification } from "apn";
 import moment from "moment";
-
-import { User as UserModel } from "../models/user";
 import { Document } from "mongoose";
+
 import { UserService } from "./user";
+import { User as UserModel } from "../models/user";
 
 const settings = {
   fcm: {
@@ -23,12 +23,18 @@ const settings = {
 
 @Service()
 export class NotificationService {
-  @Inject(UserService)
-  private userService: UserService;
+  // @Inject(UserService)
+  // private userService: UserService;
+  // constructor(private readonly userService: UserService) {}
 
   private APNs = new Provider(settings.apns);
 
-  private async send(deviceToken: string = "", deviceOS: string, body: string): Promise<string> {
+  async send(
+    deviceToken: string = "",
+    deviceOS: string,
+    body: string,
+    photoTime: boolean = false
+  ): Promise<string> {
     if (deviceOS == "Android") {
       // deal with android notification
     } else {
@@ -37,7 +43,7 @@ export class NotificationService {
         pushType: "alert",
         topic: "christakis.expect.photos",
         payload: {
-          photoTime: true,
+          photoTime,
           time: moment().toDate()
         },
         alert: {
@@ -47,11 +53,8 @@ export class NotificationService {
 
       const notification = new Notification(payload);
 
-      console.log(notification, deviceToken);
-
       if (deviceToken.length)
         return this.APNs.send(notification, deviceToken).then(result => {
-          // console.log("RESULT:", result);
           result.failed.forEach(failure => {
             console.log(failure.response);
           });
@@ -65,19 +68,20 @@ export class NotificationService {
     return "";
   }
 
-  async notifyPhoneNumber(phoneNumber: string, body: string): Promise<string> {
-    const model = await this.userService.findOne({ phoneNumber }, ["deviceOS", "deviceToken"]);
-
-    if (!model) return "";
-
-    const { deviceOS, deviceToken } = model;
+  async notifyUserModel(
+    user: UserModel & Partial<Document>,
+    body: string
+  ): Promise<string> {
+    const { deviceOS, deviceToken } = user;
 
     return this.send(deviceToken, deviceOS, body);
   }
 
-  async notifyUserModel(user: UserModel & Partial<Document>, body: string): Promise<string> {
+  async notifyUserModelPhotoTime(
+    user: UserModel & Partial<Document>,
+    body: string
+  ) {
     const { deviceOS, deviceToken } = user;
-
-    return this.send(deviceToken, deviceOS, body);
+    return this.send(deviceToken, deviceOS, body, true);
   }
 }

@@ -45,17 +45,17 @@ export class UserService extends CRUDService<UserModel, UserType> {
       this.model
         .updateOne(
           { phoneNumber: to },
-          { friendRequests: [...userTo.friendRequests, from] }
+          { friendRequests: _.uniq([...userTo.friendRequests, from]) }
         )
         .exec(),
       this.model
         .updateOne(
           { phoneNumber: from },
-          { requestedFriends: [...userFrom.requestedFriends, to] }
+          { requestedFriends: _.uniq([...userFrom.requestedFriends, to]) }
         )
         .exec(),
-      this.notificationService.notifyPhoneNumber(
-        to,
+      this.notificationService.notifyUserModel(
+        userTo,
         `${userFrom.firstName} ${userFrom.lastName} sent you a friend request.`
       )
     ]);
@@ -90,10 +90,10 @@ export class UserService extends CRUDService<UserModel, UserType> {
     await Promise.all([
       this.model
         .updateOne(
-          { phoneNumber: to },
+          { phoneNumber: from },
           {
-            friendRequests: _.remove(userTo.friendRequests, from),
-            friends: [...userTo.friends, from]
+            friendRequests: _.remove(userFrom.friendRequests, to),
+            friends: _.uniq([...userFrom.friends, to])
           }
         )
         .exec(),
@@ -101,13 +101,13 @@ export class UserService extends CRUDService<UserModel, UserType> {
         .updateOne(
           { phoneNumber: from },
           {
-            requestedFriends: _.remove(userFrom.requestedFriends, to),
-            friends: [...userFrom.friends, to]
+            requestedFriends: _.remove(userTo.requestedFriends, from),
+            friends: _.uniq([...userTo.friends, from])
           }
         )
         .exec(),
-      this.notificationService.notifyPhoneNumber(
-        from,
+      this.notificationService.notifyUserModel(
+        userFrom,
         `${userTo.firstName} ${userTo.lastName} accepted your friend request.`
       )
     ]);
@@ -142,13 +142,22 @@ export class UserService extends CRUDService<UserModel, UserType> {
   async getByPhoneNumber(phoneNumber: string): Promise<UserModel & Document>;
   async getByPhoneNumber(
     phoneNumbers: string[],
-    sort?: boolean
+    sort?: boolean,
+    select?: string
   ): Promise<(UserModel & Document)[]>;
-  async getByPhoneNumber(phoneNumber: string | string[], sort?: boolean) {
+  async getByPhoneNumber(
+    phoneNumber: string | string[],
+    sort?: boolean,
+    select?: string
+  ) {
     if (phoneNumber instanceof Array) {
-      const users = await this.model.find({
-        phoneNumber: { $in: phoneNumber }
-      });
+      const users = await this.model
+        .find({
+          phoneNumber: { $in: phoneNumber }
+        })
+        // .select(select)
+        .exec();
+
       if (sort) {
         return users.sort((a, b) =>
           phoneNumber.indexOf(a.phoneNumber) >

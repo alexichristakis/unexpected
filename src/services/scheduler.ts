@@ -42,7 +42,7 @@ export class SchedulerService {
 
         this.agenda.define(AgendaJobs.SEND_NOTIFICATION, args => {
           const { to } = args.attrs.data;
-          this.notificationService.notifyUserModel(
+          this.notificationService.notifyUserModelPhotoTime(
             to,
             "time to take & share a photo"
           );

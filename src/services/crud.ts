@@ -19,7 +19,7 @@ type Selector<T> = Partial<keyof T>[];
 // type Opt<T> = Partial<keyof T>;
 // type Ret<T> = Pick<T, Selector<T>>;
 
-@Service()
+// @Service()
 export abstract class CRUDService<Model, Type> {
   public abstract model: MongooseModel<Model>;
 

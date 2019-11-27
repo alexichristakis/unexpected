@@ -29,14 +29,14 @@ export class PostService extends CRUDService<PostModel, PostType> {
   };
 
   async getFeedForUser(phoneNumber: string) {
-    const user = await this.userService.findOne({ phoneNumber }, ["following"]);
+    const user = await this.userService.findOne({ phoneNumber }, ["friends"]);
 
     if (!user) return [];
 
-    const { following } = user;
+    const { friends } = user;
 
     const posts = await this.model
-      .find({ userPhoneNumber: { $in: [...following, phoneNumber] } })
+      .find({ userPhoneNumber: { $in: [...friends, phoneNumber] } })
       .sort({ createdAt: -1 })
       .exec();
 

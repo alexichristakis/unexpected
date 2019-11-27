@@ -30,6 +30,10 @@ export class User {
   @Required()
   lastName: string;
 
+  @Property()
+  @Default("")
+  bio: string;
+
   @Required()
   deviceOS: string;
 
@@ -41,6 +45,7 @@ export class User {
   createdAt: Date = new Date();
 
   @Required()
+  @Default("America/New_York")
   timezone: string;
 
   // mutual, more like "friends"
