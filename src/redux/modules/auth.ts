@@ -55,6 +55,7 @@ export default (
     case ActionTypes.CHECK_CODE:
     case ActionTypes.REQUEST_AUTH: {
       const { phoneNumber } = action.payload;
+
       return { ...state, phoneNumber, loading: true, authError: "" };
     }
 
@@ -85,6 +86,7 @@ export default (
 
     case ActionTypes.LOGOUT: {
       Navigation.navigate("UNAUTHENTICATED");
+
       return {
         ...state,
         jwt: null

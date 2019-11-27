@@ -62,6 +62,7 @@ export default (
   switch (action.type) {
     case ActionTypes.SET_CAMERA_TIMER: {
       const { time } = action.payload;
+
       return { ...state, camera: { enabled: true, timeOfExpiry: time } };
     }
 
@@ -71,11 +72,13 @@ export default (
 
     case ActionTypes.SET_APP_STATUS: {
       const { status } = action.payload;
+
       return { ...state, appStatus: status };
     }
 
     case ActionTypes.SET_NET_INFO: {
       const { netInfo } = action.payload;
+
       return { ...state, networkStatus: netInfo };
     }
 
@@ -83,13 +86,6 @@ export default (
       return state;
   }
 };
-
-// function* onNavigate({ payload }: ExtractActionFromActionCreator<typeof Actions.updateNavigation>) {
-//   const { prevState, nextState, action } = payload;
-
-//   if (action.type === "Navigation/BACK" || action.type === "Navigation/JUMP_TO") {
-//   }
-// }
 
 function* onReceiveNotification(
   action: ExtractActionFromActionCreator<typeof Actions.processNotification>
@@ -112,15 +108,12 @@ const appEmitter = () => {
     const appStatusHandler = (state: AppStatusType) =>
       emit({ appStatus: state });
     const netInfoHandler = (state: NetInfoState) => emit({ netInfo: state });
-    // const navigationHandler = (state: NavigationEmitterPayload) => emit({ navigation: state });
 
-    // Navigation.navigationEmitter.on("state-change", navigationHandler);
     AppStatus.addEventListener("change", appStatusHandler);
     const unsubscribe = NetInfo.addEventListener(netInfoHandler);
 
     return () => {
       unsubscribe();
-      // Navigation.navigationEmitter.removeAllListeners();
       AppStatus.removeEventListener("change", appStatusHandler);
     };
   });
@@ -133,11 +126,9 @@ function* onStartup() {
     const {
       appStatus,
       netInfo
-    }: // navigation
-    {
+    }: {
       appStatus: AppStatusType;
       netInfo: NetInfoState;
-      // navigation: NavigationEmitterPayload;
     } = yield take(appChannel);
 
     if (appStatus) {
@@ -147,21 +138,6 @@ function* onStartup() {
     if (netInfo) {
       yield put(Actions.setNetInfo(netInfo));
     }
-
-    // if (navigation) {
-    //   // console.log(navigation);
-    //   const { action } = navigation;
-
-    //   if (action.type === "Navigation/NAVIGATE") {
-    //     if (action.routeName === "Capture") StatusBar.setBarStyle("light-content");
-    //   }
-
-    //   if (action.type === "Navigation/POP") {
-    //     StatusBar.setBarStyle("dark-content");
-    //   }
-
-    //   // yield put(Actions.updateNavigation(navigation));
-    // }
   }
 }
 

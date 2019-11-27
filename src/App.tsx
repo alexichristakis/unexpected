@@ -24,7 +24,7 @@ import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
 
 import { LaunchCameraButton } from "@components/Camera";
-import { TextStyles, isIPhoneX } from "@lib/styles";
+import { isIPhoneX, TextStyles } from "@lib/styles";
 import Connection from "./components/Connection";
 import { useReduxState } from "./hooks";
 import Navigation from "./navigation";
@@ -32,6 +32,8 @@ import Navigation from "./navigation";
 /* screens */
 import Auth from "./screens/Auth";
 import Capture from "./screens/Capture";
+import EditBio from "./screens/EditBio";
+import Friends from "./screens/Friends";
 import Discover from "./screens/Home/Discover";
 import Feed from "./screens/Home/Feed";
 import UserProfile from "./screens/Home/UserProfile";
@@ -42,8 +44,6 @@ import Profile from "./screens/Profile";
 import Settings from "./screens/Settings";
 import Share from "./screens/Share";
 import SignUp from "./screens/SignUp";
-import Friends from "./screens/Friends";
-import EditBio from "./screens/EditBio";
 
 import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
@@ -297,6 +297,7 @@ export const Context: React.FC = ({ children }) => {
   const store = createStore();
   const persistor = persistStore(store);
   persistor.purge();
+
   return (
     <Provider store={store}>
       <SafeAreaProvider>

@@ -1,34 +1,34 @@
-import React, { useCallback, useState, useRef, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  StyleSheet,
-  ListRenderItemInfo,
   FlatList,
-  NativeSyntheticEvent,
+  ListRenderItemInfo,
   NativeScrollEvent,
-  StatusBar
+  NativeSyntheticEvent,
+  StatusBar,
+  StyleSheet
 } from "react-native";
 
-import Animated, { Easing } from "react-native-reanimated";
 import {
   RouteProp,
   useFocusEffect,
   useIsFocused
 } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Animated, { Easing } from "react-native-reanimated";
+import { onScroll } from "react-native-redash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { PostType, FeedPostType } from "unexpected-cloud/models/post";
+import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
-import { onScroll } from "react-native-redash";
 
-import { Post } from "@components/universal";
 import { Top } from "@components/Feed";
+import { Post } from "@components/universal";
+import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
-import { SB_HEIGHT } from "@lib/styles";
 
 const {
   Value,
@@ -80,7 +80,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const [scrollY] = useState(new Value(0));
 
     useEffect(() => {
-      console.log("launch", shouldLaunchPermissions);
       if (shouldLaunchPermissions) {
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }

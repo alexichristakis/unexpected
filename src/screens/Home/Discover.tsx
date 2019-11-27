@@ -1,27 +1,27 @@
 import React, { useState } from "react";
 import {
-  StyleSheet,
-  FlatList,
   ActivityIndicator,
+  FlatList,
   ListRenderItemInfo,
   NativeSyntheticEvent,
+  StyleSheet,
   TextInputSubmitEditingEventData
 } from "react-native";
 
 import client, { getHeaders } from "@api";
-import { connect } from "react-redux";
 import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
-import { StackParamList } from "../../App";
-import { Input, UserRow, ItemSeparator } from "@components/universal";
-import * as selectors from "@redux/selectors";
+import { Input, ItemSeparator, UserRow } from "@components/universal";
+import { SB_HEIGHT, TextSizes } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
+import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen } from "react-native-screens";
-import { TextSizes, SB_HEIGHT } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
+import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -49,6 +49,7 @@ export const Discover: React.FC<DiscoverProps &
       const actions = [
         { title: "add friend", onPress: () => friendUser(item) }
       ];
+
       return (
         <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
       );

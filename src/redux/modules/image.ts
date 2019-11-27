@@ -59,6 +59,7 @@ export default (
   switch (action.type) {
     case ActionTypes.TAKE_PHOTO: {
       const { image } = action.payload;
+
       return { ...state, currentImage: image };
     }
 

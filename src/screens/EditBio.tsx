@@ -1,26 +1,26 @@
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  NativeSyntheticEvent,
   StyleSheet,
   Text,
-  View,
-  NativeSyntheticEvent,
   TextInputSubmitEditingEventData,
-  ActivityIndicator
+  View
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import _ from "lodash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import _ from "lodash";
 
-import { TextStyles } from "@lib/styles";
-import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
-import { Actions as UserActions } from "@redux/modules/user";
-import { StackParamList } from "../App";
 import { Input } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
+import { TextStyles } from "@lib/styles";
+import { Actions as UserActions } from "@redux/modules/user";
+import * as selectors from "@redux/selectors";
+import { ReduxPropsType, RootState } from "@redux/types";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState, props: EditBioProps) => ({
   user: selectors.user(state),
@@ -51,9 +51,7 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
   const handleOnPressSubmit = async ({
     nativeEvent
   }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
-    const { text } = nativeEvent;
-
-    updateUser({ bio: text });
+    updateUser({ bio: nativeEvent.text });
   };
 
   return (
@@ -65,7 +63,7 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
         {loading ? <ActivityIndicator size="small" /> : null}
       </View>
       <Input
-        multiline
+        multiline={true}
         label="up to 200 characters"
         value={text}
         onChangeText={setText}

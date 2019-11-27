@@ -1,33 +1,33 @@
 import React, { useCallback } from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
   FlatList,
-  ListRenderItemInfo
+  ListRenderItemInfo,
+  StyleSheet,
+  Text,
+  View
 } from "react-native";
 
 import { useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Contacts from "react-native-contacts";
 import _ from "lodash";
+import Contacts from "react-native-contacts";
 import uuid from "uuid/v4";
 
 import {
   Button,
+  ItemSeparator,
   UserImage,
-  UserRow,
-  ItemSeparator
+  UserRow
 } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { TextStyles } from "@lib/styles";
-import * as selectors from "@redux/selectors";
 import { Actions as UserActions } from "@redux/modules/user";
+import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { StackParamList } from "../App";
 import { UserType } from "unexpected-cloud/models/user";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -68,7 +68,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const getContacts = () => {
       Contacts.getAllWithoutPhotos((err, contacts) => {
-        console.log(contacts);
+        // console.log(contacts);
       });
     };
 
@@ -109,6 +109,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
         { title: "accept", onPress: () => acceptRequest(item) },
         { title: "deny", onPress: () => denyRequest(item) }
       ];
+
       return (
         <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
       );

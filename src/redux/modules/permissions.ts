@@ -66,6 +66,7 @@ export default (
   switch (action.type) {
     case ActionTypes.SET_NOTIFICATIONS: {
       const { res } = action.payload;
+
       return { ...state, notifications: res };
     }
 
@@ -75,6 +76,7 @@ export default (
 
     case ActionTypes.SET_PERMISSION: {
       const { status, type } = action.payload;
+
       return { ...state, [type.key]: status, loading: false };
     }
 
@@ -124,7 +126,6 @@ function* onRequestPermission(
   const { type } = action.payload;
   try {
     const permission = Platform.OS === "ios" ? type.ios : type.android;
-    console.log(permission);
     let status: PermissionStatus = yield check(permission);
 
     if (status === "denied") {

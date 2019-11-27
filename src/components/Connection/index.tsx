@@ -18,12 +18,14 @@ const ConnectionInfo: React.FC<ConnectionProps> = ({ isConnected, isInternetReac
   const getBackgroundColor = () => {
     if (isConnected && !isInternetReachable) return Colors.yellow;
     if (!isConnected && !isInternetReachable) return Colors.red;
+
     return Colors.green;
   };
 
   const getMessage = () => {
     if (isConnected && !isInternetReachable) return "Trying to connect...";
     if (!isConnected && !isInternetReachable) return "Unable to connect to the internet.";
+
     return "Connected!";
   };
 

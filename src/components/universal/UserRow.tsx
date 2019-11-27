@@ -1,13 +1,13 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import UserImage from "./UserImage";
-import { UserType } from "unexpected-cloud/models/user";
 import { TextStyles } from "@lib/styles";
+import { UserType } from "unexpected-cloud/models/user";
 import { Button } from "./Button";
+import UserImage from "./UserImage";
 
 export interface UserRowProps {
-  actions?: { title: string; onPress: () => void }[];
+  actions?: Array<{ title: string; onPress: () => void }>;
   onPress: (user: UserType) => void;
   user: UserType;
 }

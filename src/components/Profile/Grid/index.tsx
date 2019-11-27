@@ -3,9 +3,9 @@ import {
   Animated,
   FlatList,
   ListRenderItemInfo,
+  StyleSheet,
   TouchableOpacity,
-  ViewStyle,
-  StyleSheet
+  ViewStyle
 } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
 

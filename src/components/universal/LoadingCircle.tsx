@@ -1,7 +1,7 @@
 import React from "react";
 
-import Animated from "react-native-reanimated";
 import LottieView from "lottie-react-native";
+import Animated from "react-native-reanimated";
 
 export interface LoadingCircleProps {
   loop: boolean;

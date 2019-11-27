@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, TextInput } from "react-native";
 
 import { Input } from "@components/universal";
-import { TextStyles, TextSizes } from "@lib/styles";
+import { TextSizes, TextStyles } from "@lib/styles";
 // import , { Easing } from "react-native-reanimated";
 
 export interface CodeInputProps {

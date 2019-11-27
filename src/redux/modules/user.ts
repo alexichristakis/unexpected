@@ -1,16 +1,16 @@
 import { Platform } from "react-native";
 
-import { AxiosResponse, AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
+import immer from "immer";
+import _ from "lodash";
 import {
   all,
   call,
   put,
   select,
-  takeLatest,
-  takeEvery
+  takeEvery,
+  takeLatest
 } from "redux-saga/effects";
-import immer from "immer";
-import _ from "lodash";
 
 import client, { getHeaders } from "@api";
 import { UserType } from "unexpected-cloud/models/user";
@@ -93,6 +93,7 @@ export default (
         );
 
         draft.loading = false;
+
         return draft;
       });
     }
@@ -111,6 +112,7 @@ export default (
         );
 
         draft.loading = false;
+
         return draft;
       });
     }

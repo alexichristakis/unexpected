@@ -1,9 +1,5 @@
 /* API */
 import axios, { AxiosInstance } from "axios";
-import {
-  CheckCodeReturnType,
-  VerifyPhoneReturnType
-} from "unexpected-cloud/controllers/verify";
 
 /* get the server URL and instantiate the client */
 const server = __DEV__
@@ -11,8 +7,6 @@ const server = __DEV__
   : "https://www.api.expect.photos";
 // const server = "https://www.api.expect.photos";
 // const server = "http://172.27.34.211:5000";
-
-// export * from "./context";
 
 export default axios.create({ baseURL: server });
 
@@ -46,66 +40,3 @@ export const getUserProfileURL = (phoneNumber: string) => {
 export const getPostImageURL = (phoneNumber: string, id: string) => {
   return `${server}/image/${phoneNumber}/${id}`;
 };
-
-export class API {
-  client: AxiosInstance;
-  constructor() {
-    this.client = axios.create({ baseURL: server });
-  }
-
-  addAuthorization = (jwt: string) => {
-    this.client.interceptors.request.use(
-      config => {
-        if (!config.headers.Authorization) {
-          if (jwt) {
-            config.headers.Authorization = `Bearer ${jwt}`;
-          }
-        }
-
-        return config;
-      },
-      error => Promise.reject(error)
-    );
-  };
-
-  requestAuthentication = async (
-    phoneNumber: string
-  ): Promise<VerifyPhoneReturnType> => {
-    try {
-      const res = await this.client.post<VerifyPhoneReturnType>(
-        `/verify/${phoneNumber}`
-      );
-      console.log("inAPI:", res);
-      return res.data;
-    } catch (err) {
-      console.debug(err);
-      return err as string;
-    }
-  };
-
-  verifyAuthenticationCode = async (
-    phoneNumber: string,
-    code: string
-  ): Promise<CheckCodeReturnType> => {
-    try {
-      const res = await this.client.post<CheckCodeReturnType>(
-        `/verify/${phoneNumber}/${code}`
-      );
-      console.log("verify return:", res);
-      return res.data;
-    } catch (err) {
-      console.debug(err);
-      return { verified: false };
-    }
-  };
-
-  testAuthenticated = async () => {
-    try {
-      const res = await this.client.get<boolean>("/user");
-
-      console.log(res);
-    } catch (err) {
-      console.debug(err);
-    }
-  };
-}

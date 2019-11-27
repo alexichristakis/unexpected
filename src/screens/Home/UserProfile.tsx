@@ -1,23 +1,23 @@
 import React, { useCallback, useState } from "react";
-import { Animated, StyleSheet, StatusBar } from "react-native";
+import { Animated, StatusBar, StyleSheet } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import _ from "lodash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { PostType } from "unexpected-cloud/models/post";
-import _ from "lodash";
 import uuid from "uuid/v4";
 
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
-import { Actions as UserActions } from "@redux/modules/user";
+import { SB_HEIGHT } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
+import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../../App";
-import { SB_HEIGHT } from "@lib/styles";
 
 const mapStateToProps = (state: RootState) => ({
   user: selectors.user(state),
@@ -75,7 +75,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser
+        isUser={true}
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}

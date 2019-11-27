@@ -3,11 +3,11 @@ import {
   FlatList,
   FlatListProps,
   ListRenderItemInfo,
+  RefreshControl,
   ScrollViewProps,
   TouchableOpacity,
   ViewProps,
-  ViewStyle,
-  RefreshControl
+  ViewStyle
 } from "react-native";
 
 import Animated, { Easing } from "react-native-reanimated";

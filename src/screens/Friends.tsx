@@ -1,20 +1,20 @@
 import React, { useCallback } from "react";
-import { StyleSheet, FlatList, ListRenderItemInfo } from "react-native";
+import { FlatList, ListRenderItemInfo, StyleSheet } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import _ from "lodash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
-import _ from "lodash";
 
+import { ItemSeparator, UserRow } from "@components/universal";
+import { SB_HEIGHT } from "@lib/styles";
+import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { Actions as UserActions } from "@redux/modules/user";
-import { StackParamList } from "../App";
 import { UserType } from "unexpected-cloud/models/user";
-import { UserRow, ItemSeparator } from "@components/universal";
-import { SB_HEIGHT } from "@lib/styles";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState, props: FriendsProps) => ({
   phoneNumber: selectors.phoneNumber(state),

@@ -7,7 +7,7 @@ import {
 } from "react-native";
 
 import { Input } from "@components/universal";
-import { TextStyles, TextSizes } from "@lib/styles";
+import { TextSizes, TextStyles } from "@lib/styles";
 
 export const normalizePhone = (value: string, previousValue?: string) => {
   if (!value) {
@@ -30,6 +30,7 @@ export const normalizePhone = (value: string, previousValue?: string) => {
   if (onlyNums.length <= 6) {
     return `(${onlyNums.slice(0, 3)}) ${onlyNums.slice(3)}`;
   }
+
   return `(${onlyNums.slice(0, 3)}) ${onlyNums.slice(3, 6)}-${onlyNums.slice(
     6,
     10

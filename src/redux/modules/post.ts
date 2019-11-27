@@ -4,13 +4,13 @@ import { TakePictureResponse } from "react-native-camera/types";
 import {
   all,
   call,
+  delay,
   fork,
   put,
   select,
   take,
   takeEvery,
-  takeLatest,
-  delay
+  takeLatest
 } from "redux-saga/effects";
 import { FeedReturnType } from "unexpected-cloud/controllers/post";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
@@ -73,12 +73,14 @@ export default (
       return immer(state, draft => {
         draft.loading = true;
         draft.error = "";
+
         return draft;
       });
     }
 
     case ActionTypes.SEND_POST_SUCCESS: {
       const { phoneNumber } = action.payload;
+
       return immer(state, draft => {
         draft.loading = false;
         draft.users[phoneNumber].stale = true;
@@ -89,6 +91,7 @@ export default (
 
     case ActionTypes.FETCH_USERS_POSTS_SUCCESS: {
       const { phoneNumber, posts } = action.payload;
+
       return immer(state, draft => {
         draft.loading = false;
         draft.users[phoneNumber] = {
@@ -103,6 +106,7 @@ export default (
 
     case ActionTypes.FETCH_FEED_SUCCESS: {
       const { posts } = action.payload;
+
       return immer(state, draft => {
         draft.loading = false;
         draft.feed = { posts, stale: false, lastFetched: new Date() };
@@ -111,6 +115,7 @@ export default (
 
     case ActionTypes.ON_ERROR: {
       const { error } = action.payload;
+
       return immer(state, draft => {
         draft.error = error;
         draft.loading = false;

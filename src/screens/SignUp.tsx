@@ -18,7 +18,6 @@ export type SignUpProps = SignUpReduxProps & SignUpOwnProps & UserStateType;
 const initialFormValues = { firstName: "", lastName: "" };
 const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
   const handleSubmit = (values: typeof initialFormValues) => {
-    console.log("handle submit names", values);
     const { firstName, lastName } = values;
     createUser({ firstName, lastName });
   };
@@ -65,8 +64,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 50,
     justifyContent: "space-around"
-    // alignItems: "center",
-    // justifyContent: "center"
   },
   formFields: {
     flex: 1,
