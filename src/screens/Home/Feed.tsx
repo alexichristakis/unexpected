@@ -48,7 +48,8 @@ const AnimatedFlatList: typeof FlatList = Animated.createAnimatedComponent(
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
   feed: selectors.feedState(state),
-  refreshing: selectors.postLoading(state)
+  refreshing: selectors.postLoading(state),
+  shouldLaunchPermissions: selectors.shouldLaunchPermissions(state)
 });
 const mapDispatchToProps = {
   fetchFeed: PostActions.fetchFeed
@@ -64,12 +65,26 @@ export interface FeedProps extends FeedReduxProps {
 }
 
 export const Feed: React.FC<FeedProps> = React.memo(
-  ({ navigation, phoneNumber, feed, fetchFeed, refreshing }) => {
+  ({
+    navigation,
+    phoneNumber,
+    feed,
+    fetchFeed,
+    refreshing,
+    shouldLaunchPermissions
+  }) => {
     const [readyForRefresh, setReadyForRefresh] = useState<0 | 1>(1);
     const [statusBarVisible, setStatusBarVisible] = useState(true);
-    const [scrollY] = useState(new Value(0));
     const [entranceAnimatedValue] = useState(new Animated.Value(0));
     const [statusBarAnimatedValue] = useState(new Animated.Value(0));
+    const [scrollY] = useState(new Value(0));
+
+    useEffect(() => {
+      console.log("launch", shouldLaunchPermissions);
+      if (shouldLaunchPermissions) {
+        setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
+      }
+    }, []);
 
     useFocusEffect(
       useCallback(() => {
