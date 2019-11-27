@@ -8,11 +8,8 @@ import { connect } from "react-redux";
 import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
 
-import { Posts } from "@components/Feed";
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
-import { Header, UserImage } from "@components/universal";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";

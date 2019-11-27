@@ -13,7 +13,7 @@ import { UserType } from "unexpected-cloud/models/user";
 
 export interface ProfileTopProps {
   user: UserType;
-  isUser: boolean; // is currently signed in user
+  isUser?: boolean; // is currently signed in user
   numPosts: number;
   scrollY: Animated.Value;
   onPressFriends: () => void;
@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
   bio: {
     flex: 1,
     marginLeft: 20
-    // justifyContent: "center"
   },
   notificationIndicator: {
     marginLeft: 10,

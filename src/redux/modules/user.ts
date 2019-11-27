@@ -46,6 +46,8 @@ export default (
     case ActionTypes.FETCH_USER:
     case ActionTypes.FETCH_USERS:
     case ActionTypes.UPDATE_USER:
+    case ActionTypes.ACCEPT_REQUEST:
+    case ActionTypes.DENY_REQUEST:
     case ActionTypes.CREATE_NEW_USER: {
       return { ...state, loading: true, error: null };
     }
@@ -74,16 +76,59 @@ export default (
       });
     }
 
+    case ActionTypes.ACCEPT_REQUEST_COMPLETE: {
+      const { from, to } = action.payload;
+
+      return immer(state, draft => {
+        draft.users[from].friends.push(to);
+        draft.users[to].friends.push(from);
+
+        draft.users[from].friendRequests = _.remove(
+          draft.users[from].friendRequests,
+          to
+        );
+        draft.users[to].requestedFriends = _.remove(
+          draft.users[to].requestedFriends,
+          from
+        );
+
+        draft.loading = false;
+        return draft;
+      });
+    }
+
+    case ActionTypes.DENY_REQUEST_COMPLETE: {
+      const { from, to } = action.payload;
+
+      return immer(state, draft => {
+        draft.users[from].requestedFriends = _.remove(
+          draft.users[from].requestedFriends,
+          to
+        );
+        draft.users[to].friendRequests = _.remove(
+          draft.users[to].friendRequests,
+          from
+        );
+
+        draft.loading = false;
+        return draft;
+      });
+    }
+
     case ActionTypes.LOAD_USERS: {
-      const { users } = action.payload;
+      const { users, complete } = action.payload;
 
       return immer(state, draft => {
         users.forEach(user => {
-          if (user.phoneNumber)
+          if (!user.phoneNumber) return;
+          if (complete) {
+            draft.users[user.phoneNumber] = user;
+          } else {
             draft.users[user.phoneNumber] = _.merge(
               draft.users[user.phoneNumber],
               user
             );
+          }
         });
 
         draft.loading = false;
@@ -121,7 +166,8 @@ function* onFetchUser(
     });
 
     const { data } = res;
-    yield put(Actions.loadUsers([data]));
+    console.log("user:", data);
+    yield put(Actions.loadUsers([data], true));
   } catch (err) {
     yield put(Actions.onError(err));
   }
@@ -216,13 +262,45 @@ function* onFetchUsers(
 function* onAcceptRequest(
   action: ExtractActionFromActionCreator<typeof Actions.acceptRequest>
 ) {
-  //
+  const jwt = yield select(selectors.jwt);
+  const phoneNumber = yield select(selectors.phoneNumber);
+
+  try {
+    const { user } = action.payload;
+
+    const res = yield call(
+      client.patch,
+      `/user/${phoneNumber}/accept/${user.phoneNumber}`,
+      {},
+      { headers: getHeaders({ jwt }) }
+    );
+
+    yield put(Actions.acceptRequestComplete(phoneNumber, user.phoneNumber));
+  } catch (err) {
+    yield put(Actions.onError(err));
+  }
 }
 
 function* onDenyRequest(
   action: ExtractActionFromActionCreator<typeof Actions.denyRequest>
 ) {
-  //
+  const jwt = yield select(selectors.jwt);
+  const phoneNumber = yield select(selectors.phoneNumber);
+
+  try {
+    const { user } = action.payload;
+
+    const res = yield call(
+      client.patch,
+      `/user/${phoneNumber}/deny/${user.phoneNumber}`,
+      {},
+      { headers: getHeaders({ jwt }) }
+    );
+
+    yield put(Actions.denyRequestComplete(phoneNumber, user.phoneNumber));
+  } catch (err) {
+    yield put(Actions.onError(err));
+  }
 }
 
 function* onFriendUser(
@@ -291,8 +369,8 @@ export const Actions = {
     createAction(ActionTypes.CREATE_NEW_USER, { name }),
   createUserComplete: (user: UserType) =>
     createAction(ActionTypes.CREATE_USER_COMPLETE, { user }),
-  loadUsers: (users: Partial<UserType>[]) =>
-    createAction(ActionTypes.LOAD_USERS, { users }),
+  loadUsers: (users: Partial<UserType>[], complete?: boolean) =>
+    createAction(ActionTypes.LOAD_USERS, { users, complete }),
   friendUser: (user: UserType) =>
     createAction(ActionTypes.FRIEND_USER, { user }),
   friendComplete: (from: string, to: string) =>

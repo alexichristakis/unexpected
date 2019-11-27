@@ -75,6 +75,10 @@ const Settings: React.FC<SettingsProps> = React.memo(
       navigation.navigate("EDIT_BIO");
     };
 
+    const navigateToPermissions = () => {
+      navigation.navigate("PERMISSIONS");
+    };
+
     const getUsers = () => {
       return _.filter(users, o =>
         _.includes(user.friendRequests, o.phoneNumber)
@@ -101,7 +105,12 @@ const Settings: React.FC<SettingsProps> = React.memo(
         { title: "deny", onPress: () => denyRequest(item) }
       ];
       return (
-        <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
+        <UserRow
+          key={index}
+          onPress={handleOnPressUser}
+          user={item}
+          actions={actions}
+        />
       );
     };
 
@@ -120,7 +129,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
         <Button
           title="permissions"
           style={styles.button}
-          onPress={() => navigation.navigate("PERMISSIONS")}
+          onPress={navigateToPermissions}
         />
         <Button
           title="sync contacts"
