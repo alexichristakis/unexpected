@@ -3,10 +3,6 @@ import {
   FlatList,
   FlatListProps,
   ListRenderItemInfo,
-  RefreshControl,
-  ScrollViewProps,
-  TouchableOpacity,
-  ViewProps,
   ViewStyle
 } from "react-native";
 

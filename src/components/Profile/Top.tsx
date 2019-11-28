@@ -59,7 +59,10 @@ export const Top: React.FC<ProfileTopProps> = ({
 
     return (
       <View style={styles.notificationIndicator}>
-        <Text style={[TextStyles.medium, { color: "white" }]}>
+        <Text
+          testID="notifications"
+          style={[TextStyles.medium, { color: "white" }]}
+        >
           {friendRequests.length}
         </Text>
       </View>
@@ -75,12 +78,19 @@ export const Top: React.FC<ProfileTopProps> = ({
           onPress={onPressName}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={TextStyles.title}>{`${firstName} ${lastName}`}</Text>
+            <Text
+              testID="user-name"
+              style={TextStyles.title}
+            >{`${firstName} ${lastName}`}</Text>
             {renderNotificationIndicator()}
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={[TextStyles.large]}>{`${numPosts} moments, `}</Text>
             <Text
+              testID="num-moments"
+              style={[TextStyles.large]}
+            >{`${numPosts} moments, `}</Text>
+            <Text
+              testID="friends"
               style={[TextStyles.large]}
               onPress={onPressFriends}
             >{`${friends.length} friends`}</Text>

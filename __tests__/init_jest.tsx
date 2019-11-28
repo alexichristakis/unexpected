@@ -20,6 +20,8 @@ function copyProps(src: any, target: any) {
   });
 }
 
+jest.useFakeTimers();
+
 // @ts-ignore
 global.window = window;
 // @ts-ignore

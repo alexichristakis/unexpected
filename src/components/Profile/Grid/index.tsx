@@ -9,12 +9,8 @@ import {
 } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
 
-import { useNavigation } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
 import { PostImage, TouchableScale } from "@components/universal";
 import { SCREEN_WIDTH } from "@lib/styles";
-import { StackParamList } from "../../../App";
 
 export interface GridProps {
   onScroll?: any;
@@ -32,7 +28,11 @@ const Grid: React.FC<GridProps> = ({
   posts
 }) => {
   const renderPost = ({ item }: ListRenderItemInfo<PostType>) => (
-    <TouchableOpacity activeOpacity={0.9} onPress={() => onPressPost(item)}>
+    <TouchableOpacity
+      testID="square-post"
+      activeOpacity={0.9}
+      onPress={() => onPressPost(item)}
+    >
       <PostImage
         width={(SCREEN_WIDTH - 40) / 3}
         height={(SCREEN_WIDTH - 40) / 3}
