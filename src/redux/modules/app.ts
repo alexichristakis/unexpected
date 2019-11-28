@@ -97,7 +97,8 @@ function* onReceiveNotification(
   if (data.photoTime) {
     const { time }: { time: Date } = data;
 
-    const expiry = moment(time).add("10 minutes");
+    const time2 = new Date();
+    const expiry = moment(time2).add(10, "minutes");
 
     yield put(Actions.setCameraTimer(expiry));
   }

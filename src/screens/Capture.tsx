@@ -62,8 +62,7 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
+    alignItems: "center"
   },
   camera: { width: SCREEN_WIDTH, height: 600 },
   shutter: { position: "absolute", bottom: 100 }

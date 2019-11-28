@@ -296,7 +296,7 @@ const Router: React.FC = () => {
 export const Context: React.FC = ({ children }) => {
   const store = createStore();
   const persistor = persistStore(store);
-  persistor.purge();
+  // persistor.purge();
 
   return (
     <Provider store={store}>
