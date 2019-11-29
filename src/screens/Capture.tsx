@@ -53,17 +53,8 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
 
   return (
     <Screen style={styles.container}>
+      <View style={styles.background} />
       <Camera ref={setCamera} style={styles.camera} />
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          backgroundColor: "black"
-        }}
-      />
       <Shutter onPress={onTakePhoto} style={styles.shutter} />
     </Screen>
   );
@@ -73,6 +64,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: "black"
+  },
+  background: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
     backgroundColor: "black"
   },
   camera: { width: SCREEN_WIDTH, height: 600 },
