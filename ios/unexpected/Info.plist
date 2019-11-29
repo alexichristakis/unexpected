@@ -30,8 +30,6 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>codepush.appcenter.ms</key>
-			<dict><!-- read the ATS Apple Docs for available options --></dict>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
@@ -42,7 +40,7 @@
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODE_PUSH_KEY)</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>NSCameraUsageDescription</key>
 	<string>Unexpected needs camera access in order to share your photos.</string>
 	<key>NSContactsUsageDescription</key>

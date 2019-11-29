@@ -1,6 +1,8 @@
 import React from "react";
 import { StatusBar } from "react-native";
 
+import codePush from "react-native-code-push";
+import * as Sentry from "@sentry/react-native";
 import {
   BottomTabBar,
   BottomTabBarProps,
@@ -48,6 +50,12 @@ import SignUp from "./screens/SignUp";
 import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
 import ProfileIcon from "./assets/svg/profile.svg";
+
+codePush.getUpdateMetadata().then(update => {
+  if (update) {
+    Sentry.setRelease(update.appVersion + "-codepush:" + update.label);
+  }
+});
 
 export type StackParamList = {
   AUTHENTICATED: undefined;
