@@ -4,7 +4,7 @@ import Animated, { Easing } from "react-native-reanimated";
 
 export interface TouchableScaleProps {
   onPress?: () => void;
-  children: React.ReactNode[];
+  children: React.ReactNode[] | React.ReactChild;
 }
 export const TouchableScale: React.FC<TouchableScaleProps> = ({
   children,

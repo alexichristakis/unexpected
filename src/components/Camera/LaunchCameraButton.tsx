@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, TouchableOpacity } from "react-native";
 
-import { connect } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { connect } from "react-redux";
 
 import SVG from "@assets/svg/camera_button.svg";
-import { ReduxPropsType, RootState } from "@redux/types";
-import * as selectors from "@redux/selectors";
-import { Actions as AppActions } from "@redux/modules/app";
-import { StackParamList } from "../../App";
-import moment from "moment";
 import { TouchableScale } from "@components/universal";
+import { Actions as AppActions } from "@redux/modules/app";
+import * as selectors from "@redux/selectors";
+import { ReduxPropsType, RootState } from "@redux/types";
+import moment from "moment";
+import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   ...selectors.camera(state)
@@ -36,8 +36,6 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
     const navigation = useNavigation<
       NativeStackNavigationProp<StackParamList>
     >();
-
-    console.log("render camera button");
 
     useEffect(() => {
       if (enabled && getFill() < 100) {

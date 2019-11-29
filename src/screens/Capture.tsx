@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar, StyleSheet, View, Text } from "react-native";
+import { StatusBar, StyleSheet, Text, View } from "react-native";
 
 import { ParamListBase, RouteProp, useIsFocused } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";

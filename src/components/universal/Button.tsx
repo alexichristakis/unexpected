@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   StyleSheet,
   Text,
   TouchableOpacity,
-  ViewProps,
-  ActivityIndicator
+  ViewProps
 } from "react-native";
 
 import { Colors, TextStyles } from "@lib/styles";

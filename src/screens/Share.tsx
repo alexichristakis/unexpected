@@ -6,12 +6,12 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Button, Input, PendingPostImage } from "@components/universal";
+import { TextSizes } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Formik } from "formik";
-import { TextSizes } from "@lib/styles";
 
 const mapStateToProps = (state: RootState) => ({
   image: selectors.currentImage(state),
