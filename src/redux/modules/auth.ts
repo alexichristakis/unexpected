@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from "axios";
 import { BATCH, batchActions } from "redux-batched-actions";
-import { REHYDRATE } from "redux-persist";
+import { REHYDRATE, persistStore } from "redux-persist";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";

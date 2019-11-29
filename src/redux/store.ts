@@ -11,7 +11,7 @@ import {
 import createSagaMiddleware from "redux-saga";
 
 import migrations from "./migrations";
-import reducers from "./reducers";
+import { root } from "./reducers";
 import sagas from "./sagas";
 
 const persistConfig = {
@@ -30,14 +30,14 @@ export default () => {
     // options like actionSanitizer, stateSanitizer
   });
 
-  const persistedReducer = persistReducer(persistConfig, reducers);
+  const persistedReducer = persistReducer(persistConfig, root);
 
   const store = createStore(
     persistedReducer,
     composeEnhancers(applyMiddleware(...middleware))
   );
 
-  sagaMiddleware.run(sagas);
+  sagaMiddleware.run(sagas as any);
 
   return store;
 };

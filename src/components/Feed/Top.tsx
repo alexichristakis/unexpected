@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
-import Animated from "react-native-reanimated";
 import moment from "moment";
+import Animated from "react-native-reanimated";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 
