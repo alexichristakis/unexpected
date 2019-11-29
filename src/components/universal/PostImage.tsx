@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 
 import { connect } from "react-redux";
+import RNFS from "react-native-fs";
 
 import { Colors } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
@@ -34,6 +35,10 @@ export const _PostImage: React.FC<PostImageProps &
     useEffect(() => {
       if (!cache[id]) {
         requestCache(phoneNumber, id);
+      } else {
+        RNFS.exists(cache[id].uri).then(res => {
+          if (!res) requestCache(phoneNumber, id);
+        });
       }
     }, []);
 

@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { FlatList, ListRenderItemInfo, StyleSheet } from "react-native";
+import React, { useCallback, useState } from "react";
+import { Animated, ListRenderItemInfo, StyleSheet } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
 import { ItemSeparator, UserRow } from "@components/universal";
-import { SB_HEIGHT } from "@lib/styles";
+import { SB_HEIGHT, TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -44,6 +44,13 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
 }) => {
   const { user } = route.params;
 
+  const [scrollY] = useState(new Animated.Value(0));
+  const [onScroll] = useState(
+    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+      useNativeDriver: true
+    })
+  );
+
   useFocusEffect(
     useCallback(() => {
       fetchUsers(user.friends, ["firstName", "lastName"]);
@@ -72,13 +79,32 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
     <UserRow onPress={handleOnPressUser} user={item} />
   );
 
+  const animatedHeaderStyle = {
+    transform: [
+      {
+        translateY: scrollY.interpolate({
+          inputRange: [-50, 0, 50],
+          outputRange: [-50, 0, 0]
+        })
+      }
+    ]
+  };
+
+  const renderTop = () => (
+    <Animated.Text style={[styles.header, animatedHeaderStyle]}>
+      Friends
+    </Animated.Text>
+  );
+
   const renderSeparatorComponent = () => <ItemSeparator />;
 
   return (
     <Screen style={styles.container}>
-      <FlatList
+      <Animated.FlatList
         style={styles.list}
+        onScroll={onScroll}
         renderItem={renderUserRow}
+        ListHeaderComponent={renderTop}
         ItemSeparatorComponent={renderSeparatorComponent}
         data={getUsers()}
       />
@@ -92,6 +118,11 @@ const styles = StyleSheet.create({
     paddingTop: SB_HEIGHT(),
     paddingHorizontal: 20,
     justifyContent: "center"
+  },
+  header: {
+    ...TextStyles.title,
+    paddingTop: 5,
+    alignSelf: "stretch"
   },
   list: {
     height: "100%",

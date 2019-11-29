@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { useNavigation } from "@react-navigation/core";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Button, Input, PendingPostImage } from "@components/universal";
 import { TextSizes } from "@lib/styles";
-import { Actions as ImageActions } from "@redux/modules/image";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";

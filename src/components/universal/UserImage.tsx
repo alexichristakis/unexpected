@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import { connect } from "react-redux";
+import RNFS from "react-native-fs";
 
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
@@ -34,6 +35,10 @@ export const _UserImage: React.FC<UserImageProps> = React.memo(
       if (!cache[phoneNumber]) {
         // call to fetch this image
         requestCache(phoneNumber);
+      } else {
+        RNFS.exists(cache[phoneNumber].uri).then(res => {
+          if (!res) requestCache(phoneNumber);
+        });
       }
     }, []);
 
