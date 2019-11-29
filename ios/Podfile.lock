@@ -1,5 +1,11 @@
 PODS:
+  - Base64 (1.1.2)
   - boost-for-react-native (1.63.0)
+  - CodePush (5.7.0):
+    - Base64 (~> 1.1)
+    - JWT (~> 3.0.0-beta.7)
+    - React
+    - SSZipArchive (~> 2.1)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.61.4)
   - FBReactNativeSpec (0.61.4):
@@ -19,6 +25,8 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - JWT (3.0.0-beta.12):
+    - Base64 (~> 1.1.2)
   - Permission-Camera (2.0.3):
     - RNPermissions
   - Permission-Contacts (2.0.3):
@@ -263,9 +271,11 @@ PODS:
     - React
   - RNSVG (9.13.3):
     - React
+  - SSZipArchive (2.2.2)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
+  - CodePush (from `../node_modules/react-native-code-push`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
@@ -317,9 +327,14 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Base64
     - boost-for-react-native
+    - JWT
+    - SSZipArchive
 
 EXTERNAL SOURCES:
+  CodePush:
+    :path: "../node_modules/react-native-code-push"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   FBLazyVector:
@@ -412,12 +427,15 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
+  CodePush: d2e54ad42df82a8db65b2d23d8191b950ba945e1
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   FBLazyVector: feb35a6b7f7b50f367be07f34012f34a79282fa3
   FBReactNativeSpec: 51477b84b1bf7ab6f9ef307c24e3dd675391be44
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  JWT: 9b5c05abbcc1a0e69c3c91e1655b3387fc7e581d
   Permission-Camera: 731959b8ffb5757e1ee85893fb49c3aa021ef512
   Permission-Contacts: e5a4e0fed2dfecd10376fdeb15417dc7746cd9b2
   Permission-LocationWhenInUse: 5cb8e0df1463dfab567d2a3d2589ab557fda68cb
@@ -457,6 +475,7 @@ SPEC CHECKSUMS:
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNScreens: ad3661f864ef18d952e9a4799b6791683e33c1fc
   RNSVG: f6177f8d7c095fada7cfee2e4bb7388ba426064c
+  SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: ba3d99dbee6c15ea6bbe3783d1f0cb1ffb79af0f
 
 PODFILE CHECKSUM: ad8ce849c70a0cd3b40d75004e491a02ec5b5041
