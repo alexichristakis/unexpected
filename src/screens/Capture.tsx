@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StatusBar, StyleSheet, Text } from "react-native";
+import { StatusBar, StyleSheet, View, Text } from "react-native";
 
 import { ParamListBase, RouteProp, useIsFocused } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -54,6 +54,16 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
   return (
     <Screen style={styles.container}>
       <Camera ref={setCamera} style={styles.camera} />
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          backgroundColor: "black"
+        }}
+      />
       <Shutter onPress={onTakePhoto} style={styles.shutter} />
     </Screen>
   );
@@ -62,7 +72,8 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: "black"
   },
   camera: { width: SCREEN_WIDTH, height: 600 },
   shutter: { position: "absolute", bottom: 100 }

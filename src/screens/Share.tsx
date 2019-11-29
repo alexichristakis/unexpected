@@ -11,10 +11,11 @@ import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Formik } from "formik";
+import { TextSizes } from "@lib/styles";
 
 const mapStateToProps = (state: RootState) => ({
   image: selectors.currentImage(state),
-  sending: selectors.isSendingPost(state)
+  sending: selectors.postLoading(state)
 });
 const mapDispatchToProps = {
   sendPost: PostActions.sendPost
@@ -46,12 +47,16 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
           {({ values, errors, handleChange, handleSubmit }) => (
             <View style={styles.form}>
               <Input
-                size="medium"
+                size={TextSizes.medium}
                 placeholder="anything you'd like to add?"
                 value={values.description}
                 onChangeText={handleChange("description")}
               />
-              <Button title="share post" onPress={handleSubmit} />
+              <Button
+                title="share post"
+                loading={sending}
+                onPress={handleSubmit}
+              />
             </View>
           )}
         </Formik>

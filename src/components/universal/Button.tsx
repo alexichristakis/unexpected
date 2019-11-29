@@ -1,17 +1,25 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, ViewProps } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ViewProps,
+  ActivityIndicator
+} from "react-native";
 
 import { Colors, TextStyles } from "@lib/styles";
 
 export interface ButtonProps extends ViewProps {
   size?: "small" | "medium" | "large";
   disabled?: boolean;
+  loading?: boolean;
   title: string;
   onPress: () => void;
 }
 export const Button: React.FC<ButtonProps> = ({
   style,
   disabled,
+  loading,
   size = "medium",
   title,
   onPress
@@ -26,7 +34,11 @@ export const Button: React.FC<ButtonProps> = ({
       onPressIn={() => onTouch(true)}
       onPressOut={() => onTouch(false)}
     >
-      <Text style={TextStyles[size]}>{title}</Text>
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        <Text style={TextStyles[size]}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
