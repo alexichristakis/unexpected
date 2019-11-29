@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
-import { connect } from "react-redux";
 import RNFS from "react-native-fs";
+import { connect } from "react-redux";
 
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";

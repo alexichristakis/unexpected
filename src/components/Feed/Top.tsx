@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import Animated from "react-native-reanimated";
 
-import { LoadingCircle } from "@components/universal";
+import Animated from "react-native-reanimated";
+import moment from "moment";
+
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 
 const {
@@ -66,7 +67,7 @@ export const Top: React.FC<FeedTopProps> = React.memo(
         <Animated.View style={[styles.container, animatedStyle]}>
           <View style={styles.textContainer}>
             <Text style={TextStyles.title}>Today</Text>
-            <Text style={TextStyles.large}>Monday, November 25th</Text>
+            <Text style={TextStyles.large}>{moment().format("MMMM Do")}</Text>
           </View>
           {refreshing && <ActivityIndicator size="large" />}
         </Animated.View>

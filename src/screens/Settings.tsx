@@ -21,6 +21,7 @@ import {
 } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { TextStyles } from "@lib/styles";
+import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -37,7 +38,8 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   acceptRequest: UserActions.acceptRequest,
   denyRequest: UserActions.denyRequest,
-  fetchUsers: UserActions.fetchUsers
+  fetchUsers: UserActions.fetchUsers,
+  logout: AuthActions.logout
 };
 
 export type SettingsReduxProps = ReduxPropsType<
@@ -56,7 +58,8 @@ const Settings: React.FC<SettingsProps> = React.memo(
     fetchUsers,
     acceptRequest,
     denyRequest,
-    phoneNumber
+    phoneNumber,
+    logout
   }) => {
     useLightStatusBar();
 
@@ -137,6 +140,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
           style={styles.button}
           onPress={getContacts}
         />
+        <Button title="sign out" style={styles.button} onPress={logout} />
       </View>
     );
 

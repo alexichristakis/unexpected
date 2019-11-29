@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODE_PUSH_KEY)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -44,7 +44,7 @@
 	<key>NSContactsUsageDescription</key>
 	<string>Find friends by seeing which of your contacts is also on unexpected.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Unexpected can tag your posts with your location.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AvenirNext-Medium.ttf</string>
