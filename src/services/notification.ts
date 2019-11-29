@@ -6,6 +6,7 @@ import { Document } from "mongoose";
 
 import { UserService } from "./user";
 import { User as UserModel } from "../models/user";
+import { SentryService } from "./sentry";
 
 const settings = {
   fcm: {
@@ -23,9 +24,8 @@ const settings = {
 
 @Service()
 export class NotificationService {
-  // @Inject(UserService)
-  // private userService: UserService;
-  // constructor(private readonly userService: UserService) {}
+  @Inject(SentryService)
+  private sentryService: SentryService;
 
   private APNs = new Provider(settings.apns);
 
@@ -56,7 +56,7 @@ export class NotificationService {
       if (deviceToken.length)
         return this.APNs.send(notification, deviceToken).then(result => {
           result.failed.forEach(failure => {
-            console.log(failure.response);
+            this.sentryService.captureException(failure);
           });
 
           return "";
