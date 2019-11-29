@@ -5,16 +5,16 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
+		0B5507E7880A47EC98E76A39 /* AvenirNext-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 337D6C9369584019A2FC0803 /* AvenirNext-Medium.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7A286274236DF61F004A66A6 /* swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A286273236DF61F004A66A6 /* swift.swift */; };
-		F239BB04716766405EF848D5 /* libPods-unexpected.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55775DE683C25CB8462B660A /* libPods-unexpected.a */; };
-		0B5507E7880A47EC98E76A39 /* AvenirNext-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 337D6C9369584019A2FC0803 /* AvenirNext-Medium.ttf */; };
 		198BEA6B167449CAB105F0F8 /* AvenirNext-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BAE51561691B40BCA398D40B /* AvenirNext-Regular.ttf */; };
 		3D2E86A856FD439E8EAA74BC /* AvenirNext-UltraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5D82186227F643CFA9818759 /* AvenirNext-UltraLight.ttf */; };
+		F239BB04716766405EF848D5 /* libPods-unexpected.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 55775DE683C25CB8462B660A /* libPods-unexpected.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,20 +28,18 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = unexpected/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = unexpected/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = unexpected/main.m; sourceTree = "<group>"; };
+		337D6C9369584019A2FC0803 /* AvenirNext-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNext-Medium.ttf"; path = "../src/assets/fonts/AvenirNext-Medium.ttf"; sourceTree = "<group>"; };
 		55775DE683C25CB8462B660A /* libPods-unexpected.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-unexpected.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7A286272236DF61F004A66A6 /* unexpected-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "unexpected-Bridging-Header.h"; sourceTree = "<group>"; };
-		7A286273236DF61F004A66A6 /* swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swift.swift; sourceTree = "<group>"; };
+		5D82186227F643CFA9818759 /* AvenirNext-UltraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNext-UltraLight.ttf"; path = "../src/assets/fonts/AvenirNext-UltraLight.ttf"; sourceTree = "<group>"; };
 		7AC3FAE6236206A8003F52AB /* unexpected.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = unexpected.entitlements; path = unexpected/unexpected.entitlements; sourceTree = "<group>"; };
 		8AE38600798A90BF3393FA13 /* Pods-unexpectedTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unexpectedTests.debug.xcconfig"; path = "Target Support Files/Pods-unexpectedTests/Pods-unexpectedTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9A1804932DCA6EDF4A418D1C /* Pods-unexpectedTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unexpectedTests.release.xcconfig"; path = "Target Support Files/Pods-unexpectedTests/Pods-unexpectedTests.release.xcconfig"; sourceTree = "<group>"; };
+		BAE51561691B40BCA398D40B /* AvenirNext-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNext-Regular.ttf"; path = "../src/assets/fonts/AvenirNext-Regular.ttf"; sourceTree = "<group>"; };
 		E32F4EA37B416349E89467E4 /* Pods-unexpected.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unexpected.debug.xcconfig"; path = "Target Support Files/Pods-unexpected/Pods-unexpected.debug.xcconfig"; sourceTree = "<group>"; };
 		E714BD0BB3036D7D97D7F53B /* Pods-unexpected.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unexpected.release.xcconfig"; path = "Target Support Files/Pods-unexpected/Pods-unexpected.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F5737640F8B2C571563C2793 /* libPods-unexpectedTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-unexpectedTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		337D6C9369584019A2FC0803 /* AvenirNext-Medium.ttf */ = {isa = PBXFileReference; name = "AvenirNext-Medium.ttf"; path = "../src/assets/fonts/AvenirNext-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		BAE51561691B40BCA398D40B /* AvenirNext-Regular.ttf */ = {isa = PBXFileReference; name = "AvenirNext-Regular.ttf"; path = "../src/assets/fonts/AvenirNext-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		5D82186227F643CFA9818759 /* AvenirNext-UltraLight.ttf */ = {isa = PBXFileReference; name = "AvenirNext-UltraLight.ttf"; path = "../src/assets/fonts/AvenirNext-UltraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,8 +93,6 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
-				7A286273236DF61F004A66A6 /* swift.swift */,
-				7A286272236DF61F004A66A6 /* unexpected-Bridging-Header.h */,
 			);
 			name = unexpected;
 			sourceTree = "<group>";
@@ -144,7 +140,7 @@
 			sourceTree = "<group>";
 		};
 		F6647F3FE91045DA9CDA0941 /* Resources */ = {
-			isa = "PBXGroup";
+			isa = PBXGroup;
 			children = (
 				337D6C9369584019A2FC0803 /* AvenirNext-Medium.ttf */,
 				BAE51561691B40BCA398D40B /* AvenirNext-Regular.ttf */,
@@ -152,7 +148,6 @@
 			);
 			name = Resources;
 			sourceTree = "<group>";
-			path = "";
 		};
 /* End PBXGroup section */
 
@@ -290,7 +285,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				7A286274236DF61F004A66A6 /* swift.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

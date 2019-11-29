@@ -7,7 +7,6 @@ import {
   View
 } from "react-native";
 
-import { LoadingLine } from "@components/universal";
 import { Colors, TextSizes, TextStyles } from "@lib/styles";
 
 export interface InputProps extends TextInputProps {
