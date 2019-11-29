@@ -1,12 +1,20 @@
 import { Formik } from "formik";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Keyboard,
+  TouchableOpacity,
+  KeyboardAvoidingView
+} from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Button, Input } from "@components/universal";
 import { Actions, UserState as UserStateType } from "@redux/modules/user";
 import { RootState as RootStateType } from "@redux/types";
+import { TextStyles } from "@lib/styles";
 
 export interface SignUpReduxProps {
   createUser: typeof Actions.createUser;
@@ -22,21 +30,37 @@ const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
     createUser({ firstName, lastName });
   };
 
+  const validate = (values: typeof initialFormValues) => {
+    return !(values.firstName.length > 0 && values.lastName.length > 0);
+  };
+
   return (
     <Screen style={styles.container}>
-      <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting
-        }) => {
-          return (
-            <>
-              <View style={styles.formFields}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.subContainer}
+        onPress={Keyboard.dismiss}
+      >
+        <View>
+          <Text style={TextStyles.title}>sign up</Text>
+          <Text style={TextStyles.large}>create your account</Text>
+        </View>
+        <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting
+          }) => {
+            return (
+              <KeyboardAvoidingView
+                enabled
+                behavior="padding"
+                style={styles.formFields}
+              >
                 <Input
                   label="enter your first name"
                   placeholder="first name"
@@ -49,12 +73,18 @@ const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
                   value={values.lastName}
                   onChangeText={handleChange("lastName")}
                 />
-              </View>
-              <Button size="large" title="get started" onPress={handleSubmit} />
-            </>
-          );
-        }}
-      </Formik>
+                <Button
+                  size="medium"
+                  disabled={validate(values)}
+                  style={{ marginBottom: 45 }}
+                  title="get started"
+                  onPress={handleSubmit}
+                />
+              </KeyboardAvoidingView>
+            );
+          }}
+        </Formik>
+      </TouchableOpacity>
     </Screen>
   );
 };
@@ -65,9 +95,14 @@ const styles = StyleSheet.create({
     padding: 50,
     justifyContent: "space-around"
   },
+  subContainer: {
+    width: "100%",
+    height: "100%",
+    paddingVertical: 100,
+    justifyContent: "space-around"
+  },
   formFields: {
     flex: 1,
-    marginVertical: 100,
     justifyContent: "space-around"
   }
 });

@@ -71,7 +71,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({
 
 const styles = StyleSheet.create({
   textInput: {
-    marginTop: 40
+    marginTop: 20
   }
 });
 

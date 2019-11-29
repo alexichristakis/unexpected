@@ -1,8 +1,15 @@
 import { Formik } from "formik";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Keyboard,
+  KeyboardAvoidingView
+} from "react-native";
 import { Screen } from "react-native-screens";
-import { connect, MapStateToProps } from "react-redux";
+import { connect } from "react-redux";
 
 import { CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
@@ -43,23 +50,31 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 
   return (
     <Screen style={styles.container}>
-      <View>
-        <Text style={TextStyles.title}>expect.photos</Text>
-        <Text style={TextStyles.large}>random photo sharing</Text>
-      </View>
-      <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting
-        }) => {
-          return (
-            <>
-              <View style={styles.formFields}>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.subContainer}
+        onPress={Keyboard.dismiss}
+      >
+        <View>
+          <Text style={TextStyles.title}>expect.photos</Text>
+          <Text style={TextStyles.large}>random photo sharing</Text>
+        </View>
+        <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting
+          }) => {
+            return (
+              <KeyboardAvoidingView
+                enabled
+                behavior="padding"
+                style={styles.formFields}
+              >
                 <PhoneNumberInput
                   loading={loading}
                   error={authError}
@@ -73,17 +88,18 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
                   value={values.code}
                   onChange={handleChange("code")}
                 />
-              </View>
-              <Button
-                disabled={values.phoneNumber.length !== 10}
-                size="medium"
-                title={isAwaitingCode ? "verify code" : "send text message"}
-                onPress={handleSubmit}
-              />
-            </>
-          );
-        }}
-      </Formik>
+                <Button
+                  disabled={values.phoneNumber.length !== 10}
+                  style={{ marginBottom: 45 }}
+                  size="medium"
+                  title={isAwaitingCode ? "verify code" : "send text message"}
+                  onPress={handleSubmit}
+                />
+              </KeyboardAvoidingView>
+            );
+          }}
+        </Formik>
+      </TouchableOpacity>
     </Screen>
   );
 };
@@ -92,12 +108,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 50,
-    paddingTop: 40,
+    justifyContent: "space-around"
+  },
+  subContainer: {
+    width: "100%",
+    height: "100%",
+    paddingVertical: 100,
     justifyContent: "space-around"
   },
   formFields: {
     flex: 1,
-    maxHeight: 200,
     justifyContent: "space-around"
   }
 });
