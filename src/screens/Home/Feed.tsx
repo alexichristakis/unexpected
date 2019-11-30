@@ -15,6 +15,7 @@ import {
 } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Animated, { Easing } from "react-native-reanimated";
+import Haptics from "react-native-haptic-feedback";
 import { onScroll } from "react-native-redash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
@@ -131,6 +132,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
         contentOffset: { y }
       } = nativeEvent;
       if (y < -100) {
+        Haptics.trigger("impactMedium");
         fetchFeed();
       }
     };

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import moment from "moment";
 import Animated from "react-native-reanimated";
+import Haptics from "react-native-haptic-feedback";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 
@@ -27,6 +28,12 @@ export interface FeedTopProps {
 }
 export const Top: React.FC<FeedTopProps> = React.memo(
   ({ scrollY, readyForRefresh, refreshing }) => {
+    useEffect(() => {
+      if (readyForRefresh) {
+        Haptics.trigger("impactLight");
+      }
+    }, [readyForRefresh]);
+
     const animatedStyle = {
       transform: [
         {
@@ -47,7 +54,7 @@ export const Top: React.FC<FeedTopProps> = React.memo(
         {
           translateY: scrollY.interpolate({
             inputRange: [-50, 0, 50],
-            outputRange: [-15, 0, 0]
+            outputRange: [-20, 0, 0]
           })
         }
       ]
