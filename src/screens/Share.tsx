@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
+  Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
-  View,
-  KeyboardAvoidingView,
   TouchableOpacity,
-  Keyboard
+  View
 } from "react-native";
 
 import { Screen } from "react-native-screens";
@@ -64,7 +64,7 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
                   onChangeText={handleChange("description")}
                 />
                 <KeyboardAvoidingView
-                  enabled
+                  enabled={true}
                   behavior="padding"
                   style={styles.form}
                 >

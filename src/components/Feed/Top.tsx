@@ -74,6 +74,7 @@ export const Top: React.FC<FeedTopProps> = React.memo(
     };
 
     const date = moment(latest);
+
     return (
       <>
         <Animated.Text

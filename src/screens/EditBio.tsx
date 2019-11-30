@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import {
   ActivityIndicator,
+  Keyboard,
   NativeSyntheticEvent,
   StyleSheet,
   Text,
+  TextInputKeyPressEventData,
   TextInputSubmitEditingEventData,
-  View,
-  Keyboard,
-  TextInputKeyPressEventData
+  View
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
@@ -73,8 +73,8 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
         {loading ? <ActivityIndicator size="small" /> : null}
       </View>
       <Input
-        autoFocus
-        multiline
+        autoFocus={true}
+        multiline={true}
         label="up to 200 characters"
         value={text.replace("\n", "")}
         onChangeText={setText}

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
+import moment from "moment";
+import Animated from "react-native-reanimated";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import Animated from "react-native-reanimated";
 import PostImage from "./PostImage";
 import { TouchableScale } from "./TouchableScale";
-import moment from "moment";
 
 export interface PostProps {
   entranceAnimatedValue?: Animated.Value<number>;

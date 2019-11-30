@@ -8,9 +8,9 @@ import {
   StyleSheet
 } from "react-native";
 
-import _ from "lodash";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import _ from "lodash";
 import Haptics from "react-native-haptic-feedback";
 import Animated, { Easing } from "react-native-reanimated";
 import { onScroll } from "react-native-redash";

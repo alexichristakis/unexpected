@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  View,
-  Text,
   ListRenderItemInfo,
   NativeSyntheticEvent,
   StyleSheet,
-  TextInputSubmitEditingEventData
+  Text,
+  TextInputSubmitEditingEventData,
+  View
 } from "react-native";
 
 import client, { getHeaders } from "@api";
