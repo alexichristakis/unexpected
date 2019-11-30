@@ -1,12 +1,12 @@
 import { Formik } from "formik";
 import React from "react";
 import {
+  Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
-  Keyboard,
-  KeyboardAvoidingView
+  View
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
@@ -71,7 +71,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
           }) => {
             return (
               <KeyboardAvoidingView
-                enabled
+                enabled={true}
                 behavior="padding"
                 style={styles.formFields}
               >

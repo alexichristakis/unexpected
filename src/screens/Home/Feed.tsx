@@ -14,8 +14,8 @@ import {
   useIsFocused
 } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Animated, { Easing } from "react-native-reanimated";
 import Haptics from "react-native-haptic-feedback";
+import Animated, { Easing } from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";

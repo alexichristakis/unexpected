@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import moment from "moment";
-import Animated from "react-native-reanimated";
 import Haptics from "react-native-haptic-feedback";
+import Animated from "react-native-reanimated";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 

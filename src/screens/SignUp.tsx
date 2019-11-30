@@ -1,20 +1,20 @@
 import { Formik } from "formik";
 import React from "react";
 import {
+  Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
-  View,
-  Keyboard,
   TouchableOpacity,
-  KeyboardAvoidingView
+  View
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Button, Input } from "@components/universal";
+import { TextStyles } from "@lib/styles";
 import { Actions, UserState as UserStateType } from "@redux/modules/user";
 import { RootState as RootStateType } from "@redux/types";
-import { TextStyles } from "@lib/styles";
 
 export interface SignUpReduxProps {
   createUser: typeof Actions.createUser;
@@ -57,7 +57,7 @@ const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
           }) => {
             return (
               <KeyboardAvoidingView
-                enabled
+                enabled={true}
                 behavior="padding"
                 style={styles.formFields}
               >
