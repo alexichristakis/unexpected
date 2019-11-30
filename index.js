@@ -14,4 +14,4 @@ enableScreens();
 const CodePushApp = codePush({
   checkFrequency: codePush.CheckFrequency.ON_APP_RESUME
 })(App);
-AppRegistry.registerComponent(appName, () => CodePushApp);
+AppRegistry.registerComponent(appName, () => (__DEV__ ? App : CodePushApp));

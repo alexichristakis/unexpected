@@ -174,7 +174,9 @@ export const Feed: React.FC<FeedProps> = React.memo(
     };
 
     const getPosts = () => {
-      return _.sortBy(feed.posts, o => -o.createdAt);
+      const sortedPosts = _.sortBy(feed.posts, o => -o.createdAt);
+
+      return sortedPosts;
     };
 
     const handleOnPressPost = (post: FeedPostType) => {
@@ -189,8 +191,11 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
+    const posts = getPosts();
+
     const renderTop = () => (
       <Top
+        latest={posts[0].createdAt}
         readyForRefresh={readyForRefresh}
         refreshing={refreshing}
         scrollY={scrollY}
@@ -206,12 +211,8 @@ export const Feed: React.FC<FeedProps> = React.memo(
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingTop: SB_HEIGHT(),
-            paddingBottom: 50,
-            alignItems: "center"
-          }}
-          data={getPosts()}
+          contentContainerStyle={styles.contentContainer}
+          data={posts}
           renderItem={renderPost}
         />
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
@@ -223,6 +224,11 @@ export const Feed: React.FC<FeedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center"
+  },
+  contentContainer: {
+    paddingTop: SB_HEIGHT(),
+    paddingBottom: 50,
     alignItems: "center"
   },
   statusBar: {

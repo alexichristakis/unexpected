@@ -167,7 +167,6 @@ function* onFetchUser(
     });
 
     const { data } = res;
-    console.log("user:", data);
     yield put(Actions.loadUsers([data], true));
   } catch (err) {
     yield put(Actions.onError(err));
@@ -318,7 +317,6 @@ function* onFriendUser(
   const { user } = action.payload;
 
   try {
-    console.log(getHeaders({ jwt }));
     yield call(
       client.patch,
       `user/${phoneNumber}/friend/${user.phoneNumber}`,
@@ -327,8 +325,6 @@ function* onFriendUser(
         headers: getHeaders({ jwt })
       }
     );
-
-    console.log(getHeaders({ jwt }));
 
     yield put(Actions.friendComplete(phoneNumber, user.phoneNumber));
   } catch (err) {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
-import moment from "moment";
+import moment, { Moment } from "moment";
 import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 
@@ -22,12 +22,13 @@ const {
 } = Animated;
 
 export interface FeedTopProps {
+  latest: Date;
   readyForRefresh: 0 | 1;
   refreshing: boolean;
   scrollY: Animated.Value<number>;
 }
 export const Top: React.FC<FeedTopProps> = React.memo(
-  ({ scrollY, readyForRefresh, refreshing }) => {
+  ({ latest, scrollY, readyForRefresh, refreshing }) => {
     useEffect(() => {
       if (readyForRefresh) {
         Haptics.trigger("impactLight");
@@ -60,6 +61,19 @@ export const Top: React.FC<FeedTopProps> = React.memo(
       ]
     };
 
+    const formatTitle = (date: Moment) => {
+      const diff = date.diff(moment(), "days");
+
+      let text = date.fromNow();
+      if (diff <= 0) {
+        if (diff === 0) text = "Today";
+        if (diff === -1) text = "Yesterday";
+      }
+
+      return text;
+    };
+
+    const date = moment(latest);
     return (
       <>
         <Animated.Text
@@ -73,10 +87,8 @@ export const Top: React.FC<FeedTopProps> = React.memo(
         </Animated.Text>
         <Animated.View style={[styles.container, animatedStyle]}>
           <View style={styles.textContainer}>
-            <Text style={TextStyles.title}>Today</Text>
-            <Text style={TextStyles.large}>
-              {moment().format("dddd, MMMM Do")}
-            </Text>
+            <Text style={TextStyles.title}>{formatTitle(date)}</Text>
+            <Text style={TextStyles.large}>{date.format("dddd, MMMM Do")}</Text>
           </View>
           {refreshing && <ActivityIndicator size="large" />}
         </Animated.View>

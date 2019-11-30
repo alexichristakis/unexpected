@@ -3,9 +3,10 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import PostImage from "./PostImage";
 import { TouchableScale } from "./TouchableScale";
+import moment from "moment";
 
 export interface PostProps {
   entranceAnimatedValue?: Animated.Value<number>;
@@ -23,23 +24,28 @@ export const Post: React.FC<PostProps> = ({
 }) => {
   const { userPhoneNumber, photoId, description } = post;
 
-  const translateY = Animated.interpolate(entranceAnimatedValue, {
-    inputRange: [0, 1],
-    outputRange: [150 * (index + 1), 0]
-  });
+  const animatedContainer = {
+    transform: [
+      {
+        translateY: Animated.interpolate(entranceAnimatedValue, {
+          inputRange: [0, 1],
+          outputRange: [150 * (index + 1), 0]
+        })
+      }
+    ],
+    opacity: entranceAnimatedValue
+  };
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        { transform: [{ translateY }], opacity: entranceAnimatedValue }
-      ]}
-    >
-      <TouchableOpacity onPress={onPressName}>
-        <Text style={[TextStyles.large, styles.name]}>
-          {`${post.user.firstName} ${post.user.lastName}`}
-        </Text>
-      </TouchableOpacity>
+    <Animated.View style={[styles.container, animatedContainer]}>
+      <View style={styles.row}>
+        <TouchableOpacity onPress={onPressName}>
+          <Text style={[TextStyles.large, styles.name]}>
+            {`${post.user.firstName} ${post.user.lastName}`}
+          </Text>
+        </TouchableOpacity>
+        <Text style={TextStyles.small}>{moment(post.createdAt).fromNow()}</Text>
+      </View>
       <TouchableScale onPress={onPressPhoto}>
         <PostImage
           width={SCREEN_WIDTH - 40}
@@ -48,7 +54,7 @@ export const Post: React.FC<PostProps> = ({
           id={photoId}
         />
       </TouchableScale>
-      <Text style={TextStyles.medium}>{description}</Text>
+      <Text style={styles.description}>{description}</Text>
     </Animated.View>
   );
 };
@@ -57,7 +63,16 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 40
   },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
   name: {
     marginBottom: 10
+  },
+  description: {
+    ...TextStyles.medium,
+    marginTop: 10
   }
 });
