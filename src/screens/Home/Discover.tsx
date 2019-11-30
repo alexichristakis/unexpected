@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  View,
+  Text,
   ListRenderItemInfo,
   NativeSyntheticEvent,
   StyleSheet,
@@ -15,7 +17,7 @@ import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
 import { Input, ItemSeparator, UserRow } from "@components/universal";
-import { SB_HEIGHT, TextSizes } from "@lib/styles";
+import { SB_HEIGHT, TextSizes, TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -82,9 +84,17 @@ export const Discover: React.FC<DiscoverProps &
 
       const { data } = response;
 
-      setResponses(data);
+      const results = data.filter(o => o.phoneNumber !== phoneNumber);
+
+      setResponses(results);
       setLoading(false);
     };
+
+    const renderEmptyComponent = () => (
+      <View style={{ paddingTop: 20 }}>
+        <Text style={TextStyles.medium}>No results</Text>
+      </View>
+    );
 
     const renderSeparatorComponent = () => <ItemSeparator />;
 
@@ -104,6 +114,7 @@ export const Discover: React.FC<DiscoverProps &
           <FlatList
             style={styles.list}
             renderItem={renderUserRow}
+            ListEmptyComponent={renderEmptyComponent}
             ItemSeparatorComponent={renderSeparatorComponent}
             data={responses}
           />

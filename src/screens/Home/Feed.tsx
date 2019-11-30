@@ -8,11 +8,8 @@ import {
   StyleSheet
 } from "react-native";
 
-import {
-  RouteProp,
-  useFocusEffect,
-  useIsFocused
-} from "@react-navigation/core";
+import _ from "lodash";
+import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Haptics from "react-native-haptic-feedback";
 import Animated, { Easing } from "react-native-reanimated";
@@ -177,7 +174,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     };
 
     const getPosts = () => {
-      return feed.posts;
+      return _.sortBy(feed.posts, o => -o.createdAt);
     };
 
     const handleOnPressPost = (post: FeedPostType) => {
