@@ -15,6 +15,7 @@ import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
+import { SB_HEIGHT } from "@lib/styles";
 
 const mapStateToProps = (state: RootState, props: ProfileProps) => ({
   posts: selectors.usersPosts(state, props.route.params.user)
@@ -91,7 +92,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
+    paddingTop: SB_HEIGHT(),
     paddingHorizontal: 20,
     alignItems: "center"
   },

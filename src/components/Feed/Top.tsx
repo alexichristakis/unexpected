@@ -22,7 +22,7 @@ const {
 } = Animated;
 
 export interface FeedTopProps {
-  latest: Date;
+  latest?: Date;
   readyForRefresh: 0 | 1;
   refreshing: boolean;
   scrollY: Animated.Value<number>;
@@ -73,28 +73,53 @@ export const Top: React.FC<FeedTopProps> = React.memo(
       return text;
     };
 
-    const date = moment(latest);
+    if (latest) {
+      const date = moment(latest);
 
-    return (
-      <>
-        <Animated.Text
-          style={[
-            TextStyles.large,
-            styles.loaderContainer,
-            animatedLoaderStyle
-          ]}
-        >
-          {readyForRefresh === 1 ? "release to refresh" : "pull to refresh"}
-        </Animated.Text>
-        <Animated.View style={[styles.container, animatedStyle]}>
-          <View style={styles.textContainer}>
-            <Text style={TextStyles.title}>{formatTitle(date)}</Text>
-            <Text style={TextStyles.large}>{date.format("dddd, MMMM Do")}</Text>
-          </View>
-          {refreshing && <ActivityIndicator size="large" />}
-        </Animated.View>
-      </>
-    );
+      return (
+        <>
+          <Animated.Text
+            style={[
+              TextStyles.large,
+              styles.loaderContainer,
+              animatedLoaderStyle
+            ]}
+          >
+            {readyForRefresh === 1 ? "release to refresh" : "pull to refresh"}
+          </Animated.Text>
+          <Animated.View style={[styles.container, animatedStyle]}>
+            <View style={styles.textContainer}>
+              <Text style={TextStyles.title}>{formatTitle(date)}</Text>
+              <Text style={TextStyles.large}>
+                {date.format("dddd, MMMM Do")}
+              </Text>
+            </View>
+            {refreshing && <ActivityIndicator size="large" />}
+          </Animated.View>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Animated.Text
+            style={[
+              TextStyles.large,
+              styles.loaderContainer,
+              animatedLoaderStyle
+            ]}
+          >
+            {readyForRefresh === 1 ? "release to refresh" : "pull to refresh"}
+          </Animated.Text>
+          <Animated.View style={[styles.container, animatedStyle]}>
+            <View style={styles.textContainer}>
+              <Text style={TextStyles.title}>Feed</Text>
+              <Text style={TextStyles.large}>Posts are shown here</Text>
+            </View>
+            {refreshing && <ActivityIndicator size="large" />}
+          </Animated.View>
+        </>
+      );
+    }
   },
   (prevProps, nextProps) =>
     prevProps.refreshing === nextProps.refreshing &&
@@ -105,7 +130,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignSelf: "stretch",
-    backgroundColor: "white",
     paddingTop: 5,
     paddingBottom: 20
   },
@@ -123,10 +147,6 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     flexDirection: "row",
     flex: 1
-  },
-  bio: {
-    flex: 1,
-    marginLeft: 20
   },
   header: {
     backgroundColor: "white",

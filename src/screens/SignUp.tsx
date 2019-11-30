@@ -12,7 +12,7 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Button, Input } from "@components/universal";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, isIPhoneX } from "@lib/styles";
 import { Actions, UserState as UserStateType } from "@redux/modules/user";
 import { RootState as RootStateType } from "@redux/types";
 
@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
   subContainer: {
     width: "100%",
     height: "100%",
-    paddingVertical: 100,
+    paddingVertical: isIPhoneX ? 100 : 0,
+    paddingBottom: isIPhoneX ? 0 : 100,
     justifyContent: "space-around"
   },
   formFields: {

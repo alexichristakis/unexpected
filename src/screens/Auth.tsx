@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 
 import { CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, isIPhoneX } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
 
@@ -60,15 +60,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
           <Text style={TextStyles.large}>random photo sharing</Text>
         </View>
         <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting
-          }) => {
+          {({ values, handleChange, handleSubmit }) => {
             return (
               <KeyboardAvoidingView
                 enabled={true}
@@ -90,7 +82,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
                 />
                 <Button
                   disabled={values.phoneNumber.length !== 10}
-                  style={{ marginBottom: 45 }}
+                  style={styles.button}
                   size="medium"
                   title={isAwaitingCode ? "verify code" : "send text message"}
                   onPress={handleSubmit}
@@ -113,12 +105,15 @@ const styles = StyleSheet.create({
   subContainer: {
     width: "100%",
     height: "100%",
-    paddingVertical: 100,
+    paddingVertical: isIPhoneX ? 100 : 0,
     justifyContent: "space-around"
   },
   formFields: {
     flex: 1,
     justifyContent: "space-around"
+  },
+  button: {
+    marginBottom: 45
   }
 });
 

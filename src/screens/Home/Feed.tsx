@@ -20,7 +20,7 @@ import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
 import { Top } from "@components/Feed";
-import { Post } from "@components/universal";
+import { Post, Button } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
@@ -176,7 +176,9 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const getPosts = () => {
       const sortedPosts = _.sortBy(feed.posts, o => -o.createdAt);
 
-      return sortedPosts;
+      const latest = sortedPosts.length ? sortedPosts[0].createdAt : undefined;
+
+      return { sortedPosts, latest };
     };
 
     const handleOnPressPost = (post: FeedPostType) => {
@@ -191,14 +193,25 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const posts = getPosts();
+    const handleOnPressShare = () => {
+      navigation.navigate("CAPTURE");
+    };
+
+    const { sortedPosts, latest } = getPosts();
 
     const renderTop = () => (
       <Top
-        latest={posts[0].createdAt}
+        latest={latest}
         readyForRefresh={readyForRefresh}
         refreshing={refreshing}
         scrollY={scrollY}
+      />
+    );
+
+    const renderEmptyComponent = () => (
+      <Button
+        title="click here to share your first photo"
+        onPress={handleOnPressShare}
       />
     );
 
@@ -208,11 +221,13 @@ export const Feed: React.FC<FeedProps> = React.memo(
           onScrollEndDrag={handleScrollEndDrag}
           onScroll={onScroll({ y: scrollY })}
           scrollEventThrottle={16}
+          style={styles.list}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
+          ListEmptyComponent={renderEmptyComponent}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.contentContainer}
-          data={posts}
+          data={sortedPosts}
           renderItem={renderPost}
         />
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
@@ -224,12 +239,16 @@ export const Feed: React.FC<FeedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 20,
     alignItems: "center"
   },
   contentContainer: {
     paddingTop: SB_HEIGHT(),
     paddingBottom: 50,
     alignItems: "center"
+  },
+  list: {
+    width: "100%"
   },
   statusBar: {
     position: "absolute",
