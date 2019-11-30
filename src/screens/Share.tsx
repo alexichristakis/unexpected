@@ -69,7 +69,7 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
                   style={styles.form}
                 >
                   <Button
-                    style={{ marginBottom: 20 }}
+                    style={styles.button}
                     title="share post"
                     loading={sending}
                     onPress={handleSubmit}
@@ -99,6 +99,9 @@ const styles = StyleSheet.create({
   form: {
     flex: 1,
     justifyContent: "space-around"
+  },
+  button: {
+    marginBottom: 20
   },
   headerContent: {
     flexDirection: "row",

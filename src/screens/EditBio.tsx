@@ -5,7 +5,9 @@ import {
   StyleSheet,
   Text,
   TextInputSubmitEditingEventData,
-  View
+  View,
+  Keyboard,
+  TextInputKeyPressEventData
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
@@ -51,7 +53,15 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
   const handleOnPressSubmit = async ({
     nativeEvent
   }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
-    updateUser({ bio: nativeEvent.text });
+    updateUser({ bio: nativeEvent.text.replace("\n", "") });
+  };
+
+  const handleKeyPress = ({
+    nativeEvent
+  }: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+    if (nativeEvent.key === "Enter") {
+      Keyboard.dismiss();
+    }
   };
 
   return (
@@ -63,12 +73,14 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
         {loading ? <ActivityIndicator size="small" /> : null}
       </View>
       <Input
-        multiline={true}
+        autoFocus
+        multiline
         label="up to 200 characters"
-        value={text}
+        value={text.replace("\n", "")}
         onChangeText={setText}
         maxLength={200}
-        returnKeyType={"done"}
+        returnKeyType="done"
+        onKeyPress={handleKeyPress}
         onSubmitEditing={handleOnPressSubmit}
       />
     </Screen>

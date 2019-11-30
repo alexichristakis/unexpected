@@ -74,7 +74,9 @@ export const Top: React.FC<FeedTopProps> = React.memo(
         <Animated.View style={[styles.container, animatedStyle]}>
           <View style={styles.textContainer}>
             <Text style={TextStyles.title}>Today</Text>
-            <Text style={TextStyles.large}>{moment().format("MMMM Do")}</Text>
+            <Text style={TextStyles.large}>
+              {moment().format("dddd, MMMM Do")}
+            </Text>
           </View>
           {refreshing && <ActivityIndicator size="large" />}
         </Animated.View>

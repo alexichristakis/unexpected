@@ -81,10 +81,20 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const [scrollY] = useState(new Value(0));
 
     useEffect(() => {
+      fetchFeed();
+
       if (shouldLaunchPermissions) {
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }
     }, []);
+
+    useEffect(() => {
+      Animated.timing(entranceAnimatedValue, {
+        toValue: 1,
+        duration: 300,
+        easing: Easing.quad
+      }).start();
+    }, [feed.posts.length]);
 
     useFocusEffect(
       useCallback(() => {
@@ -93,7 +103,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
         } else {
           StatusBar.setHidden(true);
         }
-        fetchFeed();
       }, [statusBarVisible])
     );
 
@@ -114,16 +123,8 @@ export const Feed: React.FC<FeedProps> = React.memo(
             call([], ([]) => showStatusBar())
           )
         ]),
-      [readyForRefresh]
+      [readyForRefresh, statusBarVisible]
     );
-
-    useEffect(() => {
-      Animated.timing(entranceAnimatedValue, {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.quad
-      }).start();
-    }, [feed.posts.length]);
 
     const handleScrollEndDrag = ({
       nativeEvent
@@ -152,23 +153,27 @@ export const Feed: React.FC<FeedProps> = React.memo(
     };
 
     const showStatusBar = () => {
-      setStatusBarVisible(true);
-      StatusBar.setHidden(false, "slide");
-      Animated.timing(statusBarAnimatedValue, {
-        toValue: 0,
-        duration: 200,
-        easing: Easing.ease
-      }).start();
+      if (!statusBarVisible) {
+        setStatusBarVisible(true);
+        StatusBar.setHidden(false, "slide");
+        Animated.timing(statusBarAnimatedValue, {
+          toValue: 0,
+          duration: 150,
+          easing: Easing.ease
+        }).start();
+      }
     };
 
     const hideStatusBar = () => {
-      setStatusBarVisible(false);
-      StatusBar.setHidden(true, "slide");
-      Animated.timing(statusBarAnimatedValue, {
-        toValue: -SB_HEIGHT(),
-        duration: 200,
-        easing: Easing.ease
-      }).start();
+      if (statusBarVisible) {
+        setStatusBarVisible(false);
+        StatusBar.setHidden(true, "slide");
+        Animated.timing(statusBarAnimatedValue, {
+          toValue: -SB_HEIGHT(),
+          duration: 150,
+          easing: Easing.ease
+        }).start();
+      }
     };
 
     const getPosts = () => {

@@ -21,7 +21,6 @@ export interface AuthState {
   readonly phoneNumber: string;
   readonly isAwaitingCode: boolean;
   readonly authError: string;
-  // readonly authFlowCompleted: boolean;
   readonly jwt: string | null;
 }
 
@@ -47,7 +46,6 @@ export default (
         return {
           ...initialState,
           jwt: auth.jwt
-          // authFlowCompleted: auth.authFlowCompleted
         };
       else return { ...initialState };
     }
@@ -76,13 +74,6 @@ export default (
         jwt: action.payload
       };
     }
-
-    // case ActionTypes.COMPLETED_AUTH_FLOW: {
-    //   return {
-    //     ...state,
-    //     authFlowCompleted: true
-    //   };
-    // }
 
     case ActionTypes.LOGOUT: {
       Navigation.navigate("HOME");
@@ -179,7 +170,6 @@ export enum ActionTypes {
   CHECK_CODE = "auth/CHECK_CODE",
   ERROR_REQUESTING_AUTH = "auth/ERROR_REQUESTING_AUTH",
   SUCCESS_TEXTING_CODE = "auth/SUCCESS_TEXTING_CODE",
-  // COMPLETED_AUTH_FLOW = "auth/COMPLETED_AUTH_FLOW",
   SET_JWT = "auth/SET_JWT",
   LOGOUT = "auth/LOGOUT"
 }
@@ -192,7 +182,6 @@ export const Actions = {
   errorRequestingAuth: (err: string) =>
     createAction(ActionTypes.ERROR_REQUESTING_AUTH, { err }),
   successTextingCode: () => createAction(ActionTypes.SUCCESS_TEXTING_CODE),
-  // completedAuthFlow: () => createAction(ActionTypes.COMPLETED_AUTH_FLOW),
   setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt),
   logout: () => createAction(ActionTypes.LOGOUT)
 };
