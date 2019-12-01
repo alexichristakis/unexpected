@@ -62,8 +62,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
 
   const renderTop = () => (
     <Top
-      numPosts={posts.length}
       user={user}
+      numPosts={posts.length}
       scrollY={scrollY}
       onPressFriends={goToFriends}
     />

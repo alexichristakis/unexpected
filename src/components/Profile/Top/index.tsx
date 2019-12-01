@@ -7,12 +7,12 @@ import {
   View
 } from "react-native";
 
-import { Button, UserImage } from "@components/universal";
+import { Button, UserImage, FriendButton } from "@components/universal";
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
 
 export interface ProfileTopProps {
-  user: UserType;
+  user: Partial<UserType>;
   isUser?: boolean; // is currently signed in user
   numPosts: number;
   scrollY: Animated.Value;
@@ -23,7 +23,7 @@ export interface ProfileTopProps {
 }
 
 export const Top: React.FC<ProfileTopProps> = ({
-  user: { phoneNumber, firstName, lastName, friends, friendRequests, bio },
+  user,
   isUser,
   numPosts,
   scrollY,
@@ -32,6 +32,15 @@ export const Top: React.FC<ProfileTopProps> = ({
   onPressImage,
   onPressName
 }) => {
+  const {
+    phoneNumber,
+    firstName,
+    lastName,
+    friends = [],
+    friendRequests = [],
+    bio = ""
+  } = user;
+
   const animatedStyle = {
     transform: [
       {
@@ -96,7 +105,7 @@ export const Top: React.FC<ProfileTopProps> = ({
             >{`${friends.length} friends`}</Text>
           </View>
         </TouchableOpacity>
-        <View style={[styles.row, { marginBottom: 20 }]}>
+        <View style={[styles.row, { marginBottom: isUser ? 0 : 20 }]}>
           <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
             <UserImage
               phoneNumber={phoneNumber}
@@ -111,6 +120,7 @@ export const Top: React.FC<ProfileTopProps> = ({
             )}
           </View>
         </View>
+        <FriendButton user={user} />
       </Animated.View>
       <Animated.View style={[styles.header, animatedHeaderStyle]}>
         <Text style={TextStyles.large}>{`${firstName} ${lastName}`}</Text>
@@ -123,7 +133,8 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: "stretch",
     alignItems: "center",
-    paddingTop: 5
+    paddingTop: 5,
+    paddingBottom: 20
   },
   row: {
     alignSelf: "stretch",

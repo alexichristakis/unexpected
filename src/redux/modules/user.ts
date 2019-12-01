@@ -374,21 +374,24 @@ export const Actions = {
     createAction(ActionTypes.CREATE_USER_COMPLETE, { user }),
   loadUsers: (users: UserType[], complete?: boolean) =>
     createAction(ActionTypes.LOAD_USERS, { users, complete }),
-  friendUser: (user: UserType) =>
-    createAction(ActionTypes.FRIEND_USER, { user }),
-  friendComplete: (from: string, to: string) =>
-    createAction(ActionTypes.FRIEND_USER_COMPLETE, { from, to }),
-  acceptRequest: (user: UserType) =>
-    createAction(ActionTypes.ACCEPT_REQUEST, { user }),
-  acceptRequestComplete: (from: string, to: string) =>
-    createAction(ActionTypes.ACCEPT_REQUEST_COMPLETE, { from, to }),
-  denyRequest: (user: UserType) =>
-    createAction(ActionTypes.DENY_REQUEST, { user }),
-  denyRequestComplete: (from: string, to: string) =>
-    createAction(ActionTypes.DENY_REQUEST_COMPLETE, { from, to }),
   updateUser: (user: Partial<UserType>) =>
     createAction(ActionTypes.UPDATE_USER, { user }),
   updateComplete: () => createAction(ActionTypes.UPDATE_COMPLETE),
+
+  /* adding friends, accepting friends, etc... */
+  friendUser: (user: { phoneNumber: string }) =>
+    createAction(ActionTypes.FRIEND_USER, { user }),
+  friendComplete: (from: string, to: string) =>
+    createAction(ActionTypes.FRIEND_USER_COMPLETE, { from, to }),
+  acceptRequest: (user: { phoneNumber: string }) =>
+    createAction(ActionTypes.ACCEPT_REQUEST, { user }),
+  acceptRequestComplete: (from: string, to: string) =>
+    createAction(ActionTypes.ACCEPT_REQUEST_COMPLETE, { from, to }),
+  denyRequest: (user: { phoneNumber: string }) =>
+    createAction(ActionTypes.DENY_REQUEST, { user }),
+  denyRequestComplete: (from: string, to: string) =>
+    createAction(ActionTypes.DENY_REQUEST_COMPLETE, { from, to }),
+
   // fetchFriends: (phoneNumber: string) =>
   //   createAction(ActionTypes.FETCH_FRIENDS, { phoneNumber }),
   onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err })

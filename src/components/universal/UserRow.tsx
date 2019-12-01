@@ -5,6 +5,7 @@ import { TextStyles } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
 import { Button } from "./Button";
 import UserImage from "./UserImage";
+import FriendButton from "./FriendButton";
 
 export interface UserRowProps {
   actions?: Array<{ title: string; onPress: () => void }>;
@@ -28,6 +29,7 @@ export const UserRow: React.FC<UserRowProps> = ({
       <View style={{ flex: 1 }} />
       {actions.map(({ title, onPress }) => (
         <Button
+          size="small"
           key={title}
           style={styles.button}
           title={title}

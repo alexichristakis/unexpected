@@ -194,7 +194,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     };
 
     const handleOnPressShare = () => {
-      navigation.navigate("CAPTURE");
+      navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
     };
 
     const { sortedPosts, latest } = getPosts();
@@ -209,10 +209,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     );
 
     const renderEmptyComponent = () => (
-      <Button
-        title="click here to share your first photo"
-        onPress={handleOnPressShare}
-      />
+      <Button title="share your first photo" onPress={handleOnPressShare} />
     );
 
     return (

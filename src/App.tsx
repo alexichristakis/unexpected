@@ -314,7 +314,7 @@ const App: React.FC = () => {
   return (
     <Context>
       <Router />
-      <Connection />
+      {/* <Connection /> */}
     </Context>
   );
 };

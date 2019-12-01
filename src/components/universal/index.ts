@@ -8,8 +8,10 @@ export * from "./Post";
 export * from "./TouchableScale";
 export * from "./UserRow";
 export * from "./ItemSeparator";
+export * from "./FriendButton";
 
 import PostImage from "./PostImage";
 import UserImage from "./UserImage";
+import FriendButton from "./FriendButton";
 
-export { UserImage, PostImage };
+export { UserImage, PostImage, FriendButton };

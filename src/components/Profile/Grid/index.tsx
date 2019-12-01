@@ -46,6 +46,7 @@ const Grid: React.FC<GridProps> = ({
     <Animated.FlatList
       style={styles.list}
       onScroll={onScroll}
+      showsVerticalScrollIndicator={false}
       ListHeaderComponentStyle={ListHeaderComponentStyle}
       ListHeaderComponent={ListHeaderComponent}
       numColumns={3}
