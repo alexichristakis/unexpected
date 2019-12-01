@@ -99,7 +99,7 @@ export class UserService extends CRUDService<UserModel, UserType> {
         .exec(),
       this.model
         .updateOne(
-          { phoneNumber: from },
+          { phoneNumber: to },
           {
             requestedFriends: _.remove(userTo.requestedFriends, from),
             friends: _.uniq([...userTo.friends, from])

@@ -85,7 +85,9 @@ export class UserController {
     @PathParams("phoneNumber") phoneNumber: string,
     @PathParams("to") to: string
   ) {
-    return this.userService.friend(phoneNumber, to);
+    if (phoneNumber !== to) {
+      return this.userService.friend(phoneNumber, to);
+    }
   }
 
   @Patch("/:phoneNumber/accept/:to")
@@ -96,7 +98,22 @@ export class UserController {
     @PathParams("phoneNumber") phoneNumber: string,
     @PathParams("to") to: string
   ) {
-    return this.userService.acceptFriendRequest(phoneNumber, to);
+    if (phoneNumber !== to) {
+      return this.userService.acceptFriendRequest(phoneNumber, to);
+    }
+  }
+
+  @Patch("/:phoneNumber/cancel/:to")
+  @UseAuth(AuthMiddleware, {
+    select: Select.phoneFromPath
+  })
+  async cancelFriendRequest(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("to") to: string
+  ) {
+    if (phoneNumber !== to) {
+      return this.userService.denyFriendRequest(phoneNumber, to);
+    }
   }
 
   @Patch("/:phoneNumber/deny/:to")
@@ -107,7 +124,9 @@ export class UserController {
     @PathParams("phoneNumber") phoneNumber: string,
     @PathParams("to") to: string
   ) {
-    return this.userService.denyFriendRequest(phoneNumber, to);
+    if (phoneNumber !== to) {
+      return this.userService.denyFriendRequest(phoneNumber, to);
+    }
   }
 
   @Patch("/:phoneNumber/delete/:to")
@@ -118,7 +137,9 @@ export class UserController {
     @PathParams("phoneNumber") phoneNumber: string,
     @PathParams("to") to: string
   ) {
-    return this.userService.unfriend(phoneNumber, to);
+    if (phoneNumber !== to) {
+      return this.userService.unfriend(phoneNumber, to);
+    }
   }
   // @Put()
   // async unFollowUser() {}
