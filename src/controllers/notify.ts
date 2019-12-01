@@ -11,7 +11,6 @@ import {
 import { MongooseModel } from "@tsed/mongoose";
 
 import { NotificationService } from "../services/notification";
-import { AuthMiddleware, Verify, Select } from "../middlewares/auth";
 import { UserService } from "../services/user";
 
 @Controller("/notify")

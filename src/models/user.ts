@@ -63,3 +63,8 @@ export class User {
 }
 
 export type UserType = Omit<User, "_id" | "createdAt">;
+export type PartialUserType = {
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+};
