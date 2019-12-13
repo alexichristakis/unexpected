@@ -279,12 +279,12 @@ const Router: React.FC = () => {
         initialRouteName={isAuthorized ? "AUTHENTICATED" : "UNAUTHENTICATED"}
       >
         <Stack.Screen
-          name={"AUTHENTICATED"}
+          name="AUTHENTICATED"
           options={{ headerShown: false }}
           component={AuthenticatedRoot}
         />
         <Stack.Screen
-          name={"UNAUTHENTICATED"}
+          name="UNAUTHENTICATED"
           options={{ headerShown: false }}
           component={UnathenticatedRoot}
         />

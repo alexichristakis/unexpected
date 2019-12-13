@@ -45,7 +45,8 @@ export enum TextSizes {
   medium = "medium",
   large = "large",
   title = "title",
-  light = "light"
+  light = "light",
+  bold = "bold"
 }
 export const TextStyles: { [key in TextSizes]: TextStyle } = StyleSheet.create({
   light: {
@@ -71,5 +72,8 @@ export const TextStyles: { [key in TextSizes]: TextStyle } = StyleSheet.create({
     ...baseText,
     fontSize: 26,
     color: Colors.nearBlack
+  },
+  bold: {
+    fontWeight: "bold"
   }
 });

@@ -10,10 +10,11 @@ import {
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import MaskedView from "@react-native-community/masked-view";
 
-import { CodeInput, PhoneNumberInput } from "@components/Auth";
+import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
-import { TextStyles, isIPhoneX } from "@lib/styles";
+import { TextStyles, isIPhoneX, SB_HEIGHT } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
 
@@ -50,15 +51,32 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 
   return (
     <Screen style={styles.container}>
+      <MaskedView
+        style={{
+          position: "absolute",
+          top: 50 + SB_HEIGHT(),
+          left: 50,
+          bottom: 50,
+          right: 50
+        }}
+        maskElement={
+          <>
+            <Text
+              style={[TextStyles.title, { fontSize: 40, fontWeight: "500" }]}
+            >
+              expect.photos
+            </Text>
+            <Text style={[TextStyles.large]}>random photo sharing</Text>
+          </>
+        }
+      >
+        <Background />
+      </MaskedView>
       <TouchableOpacity
         activeOpacity={1}
         style={styles.subContainer}
         onPress={Keyboard.dismiss}
       >
-        <View>
-          <Text style={TextStyles.title}>expect.photos</Text>
-          <Text style={TextStyles.large}>random photo sharing</Text>
-        </View>
         <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
           {({ values, handleChange, handleSubmit }) => {
             return (
@@ -106,7 +124,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     paddingVertical: isIPhoneX ? 100 : 0,
-    justifyContent: "space-around"
+    justifyContent: "space-around",
+    backgroundColor: "transparent"
   },
   formFields: {
     flex: 1,

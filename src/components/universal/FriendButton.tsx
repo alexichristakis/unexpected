@@ -2,20 +2,19 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import { Actions as UserActions } from "@redux/modules/user";
-import { Actions as AuthActions } from "@redux/modules/auth";
-import { Actions as PostActions } from "@redux/modules/post";
 import { ReduxPropsType, RootState } from "@redux/types";
 import * as selectors from "@redux/selectors";
 import { Button } from "@components/universal";
 import { UserType } from "unexpected-cloud/models/user";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ViewStyle } from "react-native";
 
 const mapStateToProps = (state: RootState) => ({
   currentUser: selectors.user(state)
 });
 const mapDispatchToProps = {
   sendFriendRequest: UserActions.friendUser,
-  denyFriendRequest: UserActions.denyRequest
+  denyFriendRequest: UserActions.denyRequest,
+  deleteFriend: UserActions.deleteFriend
 };
 
 export type FriendButtonReduxProps = ReduxPropsType<
@@ -24,14 +23,17 @@ export type FriendButtonReduxProps = ReduxPropsType<
 >;
 
 export interface FriendButtonProps {
-  user: Partial<UserType>;
+  user: UserType;
+  style?: ViewStyle;
 }
 
 const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
+  style,
   user,
   currentUser,
   sendFriendRequest,
-  denyFriendRequest
+  denyFriendRequest,
+  deleteFriend
 }) => {
   const getState = () => {
     const { friends, requestedFriends } = currentUser;
@@ -61,22 +63,30 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   const action = () => {
     switch (getState()) {
       case "friends":
-        return () => {};
+        return () => deleteFriend(user);
       case "requested":
         return () => denyFriendRequest(user);
       case "none":
         return () => sendFriendRequest(user);
+      default:
+        return () => {};
     }
   };
 
   if (currentUser.phoneNumber !== user.phoneNumber)
-    return <Button style={styles.button} title={title()} onPress={action()} />;
+    return (
+      <Button
+        style={[styles.button, style]}
+        title={title()}
+        onPress={action()}
+      />
+    );
   return null;
 };
 
 const styles = StyleSheet.create({
   button: {
-    width: "100%"
+    // width: "100%"
   }
 });
 

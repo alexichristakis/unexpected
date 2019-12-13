@@ -8,7 +8,8 @@ import UserImage from "./UserImage";
 import FriendButton from "./FriendButton";
 
 export interface UserRowProps {
-  actions?: Array<{ title: string; onPress: () => void }>;
+  // actions?: Array<{ title: string; onPress: () => void }>;
+  actions?: JSX.Element[];
   onPress: (user: UserType) => void;
   user: UserType;
 }
@@ -27,15 +28,7 @@ export const UserRow: React.FC<UserRowProps> = ({
       <UserImage phoneNumber={user.phoneNumber} size={40} />
       <Text style={styles.name}>{`${user.firstName} ${user.lastName}`}</Text>
       <View style={{ flex: 1 }} />
-      {actions.map(({ title, onPress }) => (
-        <Button
-          size="small"
-          key={title}
-          style={styles.button}
-          title={title}
-          onPress={onPress}
-        />
-      ))}
+      {actions.map(action => action)}
     </TouchableOpacity>
   );
 };

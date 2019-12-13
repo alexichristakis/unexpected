@@ -16,7 +16,12 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
-import { Input, ItemSeparator, UserRow } from "@components/universal";
+import {
+  Input,
+  ItemSeparator,
+  UserRow,
+  FriendButton
+} from "@components/universal";
 import { SB_HEIGHT, TextSizes, TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
@@ -29,9 +34,7 @@ const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
   jwt: selectors.jwt(state)
 });
-const mapDispatchToProps = {
-  friendUser: UserActions.friendUser
-};
+const mapDispatchToProps = {};
 
 export type DiscoverReduxProps = ReduxPropsType<
   typeof mapStateToProps,
@@ -42,87 +45,83 @@ export interface DiscoverProps {
   route: RouteProp<StackParamList, "DISCOVER">;
 }
 export const Discover: React.FC<DiscoverProps &
-  DiscoverReduxProps> = React.memo(
-  ({ phoneNumber, jwt, friendUser, navigation }) => {
-    const [responses, setResponses] = useState<UserType[]>([]);
-    const [loading, setLoading] = useState(false);
+  DiscoverReduxProps> = React.memo(({ phoneNumber, jwt, navigation }) => {
+  const [responses, setResponses] = useState<UserType[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-      const actions = [
-        { title: "add friend", onPress: () => friendUser(item) }
-      ];
-
-      return (
-        <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
-      );
-    };
-
-    const handleOnPressUser = (toUser: UserType) => {
-      if (phoneNumber === toUser.phoneNumber) {
-        navigation.navigate("USER_PROFILE");
-      } else {
-        navigation.navigate({
-          name: "PROFILE",
-          key: uuid(),
-          params: {
-            user: toUser
-          }
-        });
-      }
-    };
-
-    const handleOnPressSubmit = async ({
-      nativeEvent
-    }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
-      setLoading(true);
-      const response = await client.get<UserType[]>(
-        `/user/search/${nativeEvent.text}`,
-        {
-          headers: getHeaders({ jwt })
-        }
-      );
-
-      const { data } = response;
-
-      const results = data.filter(o => o.phoneNumber !== phoneNumber);
-
-      setResponses(results);
-      setLoading(false);
-    };
-
-    const renderEmptyComponent = () => (
-      <View style={{ paddingTop: 20 }}>
-        <Text style={TextStyles.medium}>No results</Text>
-      </View>
-    );
-
-    const renderSeparatorComponent = () => <ItemSeparator />;
+  const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
+    const actions = [<FriendButton user={item} />];
 
     return (
-      <Screen style={styles.container}>
-        <Input
-          size={TextSizes.title}
-          style={{ width: "100%" }}
-          returnKeyType={"search"}
-          label="enter a name or phone number"
-          placeholder="search"
-          onSubmitEditing={handleOnPressSubmit}
-        />
-        {loading ? (
-          <ActivityIndicator size="large" />
-        ) : (
-          <FlatList
-            style={styles.list}
-            renderItem={renderUserRow}
-            ListEmptyComponent={renderEmptyComponent}
-            ItemSeparatorComponent={renderSeparatorComponent}
-            data={responses}
-          />
-        )}
-      </Screen>
+      <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
     );
-  }
-);
+  };
+
+  const handleOnPressUser = (toUser: UserType) => {
+    if (phoneNumber === toUser.phoneNumber) {
+      navigation.navigate("USER_PROFILE");
+    } else {
+      navigation.navigate({
+        name: "PROFILE",
+        key: uuid(),
+        params: {
+          user: toUser
+        }
+      });
+    }
+  };
+
+  const handleOnPressSubmit = async ({
+    nativeEvent
+  }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+    setLoading(true);
+    const response = await client.get<UserType[]>(
+      `/user/search/${nativeEvent.text}`,
+      {
+        headers: getHeaders({ jwt })
+      }
+    );
+
+    const { data } = response;
+
+    const results = data.filter(o => o.phoneNumber !== phoneNumber);
+
+    setResponses(results);
+    setLoading(false);
+  };
+
+  const renderEmptyComponent = () => (
+    <View style={{ paddingTop: 20 }}>
+      <Text style={TextStyles.medium}>No results</Text>
+    </View>
+  );
+
+  const renderSeparatorComponent = () => <ItemSeparator />;
+
+  return (
+    <Screen style={styles.container}>
+      <Input
+        size={TextSizes.title}
+        style={{ width: "100%" }}
+        returnKeyType={"search"}
+        label="enter a name or phone number"
+        placeholder="search"
+        onSubmitEditing={handleOnPressSubmit}
+      />
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <FlatList
+          style={styles.list}
+          renderItem={renderUserRow}
+          ListEmptyComponent={renderEmptyComponent}
+          ItemSeparatorComponent={renderSeparatorComponent}
+          data={responses}
+        />
+      )}
+    </Screen>
+  );
+});
 
 const styles = StyleSheet.create({
   container: {

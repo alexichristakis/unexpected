@@ -109,8 +109,8 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
       const actions = [
-        { title: "accept", onPress: () => acceptRequest(item) },
-        { title: "deny", onPress: () => denyRequest(item) }
+        <Button title="accept" onPress={() => acceptRequest(item)} />,
+        <Button title="deny" onPress={() => denyRequest(item)} />
       ];
 
       return (
