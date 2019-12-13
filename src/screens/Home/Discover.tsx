@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -7,11 +7,12 @@ import {
   StyleSheet,
   Text,
   TextInputSubmitEditingEventData,
-  View
+  View,
+  StatusBar
 } from "react-native";
 
 import client, { getHeaders } from "@api";
-import { RouteProp } from "@react-navigation/core";
+import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
@@ -49,11 +50,23 @@ export const Discover: React.FC<DiscoverProps &
   const [responses, setResponses] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(false);
 
+  useFocusEffect(
+    () =>
+      // useCallback(() => {
+      StatusBar.setHidden(false)
+    // }, [])
+  );
+
   const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-    const actions = [<FriendButton user={item} />];
+    const actions = [<FriendButton key="friend" user={item} />];
 
     return (
-      <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
+      <UserRow
+        // key={index}
+        onPress={handleOnPressUser}
+        user={item}
+        actions={actions}
+      />
     );
   };
 

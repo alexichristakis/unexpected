@@ -3,7 +3,8 @@ import {
   NativeSyntheticEvent,
   StyleSheet,
   TextInput,
-  TextInputFocusEventData
+  TextInputFocusEventData,
+  ViewStyle
 } from "react-native";
 
 import { Input } from "@components/universal";
@@ -39,6 +40,7 @@ export const normalizePhone = (value: string, previousValue?: string) => {
 
 export interface PhoneNumberInputProps {
   value: string;
+  style?: ViewStyle;
   editable: boolean;
   loading: boolean;
   error?: string;
@@ -47,6 +49,7 @@ export interface PhoneNumberInputProps {
 }
 export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   value,
+  style,
   onChange,
   // onBlur,
   loading,
@@ -76,7 +79,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
     <Input
       size={TextSizes.title}
       textInputRef={setRef}
-      style={styles.textInput}
+      style={[styles.textInput, style]}
       editable={editable}
       error={editable && !!error ? error : undefined}
       label={

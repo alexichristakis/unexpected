@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  StatusBar
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
@@ -51,9 +52,23 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 
   return (
     <Screen style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <Background />
+      <View
+        style={{
+          position: "absolute",
+          backgroundColor: "white",
+          left: 30,
+          right: 30,
+          top: 90,
+          height: 100
+        }}
+      />
       <MaskedView
         style={{
           position: "absolute",
+          padding: 20,
+          // backgroundColor: "white",
           top: 50 + SB_HEIGHT(),
           left: 50,
           bottom: 50,
@@ -86,6 +101,12 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
                 style={styles.formFields}
               >
                 <PhoneNumberInput
+                  style={{
+                    backgroundColor: "white",
+                    paddingBottom: 10,
+                    paddingHorizontal: 20,
+                    marginTop: 20
+                  }}
                   loading={loading}
                   error={authError}
                   editable={!isAwaitingCode}
@@ -117,7 +138,8 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 50,
+    paddingVertical: 50,
+    paddingHorizontal: 30,
     justifyContent: "space-around"
   },
   subContainer: {

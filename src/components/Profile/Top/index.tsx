@@ -92,7 +92,6 @@ export const Top: React.FC<ProfileTopProps> = ({
               style={TextStyles.title}
             >{`${firstName} ${lastName}`}</Text>
             {renderNotificationIndicator()}
-            <FriendButton style={{ marginLeft: 10 }} user={user} />
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text
@@ -121,6 +120,7 @@ export const Top: React.FC<ProfileTopProps> = ({
             )}
           </View>
         </View>
+        {!isUser && <FriendButton user={user} />}
       </Animated.View>
       <Animated.View style={[styles.header, animatedHeaderStyle]}>
         <Text style={TextStyles.large}>{`${firstName} ${lastName}`}</Text>

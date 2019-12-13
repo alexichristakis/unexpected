@@ -109,8 +109,18 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
       const actions = [
-        <Button title="accept" onPress={() => acceptRequest(item)} />,
-        <Button title="deny" onPress={() => denyRequest(item)} />
+        <Button
+          size="small"
+          title="accept"
+          style={{ paddingVertical: 5, paddingHorizontal: 15 }}
+          onPress={() => acceptRequest(item)}
+        />,
+        <Button
+          size="small"
+          title="delete"
+          style={{ marginLeft: 10, paddingVertical: 5, paddingHorizontal: 15 }}
+          onPress={() => denyRequest(item)}
+        />
       ];
 
       return (
@@ -118,8 +128,17 @@ const Settings: React.FC<SettingsProps> = React.memo(
       );
     };
 
-    const renderListFooter = () => (
-      <View style={styles.buttonContainer}>
+    const renderListHeader = (length: number) =>
+      length ? (
+        <View style={styles.listHeaderContainer}>
+          <Text style={TextStyles.medium}>{`${length} friend ${
+            length > 1 ? "requests" : "request"
+          }:`}</Text>
+        </View>
+      ) : null;
+
+    const renderListFooter = (length: number) => (
+      <View style={[styles.buttonContainer, length ? { marginTop: 20 } : {}]}>
         <Button
           title="update picture"
           style={styles.button}
@@ -146,14 +165,17 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const renderSeparatorComponent = () => <ItemSeparator />;
 
+    const friendRequests = getUsers();
+
     return (
       <Screen style={styles.container}>
-        <Text style={[TextStyles.medium, styles.header]}>settings:</Text>
+        <Text style={[TextStyles.large, styles.header]}>settings:</Text>
         <FlatList
           renderItem={renderUserRow}
-          data={getUsers()}
+          data={friendRequests}
           ItemSeparatorComponent={renderSeparatorComponent}
-          ListFooterComponent={renderListFooter()}
+          ListHeaderComponent={renderListHeader(friendRequests.length)}
+          ListFooterComponent={renderListFooter(friendRequests.length)}
         />
       </Screen>
     );
@@ -164,6 +186,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20
+  },
+  listHeaderContainer: {
+    width: "100%"
   },
   header: {
     marginBottom: 20

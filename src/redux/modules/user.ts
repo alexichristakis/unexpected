@@ -50,6 +50,7 @@ export default (
     case ActionTypes.DENY_REQUEST:
     case ActionTypes.FRIEND_USER:
     case ActionTypes.DELETE_FRIEND:
+    case ActionTypes.CANCEL_REQUEST:
     case ActionTypes.CREATE_NEW_USER: {
       return { ...state, loading: true, error: null };
     }
@@ -119,6 +120,25 @@ export default (
       });
     }
 
+    case ActionTypes.CANCEL_REQUEST_COMPLETE: {
+      const { from, to } = action.payload;
+
+      return immer(state, draft => {
+        draft.users[from].requestedFriends = _.remove(
+          draft.users[from].requestedFriends,
+          to
+        );
+        draft.users[to].friendRequests = _.remove(
+          draft.users[to].friendRequests,
+          from
+        );
+
+        draft.loading = false;
+
+        return draft;
+      });
+    }
+
     case ActionTypes.DELETE_FRIEND_COMPLETE: {
       const { from, to } = action.payload;
 
@@ -133,7 +153,7 @@ export default (
     }
 
     case ActionTypes.LOAD_USERS: {
-      const { users, complete } = action.payload;
+      const { users, complete = true } = action.payload;
 
       return immer(state, draft => {
         users.forEach(user => {
@@ -324,6 +344,28 @@ function* onDenyRequest(
   }
 }
 
+function* onCancelRequest(
+  action: ExtractActionFromActionCreator<typeof Actions.denyRequest>
+) {
+  const jwt = yield select(selectors.jwt);
+  const phoneNumber = yield select(selectors.phoneNumber);
+
+  try {
+    const { user } = action.payload;
+
+    const res = yield call(
+      client.patch,
+      `/user/${phoneNumber}/cancel/${user.phoneNumber}`,
+      {},
+      { headers: getHeaders({ jwt }) }
+    );
+
+    yield put(Actions.cancelRequestComplete(phoneNumber, user.phoneNumber));
+  } catch (err) {
+    yield put(Actions.onError(err));
+  }
+}
+
 function* onFriendUser(
   action: ExtractActionFromActionCreator<typeof Actions.friendUser>
 ) {
@@ -380,6 +422,7 @@ export function* userSagas() {
     yield takeLatest(ActionTypes.FRIEND_USER, onFriendUser),
     yield takeEvery(ActionTypes.ACCEPT_REQUEST, onAcceptRequest),
     yield takeEvery(ActionTypes.DENY_REQUEST, onDenyRequest),
+    yield takeEvery(ActionTypes.CANCEL_REQUEST, onCancelRequest),
     yield takeEvery(ActionTypes.DELETE_FRIEND, onDeleteFriend)
   ]);
 }
@@ -395,6 +438,8 @@ export enum ActionTypes {
   FRIEND_USER_COMPLETE = "user/FRIEND_USER_COMPLETE",
   ACCEPT_REQUEST = "user/ACCEPT_REQUEST",
   ACCEPT_REQUEST_COMPLETE = "user/ACCEPT_REQUEST_COMPLETE",
+  CANCEL_REQUEST = "user/CANCEL_REQUEST",
+  CANCEL_REQUEST_COMPLETE = "user/CANCEL_REQUEST_COMPLETE",
   DENY_REQUEST = "user/DENY_REQUEST",
   DENY_REQUEST_COMPLETE = "user/DENY_REQUEST_COMPLETE",
   DELETE_FRIEND = "user/DELETE_FRIEND",
@@ -428,6 +473,10 @@ export const Actions = {
     createAction(ActionTypes.ACCEPT_REQUEST, { user }),
   acceptRequestComplete: (from: string, to: string) =>
     createAction(ActionTypes.ACCEPT_REQUEST_COMPLETE, { from, to }),
+  cancelRequest: (user: { phoneNumber: string }) =>
+    createAction(ActionTypes.CANCEL_REQUEST, { user }),
+  cancelRequestComplete: (from: string, to: string) =>
+    createAction(ActionTypes.CANCEL_REQUEST_COMPLETE, { from, to }),
   denyRequest: (user: { phoneNumber: string }) =>
     createAction(ActionTypes.DENY_REQUEST, { user }),
   denyRequestComplete: (from: string, to: string) =>

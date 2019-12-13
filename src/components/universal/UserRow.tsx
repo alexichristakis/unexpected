@@ -27,8 +27,9 @@ export const UserRow: React.FC<UserRowProps> = ({
     <TouchableOpacity onPress={handleOnPress} style={styles.container}>
       <UserImage phoneNumber={user.phoneNumber} size={40} />
       <Text style={styles.name}>{`${user.firstName} ${user.lastName}`}</Text>
-      <View style={{ flex: 1 }} />
-      {actions.map(action => action)}
+      <View style={styles.buttonContainer}>
+        {actions.map(action => action)}
+      </View>
     </TouchableOpacity>
   );
 };
@@ -40,8 +41,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10
   },
-  button: {
-    marginLeft: 10
+  buttonContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end"
   },
   name: {
     ...TextStyles.medium,

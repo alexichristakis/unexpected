@@ -57,7 +57,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
   );
 
   const goToFriends = () => {
-    navigation.navigate("FRIENDS", { user });
+    navigation.navigate({ name: "FRIENDS", key: uuid(), params: { user } });
   };
 
   const renderTop = () => (
