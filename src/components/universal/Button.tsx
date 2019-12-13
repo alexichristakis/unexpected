@@ -4,12 +4,14 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  ViewProps
+  ViewProps,
+  TextStyle
 } from "react-native";
 
 import { Colors, TextStyles } from "@lib/styles";
 
 export interface ButtonProps extends ViewProps {
+  light?: boolean;
   size?: "small" | "medium" | "large";
   disabled?: boolean;
   loading?: boolean;
@@ -18,6 +20,7 @@ export interface ButtonProps extends ViewProps {
 }
 export const Button: React.FC<ButtonProps> = ({
   style,
+  light,
   disabled,
   loading,
   size = "medium",
@@ -26,10 +29,20 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const [touched, onTouch] = useState(false);
 
+  const containerStyle = {
+    borderColor: light ? Colors.lightGray : Colors.nearBlack,
+    borderWidth: light ? 5 : 1
+  };
+
+  const textColor: TextStyle = {
+    color: light ? Colors.lightGray : Colors.nearBlack,
+    fontWeight: light ? "600" : "normal"
+  };
+
   return (
     <TouchableOpacity
       disabled={disabled}
-      style={[styles.container, style]}
+      style={[styles.container, style, containerStyle]}
       onPress={onPress}
       onPressIn={() => onTouch(true)}
       onPressOut={() => onTouch(false)}
@@ -37,7 +50,7 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator />
       ) : (
-        <Text style={TextStyles[size]}>{title}</Text>
+        <Text style={[TextStyles[size], textColor]}>{title}</Text>
       )}
     </TouchableOpacity>
   );
@@ -48,8 +61,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderColor: Colors.nearBlack,
-    borderWidth: 1
+    paddingHorizontal: 30
   }
 });

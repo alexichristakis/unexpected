@@ -77,6 +77,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 
   return (
     <Input
+      light
       size={TextSizes.title}
       textInputRef={setRef}
       style={[styles.textInput, style]}
@@ -102,6 +103,8 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 
 const styles = StyleSheet.create({
   textInput: {
+    // color: "white",
+    // borderBottomColor: "white"
     // marginTop: 40
   }
 });

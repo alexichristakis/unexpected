@@ -11,13 +11,13 @@ import {
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import MaskedView from "@react-native-community/masked-view";
 
 import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
 import { TextStyles, isIPhoneX, SB_HEIGHT } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
+import { useLightStatusBar } from "@hooks";
 
 const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
   ...auth,
@@ -42,6 +42,8 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
   requestAuth,
   checkCode
 }) => {
+  useLightStatusBar();
+
   const handleSubmit = (values: typeof initialFormValues) => {
     if (isAwaitingCode) {
       checkCode(values.phoneNumber, values.code);
@@ -52,46 +54,23 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 
   return (
     <Screen style={styles.container}>
-      <StatusBar barStyle="light-content" />
       <Background />
-      <View
-        style={{
-          position: "absolute",
-          backgroundColor: "white",
-          left: 30,
-          right: 30,
-          top: 90,
-          height: 100
-        }}
-      />
-      <MaskedView
-        style={{
-          position: "absolute",
-          padding: 20,
-          // backgroundColor: "white",
-          top: 50 + SB_HEIGHT(),
-          left: 50,
-          bottom: 50,
-          right: 50
-        }}
-        maskElement={
-          <>
-            <Text
-              style={[TextStyles.title, { fontSize: 40, fontWeight: "500" }]}
-            >
-              expect.photos
-            </Text>
-            <Text style={[TextStyles.large]}>random photo sharing</Text>
-          </>
-        }
-      >
-        <Background />
-      </MaskedView>
       <TouchableOpacity
         activeOpacity={1}
         style={styles.subContainer}
         onPress={Keyboard.dismiss}
       >
+        <Text
+          style={[
+            TextStyles.title,
+            { fontSize: 40, fontWeight: "500", color: "white" }
+          ]}
+        >
+          expect.photos
+        </Text>
+        <Text style={[TextStyles.large, { color: "white" }]}>
+          random photo sharing
+        </Text>
         <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
           {({ values, handleChange, handleSubmit }) => {
             return (
@@ -101,12 +80,6 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
                 style={styles.formFields}
               >
                 <PhoneNumberInput
-                  style={{
-                    backgroundColor: "white",
-                    paddingBottom: 10,
-                    paddingHorizontal: 20,
-                    marginTop: 20
-                  }}
                   loading={loading}
                   error={authError}
                   editable={!isAwaitingCode}
@@ -120,9 +93,10 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
                   onChange={handleChange("code")}
                 />
                 <Button
+                  light
                   disabled={values.phoneNumber.length !== 10}
                   style={styles.button}
-                  size="medium"
+                  size="large"
                   title={isAwaitingCode ? "verify code" : "send text message"}
                   onPress={handleSubmit}
                 />
@@ -145,12 +119,12 @@ const styles = StyleSheet.create({
   subContainer: {
     width: "100%",
     height: "100%",
-    paddingVertical: isIPhoneX ? 100 : 0,
     justifyContent: "space-around",
     backgroundColor: "transparent"
   },
   formFields: {
     flex: 1,
+    paddingTop: 50,
     justifyContent: "space-around"
   },
   button: {

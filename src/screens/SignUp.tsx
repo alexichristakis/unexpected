@@ -15,6 +15,7 @@ import { Button, Input } from "@components/universal";
 import { TextStyles, isIPhoneX } from "@lib/styles";
 import { Actions, UserState as UserStateType } from "@redux/modules/user";
 import { RootState as RootStateType } from "@redux/types";
+import { useDarkStatusBar } from "@hooks";
 
 export interface SignUpReduxProps {
   createUser: typeof Actions.createUser;
@@ -25,6 +26,8 @@ export interface SignUpOwnProps {
 export type SignUpProps = SignUpReduxProps & SignUpOwnProps & UserStateType;
 const initialFormValues = { firstName: "", lastName: "" };
 const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
+  useDarkStatusBar();
+
   const handleSubmit = (values: typeof initialFormValues) => {
     const { firstName, lastName } = values;
     createUser({ firstName, lastName });
@@ -75,6 +78,7 @@ const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
                 />
                 <Button
                   size="medium"
+                  loading={loading}
                   disabled={validate(values)}
                   style={{ marginBottom: 45 }}
                   title="get started"

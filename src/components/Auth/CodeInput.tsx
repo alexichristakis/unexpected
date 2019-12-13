@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Animated, StyleSheet, TextInput } from "react-native";
+import { Animated, StyleSheet, ViewStyle, TextInput } from "react-native";
 
 import { Input } from "@components/universal";
 import { TextSizes, TextStyles } from "@lib/styles";
@@ -7,12 +7,14 @@ import { TextSizes, TextStyles } from "@lib/styles";
 
 export interface CodeInputProps {
   value: string;
+  style?: ViewStyle;
   editable: boolean;
   error?: string;
   onChange: (e: string) => void;
 }
 export const CodeInput: React.FC<CodeInputProps> = ({
   editable,
+  style,
   value,
   onChange,
   error
@@ -49,9 +51,10 @@ export const CodeInput: React.FC<CodeInputProps> = ({
   return (
     <Animated.View
       pointerEvents={editable ? "auto" : "none"}
-      style={animatedStyle}
+      style={[animatedStyle, style]}
     >
       <Input
+        light
         size={TextSizes.title}
         textInputRef={setRef}
         label="enter that code here"
@@ -71,7 +74,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({
 
 const styles = StyleSheet.create({
   textInput: {
-    marginTop: 20
+    // marginTop: 20
   }
 });
 
