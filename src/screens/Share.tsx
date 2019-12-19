@@ -55,7 +55,11 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
           />
           <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
             {({ values, errors, handleChange, handleSubmit }) => (
-              <>
+              <KeyboardAvoidingView
+                enabled={true}
+                behavior="padding"
+                style={styles.form}
+              >
                 <Input
                   size={TextSizes.medium}
                   style={{ marginTop: 20 }}
@@ -63,19 +67,14 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
                   value={values.description}
                   onChangeText={handleChange("description")}
                 />
-                <KeyboardAvoidingView
-                  enabled={true}
-                  behavior="padding"
-                  style={styles.form}
-                >
-                  <Button
-                    style={styles.button}
-                    title="share post"
-                    loading={sending}
-                    onPress={handleSubmit}
-                  />
-                </KeyboardAvoidingView>
-              </>
+
+                <Button
+                  style={styles.button}
+                  title="share post"
+                  loading={sending}
+                  onPress={handleSubmit}
+                />
+              </KeyboardAvoidingView>
             )}
           </Formik>
         </TouchableOpacity>
@@ -98,6 +97,7 @@ const styles = StyleSheet.create({
   },
   form: {
     flex: 1,
+    alignSelf: "stretch",
     justifyContent: "space-around"
   },
   button: {

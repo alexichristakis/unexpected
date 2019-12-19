@@ -11,6 +11,7 @@ import uuid from "uuid/v4";
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
 import { Actions as AuthActions } from "@redux/modules/auth";
+import { Actions as UserActions } from "@redux/modules/user";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -22,7 +23,8 @@ const mapStateToProps = (state: RootState, props: ProfileProps) => ({
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,
-  fetchUsersPosts: PostActions.fetchUsersPosts
+  fetchUsersPosts: PostActions.fetchUsersPosts,
+  fetchUser: UserActions.fetchUser
 };
 
 export type ProfileReduxProps = ReduxPropsType<
@@ -37,6 +39,7 @@ export interface ProfileProps {
 const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
   navigation,
   fetchUsersPosts,
+  fetchUser,
   posts,
   route
 }) => {
@@ -53,7 +56,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
     useCallback(() => {
       StatusBar.setHidden(false);
       fetchUsersPosts(user.phoneNumber);
-    }, [])
+      fetchUser(user.phoneNumber);
+    }, [user.phoneNumber])
   );
 
   const goToFriends = () => {

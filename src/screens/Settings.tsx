@@ -17,10 +17,11 @@ import {
   Button,
   ItemSeparator,
   UserImage,
-  UserRow
+  UserRow,
+  FriendButton
 } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, TextSizes } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
@@ -109,18 +110,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
       const actions = [
-        <Button
-          size="small"
-          title="accept"
-          style={{ paddingVertical: 5, paddingHorizontal: 15 }}
-          onPress={() => acceptRequest(item)}
-        />,
-        <Button
-          size="small"
-          title="delete"
-          style={{ marginLeft: 10, paddingVertical: 5, paddingHorizontal: 15 }}
-          onPress={() => denyRequest(item)}
-        />
+        <FriendButton key="friend" size={TextSizes.small} user={item} />
       ];
 
       return (

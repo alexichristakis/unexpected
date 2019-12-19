@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -9,12 +9,13 @@ import {
   View,
   StatusBar
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/core";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
-import { TextStyles, isIPhoneX, SB_HEIGHT } from "@lib/styles";
+import { TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
 import { useLightStatusBar } from "@hooks";
@@ -24,6 +25,7 @@ const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
   ...ownProps
 });
 const mapDispatchToProps = {
+  reset: AuthActions.reset,
   requestAuth: AuthActions.requestAuth,
   checkCode: AuthActions.checkCode
 };
@@ -37,12 +39,19 @@ export interface AuthOwnProps {}
 const initialFormValues = { phoneNumber: "", code: "" };
 const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
   loading,
+  reset,
   isAwaitingCode,
   authError,
   requestAuth,
   checkCode
 }) => {
   useLightStatusBar();
+
+  useFocusEffect(
+    useCallback(() => {
+      reset();
+    }, [])
+  );
 
   const handleSubmit = (values: typeof initialFormValues) => {
     if (isAwaitingCode) {
@@ -60,17 +69,8 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
         style={styles.subContainer}
         onPress={Keyboard.dismiss}
       >
-        <Text
-          style={[
-            TextStyles.title,
-            { fontSize: 40, fontWeight: "500", color: "white" }
-          ]}
-        >
-          expect.photos
-        </Text>
-        <Text style={[TextStyles.large, { color: "white" }]}>
-          random photo sharing
-        </Text>
+        <Text style={styles.title}>expect.photos</Text>
+        <Text style={styles.subtitle}>random photo sharing</Text>
         <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
           {({ values, handleChange, handleSubmit }) => {
             return (
@@ -126,6 +126,16 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     justifyContent: "space-around"
+  },
+  title: {
+    ...TextStyles.title,
+    fontSize: 40,
+    fontWeight: "500",
+    color: "white"
+  },
+  subtitle: {
+    ...TextStyles.large,
+    color: "white"
   },
   button: {
     marginBottom: 45

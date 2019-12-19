@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { Button, UserImage, FriendButton } from "@components/universal";
-import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
 
 export interface ProfileTopProps {
@@ -97,12 +97,14 @@ export const Top: React.FC<ProfileTopProps> = ({
             <Text
               testID="num-moments"
               style={[TextStyles.large]}
-            >{`${numPosts} moments, `}</Text>
+            >{`${numPosts} ${numPosts === 1 ? "moment" : "moments"}, `}</Text>
             <Text
               testID="friends"
               style={[TextStyles.large]}
               onPress={onPressFriends}
-            >{`${friends.length} friends`}</Text>
+            >{`${friends.length} ${
+              friends.length === 1 ? "friend" : "friends"
+            }`}</Text>
           </View>
         </TouchableOpacity>
         <View style={[styles.row, { marginBottom: isUser ? 0 : 20 }]}>
@@ -120,7 +122,7 @@ export const Top: React.FC<ProfileTopProps> = ({
             )}
           </View>
         </View>
-        {!isUser && <FriendButton user={user} />}
+        {!isUser && <FriendButton showLabel user={user} />}
       </Animated.View>
       <Animated.View style={[styles.header, animatedHeaderStyle]}>
         <Text style={TextStyles.large}>{`${firstName} ${lastName}`}</Text>
@@ -152,7 +154,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
 
     padding: 5,
-    backgroundColor: "red",
+    backgroundColor: Colors.pink,
     justifyContent: "center",
     alignItems: "center"
   },

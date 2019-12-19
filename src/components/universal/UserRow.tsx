@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
+    marginLeft: 10,
     flexDirection: "row",
     justifyContent: "flex-end"
   },

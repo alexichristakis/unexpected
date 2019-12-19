@@ -30,6 +30,7 @@ import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen } from "react-native-screens";
 import { UserType } from "unexpected-cloud/models/user";
 import { StackParamList } from "../../App";
+import { useDarkStatusBar } from "@hooks";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -50,15 +51,12 @@ export const Discover: React.FC<DiscoverProps &
   const [responses, setResponses] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useFocusEffect(
-    () =>
-      // useCallback(() => {
-      StatusBar.setHidden(false)
-    // }, [])
-  );
+  useDarkStatusBar();
 
   const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-    const actions = [<FriendButton key="friend" user={item} />];
+    const actions = [
+      <FriendButton key="friend" size={TextSizes.small} user={item} />
+    ];
 
     return (
       <UserRow

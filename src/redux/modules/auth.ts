@@ -50,6 +50,10 @@ export default (
       else return { ...initialState };
     }
 
+    case ActionTypes.RESET: {
+      return { ...initialState };
+    }
+
     case ActionTypes.CHECK_CODE:
     case ActionTypes.REQUEST_AUTH: {
       const { phoneNumber } = action.payload;
@@ -171,6 +175,7 @@ export enum ActionTypes {
   ERROR_REQUESTING_AUTH = "auth/ERROR_REQUESTING_AUTH",
   SUCCESS_TEXTING_CODE = "auth/SUCCESS_TEXTING_CODE",
   SET_JWT = "auth/SET_JWT",
+  RESET = "auth/RESET",
   LOGOUT = "auth/LOGOUT"
 }
 
@@ -183,5 +188,6 @@ export const Actions = {
     createAction(ActionTypes.ERROR_REQUESTING_AUTH, { err }),
   successTextingCode: () => createAction(ActionTypes.SUCCESS_TEXTING_CODE),
   setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt),
+  reset: () => createAction(ActionTypes.RESET),
   logout: () => createAction(ActionTypes.LOGOUT)
 };

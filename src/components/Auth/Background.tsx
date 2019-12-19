@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Animated, StyleSheet } from "react-native";
+import { View, StatusBar, Animated, StyleSheet } from "react-native";
 
-import { SCREEN_HEIGHT } from "@lib/styles";
+import { Colors, SCREEN_HEIGHT } from "@lib/styles";
 
 const CIRCLE_SIZE = 2 * SCREEN_HEIGHT;
 
-export const Background = () => {
+export const Background = React.memo(() => {
   const [animatedValues] = useState([
     new Animated.Value(0),
     new Animated.Value(0),
@@ -62,7 +62,7 @@ export const Background = () => {
         ],
         backgroundColor: value.interpolate({
           inputRange: [0, 2],
-          outputRange: ["#4904FF", "#D31EB6"]
+          outputRange: [Colors.purple, Colors.pink]
         }),
         // opacity: 0.2
         opacity: value.interpolate({
@@ -75,10 +75,11 @@ export const Background = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
       {animatedValues.map((value, i) => renderCircle(value, i))}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

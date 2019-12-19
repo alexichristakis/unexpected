@@ -76,10 +76,16 @@ const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
             ) : image ? (
               <View style={styles.buttonContainer}>
                 <Button title="try again" onPress={clearPhoto} />
-                <Button title="looks good" onPress={onLooksGood} />
+                <Button
+                  style={{ marginLeft: 10 }}
+                  title="looks good"
+                  onPress={onLooksGood}
+                />
               </View>
             ) : (
-              <Button title="take photo" onPress={onTakePhoto} />
+              <View style={styles.buttonContainer}>
+                <Button title="take photo" onPress={onTakePhoto} />
+              </View>
             )}
           </View>
         </View>

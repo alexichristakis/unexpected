@@ -23,6 +23,7 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
+import immer from "immer";
 
 import {
   ActionsUnion,
@@ -34,7 +35,7 @@ import { Actions as UserActions } from "./user";
 
 export interface AppState {
   appStatus: AppStatusType;
-  networkStatus: NetInfoState;
+  networkStatus: NetInfoState & { backendReachable: boolean };
   camera: {
     enabled: boolean;
     timeOfExpiry?: Moment;
@@ -45,6 +46,7 @@ const initialState: AppState = {
   appStatus: "active",
   networkStatus: {
     type: NetInfoStateType.unknown,
+    backendReachable: true,
     isConnected: false,
     isInternetReachable: false,
     details: null
@@ -79,7 +81,11 @@ export default (
     case ActionTypes.SET_NET_INFO: {
       const { netInfo } = action.payload;
 
-      return { ...state, networkStatus: netInfo };
+      return immer(state, draft => {
+        draft.networkStatus = { ...draft.networkStatus, ...netInfo };
+
+        return draft;
+      });
     }
 
     default:

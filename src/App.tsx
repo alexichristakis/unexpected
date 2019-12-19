@@ -104,17 +104,17 @@ const HomeTab: React.FC<Props> = ({
     <Stack.Navigator {...rest}>
       <Stack.Screen name={name} options={screenOptions} component={Root} />
       <Stack.Screen
-        name={"PROFILE"}
+        name="PROFILE"
         options={screenOptions}
         component={Profile}
       />
       <Stack.Screen
-        name={"FRIENDS"}
+        name="FRIENDS"
         options={screenOptions}
         component={Friends}
       />
       <Stack.Screen
-        name={"POST"}
+        name="POST"
         options={screenOptions}
         component={PostDetail}
       />
@@ -135,7 +135,7 @@ const Router: React.FC = () => {
 
   const AuthenticatedRoot = () => (
     <Stack.Navigator screenOptions={{ presentation: "modal" }}>
-      <Stack.Screen name={"HOME"} options={{ headerShown: false }}>
+      <Stack.Screen name="HOME" options={{ headerShown: false }}>
         {rootStackScreenProps => {
           // dont keep this
           rootStackScreenProps.navigation.addListener("focus", () =>
@@ -202,7 +202,7 @@ const Router: React.FC = () => {
         }}
       </Stack.Screen>
       <Stack.Screen
-        name={"NEW_PROFILE_PICTURE"}
+        name="NEW_PROFILE_PICTURE"
         component={NewProfilePicture}
         options={{
           headerTitle: "share",
@@ -216,11 +216,11 @@ const Router: React.FC = () => {
         }}
       />
 
-      <Stack.Screen name={"CAPTURE"}>
+      <Stack.Screen name="CAPTURE">
         {({ route }) => (
           <Stack.Navigator>
             <Stack.Screen
-              name={"CAPTURE"}
+              name="CAPTURE"
               options={{
                 headerTitle: "capture",
                 headerTitleStyle: TextStyles.large,
@@ -235,7 +235,7 @@ const Router: React.FC = () => {
               )}
             </Stack.Screen>
             <Stack.Screen
-              name={"SHARE"}
+              name="SHARE"
               component={Share}
               options={{
                 headerTitle: "share",
@@ -251,21 +251,21 @@ const Router: React.FC = () => {
           </Stack.Navigator>
         )}
       </Stack.Screen>
-      <Stack.Screen name={"SETTINGS"} component={Settings} />
-      <Stack.Screen name={"PERMISSIONS"} component={Permissions} />
-      <Stack.Screen name={"EDIT_BIO"} component={EditBio} />
+      <Stack.Screen name="SETTINGS" component={Settings} />
+      <Stack.Screen name="PERMISSIONS" component={Permissions} />
+      <Stack.Screen name="EDIT_BIO" component={EditBio} />
     </Stack.Navigator>
   );
 
   const UnathenticatedRoot = () => (
     <Stack.Navigator>
       <Stack.Screen
-        name={"AUTH"}
+        name="AUTH"
         options={{ headerShown: false }}
         component={Auth}
       />
       <Stack.Screen
-        name={"SIGN_UP"}
+        name="SIGN_UP"
         options={{ headerShown: false }}
         component={SignUp}
       />
@@ -314,7 +314,7 @@ const App: React.FC = () => {
   return (
     <Context>
       <Router />
-      {/* <Connection /> */}
+      <Connection />
     </Context>
   );
 };

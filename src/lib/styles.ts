@@ -31,6 +31,8 @@ export const Colors = {
   nearBlack: "rgb(10, 10, 10)",
   gray: "rgb(120,120,120)",
   lightGray: "rgb(245, 245, 245)",
+  purple: "#4904FF",
+  pink: "#D31EB6",
   red: "rgb(255, 0, 0)",
   yellow: "rgb(0, 0, 0)",
   green: "rgb(0, 255, 0)"

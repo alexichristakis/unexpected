@@ -8,11 +8,11 @@ import {
   TextStyle
 } from "react-native";
 
-import { Colors, TextStyles } from "@lib/styles";
+import { Colors, TextStyles, TextSizes } from "@lib/styles";
 
 export interface ButtonProps extends ViewProps {
   light?: boolean;
-  size?: "small" | "medium" | "large";
+  size?: TextSizes;
   disabled?: boolean;
   loading?: boolean;
   title: string;
@@ -58,9 +58,10 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    alignSelf: "stretch",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 30
+    paddingVertical: 10
+    // paddingHorizontal: 30
   }
 });

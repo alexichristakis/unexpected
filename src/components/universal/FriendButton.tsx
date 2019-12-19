@@ -7,7 +7,7 @@ import { Actions as UserActions } from "@redux/modules/user";
 import { ReduxPropsType, RootState } from "@redux/types";
 import * as selectors from "@redux/selectors";
 import { Button } from "./Button";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, TextSizes } from "@lib/styles";
 
 const mapStateToProps = (state: RootState) => ({
   currentUser: selectors.user(state)
@@ -27,12 +27,16 @@ export type FriendButtonReduxProps = ReduxPropsType<
 
 export interface FriendButtonProps {
   user: UserType;
+  showLabel?: boolean;
+  size?: TextSizes;
   style?: ViewStyle;
 }
 
 const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   style,
+  showLabel,
   user,
+  size = TextSizes.medium,
   currentUser,
   sendFriendRequest,
   cancelFriendRequest,
@@ -89,6 +93,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
     if (state !== "received")
       return (
         <Button
+          size={size}
           style={[styles.button, style]}
           title={title(state)}
           onPress={action(state)}
@@ -96,28 +101,26 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
       );
     else
       return (
-        <View style={styles.buttonContainer}>
-          <Text
-            style={TextStyles.medium}
-          >{`${user.firstName} wants to be friends`}</Text>
-          <Button
-            style={[
-              styles.button,
-              { paddingVertical: 5, paddingHorizontal: 15 }
-            ]}
-            size="small"
-            title="accept"
-            onPress={() => acceptRequest(user)}
-          />
-          <Button
-            style={[
-              styles.button,
-              { marginLeft: 5, paddingVertical: 5, paddingHorizontal: 15 }
-            ]}
-            size="small"
-            title="delete"
-            onPress={() => denyRequest(user)}
-          />
+        <View style={styles.flex}>
+          {showLabel && (
+            <Text
+              style={styles.label}
+            >{`${user.firstName} wants to be friends:`}</Text>
+          )}
+          <View style={styles.buttonContainer}>
+            <Button
+              style={styles.button}
+              size={size}
+              title="accept"
+              onPress={() => acceptRequest(user)}
+            />
+            <Button
+              style={[styles.button, { marginLeft: 10 }]}
+              size={size}
+              title="delete"
+              onPress={() => denyRequest(user)}
+            />
+          </View>
         </View>
       );
   }
@@ -125,14 +128,21 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
 };
 
 const styles = StyleSheet.create({
+  flex: { flex: 1, width: "100%" },
   buttonContainer: {
+    flex: 1,
     width: "100%",
     alignItems: "center",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     flexDirection: "row"
   },
+  label: {
+    ...TextStyles.medium,
+    marginBottom: 10
+  },
   button: {
-    alignSelf: "stretch"
+    flex: 1
+    // alignSelf: "stretch"
   }
 });
 

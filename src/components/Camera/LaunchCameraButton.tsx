@@ -38,6 +38,7 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
     >();
 
     useEffect(() => {
+      console.log("getFill", getFill());
       if (enabled && getFill() < 100) {
         setVisible(true);
 
@@ -65,14 +66,18 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
       navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
 
     const getFill = () => {
-      return 100 - (moment(timeOfExpiry).diff(moment(), "seconds") / 60) * 10;
+      console.log(
+        "in get fill:",
+        moment(timeOfExpiry).diff(moment(), "seconds") / 60
+      );
+      return 100 - moment(timeOfExpiry).diff(moment(), "seconds") / 60;
     };
 
     const expireButton = () => {
       if (
         enabled &&
         timeOfExpiry &&
-        moment(timeOfExpiry).diff(moment(), "seconds") < 0
+        moment().diff(timeOfExpiry, "seconds") <= 0
       ) {
         expireCamera();
       }
@@ -93,7 +98,7 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
             <AnimatedCircularProgress
               ref={setRef}
               prefill={getFill()}
-              fill={getFill()}
+              // fill={getFill()}
               rotation={0}
               tintColor="black"
               backgroundColor="transparent"
