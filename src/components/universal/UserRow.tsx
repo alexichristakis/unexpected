@@ -4,8 +4,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextStyles } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
 import { Button } from "./Button";
-import UserImage from "./UserImage";
 import FriendButton from "./FriendButton";
+import UserImage from "./UserImage";
 
 export interface UserRowProps {
   // actions?: Array<{ title: string; onPress: () => void }>;

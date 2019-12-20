@@ -7,7 +7,7 @@ import {
   View
 } from "react-native";
 
-import { Button, UserImage, FriendButton } from "@components/universal";
+import { Button, FriendButton, UserImage } from "@components/universal";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
 
@@ -122,7 +122,7 @@ export const Top: React.FC<ProfileTopProps> = ({
             )}
           </View>
         </View>
-        {!isUser && <FriendButton showLabel user={user} />}
+        {!isUser && <FriendButton showLabel={true} user={user} />}
       </Animated.View>
       <Animated.View style={[styles.header, animatedHeaderStyle]}>
         <Text style={TextStyles.large}>{`${firstName} ${lastName}`}</Text>

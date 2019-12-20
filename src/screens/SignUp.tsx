@@ -12,10 +12,10 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Button, Input } from "@components/universal";
-import { TextStyles, isIPhoneX } from "@lib/styles";
+import { useDarkStatusBar } from "@hooks";
+import { isIPhoneX, TextStyles } from "@lib/styles";
 import { Actions, UserState as UserStateType } from "@redux/modules/user";
 import { RootState as RootStateType } from "@redux/types";
-import { useDarkStatusBar } from "@hooks";
 
 export interface SignUpReduxProps {
   createUser: typeof Actions.createUser;

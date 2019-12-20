@@ -1,14 +1,14 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   ListRenderItemInfo,
   NativeSyntheticEvent,
+  StatusBar,
   StyleSheet,
   Text,
   TextInputSubmitEditingEventData,
-  View,
-  StatusBar
+  View
 } from "react-native";
 
 import client, { getHeaders } from "@api";
@@ -18,11 +18,12 @@ import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
 import {
+  FriendButton,
   Input,
   ItemSeparator,
-  UserRow,
-  FriendButton
+  UserRow
 } from "@components/universal";
+import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT, TextSizes, TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
@@ -30,7 +31,6 @@ import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen } from "react-native-screens";
 import { UserType } from "unexpected-cloud/models/user";
 import { StackParamList } from "../../App";
-import { useDarkStatusBar } from "@hooks";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),

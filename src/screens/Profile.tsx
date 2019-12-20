@@ -10,13 +10,13 @@ import uuid from "uuid/v4";
 
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
+import { SB_HEIGHT } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
-import { Actions as UserActions } from "@redux/modules/user";
 import { Actions as PostActions } from "@redux/modules/post";
+import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
-import { SB_HEIGHT } from "@lib/styles";
 
 const mapStateToProps = (state: RootState, props: ProfileProps) => ({
   posts: selectors.usersPosts(state, props.route.params.user)

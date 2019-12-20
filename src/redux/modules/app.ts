@@ -2,6 +2,7 @@ import NetInfo, {
   NetInfoState,
   NetInfoStateType
 } from "@react-native-community/netinfo";
+import immer from "immer";
 import moment, { Moment } from "moment";
 import {
   AppState as AppStatus,
@@ -22,8 +23,8 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import immer from "immer";
 
+import * as selectors from "../selectors";
 import {
   ActionsUnion,
   createAction,
@@ -31,7 +32,6 @@ import {
 } from "../utils";
 import { ActionTypes as PermissionsActionTypes } from "./permissions";
 import { Actions as UserActions } from "./user";
-import * as selectors from "../selectors";
 
 export interface AppState {
   appStatus: AppStatusType;

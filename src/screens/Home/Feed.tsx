@@ -20,7 +20,7 @@ import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
 import { Top } from "@components/Feed";
-import { Post, Button } from "@components/universal";
+import { Button, Post } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";

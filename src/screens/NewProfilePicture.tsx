@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import Camera, { Shutter } from "@components/Camera";
 import { Button, Input, PendingPostImage } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { TextStyles, SCREEN_WIDTH } from "@lib/styles";
+import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";

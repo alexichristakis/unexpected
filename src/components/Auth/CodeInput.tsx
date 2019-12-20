@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Animated, StyleSheet, ViewStyle, TextInput } from "react-native";
+import { Animated, StyleSheet, TextInput, ViewStyle } from "react-native";
 
 import { Input } from "@components/universal";
 import { TextSizes, TextStyles } from "@lib/styles";
@@ -54,7 +54,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({
       style={[animatedStyle, style]}
     >
       <Input
-        light
+        light={true}
         size={TextSizes.title}
         textInputRef={setRef}
         label="enter that code here"

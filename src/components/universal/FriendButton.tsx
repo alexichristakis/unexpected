@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { StyleSheet, ViewStyle, View, Text } from "react-native";
+import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { connect } from "react-redux";
 import { UserType } from "unexpected-cloud/models/user";
 
+import { TextSizes, TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
-import { ReduxPropsType, RootState } from "@redux/types";
 import * as selectors from "@redux/selectors";
+import { ReduxPropsType, RootState } from "@redux/types";
 import { Button } from "./Button";
-import { TextStyles, TextSizes } from "@lib/styles";
 
 const mapStateToProps = (state: RootState) => ({
   currentUser: selectors.user(state)
@@ -124,6 +124,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
         </View>
       );
   }
+
   return null;
 };
 

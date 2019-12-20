@@ -10,8 +10,8 @@ export * from "./UserRow";
 export * from "./ItemSeparator";
 export * from "./FriendButton";
 
+import FriendButton from "./FriendButton";
 import PostImage from "./PostImage";
 import UserImage from "./UserImage";
-import FriendButton from "./FriendButton";
 
 export { UserImage, PostImage, FriendButton };

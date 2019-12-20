@@ -15,13 +15,13 @@ import uuid from "uuid/v4";
 
 import {
   Button,
+  FriendButton,
   ItemSeparator,
   UserImage,
-  UserRow,
-  FriendButton
+  UserRow
 } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { TextStyles, TextSizes } from "@lib/styles";
+import { TextSizes, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";

@@ -1,24 +1,24 @@
+import { useFocusEffect } from "@react-navigation/core";
 import { Formik } from "formik";
 import React, { useCallback } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  StatusBar
+  View
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/core";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
+import { useLightStatusBar } from "@hooks";
 import { TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
-import { useLightStatusBar } from "@hooks";
 
 const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
   ...auth,
@@ -93,7 +93,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
                   onChange={handleChange("code")}
                 />
                 <Button
-                  light
+                  light={true}
                   disabled={values.phoneNumber.length !== 10}
                   style={styles.button}
                   size="large"

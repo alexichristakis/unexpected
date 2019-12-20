@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StatusBar, Animated, StyleSheet } from "react-native";
+import { Animated, StatusBar, StyleSheet, View } from "react-native";
 
 import { Colors, SCREEN_HEIGHT } from "@lib/styles";
 

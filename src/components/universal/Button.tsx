@@ -3,12 +3,12 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
-  ViewProps,
-  TextStyle
+  ViewProps
 } from "react-native";
 
-import { Colors, TextStyles, TextSizes } from "@lib/styles";
+import { Colors, TextSizes, TextStyles } from "@lib/styles";
 
 export interface ButtonProps extends ViewProps {
   light?: boolean;

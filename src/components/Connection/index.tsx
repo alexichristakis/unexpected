@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Animated, Text, StyleSheet } from "react-native";
+import { Animated, StyleSheet, Text } from "react-native";
 import { connect } from "react-redux";
 
 import { Colors, TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
-import { RootState, ReduxPropsType } from "@redux/types";
+import { ReduxPropsType, RootState } from "@redux/types";
 
 const mapStateToProps = (state: RootState) => ({
   isConnected: selectors.isConnected(state),

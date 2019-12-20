@@ -70,6 +70,7 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
         "in get fill:",
         moment(timeOfExpiry).diff(moment(), "seconds") / 60
       );
+
       return 100 - moment(timeOfExpiry).diff(moment(), "seconds") / 60;
     };
 
