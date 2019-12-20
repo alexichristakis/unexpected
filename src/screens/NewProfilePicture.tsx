@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import Camera, { Shutter } from "@components/Camera";
 import { Button, Input, PendingPostImage } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, SCREEN_WIDTH } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -59,36 +59,41 @@ const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
 
     return (
       <Screen style={styles.container}>
-        <Text style={[TextStyles.medium, styles.header]}>
-          change profile picture:
-        </Text>
-        <View style={styles.center}>
-          <View style={{ flex: 4 }}>
-            {image ? (
-              <PendingPostImage round={true} size={300} source={image} />
-            ) : (
-              <Camera front={true} round={true} size={300} ref={setCamera} />
-            )}
+        {image ? (
+          <PendingPostImage
+            style={styles.photo}
+            round={true}
+            size={SCREEN_WIDTH - 40}
+            source={image}
+          />
+        ) : (
+          <Camera
+            style={styles.photo}
+            front={true}
+            round={true}
+            size={SCREEN_WIDTH - 40}
+            ref={setCamera}
+          />
+        )}
+
+        {uploading ? (
+          <Text style={TextStyles.medium}>uploading...</Text>
+        ) : image ? (
+          <View style={styles.buttonContainer}>
+            <Button
+              title="try again"
+              style={{ marginBottom: 20 }}
+              onPress={clearPhoto}
+            />
+            <Button
+              // style={{ marginLeft: 10 }}
+              title="looks good"
+              onPress={onLooksGood}
+            />
           </View>
-          <View style={{ flex: 1, alignSelf: "stretch" }}>
-            {uploading ? (
-              <Text style={TextStyles.medium}>uploading...</Text>
-            ) : image ? (
-              <View style={styles.buttonContainer}>
-                <Button title="try again" onPress={clearPhoto} />
-                <Button
-                  style={{ marginLeft: 10 }}
-                  title="looks good"
-                  onPress={onLooksGood}
-                />
-              </View>
-            ) : (
-              <View style={styles.buttonContainer}>
-                <Button title="take photo" onPress={onTakePhoto} />
-              </View>
-            )}
-          </View>
-        </View>
+        ) : (
+          <Button title="take a new profile photo" onPress={onTakePhoto} />
+        )}
       </Screen>
     );
   }
@@ -98,19 +103,22 @@ const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20
+    alignSelf: "stretch",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 100
     // alignItems: "center"
   },
+  photo: {
+    // alignSelf: ""
+  },
   buttonContainer: {
-    flexDirection: "row",
-    alignSelf: "stretch",
-    justifyContent: "space-around"
+    alignSelf: "stretch"
+    // justifyContent: "space-around"
   },
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "space-around"
-  },
+  center: {},
   camera: {
     width: 200,
     height: 200

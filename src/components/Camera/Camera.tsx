@@ -25,7 +25,6 @@ export interface CameraState {
 }
 
 class Camera extends React.Component<CameraProps, CameraState> {
-
   private camera = React.createRef<RNCamera>();
   constructor(props: CameraProps) {
     super(props);
@@ -89,7 +88,8 @@ class Camera extends React.Component<CameraProps, CameraState> {
     return (
       <View
         style={[
-          { overflow: "hidden", borderRadius: round && !!size ? size / 2 : 0 }
+          { overflow: "hidden", borderRadius: round && !!size ? size / 2 : 0 },
+          style
         ]}
       >
         <TouchableWithoutFeedback onPress={this.handleOnPress}>
