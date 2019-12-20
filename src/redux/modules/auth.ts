@@ -65,7 +65,7 @@ export default (
       return { ...state, loading: false, authError: action.payload.err };
     }
 
-    case ActionTypes.SUCCESS_TEXTING_CODE: {
+    case ActionTypes.TEXT_CODE_SUCCESS: {
       return { ...state, loading: false, isAwaitingCode: true, authError: "" };
     }
 
@@ -141,7 +141,7 @@ function* onVerifyCodeRequest(
             yield put(
               batchActions(
                 [
-                  UserActions.createUserComplete(data.user),
+                  UserActions.createUserSuccess(data.user),
                   Actions.setJWT(data.token)
                 ],
                 BATCH
@@ -173,7 +173,7 @@ export enum ActionTypes {
   REQUEST_AUTH = "auth/REQUEST_AUTH",
   CHECK_CODE = "auth/CHECK_CODE",
   ERROR_REQUESTING_AUTH = "auth/ERROR_REQUESTING_AUTH",
-  SUCCESS_TEXTING_CODE = "auth/SUCCESS_TEXTING_CODE",
+  TEXT_CODE_SUCCESS = "auth/TEXT_CODE_SUCCESS",
   SET_JWT = "auth/SET_JWT",
   RESET = "auth/RESET",
   LOGOUT = "auth/LOGOUT"
@@ -186,7 +186,7 @@ export const Actions = {
     createAction(ActionTypes.CHECK_CODE, { phoneNumber, code }),
   errorRequestingAuth: (err: string) =>
     createAction(ActionTypes.ERROR_REQUESTING_AUTH, { err }),
-  successTextingCode: () => createAction(ActionTypes.SUCCESS_TEXTING_CODE),
+  successTextingCode: () => createAction(ActionTypes.TEXT_CODE_SUCCESS),
   setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt),
   reset: () => createAction(ActionTypes.RESET),
   logout: () => createAction(ActionTypes.LOGOUT)

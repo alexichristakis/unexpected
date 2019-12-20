@@ -5,8 +5,7 @@ import NetInfo, {
 import moment, { Moment } from "moment";
 import {
   AppState as AppStatus,
-  AppStateStatus as AppStatusType,
-  StatusBar
+  AppStateStatus as AppStatusType
 } from "react-native";
 import PushNotifications, {
   PushNotification
@@ -32,6 +31,7 @@ import {
 } from "../utils";
 import { ActionTypes as PermissionsActionTypes } from "./permissions";
 import { Actions as UserActions } from "./user";
+import * as selectors from "../selectors";
 
 export interface AppState {
   appStatus: AppStatusType;
@@ -83,6 +83,22 @@ export default (
 
       return immer(state, draft => {
         draft.networkStatus = { ...draft.networkStatus, ...netInfo };
+
+        return draft;
+      });
+    }
+
+    case ActionTypes.NETWORK_OFFLINE: {
+      return immer(state, draft => {
+        draft.networkStatus.backendReachable = false;
+
+        return draft;
+      });
+    }
+
+    case ActionTypes.NETWORK_ONLINE: {
+      return immer(state, draft => {
+        draft.networkStatus.backendReachable = true;
 
         return draft;
       });
@@ -179,6 +195,28 @@ function* onRegisterNotifications() {
   }
 }
 
+function* onBackendOffline() {
+  const backendReachable = yield select(selectors.isBackendReachable);
+
+  if (backendReachable) {
+    yield put(Actions.networkError());
+  }
+}
+
+function* onBackendOnline() {
+  const backendReachable = yield select(selectors.isBackendReachable);
+
+  if (!backendReachable) {
+    yield put(Actions.networkSuccess());
+  }
+}
+
+const NETWORK_SUCCESS_PATTERN = (action: ActionsUnion<typeof Actions>) =>
+  /^.*\/.*_SUCCESS/.test(action.type);
+
+const NETWORK_ERROR_PATTERN = (action: ActionsUnion<typeof Actions>) =>
+  /^.*\/ERROR.*/.test(action.type);
+
 export function* appSagas() {
   yield all([
     yield takeEvery(REHYDRATE, onStartup),
@@ -186,7 +224,9 @@ export function* appSagas() {
     yield takeLatest(
       PermissionsActionTypes.SET_NOTIFICATIONS,
       onRegisterNotifications
-    )
+    ),
+    yield takeEvery(NETWORK_SUCCESS_PATTERN, onBackendOnline),
+    yield takeEvery(NETWORK_ERROR_PATTERN, onBackendOffline)
   ]);
 }
 
@@ -197,7 +237,9 @@ export enum ActionTypes {
   SET_CAMERA_TIMER = "app/SET_CAMERA_TIMER",
   EXPIRE_CAMERA = "app/EXPIRE_CAMERA",
   SET_APP_STATUS = "app/SET_APP_STATUS",
-  SET_NET_INFO = "app/SET_NET_INFO"
+  SET_NET_INFO = "app/SET_NET_INFO",
+  NETWORK_OFFLINE = "app/NETWORK_OFFLINE",
+  NETWORK_ONLINE = "app/NETWORK_ONLINE"
 }
 
 export const Actions = {
@@ -209,5 +251,7 @@ export const Actions = {
   setAppStatus: (status: AppStatusType) =>
     createAction(ActionTypes.SET_APP_STATUS, { status }),
   setNetInfo: (netInfo: NetInfoState) =>
-    createAction(ActionTypes.SET_NET_INFO, { netInfo })
+    createAction(ActionTypes.SET_NET_INFO, { netInfo }),
+  networkSuccess: () => createAction(ActionTypes.NETWORK_ONLINE),
+  networkError: () => createAction(ActionTypes.NETWORK_OFFLINE)
 };

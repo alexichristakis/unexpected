@@ -245,7 +245,7 @@ export enum ActionTypes {
   FETCH_FEED_SUCCESS = "post/FETCH_FEED_SUCCESS",
   SEND_POST = "post/SEND_POST",
   SEND_POST_SUCCESS = "post/SEND_POST_SUCCESS",
-  ON_ERROR = "post/ON_ERROR"
+  ON_ERROR = "post/ERROR"
 }
 
 export const Actions = {

@@ -55,7 +55,7 @@ export default (
       return { ...state, loading: true, error: null };
     }
 
-    case ActionTypes.CREATE_USER_COMPLETE: {
+    case ActionTypes.CREATE_USER_SUCCESS: {
       const { user } = action.payload;
 
       return immer(state, draft => {
@@ -67,7 +67,7 @@ export default (
       });
     }
 
-    case ActionTypes.FRIEND_USER_COMPLETE: {
+    case ActionTypes.FRIEND_USER_SUCCESS: {
       const { from, to } = action.payload;
 
       return immer(state, draft => {
@@ -79,7 +79,7 @@ export default (
       });
     }
 
-    case ActionTypes.ACCEPT_REQUEST_COMPLETE: {
+    case ActionTypes.ACCEPT_REQUEST_SUCCESS: {
       const { from, to } = action.payload;
 
       return immer(state, draft => {
@@ -101,7 +101,7 @@ export default (
       });
     }
 
-    case ActionTypes.DENY_REQUEST_COMPLETE: {
+    case ActionTypes.DENY_REQUEST_SUCCESS: {
       const { from, to } = action.payload;
 
       return immer(state, draft => {
@@ -120,7 +120,7 @@ export default (
       });
     }
 
-    case ActionTypes.CANCEL_REQUEST_COMPLETE: {
+    case ActionTypes.CANCEL_REQUEST_SUCCESS: {
       const { from, to } = action.payload;
 
       return immer(state, draft => {
@@ -139,7 +139,7 @@ export default (
       });
     }
 
-    case ActionTypes.DELETE_FRIEND_COMPLETE: {
+    case ActionTypes.DELETE_FRIEND_SUCCESS: {
       const { from, to } = action.payload;
 
       return immer(state, draft => {
@@ -229,7 +229,7 @@ function* onCreateUser(
 
   if (phoneNumber === "0000000000") {
     yield all([
-      yield put(Actions.createUserComplete(newUser)),
+      yield put(Actions.createUserSuccess(newUser)),
       yield Navigation.navigate("AUTHENTICATED")
     ]);
   } else
@@ -245,7 +245,7 @@ function* onCreateUser(
       const { data: createdUser } = res;
 
       yield all([
-        yield put(Actions.createUserComplete(createdUser)),
+        yield put(Actions.createUserSuccess(createdUser)),
         yield Navigation.navigate("AUTHENTICATED")
       ]);
     } catch (err) {
@@ -316,7 +316,7 @@ function* onAcceptRequest(
       { headers: getHeaders({ jwt }) }
     );
 
-    yield put(Actions.acceptRequestComplete(phoneNumber, user.phoneNumber));
+    yield put(Actions.acceptRequestSuccess(phoneNumber, user.phoneNumber));
   } catch (err) {
     yield put(Actions.onError(err));
   }
@@ -338,7 +338,7 @@ function* onDenyRequest(
       { headers: getHeaders({ jwt }) }
     );
 
-    yield put(Actions.denyRequestComplete(phoneNumber, user.phoneNumber));
+    yield put(Actions.denyRequestSuccess(phoneNumber, user.phoneNumber));
   } catch (err) {
     yield put(Actions.onError(err));
   }
@@ -360,7 +360,7 @@ function* onCancelRequest(
       { headers: getHeaders({ jwt }) }
     );
 
-    yield put(Actions.cancelRequestComplete(phoneNumber, user.phoneNumber));
+    yield put(Actions.cancelRequestSuccess(phoneNumber, user.phoneNumber));
   } catch (err) {
     yield put(Actions.onError(err));
   }
@@ -383,7 +383,7 @@ function* onFriendUser(
       }
     );
 
-    yield put(Actions.friendComplete(phoneNumber, user.phoneNumber));
+    yield put(Actions.friendSuccess(phoneNumber, user.phoneNumber));
   } catch (err) {
     yield put(Actions.onError(err));
   }
@@ -406,7 +406,7 @@ function* onDeleteFriend(
       }
     );
 
-    yield put(Actions.deleteFriendComplete(phoneNumber, user.phoneNumber));
+    yield put(Actions.deleteFriendSuccess(phoneNumber, user.phoneNumber));
   } catch (err) {
     yield put(Actions.onError(err));
   }
@@ -429,24 +429,23 @@ export function* userSagas() {
 
 export enum ActionTypes {
   CREATE_NEW_USER = "user/CREATE_NEW_USER",
-  CREATE_USER_COMPLETE = "user/CREATE_USER_COMPLETE",
+  CREATE_USER_SUCCESS = "user/CREATE_USER_SUCCESS",
   FETCH_USER = "user/FETCH_USER",
   FETCH_USERS = "user/FETCH_USERS",
   UPDATE_USER = "user/UPDATE_USER",
-  UPDATE_COMPLETE = "user/UPDATE_COMPLETE",
   FRIEND_USER = "user/FRIEND_USER",
-  FRIEND_USER_COMPLETE = "user/FRIEND_USER_COMPLETE",
+  FRIEND_USER_SUCCESS = "user/FRIEND_USER_SUCCESS",
   ACCEPT_REQUEST = "user/ACCEPT_REQUEST",
-  ACCEPT_REQUEST_COMPLETE = "user/ACCEPT_REQUEST_COMPLETE",
+  ACCEPT_REQUEST_SUCCESS = "user/ACCEPT_REQUEST_SUCCESS",
   CANCEL_REQUEST = "user/CANCEL_REQUEST",
-  CANCEL_REQUEST_COMPLETE = "user/CANCEL_REQUEST_COMPLETE",
+  CANCEL_REQUEST_SUCCESS = "user/CANCEL_REQUEST_SUCCESS",
   DENY_REQUEST = "user/DENY_REQUEST",
-  DENY_REQUEST_COMPLETE = "user/DENY_REQUEST_COMPLETE",
+  DENY_REQUEST_SUCCESS = "user/DENY_REQUEST_SUCCESS",
   DELETE_FRIEND = "user/DELETE_FRIEND",
-  DELETE_FRIEND_COMPLETE = "user/DELETE_FRIEND_COMPLETE",
+  DELETE_FRIEND_SUCCESS = "user/DELETE_FRIEND_SUCCESS",
   // FETCH_FRIENDS = "user/FETCH_FRIENDS",
   LOAD_USERS = "user/LOAD_USERS",
-  ON_ERROR = "user/ON_ERROR"
+  ON_ERROR = "user/ERROR"
 }
 
 export const Actions = {
@@ -456,35 +455,34 @@ export const Actions = {
     createAction(ActionTypes.FETCH_USERS, { phoneNumbers, selectOn }),
   createUser: (name: { firstName: string; lastName: string }) =>
     createAction(ActionTypes.CREATE_NEW_USER, { name }),
-  createUserComplete: (user: UserType) =>
-    createAction(ActionTypes.CREATE_USER_COMPLETE, { user }),
+  createUserSuccess: (user: UserType) =>
+    createAction(ActionTypes.CREATE_USER_SUCCESS, { user }),
   loadUsers: (users: UserType[], complete?: boolean) =>
     createAction(ActionTypes.LOAD_USERS, { users, complete }),
   updateUser: (user: Partial<UserType>) =>
     createAction(ActionTypes.UPDATE_USER, { user }),
-  updateComplete: () => createAction(ActionTypes.UPDATE_COMPLETE),
 
   /* adding friends, accepting friends, etc... */
   friendUser: (user: { phoneNumber: string }) =>
     createAction(ActionTypes.FRIEND_USER, { user }),
-  friendComplete: (from: string, to: string) =>
-    createAction(ActionTypes.FRIEND_USER_COMPLETE, { from, to }),
+  friendSuccess: (from: string, to: string) =>
+    createAction(ActionTypes.FRIEND_USER_SUCCESS, { from, to }),
   acceptRequest: (user: { phoneNumber: string }) =>
     createAction(ActionTypes.ACCEPT_REQUEST, { user }),
-  acceptRequestComplete: (from: string, to: string) =>
-    createAction(ActionTypes.ACCEPT_REQUEST_COMPLETE, { from, to }),
+  acceptRequestSuccess: (from: string, to: string) =>
+    createAction(ActionTypes.ACCEPT_REQUEST_SUCCESS, { from, to }),
   cancelRequest: (user: { phoneNumber: string }) =>
     createAction(ActionTypes.CANCEL_REQUEST, { user }),
-  cancelRequestComplete: (from: string, to: string) =>
-    createAction(ActionTypes.CANCEL_REQUEST_COMPLETE, { from, to }),
+  cancelRequestSuccess: (from: string, to: string) =>
+    createAction(ActionTypes.CANCEL_REQUEST_SUCCESS, { from, to }),
   denyRequest: (user: { phoneNumber: string }) =>
     createAction(ActionTypes.DENY_REQUEST, { user }),
-  denyRequestComplete: (from: string, to: string) =>
-    createAction(ActionTypes.DENY_REQUEST_COMPLETE, { from, to }),
+  denyRequestSuccess: (from: string, to: string) =>
+    createAction(ActionTypes.DENY_REQUEST_SUCCESS, { from, to }),
   deleteFriend: (user: { phoneNumber: string }) =>
     createAction(ActionTypes.DELETE_FRIEND, { user }),
-  deleteFriendComplete: (from: string, to: string) =>
-    createAction(ActionTypes.DELETE_FRIEND_COMPLETE, { from, to }),
+  deleteFriendSuccess: (from: string, to: string) =>
+    createAction(ActionTypes.DELETE_FRIEND_SUCCESS, { from, to }),
 
   // fetchFriends: (phoneNumber: string) =>
   //   createAction(ActionTypes.FETCH_FRIENDS, { phoneNumber }),

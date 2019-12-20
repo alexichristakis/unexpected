@@ -34,7 +34,7 @@ export const Colors = {
   purple: "#4904FF",
   pink: "#D31EB6",
   red: "rgb(255, 0, 0)",
-  yellow: "rgb(0, 0, 0)",
+  yellow: "#FFD60A",
   green: "rgb(0, 255, 0)"
 };
 

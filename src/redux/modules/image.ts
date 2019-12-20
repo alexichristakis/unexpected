@@ -100,11 +100,11 @@ export default (
     }
 
     case ActionTypes.CLEAR_PHOTO:
-    case ActionTypes.UPLOAD_PHOTO_SUCCESS: {
+    case ActionTypes.SUCCESS_UPLOADING_PHOTO: {
       return { ...state, uploading: false, currentImage: null };
     }
 
-    case ActionTypes.ON_ERROR: {
+    case ActionTypes.ERROR: {
       return { ...state, uploadError: action.payload.err };
     }
 
@@ -201,9 +201,9 @@ export function* imageSagas() {
 export enum ActionTypes {
   TAKE_PHOTO = "image/TAKE_PHOTO",
   UPLOAD_PROFILE_PHOTO = "image/UPLOAD_PROFILE_PHOTO",
-  UPLOAD_PHOTO_SUCCESS = "image/UPLOAD_PHOTO_SUCCESS",
-  ON_ERROR = "image/ON_ERROR",
-  CACHE_PHOTO = "image/CACHE_PHOTO",
+  SUCCESS_UPLOADING_PHOTO = "image/UPLOAD_PHOTO_SUCCESS",
+  ERROR = "image/ERROR",
+  CACHE_PHOTO = "image/CACHE_PHOTO_SUCCESS",
   REQUEST_CACHE = "image/REQUEST_CACHE",
   CLEAR_PHOTO = "image/CLEAR_PHOTO"
 }
@@ -218,6 +218,6 @@ export const Actions = {
     createAction(ActionTypes.CACHE_PHOTO, { uri, phoneNumber, id }),
   uploadProfilePhoto: (cb?: () => void) =>
     createAction(ActionTypes.UPLOAD_PROFILE_PHOTO, { cb }),
-  uploadPhotoSuccess: () => createAction(ActionTypes.UPLOAD_PHOTO_SUCCESS),
-  onError: (err: any) => createAction(ActionTypes.ON_ERROR, { err })
+  uploadPhotoSuccess: () => createAction(ActionTypes.SUCCESS_UPLOADING_PHOTO),
+  onError: (err: any) => createAction(ActionTypes.ERROR, { err })
 };

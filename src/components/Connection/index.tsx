@@ -1,66 +1,89 @@
 import React, { useEffect, useState } from "react";
-import { Animated, StyleSheet, Text, View } from "react-native";
+import { Animated, Text, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 
 import { Colors, TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
+import { RootState, ReduxPropsType } from "@redux/types";
 
-export interface ConnectionProps {
-  isConnected: boolean;
-  isInternetReachable: boolean;
-}
-const ConnectionInfo: React.FC<ConnectionProps> = ({ isConnected, isInternetReachable }) => {
-  const [animated, setAnimated] = useState(new Animated.Value(0));
-  const [backgroundColor, setBackgroundColor] = useState(Colors.green);
-  const [message, setMessage] = useState("");
+const mapStateToProps = (state: RootState) => ({
+  isConnected: selectors.isConnected(state),
+  isInternetReachable: selectors.isInternetReachable(state),
+  isBackendReachable: selectors.isBackendReachable(state)
+});
 
-  const getBackgroundColor = () => {
-    if (isConnected && !isInternetReachable) return Colors.yellow;
-    if (!isConnected && !isInternetReachable) return Colors.red;
+const mapDispatchToProps = {};
 
-    return Colors.green;
-  };
+export type ConnectionReduxProps = ReduxPropsType<
+  typeof mapStateToProps,
+  typeof mapDispatchToProps
+>;
 
-  const getMessage = () => {
-    if (isConnected && !isInternetReachable) return "Trying to connect...";
-    if (!isConnected && !isInternetReachable) return "Unable to connect to the internet.";
+export interface ConnectionProps {}
+const ConnectionInfo: React.FC<ConnectionProps &
+  ConnectionReduxProps> = React.memo(
+  ({ isConnected, isInternetReachable, isBackendReachable }) => {
+    const [animated] = useState(new Animated.Value(0));
+    const [backgroundColor, setBackgroundColor] = useState(Colors.green);
+    const [message, setMessage] = useState("");
 
-    return "Connected!";
-  };
+    const getBackgroundColor = () => {
+      if (isConnected && !isInternetReachable) return Colors.yellow;
+      if ((!isConnected && !isInternetReachable) || !isBackendReachable)
+        return Colors.red;
 
-  const getTransform = () => [
-    {
-      translateY: animated.interpolate({ inputRange: [0, 1], outputRange: [-80, 0] })
-    }
-  ];
+      return Colors.green;
+    };
 
-  useEffect(() => {
-    setBackgroundColor(getBackgroundColor());
-    setMessage(getMessage());
+    const getMessage = () => {
+      if (isConnected && !isInternetReachable) return "Trying to connect...";
+      if ((!isConnected && !isInternetReachable) || !isBackendReachable)
+        return "Connection Error";
 
-    if (!isConnected || !isInternetReachable) {
-      Animated.timing(animated, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true
-      }).start();
-    } else if (isConnected && isInternetReachable) {
-      Animated.timing(animated, {
-        toValue: 0,
-        duration: 300,
-        delay: 300,
-        useNativeDriver: true
-      }).start();
-    }
-  }, [isConnected, isInternetReachable]);
+      return "Connected!";
+    };
 
-  return (
-    <Animated.View style={[styles.container, { backgroundColor, transform: getTransform() }]}>
-      <Animated.Text style={styles.message}>{message}</Animated.Text>
-    </Animated.View>
-  );
-};
+    const getTransform = () => [
+      {
+        translateY: animated.interpolate({
+          inputRange: [0, 1],
+          outputRange: [-80, 0]
+        })
+      }
+    ];
+
+    useEffect(() => {
+      setBackgroundColor(getBackgroundColor());
+      setMessage(getMessage());
+
+      if (!isConnected || !isInternetReachable || !isBackendReachable) {
+        Animated.timing(animated, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true
+        }).start();
+      } else if (isConnected && isInternetReachable && isBackendReachable) {
+        Animated.timing(animated, {
+          toValue: 0,
+          duration: 300,
+          delay: 300,
+          useNativeDriver: true
+        }).start();
+      }
+    }, [isConnected, isInternetReachable, isBackendReachable]);
+
+    return (
+      <Animated.View
+        style={[
+          styles.container,
+          { backgroundColor, transform: getTransform() }
+        ]}
+      >
+        <Text style={styles.message}>{message}</Text>
+      </Animated.View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -73,16 +96,9 @@ const styles = StyleSheet.create({
     paddingLeft: 20
   },
   message: {
-    ...TextStyles.small,
+    ...TextStyles.medium,
     ...TextStyles.light
   }
 });
 
-const mapStateToProps = (state: RootState) => ({
-  isConnected: selectors.isConnected(state),
-  isInternetReachable: selectors.isConnected(state)
-});
-export default connect(
-  mapStateToProps,
-  {}
-)(ConnectionInfo);
+export default connect(mapStateToProps, {})(ConnectionInfo);
