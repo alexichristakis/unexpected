@@ -53,7 +53,7 @@ export const Grid: React.FC<GridProps> = ({
 
   const renderSeparatorComponent = () => <View style={styles.separator} />;
 
-  const months = generateMonths(posts);
+  const months = generateMonths(testPosts);
 
   return (
     <Animated.FlatList

@@ -49,39 +49,30 @@ export const Month: React.FC<MonthProps> = React.memo(
           const version = Math.floor(Math.random() * 3);
           const id = uuid();
 
-          switch (version) {
-            case 0: {
-              rows.push({
-                id,
-                type: RowTypes.A,
-                posts: posts.slice(index, index + 4)
-              });
-              addedPosts = 4;
+          if (version === 0) {
+            rows.push({
+              id,
+              type: RowTypes.A,
+              posts: posts.slice(index, index + 4)
+            });
 
-              break;
-            }
+            addedPosts = 4;
+          } else if (version === 1) {
+            rows.push({
+              id,
+              type: RowTypes.B,
+              posts: posts.slice(index, index + 5)
+            });
 
-            case 1: {
-              rows.push({
-                id,
-                type: RowTypes.B,
-                posts: posts.slice(index, index + 5)
-              });
-              addedPosts = 5;
+            addedPosts = 5;
+          } else {
+            rows.push({
+              id,
+              type: RowTypes.C,
+              posts: posts.slice(index, index + 4)
+            });
 
-              break;
-            }
-
-            case 2: {
-              rows.push({
-                id,
-                type: RowTypes.C,
-                posts: posts.slice(index, index + 4)
-              });
-              addedPosts = 5;
-
-              break;
-            }
+            addedPosts = 4;
           }
         }
 
