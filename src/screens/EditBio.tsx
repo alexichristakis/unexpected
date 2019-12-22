@@ -66,20 +66,21 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
 
   return (
     <Screen style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={[TextStyles.medium]}>
           {bio.length ? "edit bio:" : "add a bio:"}
         </Text>
         {loading ? <ActivityIndicator size="small" /> : null}
-      </View>
+      </View> */}
       <Input
         autoFocus={true}
         multiline={true}
+        placeholder="add a bio"
         label="up to 200 characters"
+        returnKeyType="done"
         value={text.replace("\n", "")}
         onChangeText={setText}
         maxLength={200}
-        returnKeyType="done"
         onKeyPress={handleKeyPress}
         onSubmitEditing={handleOnPressSubmit}
       />
