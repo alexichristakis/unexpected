@@ -10,6 +10,11 @@ export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get(
   "window"
 );
 
+export const IMAGE_GUTTER = 5;
+export const NUM_COLUMNS = 5;
+export const COLUMN_WIDTH =
+  (SCREEN_WIDTH - (NUM_COLUMNS + 1) * IMAGE_GUTTER) / NUM_COLUMNS;
+
 const X_WIDTH = 375;
 const X_HEIGHT = 812;
 

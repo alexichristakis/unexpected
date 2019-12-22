@@ -97,7 +97,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
 const styles = StyleSheet.create({
   container: {
     paddingTop: SB_HEIGHT(),
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     alignItems: "center"
   },
   headerContainer: {

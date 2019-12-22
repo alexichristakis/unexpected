@@ -114,7 +114,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     paddingTop: SB_HEIGHT(),
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     alignItems: "center"
     // justifyContent: "center"
   },

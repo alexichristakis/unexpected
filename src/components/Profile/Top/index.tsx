@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: "stretch",
     alignItems: "center",
+    paddingHorizontal: 20,
     paddingTop: 5,
     paddingBottom: 20
   },
