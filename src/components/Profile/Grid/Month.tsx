@@ -110,8 +110,7 @@ export const Month: React.FC<MonthProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    marginBottom: 20
+    width: "100%"
   },
   headerContainer: {
     marginHorizontal: 10,

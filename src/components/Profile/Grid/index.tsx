@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Animated,
+  View,
   ListRenderItemInfo,
   StyleSheet,
   ViewStyle
@@ -12,8 +13,8 @@ import { PostType } from "unexpected-cloud/models/post";
 
 import { Month, Months } from "./Month";
 
+import { Colors } from "@lib/styles";
 import testPosts from "./test_data";
-import { ItemSeparator } from "@components/universal";
 
 export interface GridProps {
   onScroll?: any;
@@ -50,9 +51,9 @@ export const Grid: React.FC<GridProps> = ({
     <Month onPressPost={onPressPost} {...item} />
   );
 
-  // const renderSeparatorComponent = () => <ItemSeparator />;
+  const renderSeparatorComponent = () => <View style={styles.separator} />;
 
-  const months = generateMonths(testPosts);
+  const months = generateMonths(posts);
 
   return (
     <Animated.FlatList
@@ -61,7 +62,7 @@ export const Grid: React.FC<GridProps> = ({
       showsVerticalScrollIndicator={false}
       ListHeaderComponentStyle={ListHeaderComponentStyle}
       ListHeaderComponent={ListHeaderComponent}
-      // ItemSeparatorComponent={renderSeparatorComponent}
+      ItemSeparatorComponent={renderSeparatorComponent}
       renderItem={renderMonth}
       data={months}
     />
@@ -69,5 +70,17 @@ export const Grid: React.FC<GridProps> = ({
 };
 
 const styles = StyleSheet.create({
-  list: { height: "100%", width: "100%" }
+  list: {
+    height: "100%",
+    width: "100%"
+  },
+  separator: {
+    // width: "100%",
+    alignSelf: "stretch",
+    marginTop: 20,
+    marginBottom: 10,
+    marginHorizontal: 20,
+    height: 1,
+    backgroundColor: Colors.lightGray
+  }
 });
