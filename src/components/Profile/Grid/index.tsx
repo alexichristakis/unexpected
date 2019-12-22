@@ -1,9 +1,9 @@
 import React from "react";
 import {
   Animated,
-  View,
   ListRenderItemInfo,
   StyleSheet,
+  View,
   ViewStyle
 } from "react-native";
 
@@ -11,9 +11,9 @@ import groupBy from "lodash/groupBy";
 import moment from "moment";
 import { PostType } from "unexpected-cloud/models/post";
 
-import { Month, Months } from "./Month";
-
 import { Colors } from "@lib/styles";
+
+import { Month, Months } from "./Month";
 import testPosts from "./test_data";
 
 export interface GridProps {

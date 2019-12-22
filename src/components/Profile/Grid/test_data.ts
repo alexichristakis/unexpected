@@ -4,7 +4,7 @@ import uuid from "uuid/v4";
 
 const NUM_POSTS = 40;
 
-let posts: PostType[] = [];
+const posts: PostType[] = [];
 
 const generateTime = () => {
   const start = moment().subtract(2, "months");

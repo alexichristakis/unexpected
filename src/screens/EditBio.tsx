@@ -73,8 +73,8 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
         {loading ? <ActivityIndicator size="small" /> : null}
       </View> */}
       <Input
-        autoFocus
-        multiline
+        autoFocus={true}
+        multiline={true}
         placeholder="add a bio"
         label="up to 200 characters"
         returnKeyType="done"

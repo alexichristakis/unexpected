@@ -1,11 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
 
 import { TextStyles } from "@lib/styles";
 
-import { Row, RowType, RowTypes } from "./Row";
 import uuid from "uuid/v4";
+import { Row, RowType, RowTypes } from "./Row";
 
 export enum Months {
   "January",
@@ -31,7 +31,7 @@ export interface MonthProps {
 export const Month: React.FC<MonthProps> = React.memo(
   ({ month, posts, onPressPost }) => {
     const generateRows = (posts: PostType[]) => {
-      let rows: RowType[] = [];
+      const rows: RowType[] = [];
 
       for (let index = 0; index < posts.length; ) {
         const remainingPosts = posts.length - index;

@@ -1,8 +1,8 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/styles";
 import { PostType } from "unexpected-cloud/models/post";
-import { IMAGE_GUTTER, COLUMN_WIDTH } from "@lib/styles";
 
 export interface BProps {
   renderPost: (post: PostType, size: number) => JSX.Element;
@@ -13,7 +13,7 @@ export const BSize = COLUMN_WIDTH;
 
 const B: React.FC<BProps> = ({ renderPost, posts }) => {
   const renderPosts = () => {
-    let elements: JSX.Element[] = [];
+    const elements: JSX.Element[] = [];
     for (let i = 0; i < 5; i++) {
       if (i <= posts.length - 1) {
         elements.push(renderPost(posts[i], BSize));
