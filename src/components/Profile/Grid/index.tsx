@@ -14,7 +14,7 @@ import { PostType } from "unexpected-cloud/models/post";
 import { Colors } from "@lib/styles";
 
 import { Month, Months } from "./Month";
-import testPosts from "./test_data";
+// import testPosts from "./test_data";
 
 export interface GridProps {
   onScroll?: any;
@@ -56,7 +56,7 @@ export const Grid: React.FC<GridProps> = React.memo(
 
     const renderSeparatorComponent = () => <View style={styles.separator} />;
 
-    const months = generateMonths(testPosts);
+    const months = generateMonths(posts);
 
     return (
       <Animated.FlatList
