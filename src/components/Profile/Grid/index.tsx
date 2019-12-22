@@ -24,50 +24,55 @@ export interface GridProps {
   posts: PostType[];
 }
 
-export const Grid: React.FC<GridProps> = ({
-  onPressPost,
-  ListHeaderComponentStyle,
-  ListHeaderComponent,
-  onScroll,
-  posts
-}) => {
-  // returns object mapping month (0, 1, 2, ...) to array of posts
-  const generateMonths = (posts: PostType[]) => {
-    const map = groupBy(posts, ({ createdAt }) =>
-      moment(createdAt).startOf("month")
+export const Grid: React.FC<GridProps> = React.memo(
+  ({
+    onPressPost,
+    ListHeaderComponentStyle,
+    ListHeaderComponent,
+    onScroll,
+    posts
+  }) => {
+    // returns object mapping month (0, 1, 2, ...) to array of posts
+    const generateMonths = (posts: PostType[]) => {
+      const map = groupBy(posts, ({ createdAt }) =>
+        moment(createdAt).startOf("month")
+      );
+
+      return Object.keys(map)
+        .sort((a, b) => moment(b).diff(moment(a)))
+        .map(month => ({
+          month: Months[moment(month as any).get("month")],
+          posts: map[month].sort((a, b) =>
+            moment(b.createdAt).diff(moment(a.createdAt))
+          )
+        }));
+    };
+
+    const renderMonth = ({
+      item
+    }: ListRenderItemInfo<{ month: Months; posts: PostType[] }>) => (
+      <Month onPressPost={onPressPost} {...item} />
     );
 
-    return Object.keys(map)
-      .sort((a, b) => moment(b).diff(moment(a)))
-      .map(month => ({
-        month: Months[moment(month as any).get("month")],
-        posts: map[month]
-      }));
-  };
+    const renderSeparatorComponent = () => <View style={styles.separator} />;
 
-  const renderMonth = ({
-    item
-  }: ListRenderItemInfo<{ month: Months; posts: PostType[] }>) => (
-    <Month onPressPost={onPressPost} {...item} />
-  );
+    const months = generateMonths(testPosts);
 
-  const renderSeparatorComponent = () => <View style={styles.separator} />;
-
-  const months = generateMonths(testPosts);
-
-  return (
-    <Animated.FlatList
-      style={styles.list}
-      onScroll={onScroll}
-      showsVerticalScrollIndicator={false}
-      ListHeaderComponentStyle={ListHeaderComponentStyle}
-      ListHeaderComponent={ListHeaderComponent}
-      ItemSeparatorComponent={renderSeparatorComponent}
-      renderItem={renderMonth}
-      data={months}
-    />
-  );
-};
+    return (
+      <Animated.FlatList
+        style={styles.list}
+        onScroll={onScroll}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponentStyle={ListHeaderComponentStyle}
+        ListHeaderComponent={ListHeaderComponent}
+        ItemSeparatorComponent={renderSeparatorComponent}
+        renderItem={renderMonth}
+        data={months}
+      />
+    );
+  },
+  (prevProps, nextProps) => prevProps.posts.length === nextProps.posts.length
+);
 
 const styles = StyleSheet.create({
   list: {
@@ -79,7 +84,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     marginTop: 20,
     marginBottom: 10,
-    marginHorizontal: 20,
+    marginHorizontal: 40,
     height: 1,
     backgroundColor: Colors.lightGray
   }

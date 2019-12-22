@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { PostType } from "unexpected-cloud/models/post";
+import uuid from "uuid/v4";
 
 import { TextStyles } from "@lib/styles";
 
-import uuid from "uuid/v4";
 import { Row, RowType, RowTypes } from "./Row";
 
 export enum Months {
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   headerContainer: {
-    marginHorizontal: 10,
-    marginBottom: 5,
+    marginHorizontal: 20,
+    marginBottom: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center"
