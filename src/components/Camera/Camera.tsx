@@ -103,6 +103,15 @@ class Camera extends React.Component<CameraProps, CameraState> {
             captureAudio={false}
           />
         </TouchableWithoutFeedback>
+        {__DEV__ && (
+          <View
+            style={[
+              styles.camera,
+              cameraStyle,
+              { backgroundColor: "red", position: "absolute" }
+            ]}
+          />
+        )}
       </View>
     );
   }
@@ -110,6 +119,7 @@ class Camera extends React.Component<CameraProps, CameraState> {
 
 const styles = StyleSheet.create({
   camera: {
+    backgroundColor: "red"
     // flex: 1
   }
 });

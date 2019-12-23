@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 
 import Camera, { Shutter } from "@components/Camera";
 import { useLightStatusBar } from "@hooks";
-import { SCREEN_WIDTH } from "@lib/styles";
+import { isIPhoneX, SCREEN_WIDTH } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black"
   },
   camera: { width: SCREEN_WIDTH, height: 600 },
-  shutter: { position: "absolute", bottom: 100 }
+  shutter: { position: "absolute", bottom: isIPhoneX ? 80 : 20 }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Capture);

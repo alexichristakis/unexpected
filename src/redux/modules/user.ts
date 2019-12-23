@@ -3,6 +3,8 @@ import { Platform } from "react-native";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import immer from "immer";
 import _ from "lodash";
+import moment from "moment-timezone";
+import { REHYDRATE } from "redux-persist";
 import {
   all,
   call,
@@ -412,13 +414,24 @@ function* onDeleteFriend(
   }
 }
 
+function* onStartup() {
+  const jwt = yield select(selectors.jwt);
+  const user = yield select(selectors.user);
+
+  if (jwt) {
+    const timezone = moment.tz.guess(true);
+
+    if (timezone !== user.timezone) yield put(Actions.updateUser({ timezone }));
+  }
+}
+
 export function* userSagas() {
   yield all([
+    yield takeLatest(REHYDRATE, onStartup),
     yield takeLatest(ActionTypes.FETCH_USER, onFetchUser),
     yield takeLatest(ActionTypes.FETCH_USERS, onFetchUsers),
     yield takeLatest(ActionTypes.CREATE_NEW_USER, onCreateUser),
     yield takeLatest(ActionTypes.UPDATE_USER, onUpdateUser),
-    // yield takeLatest(ActionTypes.FETCH_FRIENDS, onFetchFriends),
     yield takeLatest(ActionTypes.FRIEND_USER, onFriendUser),
     yield takeEvery(ActionTypes.ACCEPT_REQUEST, onAcceptRequest),
     yield takeEvery(ActionTypes.DENY_REQUEST, onDenyRequest),
@@ -443,7 +456,6 @@ export enum ActionTypes {
   DENY_REQUEST_SUCCESS = "user/DENY_REQUEST_SUCCESS",
   DELETE_FRIEND = "user/DELETE_FRIEND",
   DELETE_FRIEND_SUCCESS = "user/DELETE_FRIEND_SUCCESS",
-  // FETCH_FRIENDS = "user/FETCH_FRIENDS",
   LOAD_USERS = "user/LOAD_USERS",
   ON_ERROR = "user/ERROR"
 }
@@ -484,7 +496,5 @@ export const Actions = {
   deleteFriendSuccess: (from: string, to: string) =>
     createAction(ActionTypes.DELETE_FRIEND_SUCCESS, { from, to }),
 
-  // fetchFriends: (phoneNumber: string) =>
-  //   createAction(ActionTypes.FETCH_FRIENDS, { phoneNumber }),
   onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err })
 };

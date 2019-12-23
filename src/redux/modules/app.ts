@@ -3,7 +3,7 @@ import NetInfo, {
   NetInfoStateType
 } from "@react-native-community/netinfo";
 import immer from "immer";
-import moment, { Moment } from "moment";
+import moment, { Moment } from "moment-timezone";
 import {
   AppState as AppStatus,
   AppStateStatus as AppStatusType

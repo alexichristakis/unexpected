@@ -3,6 +3,7 @@ import { Animated, StyleSheet } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import moment from "moment";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { connect } from "react-redux";
 
@@ -12,7 +13,6 @@ import { TIMER_LENGTH } from "@lib/styles";
 import { Actions as AppActions } from "@redux/modules/app";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import moment from "moment";
 import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
@@ -77,11 +77,7 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
           style={[styles.container, { transform: [{ scale }] }]}
         >
           <TouchableScale onPress={handleOnPress}>
-            <SVG
-              style={{ position: "absolute", alignSelf: "center" }}
-              width={60}
-              height={60}
-            />
+            <SVG style={styles.svg} width={60} height={60} />
             <AnimatedCircularProgress
               duration={moment(timeOfExpiry).diff(moment())}
               prefill={getFill()}
@@ -115,5 +111,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: "center"
+  },
+  svg: {
+    position: "absolute",
+    alignSelf: "center"
   }
 });
