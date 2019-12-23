@@ -7,6 +7,7 @@ import {
   ViewStyle
 } from "react-native";
 
+import uuid from "uuid/v4";
 import groupBy from "lodash/groupBy";
 import moment from "moment";
 import { PostType } from "unexpected-cloud/models/post";
@@ -41,7 +42,8 @@ export const Grid: React.FC<GridProps> = React.memo(
       return Object.keys(map)
         .sort((a, b) => moment(b).diff(moment(a)))
         .map(month => ({
-          month: Months[moment(month as any).get("month")],
+          id: month,
+          month: Months[moment(month, "ddd MMM DD YYYY").get("month")],
           posts: map[month].sort((a, b) =>
             moment(b.createdAt).diff(moment(a.createdAt))
           )
@@ -50,9 +52,11 @@ export const Grid: React.FC<GridProps> = React.memo(
 
     const renderMonth = ({
       item
-    }: ListRenderItemInfo<{ month: Months; posts: PostType[] }>) => (
-      <Month onPressPost={onPressPost} {...item} />
-    );
+    }: ListRenderItemInfo<{
+      id: string;
+      month: Months;
+      posts: PostType[];
+    }>) => <Month key={item.id} onPressPost={onPressPost} {...item} />;
 
     const renderSeparatorComponent = () => <View style={styles.separator} />;
 

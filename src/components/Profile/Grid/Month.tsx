@@ -88,7 +88,9 @@ export const Month: React.FC<MonthProps> = React.memo(
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={TextStyles.large}>{month}</Text>
-          <Text style={TextStyles.small}>{`${posts.length} moments`}</Text>
+          <Text style={TextStyles.small}>{`${posts.length} ${
+            posts.length === 1 ? "moment" : "moments"
+          }`}</Text>
         </View>
         {rows.map(({ id, type, posts }) => (
           <Row key={id} onPressPost={onPressPost} type={type} posts={posts} />
