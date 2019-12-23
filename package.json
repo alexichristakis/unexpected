@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": "13.5.0"
+    "node": "12.12.0"
   },
   "scripts": {
-    "build": "yarn tsc",
+    "build": "npm run-script tsc",
     "test": "mocha --require ts-node/register --check-leaks ./test/**/*.ts --recursive",
     "coverage": "test-cov && test-remap",
     "dev": "mongod --config /usr/local/etc/mongod.conf & source .env && nodemon --watch '**/*.ts' --ignore 'node_modules/**/*' --exec ts-node src/index.ts",
