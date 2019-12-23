@@ -61,7 +61,7 @@ export class SchedulerService {
           users.forEach(user => {
             const { timezone } = user;
 
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 2; i++) {
               const time = this.generateTime(timezone);
               $log.info(
                 `notification for ${user.firstName} at: ${time.format(
