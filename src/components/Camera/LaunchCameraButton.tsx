@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Animated, StyleSheet, TouchableOpacity } from "react-native";
+import { Animated, StyleSheet } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 
 import SVG from "@assets/svg/camera_button.svg";
 import { TouchableScale } from "@components/universal";
+import { TIMER_LENGTH } from "@lib/styles";
 import { Actions as AppActions } from "@redux/modules/app";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -27,27 +28,18 @@ export type LaunchCameraButtonReduxProps = ReduxPropsType<
   typeof mapDispatchToProps
 >;
 
+type NavigationProp = NativeStackNavigationProp<StackParamList>;
+
 const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
   ({ enabled, timeOfExpiry, expireCamera }) => {
     const [visible, setVisible] = useState(false);
     const [scale] = useState(new Animated.Value(0));
-    const [ref, setRef] = useState<AnimatedCircularProgress | null>(null);
 
-    const navigation = useNavigation<
-      NativeStackNavigationProp<StackParamList>
-    >();
+    const navigation = useNavigation<NavigationProp>();
 
     useEffect(() => {
-      console.log("getFill", getFill());
       if (enabled && getFill() < 100) {
         setVisible(true);
-
-        if (ref) {
-          ref.animate(
-            100,
-            moment(timeOfExpiry).diff(moment(), "minutes") * 1000 * 60
-          );
-        }
 
         Animated.spring(scale, {
           toValue: 1,
@@ -58,28 +50,22 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
           toValue: 0,
           duration: 200,
           useNativeDriver: true
-        }).start(() => setVisible(false));
+        }).start(() => {
+          expireCamera();
+          setVisible(false);
+        });
       }
-    }, [enabled, ref]);
+    }, [enabled, timeOfExpiry]);
 
     const handleOnPress = () =>
       navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
 
-    const getFill = () => {
-      console.log(
-        "in get fill:",
-        moment(timeOfExpiry).diff(moment(), "seconds") / 60
-      );
+    const getFill = () =>
+      100 -
+      (moment(timeOfExpiry).diff(moment()) / 1000 / 60 / TIMER_LENGTH) * 100;
 
-      return 100 - moment(timeOfExpiry).diff(moment(), "seconds") / 60;
-    };
-
-    const expireButton = () => {
-      if (
-        enabled &&
-        timeOfExpiry &&
-        moment().diff(timeOfExpiry, "seconds") <= 0
-      ) {
+    const handleAnimationComplete = () => {
+      if (enabled && getFill() >= 100) {
         expireCamera();
       }
     };
@@ -97,22 +83,24 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
               height={60}
             />
             <AnimatedCircularProgress
-              ref={setRef}
+              duration={moment(timeOfExpiry).diff(moment())}
               prefill={getFill()}
-              // fill={getFill()}
+              fill={100}
               rotation={0}
               tintColor="black"
               backgroundColor="transparent"
               size={60}
               width={10}
-              onAnimationComplete={expireButton}
+              onAnimationComplete={handleAnimationComplete}
             />
           </TouchableScale>
         </Animated.View>
       );
     else return null;
   },
-  (prevProps, nextProps) => prevProps.enabled === nextProps.enabled
+  (prevProps, nextProps) =>
+    prevProps.enabled === nextProps.enabled &&
+    prevProps.timeOfExpiry === nextProps.timeOfExpiry
 );
 
 export const LaunchCameraButton = connect(

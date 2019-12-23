@@ -24,6 +24,7 @@ import {
   takeLatest
 } from "redux-saga/effects";
 
+import { TIMER_LENGTH } from "@lib/styles";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
@@ -119,8 +120,7 @@ function* onReceiveNotification(
   if (data.photoTime) {
     const { time }: { time: Date } = data;
 
-    const time2 = new Date();
-    const expiry = moment(time2).add(10, "minutes");
+    const expiry = moment(time).add(TIMER_LENGTH, "minutes");
 
     yield put(Actions.setCameraTimer(expiry));
   }

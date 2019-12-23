@@ -24,12 +24,13 @@ export enum Months {
 
 export interface MonthProps {
   onPressPost: (item: PostType) => void;
+  showHeader: boolean;
   month: Months;
   posts: PostType[];
 }
 
 export const Month: React.FC<MonthProps> = React.memo(
-  ({ month, posts, onPressPost }) => {
+  ({ month, posts, showHeader, onPressPost }) => {
     const generateRows = (posts: PostType[]) => {
       const rows: RowType[] = [];
 
@@ -89,10 +90,12 @@ export const Month: React.FC<MonthProps> = React.memo(
 
     return (
       <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Text style={TextStyles.large}>{month}</Text>
-          <Text style={TextStyles.small}>{momentsString()}</Text>
-        </View>
+        {showHeader && (
+          <View style={styles.headerContainer}>
+            <Text style={TextStyles.medium}>{month}</Text>
+            <Text style={TextStyles.medium}>{momentsString()}</Text>
+          </View>
+        )}
         {rows.map(({ id, type, posts }) => (
           <Row key={id} onPressPost={onPressPost} type={type} posts={posts} />
         ))}
