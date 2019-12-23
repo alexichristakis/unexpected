@@ -1,4 +1,5 @@
 import React from "react";
+
 import { PostType } from "unexpected-cloud/models/post";
 
 import { PostImage, TouchableScale } from "@components/universal";

@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/styles";
 import { PostType } from "unexpected-cloud/models/post";
+
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/styles";
 
 export interface AProps {
   renderPost: (post: PostType, size: number) => JSX.Element;
@@ -28,7 +29,9 @@ const A: React.FC<AProps> = ({ renderPost, posts }) => {
         {renderPost(posts[3], ASizes.large)}
       </View>
     );
-  } else if (version < 2) {
+  }
+
+  if (version < 2) {
     return (
       <View style={styles.container}>
         <View style={styles.middleColumn}>
@@ -37,20 +40,20 @@ const A: React.FC<AProps> = ({ renderPost, posts }) => {
         </View>
         {renderPost(posts[2], ASizes.large)}
         {renderPost(posts[3], ASizes.large)}
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        {renderPost(posts[2], ASizes.large)}
-        {renderPost(posts[3], ASizes.large)}
-        <View style={styles.middleColumn}>
-          {renderPost(posts[0], ASizes.small)}
-          {renderPost(posts[1], ASizes.small)}
-        </View>
       </View>
     );
   }
+
+  return (
+    <View style={styles.container}>
+      {renderPost(posts[2], ASizes.large)}
+      {renderPost(posts[3], ASizes.large)}
+      <View style={styles.middleColumn}>
+        {renderPost(posts[0], ASizes.small)}
+        {renderPost(posts[1], ASizes.small)}
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

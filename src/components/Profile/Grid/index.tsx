@@ -7,7 +7,6 @@ import {
   ViewStyle
 } from "react-native";
 
-import uuid from "uuid/v4";
 import groupBy from "lodash/groupBy";
 import moment from "moment";
 import { PostType } from "unexpected-cloud/models/post";
@@ -84,7 +83,6 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   separator: {
-    // width: "100%",
     alignSelf: "stretch",
     marginTop: 20,
     marginBottom: 10,

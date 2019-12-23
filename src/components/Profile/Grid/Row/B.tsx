@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/styles";
 import { PostType } from "unexpected-cloud/models/post";
+
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/styles";
 
 export interface BProps {
   renderPost: (post: PostType, size: number) => JSX.Element;
