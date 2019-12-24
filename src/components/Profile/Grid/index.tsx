@@ -14,7 +14,7 @@ import { PostType } from "unexpected-cloud/models/post";
 import { Colors } from "@lib/styles";
 
 import { Month, Months } from "./Month";
-// import testPosts from "./test_data";
+import testPosts from "./test_data";
 
 export interface GridProps {
   onScroll?: any;
@@ -48,17 +48,18 @@ export const Grid: React.FC<GridProps> = ({
       }));
   };
 
-  const months = generateMonths(posts);
+  const months = generateMonths(testPosts);
 
   const renderMonth = ({
-    item
+    item,
+    index
   }: ListRenderItemInfo<{
     id: string;
     month: Months;
     posts: PostType[];
   }>) => (
     <Month
-      showHeader={months.length > 1}
+      showHeader={index > 0}
       key={item.id}
       onPressPost={onPressPost}
       {...item}

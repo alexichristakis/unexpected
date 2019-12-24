@@ -7,6 +7,7 @@ import {
   View
 } from "react-native";
 
+import Gear from "@assets/svg/gear.svg";
 import { Button, FriendButton, UserImage } from "@components/universal";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { UserType } from "unexpected-cloud/models/user";
@@ -78,35 +79,45 @@ export const Top: React.FC<ProfileTopProps> = ({
     );
   };
 
+  const renderHeaderButton = () => {
+    if (isUser)
+      return (
+        <TouchableOpacity disabled={!onPressName} onPress={onPressName}>
+          <Gear fill={Colors.nearBlack} width={40} height={40} />
+        </TouchableOpacity>
+      );
+
+    return <FriendButton circle showLabel={true} user={user} />;
+  };
+
   return (
     <>
       <Animated.View style={[styles.container, animatedStyle]}>
-        <TouchableOpacity
-          style={[styles.row, { flexDirection: "column", marginBottom: 20 }]}
-          disabled={!onPressName}
-          onPress={onPressName}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text
-              testID="user-name"
-              style={TextStyles.title}
-            >{`${firstName} ${lastName}`}</Text>
-            {renderNotificationIndicator()}
+        <View style={styles.headerContainer}>
+          <View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                testID="user-name"
+                style={TextStyles.title}
+              >{`${firstName} ${lastName}`}</Text>
+              {renderNotificationIndicator()}
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                testID="num-moments"
+                style={[TextStyles.large]}
+              >{`${numPosts} ${numPosts === 1 ? "moment" : "moments"}, `}</Text>
+              <Text
+                testID="friends"
+                style={[TextStyles.large]}
+                onPress={onPressFriends}
+              >{`${friends.length} ${
+                friends.length === 1 ? "friend" : "friends"
+              }`}</Text>
+            </View>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text
-              testID="num-moments"
-              style={[TextStyles.large]}
-            >{`${numPosts} ${numPosts === 1 ? "moment" : "moments"}, `}</Text>
-            <Text
-              testID="friends"
-              style={[TextStyles.large]}
-              onPress={onPressFriends}
-            >{`${friends.length} ${
-              friends.length === 1 ? "friend" : "friends"
-            }`}</Text>
-          </View>
-        </TouchableOpacity>
+          {renderHeaderButton()}
+        </View>
         <View style={[styles.row, { marginBottom: isUser ? 0 : 20 }]}>
           <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
             <UserImage
@@ -122,7 +133,6 @@ export const Top: React.FC<ProfileTopProps> = ({
             )}
           </View>
         </View>
-        {!isUser && <FriendButton showLabel={true} user={user} />}
       </Animated.View>
       <Animated.View style={[styles.header, animatedHeaderStyle]}>
         <Text style={TextStyles.large}>{`${firstName} ${lastName}`}</Text>
@@ -138,6 +148,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 5,
     paddingBottom: 20
+  },
+  headerContainer: {
+    alignSelf: "stretch",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flex: 1,
+    marginBottom: 20
   },
   row: {
     alignSelf: "stretch",
