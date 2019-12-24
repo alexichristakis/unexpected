@@ -8,7 +8,7 @@ import {
   Inject,
   Patch
 } from "@tsed/common";
-import { MongooseModel } from "@tsed/mongoose";
+import moment from "moment";
 
 import { NotificationService } from "../services/notification";
 import { UserService } from "../services/user";
@@ -23,17 +23,16 @@ export class UserController {
 
   @Get("/:phoneNumber")
   async notifyUser(@PathParams("phoneNumber") phoneNumber: string) {
-    const user = await this.userService.getByPhoneNumber(phoneNumber);
+    const [user] = await Promise.all([
+      this.userService.getByPhoneNumber(phoneNumber),
+      this.userService.setNotificationTimes([
+        { phoneNumber, notifications: [moment().toISOString()] }
+      ])
+    ]);
 
     return this.notificationService.notifyUserModelPhotoTime(
       user,
       "time to take & share a photo"
     );
   }
-
-  // @Put()
-  // async followUser() {}
-
-  // @Put()
-  // async unFollowUser() {}
 }

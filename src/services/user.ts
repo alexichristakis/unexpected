@@ -50,11 +50,14 @@ export class UserService extends CRUDService<UserModel, UserType> {
 
     const { notifications } = user;
 
+    const currentTime = moment();
+
     // check to see if the current time is between what's given
     for (let i = 0; i < notifications.length; i++) {
-      const time = moment(notifications[i]);
+      const start = moment(notifications[i]);
+      const end = start.clone().add(10, "minutes");
 
-      if (moment().isBetween(time, time.add(10, "minutes"))) {
+      if (currentTime.isBetween(start, end, undefined, "[]")) {
         return true;
       }
     }
