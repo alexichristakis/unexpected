@@ -9,7 +9,7 @@ import {
   AppStateStatus as AppStatusType,
   Platform
 } from "react-native";
-import { Notifications, Notification } from "react-native-notifications";
+import { Notification, Notifications } from "react-native-notifications";
 import { REHYDRATE } from "redux-persist";
 import { eventChannel } from "redux-saga";
 import {
@@ -23,6 +23,7 @@ import {
   takeLatest
 } from "redux-saga/effects";
 
+import client, { getHeaders } from "@api";
 import { TIMER_LENGTH } from "@lib/styles";
 import * as selectors from "../selectors";
 import {
@@ -122,7 +123,7 @@ function* appWatcher() {
 
     if (appStatus) {
       if (appStatus === "active") {
-        yield call(checkNotifications);
+        yield call(checkCameraStatus);
       }
 
       yield put(Actions.setAppStatus(appStatus));
@@ -185,7 +186,6 @@ function* notificationWatcher() {
 const notificationEmitter = () => {
   return eventChannel(emit => {
     Notifications.events().registerRemoteNotificationsRegistered(event => {
-      console.log("TOKEN EVENT:", event);
       emit({ token: event.deviceToken });
     });
 
@@ -207,25 +207,32 @@ const notificationEmitter = () => {
   });
 };
 
-function* checkNotifications() {
-  // const notifications = Notifications.ios.getDeliveredNotifications();
-  // const notification:
-  //   | Notification
-  //   | undefined = yield Notifications.getInitialNotification();
-  // console.log("NOTIFICATION", notification);
-  // notifications.sort((a, b) => moment(b.data.time).diff(a.data.time));
-  // console.log("notifications:", notifications);
-  // notifications.forEach(notification => {
-  //   // notification.
-  // });
-  // Notifications.ios.removeAllDeliveredNotifications();
+function* checkCameraStatus() {
+  const jwt = yield select(selectors.jwt);
+  if (jwt) {
+    // check if camera should be enabled
+    const phoneNumber = yield select(selectors.phoneNumber);
+
+    const {
+      data: { enabled, start }
+    } = yield call(client.get, `/user/${phoneNumber}/camera`, {
+      headers: getHeaders({ jwt })
+    });
+
+    if (enabled) {
+      yield put(
+        Actions.setCameraTimer(moment(start).add(TIMER_LENGTH, "minutes"))
+      );
+    }
+  }
 }
 
 function* onStartup() {
+  // start event channels
   yield all([
     call(appWatcher),
     call(notificationWatcher),
-    call(checkNotifications)
+    call(checkCameraStatus)
   ]);
 }
 
@@ -254,11 +261,6 @@ const NETWORK_ERROR_PATTERN = (action: ActionsUnion<typeof Actions>) =>
 export function* appSagas() {
   yield all([
     yield takeEvery(REHYDRATE, onStartup),
-    // yield takeEvery(ActionTypes.PROCESS_NOTIFICATION, onReceiveNotification),
-    // yield takeLatest(
-    //   PermissionsActionTypes.SET_NOTIFICATIONS,
-    //   onRegisterNotifications
-    // ),
     yield takeEvery(NETWORK_SUCCESS_PATTERN, onBackendOnline),
     yield takeEvery(NETWORK_ERROR_PATTERN, onBackendOffline)
   ]);

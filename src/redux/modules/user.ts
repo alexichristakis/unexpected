@@ -221,6 +221,7 @@ function* onCreateUser(
   const newUser: UserType = {
     ...name,
     phoneNumber,
+    notifications: [],
     friends: [],
     friendRequests: [],
     requestedFriends: [],
