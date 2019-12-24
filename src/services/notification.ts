@@ -18,7 +18,7 @@ const settings = {
       keyId: <string>process.env.APNS_KEY_ID,
       teamId: <string>process.env.APNS_TEAM_ID
     },
-    production: true
+    production: false
   }
 };
 

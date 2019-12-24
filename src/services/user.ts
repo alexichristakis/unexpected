@@ -1,10 +1,15 @@
-import { Service, Inject } from "@tsed/common";
+import { $log, Service, Inject } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import { Document } from "mongoose";
 import _ from "lodash";
+import moment from "moment";
 
 import { CRUDService } from "./crud";
-import { User as UserModel, UserType } from "../models/user";
+import {
+  User as UserModel,
+  UserType,
+  UserNotificationRecord
+} from "../models/user";
 import { NotificationService } from "./notification";
 
 @Service()
@@ -36,6 +41,38 @@ export class UserService extends CRUDService<UserModel, UserType> {
         })
         .exec();
     }
+  }
+
+  async cameraEnabled(phoneNumber: string) {
+    const user = await this.findOne({ phoneNumber }, ["notifications"]);
+
+    if (!user) return false;
+
+    const { notifications } = user;
+
+    // check to see if the current time is between what's given
+    for (let i = 0; i < notifications.length; i++) {
+      const time = moment(notifications[i]);
+
+      if (moment().isBetween(time, time.add(10, "minutes"))) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  async setNotificationTimes(times: UserNotificationRecord[]) {
+    const res = await this.model.bulkWrite(
+      times.map(({ phoneNumber, notifications }) => ({
+        updateOne: {
+          filter: { phoneNumber },
+          update: { $set: { notifications } }
+        }
+      }))
+    );
+
+    $log.info(res);
   }
 
   async friend(from: string, to: string) {

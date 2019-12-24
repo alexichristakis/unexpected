@@ -44,23 +44,35 @@ export class User {
   @Default(Date.now)
   createdAt: Date = new Date();
 
+  // timezone of user
   @Required()
   @Default("America/New_York")
   timezone: string;
 
-  // mutual, more like "friends"
+  // array of date strings of the scheduled notifications for today
+  @Property()
+  notifications: string[];
+
+  // mutual
   @Property()
   friends: string[];
 
+  // people who have requested this user
   @Property()
   friendRequests: string[];
 
+  // requests sent by this user
   @Property()
   requestedFriends: string[];
 
   // @Required()
   // notificationPreferences: NotificationPreferences;
 }
+
+export type UserNotificationRecord = {
+  phoneNumber: string;
+  notifications: string[];
+};
 
 export type UserType = Omit<User, "_id" | "createdAt">;
 export type PartialUserType = {

@@ -15,19 +15,22 @@ import { User as UserModel, UserType } from "../models/user";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 
 @Controller("/user")
-@UseAuth(AuthMiddleware)
+// @UseAuth(AuthMiddleware)
 export class UserController {
   @Inject(UserService)
   private userService: UserService;
 
   @Get("/search/:query")
-  @UseAuth(AuthMiddleware)
   async search(@PathParams("query") query: string) {
     return this.userService.search(query);
   }
 
+  @Get("/:phoneNumber/camera")
+  async getIsCameraEnabled(@PathParams("phoneNumber") phoneNumber: string) {
+    return this.userService.cameraEnabled(phoneNumber);
+  }
+
   @Get()
-  @UseAuth(AuthMiddleware)
   async getUsers(
     @QueryParams("phoneNumbers") phoneNumbers: string,
     @QueryParams("select") select: string
@@ -43,13 +46,11 @@ export class UserController {
   }
 
   @Get("/:phoneNumber")
-  @UseAuth(AuthMiddleware)
   async getUser(@PathParams("phoneNumber") phoneNumber: string) {
     return this.userService.getByPhoneNumber(phoneNumber);
   }
 
   @Get("/:phoneNumber/friends")
-  @UseAuth(AuthMiddleware)
   async getUserFriends(@PathParams("phoneNumber") phoneNumber: string) {
     return this.userService.getUserFriends(phoneNumber);
   }

@@ -3,6 +3,7 @@ import { MongooseService } from "@tsed/mongoose";
 import Agenda from "agenda";
 import moment, { Moment, MomentTimezone } from "moment-timezone";
 
+import { UserNotificationRecord } from "../models/user";
 import { UserService } from "./user";
 import { NotificationService } from "./notification";
 
@@ -51,6 +52,7 @@ export class SchedulerService {
         this.agenda.define(AgendaJobs.GENERATE_NOTIFICATIONS, async () => {
           const users = await this.userService.getAll([
             "_id",
+            "phoneNumber",
             "timezone",
             "deviceOS",
             "deviceToken",
@@ -58,24 +60,34 @@ export class SchedulerService {
             "lastName"
           ]);
 
-          users.forEach(user => {
-            const { timezone } = user;
+          let generatedTimes: UserNotificationRecord[] = [];
 
-            for (let i = 0; i < 2; i++) {
-              const time = this.generateTime(timezone);
+          users.forEach(user => {
+            const { phoneNumber, timezone } = user;
+
+            const NUM_NOTIFICATIONS = 2;
+            const times = this.generateTimes(timezone, NUM_NOTIFICATIONS);
+
+            generatedTimes.push({ phoneNumber, notifications: times });
+
+            times.forEach(time => {
+              const dateInstance = moment(time);
+
               $log.info(
-                `notification for ${user.firstName} at: ${time.format(
+                `notification for ${user.firstName} at: ${dateInstance.format(
                   "dddd, MMMM Do YYYY, h:mm:ss a"
                 )}`
               );
 
               this.agenda.schedule(
-                time.toDate(),
+                dateInstance.toDate(),
                 AgendaJobs.SEND_NOTIFICATION,
                 { to: user }
               );
-            }
+            });
           });
+
+          this.userService.setNotificationTimes(generatedTimes);
         });
 
         await this.agenda.start();
@@ -86,7 +98,10 @@ export class SchedulerService {
     });
   }
 
-  private generateTime = (timezone: string = "America/New_York"): Moment => {
+  private generateTimes = (
+    timezone: string = "America/New_York",
+    n: number
+  ): string[] => {
     const start = moment.tz(moment().add(1, "day"), timezone).hour(10);
     const end = start.clone().hour(22);
 
@@ -97,11 +112,16 @@ export class SchedulerService {
 
     const startTime = +start;
 
-    return moment(randomNumber(endTime, startTime));
+    let times: string[] = [];
+    for (let i = 0; i < n; i++) {
+      times.push(moment(randomNumber(endTime, startTime)).toISOString());
+    }
+
+    return times;
   };
 
   scheduleNotificationGeneration = async () => {
-    // await this.agenda.now(AgendaJobs.GENERATE_NOTIFICATIONS);
-    await this.agenda.every("day", AgendaJobs.GENERATE_NOTIFICATIONS);
+    await this.agenda.now(AgendaJobs.GENERATE_NOTIFICATIONS);
+    // await this.agenda.every("day", AgendaJobs.GENERATE_NOTIFICATIONS);
   };
 }
