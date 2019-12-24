@@ -15,7 +15,7 @@ import { User as UserModel, UserType } from "../models/user";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 
 @Controller("/user")
-// @UseAuth(AuthMiddleware)
+@UseAuth(AuthMiddleware)
 export class UserController {
   @Inject(UserService)
   private userService: UserService;
