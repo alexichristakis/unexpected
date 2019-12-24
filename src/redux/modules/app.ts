@@ -6,11 +6,10 @@ import immer from "immer";
 import moment, { Moment } from "moment-timezone";
 import {
   AppState as AppStatus,
-  AppStateStatus as AppStatusType
+  AppStateStatus as AppStatusType,
+  Platform
 } from "react-native";
-import PushNotifications, {
-  PushNotification
-} from "react-native-push-notification";
+import { Notification, Notifications } from "react-native-notifications";
 import { REHYDRATE } from "redux-persist";
 import { eventChannel } from "redux-saga";
 import {
@@ -24,6 +23,7 @@ import {
   takeLatest
 } from "redux-saga/effects";
 
+import client, { getHeaders } from "@api";
 import { TIMER_LENGTH } from "@lib/styles";
 import * as selectors from "../selectors";
 import {
@@ -31,7 +31,6 @@ import {
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
-import { ActionTypes as PermissionsActionTypes } from "./permissions";
 import { Actions as UserActions } from "./user";
 
 export interface AppState {
@@ -110,19 +109,29 @@ export default (
   }
 };
 
-function* onReceiveNotification(
-  action: ExtractActionFromActionCreator<typeof Actions.processNotification>
-) {
-  const { notification } = action.payload;
-  const { data }: { data: any } = notification;
+function* appWatcher() {
+  const appChannel = yield call(appEmitter);
 
-  // notification is to start the photo clock
-  if (data.photoTime) {
-    const { time }: { time: Date } = data;
+  while (true) {
+    const {
+      appStatus,
+      netInfo
+    }: {
+      appStatus: AppStatusType;
+      netInfo: NetInfoState;
+    } = yield take(appChannel);
 
-    const expiry = moment(time).add(TIMER_LENGTH, "minutes");
+    if (appStatus) {
+      if (appStatus === "active") {
+        yield call(checkCameraStatus);
+      }
 
-    yield put(Actions.setCameraTimer(expiry));
+      yield put(Actions.setAppStatus(appStatus));
+    }
+
+    if (netInfo) {
+      yield put(Actions.setNetInfo(netInfo));
+    }
   }
 }
 
@@ -142,57 +151,89 @@ const appEmitter = () => {
   });
 };
 
-function* onStartup() {
-  const appChannel = yield call(appEmitter);
+function* notificationWatcher() {
+  const notificationChannel = yield call(notificationEmitter);
 
   while (true) {
-    const {
-      appStatus,
-      netInfo
-    }: {
-      appStatus: AppStatusType;
-      netInfo: NetInfoState;
-    } = yield take(appChannel);
+    const { token, notification } = yield take(notificationChannel);
 
-    if (appStatus) {
-      yield put(Actions.setAppStatus(appStatus));
+    // new token received
+    if (token) {
+      yield put(
+        UserActions.updateUser({
+          deviceToken: token,
+          deviceOS: Platform.OS
+        })
+      );
     }
 
-    if (netInfo) {
-      yield put(Actions.setNetInfo(netInfo));
+    // notification
+    if (notification) {
+      const { data }: { data: any } = notification;
+
+      // notification is to start the photo clock
+      if (data.photoTime) {
+        const { time }: { time: Date } = data;
+
+        const expiry = moment(time).add(TIMER_LENGTH, "minutes");
+
+        yield put(Actions.setCameraTimer(expiry));
+      }
     }
   }
 }
 
 const notificationEmitter = () => {
   return eventChannel(emit => {
-    PushNotifications.configure({
-      onRegister: token => emit({ token }),
-      onNotification: notification => emit({ notification }),
-      senderID: "YOUR GCM (OR FCM) SENDER ID",
-      requestPermissions: false
+    Notifications.events().registerRemoteNotificationsRegistered(event => {
+      emit({ token: event.deviceToken });
     });
+
+    Notifications.events().registerNotificationReceived(
+      (notification, complete) => {
+        emit({ notification });
+        complete({ badge: false, alert: false, sound: false });
+      }
+    );
+
+    Notifications.events().registerRemoteNotificationOpened(
+      (notification, completion) => {
+        emit({ notification });
+        completion();
+      }
+    );
 
     return () => {};
   });
 };
 
-function* onRegisterNotifications() {
-  const tokenChannel = yield call(notificationEmitter);
+function* checkCameraStatus() {
+  const jwt = yield select(selectors.jwt);
+  if (jwt) {
+    // check if camera should be enabled
+    const phoneNumber = yield select(selectors.phoneNumber);
 
-  while (true) {
-    const { token, notification } = yield take(tokenChannel);
+    const {
+      data: { enabled, start }
+    } = yield call(client.get, `/user/${phoneNumber}/camera`, {
+      headers: getHeaders({ jwt })
+    });
 
-    if (token) {
+    if (enabled) {
       yield put(
-        UserActions.updateUser({ deviceToken: token.token, deviceOS: token.os })
+        Actions.setCameraTimer(moment(start).add(TIMER_LENGTH, "minutes"))
       );
     }
-
-    if (notification) {
-      yield put(Actions.processNotification(notification));
-    }
   }
+}
+
+function* onStartup() {
+  // start event channels
+  yield all([
+    call(appWatcher),
+    call(notificationWatcher),
+    call(checkCameraStatus)
+  ]);
 }
 
 function* onBackendOffline() {
@@ -220,11 +261,6 @@ const NETWORK_ERROR_PATTERN = (action: ActionsUnion<typeof Actions>) =>
 export function* appSagas() {
   yield all([
     yield takeEvery(REHYDRATE, onStartup),
-    yield takeEvery(ActionTypes.PROCESS_NOTIFICATION, onReceiveNotification),
-    yield takeLatest(
-      PermissionsActionTypes.SET_NOTIFICATIONS,
-      onRegisterNotifications
-    ),
     yield takeEvery(NETWORK_SUCCESS_PATTERN, onBackendOnline),
     yield takeEvery(NETWORK_ERROR_PATTERN, onBackendOffline)
   ]);
@@ -243,7 +279,7 @@ export enum ActionTypes {
 }
 
 export const Actions = {
-  processNotification: (notification: PushNotification) =>
+  processNotification: (notification: Notification) =>
     createAction(ActionTypes.PROCESS_NOTIFICATION, { notification }),
   setCameraTimer: (time: Moment) =>
     createAction(ActionTypes.SET_CAMERA_TIMER, { time }),

@@ -6,7 +6,7 @@ const server = __DEV__
   ? "http://localhost:5000"
   : "https://www.api.expect.photos";
 // const server = "https://www.api.expect.photos";
-// const server = "http://172.27.34.211:5000";
+// const server = "http://10.0.1.120:5000";
 
 export default axios.create({ baseURL: server });
 
