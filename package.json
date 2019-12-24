@@ -10,7 +10,8 @@
     "deploy": "appcenter codepush release-react -a alexi/unexpected -t '0.0.1'",
     "check-types": "tsc -p . --noEmit --skipLibCheck",
     "lint": "tslint -c tslint.json 'src/**/*.ts*' --fix",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",
@@ -78,6 +79,7 @@
     "jest": "^24.9.0",
     "jest-enzyme": "^7.1.2",
     "metro-react-native-babel-preset": "^0.57.0",
+    "patch-package": "^6.2.0",
     "react-dom": "^16.12.0",
     "react-native-svg-transformer": "^0.14.3",
     "react-test-renderer": "16.12.0",
