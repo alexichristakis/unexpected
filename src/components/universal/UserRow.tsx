@@ -6,6 +6,7 @@ import { UserType } from "unexpected-cloud/models/user";
 import { Button } from "./Button";
 import FriendButton from "./FriendButton";
 import UserImage from "./UserImage";
+import { formatName } from "@lib/utils";
 
 export interface UserRowProps {
   // actions?: Array<{ title: string; onPress: () => void }>;
@@ -26,7 +27,7 @@ export const UserRow: React.FC<UserRowProps> = ({
   return (
     <TouchableOpacity onPress={handleOnPress} style={styles.container}>
       <UserImage phoneNumber={user.phoneNumber} size={40} />
-      <Text style={styles.name}>{`${user.firstName} ${user.lastName}`}</Text>
+      <Text style={styles.name}>{formatName(user)}</Text>
       <View style={styles.buttonContainer}>
         {actions.map(action => action)}
       </View>

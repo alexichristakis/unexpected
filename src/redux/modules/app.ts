@@ -213,16 +213,20 @@ function* checkCameraStatus() {
     // check if camera should be enabled
     const phoneNumber = yield select(selectors.phoneNumber);
 
-    const {
-      data: { enabled, start }
-    } = yield call(client.get, `/user/${phoneNumber}/camera`, {
-      headers: getHeaders({ jwt })
-    });
+    try {
+      const {
+        data: { enabled, start }
+      } = yield call(client.get, `/user/${phoneNumber}/camera`, {
+        headers: getHeaders({ jwt })
+      });
 
-    if (enabled) {
-      yield put(
-        Actions.setCameraTimer(moment(start).add(TIMER_LENGTH, "minutes"))
-      );
+      if (enabled) {
+        yield put(
+          Actions.setCameraTimer(moment(start).add(TIMER_LENGTH, "minutes"))
+        );
+      }
+    } catch (err) {
+      yield put(Actions.networkError());
     }
   }
 }

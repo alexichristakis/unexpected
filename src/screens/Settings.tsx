@@ -17,7 +17,6 @@ import {
   Button,
   FriendButton,
   ItemSeparator,
-  UserImage,
   UserRow
 } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
@@ -33,7 +32,7 @@ import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
-  user: selectors.user(state),
+  user: selectors.currentUser(state),
   users: selectors.users(state)
 });
 const mapDispatchToProps = {
@@ -110,7 +109,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
       const actions = [
-        <FriendButton key="friend" size={TextSizes.small} user={item} />
+        <FriendButton circle key="friend" size={TextSizes.small} user={item} />
       ];
 
       return (
@@ -130,7 +129,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
     const renderListFooter = (length: number) => (
       <View style={[styles.buttonContainer, length ? { marginTop: 20 } : {}]}>
         <Button
-          title="update picture"
+          title="update profile picture"
           style={styles.button}
           onPress={navigateToNewProfilePicture}
         />
@@ -144,11 +143,11 @@ const Settings: React.FC<SettingsProps> = React.memo(
           style={styles.button}
           onPress={navigateToPermissions}
         />
-        <Button
+        {/* <Button
           title="sync contacts"
           style={styles.button}
           onPress={getContacts}
-        />
+        /> */}
         <Button title="sign out" style={styles.button} onPress={logout} />
       </View>
     );

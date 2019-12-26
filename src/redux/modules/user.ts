@@ -417,7 +417,7 @@ function* onDeleteFriend(
 
 function* onStartup() {
   const jwt = yield select(selectors.jwt);
-  const user = yield select(selectors.user);
+  const user = yield select(selectors.currentUser);
 
   if (jwt) {
     const timezone = moment.tz.guess(true);

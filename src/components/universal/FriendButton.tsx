@@ -24,7 +24,7 @@ import { Button } from "./Button";
 const ICON_SIZE = 40;
 
 const mapStateToProps = (state: RootState) => ({
-  currentUser: selectors.user(state)
+  currentUser: selectors.currentUser(state)
 });
 const mapDispatchToProps = {
   sendFriendRequest: UserActions.friendUser,
@@ -107,77 +107,79 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   if (currentUser.phoneNumber !== user.phoneNumber) {
     const state = getState();
 
-    if (circle) {
-      if (state !== "received") {
-        const icon =
-          state === "none" ? (
-            <AddFriendSVG width={ICON_SIZE} height={ICON_SIZE} />
-          ) : state === "friends" ? (
-            <FriendSVG width={ICON_SIZE} height={ICON_SIZE} />
-          ) : (
-            <PendingFriendSVG width={ICON_SIZE} height={ICON_SIZE} />
-          );
-
-        return (
-          <TouchableOpacity onPress={action(state)}>{icon}</TouchableOpacity>
+    // if (circle) {
+    if (state !== "received") {
+      const icon =
+        state === "none" ? (
+          <AddFriendSVG width={ICON_SIZE} height={ICON_SIZE} />
+        ) : state === "friends" ? (
+          <FriendSVG width={ICON_SIZE} height={ICON_SIZE} />
+        ) : (
+          <PendingFriendSVG width={ICON_SIZE} height={ICON_SIZE} />
         );
-      }
 
       return (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => acceptRequest(user)}>
-            <FriendSVG width={ICON_SIZE} height={ICON_SIZE} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ marginLeft: 10 }}
-            onPress={() => denyRequest(user)}
-          >
-            <DenySVG width={ICON_SIZE} height={ICON_SIZE} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={action(state)}>{icon}</TouchableOpacity>
       );
     }
 
-    if (state !== "received")
-      return (
-        <Button
-          size={size}
-          style={[styles.button, style]}
-          title={title(state)}
-          onPress={action(state)}
-        />
-      );
-
     return (
-      <View style={styles.flex}>
-        {showLabel && (
-          <Text
-            style={styles.label}
-          >{`${user.firstName} wants to be friends:`}</Text>
-        )}
-        <View style={styles.buttonContainer}>
-          <Button
-            style={styles.button}
-            size={size}
-            title="accept"
-            onPress={() => acceptRequest(user)}
-          />
-          <Button
-            style={[styles.button, { marginLeft: 10 }]}
-            size={size}
-            title="delete"
-            onPress={() => denyRequest(user)}
-          />
-        </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={() => acceptRequest(user)}>
+          <FriendSVG width={ICON_SIZE} height={ICON_SIZE} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ marginLeft: 10 }}
+          onPress={() => denyRequest(user)}
+        >
+          <DenySVG width={ICON_SIZE} height={ICON_SIZE} />
+        </TouchableOpacity>
       </View>
     );
+    // }
+
+    // if (state !== "received")
+    //   return (
+    //     <Button
+    //       size={size}
+    //       style={[styles.button, style]}
+    //       title={title(state)}
+    //       onPress={action(state)}
+    //     />
+    //   );
+
+    // return (
+    //   <View style={styles.flex}>
+    //     {showLabel && (
+    //       <Text
+    //         style={styles.label}
+    //       >{`${user.firstName} wants to be friends:`}</Text>
+    //     )}
+    //     <View style={styles.buttonContainer}>
+    //       <Button
+    //         style={styles.button}
+    //         size={size}
+    //         title="accept"
+    //         onPress={() => acceptRequest(user)}
+    //       />
+    //       <Button
+    //         style={[styles.button, { marginLeft: 10 }]}
+    //         size={size}
+    //         title="delete"
+    //         onPress={() => denyRequest(user)}
+    //       />
+    //     </View>
+    //   </View>
+    // );
   }
 
   return null;
 };
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  flex: {
+    flex: 1
+  },
   buttonContainer: {
     flexDirection: "row"
   },

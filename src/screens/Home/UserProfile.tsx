@@ -20,7 +20,7 @@ import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
-  user: selectors.user(state),
+  user: selectors.currentUser(state),
   posts: selectors.currentUsersPosts(state),
   stale: selectors.currentUsersPostsStale(state)
 });

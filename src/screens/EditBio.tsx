@@ -25,7 +25,7 @@ import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState, props: EditBioProps) => ({
-  user: selectors.user(state),
+  user: selectors.currentUser(state),
   loading: selectors.userLoading(state)
 });
 const mapDispatchToProps = {

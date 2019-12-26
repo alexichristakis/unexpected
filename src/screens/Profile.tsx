@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Animated, StatusBar, StyleSheet, Text, View } from "react-native";
 
+import isEqual from "lodash/isEqual";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
@@ -18,7 +19,11 @@ import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
 
+/* need to change to watch user from redux state and use phone number from route for fetching purposes only */
+
 const mapStateToProps = (state: RootState, props: ProfileProps) => ({
+  phoneNumber: selectors.phoneNumber(state),
+  user: selectors.user(state, props.route.params.user),
   posts: selectors.usersPosts(state, props.route.params.user)
 });
 const mapDispatchToProps = {
@@ -36,63 +41,80 @@ export interface ProfileProps {
   route: RouteProp<StackParamList, "PROFILE">;
 }
 
-const Profile: React.FC<ProfileProps & ProfileReduxProps> = ({
-  navigation,
-  fetchUsersPosts,
-  fetchUser,
-  posts,
-  route
-}) => {
-  const [scrollY] = useState(new Animated.Value(0));
-  const [onScroll] = useState(
-    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-      useNativeDriver: true
-    })
-  );
+const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
+  ({
+    navigation,
+    fetchUsersPosts,
+    fetchUser,
+    posts,
+    user,
+    phoneNumber,
+    route
+  }) => {
+    const [scrollY] = useState(new Animated.Value(0));
+    const [onScroll] = useState(
+      Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+        useNativeDriver: true
+      })
+    );
 
-  const { user } = route.params;
+    const checkIsFriend = () => {
+      if (!user.friends) return "unknown";
+      if (user.friends.includes(phoneNumber)) return "friends";
+      else return "notFriends";
+    };
 
-  useFocusEffect(
-    useCallback(() => {
-      StatusBar.setHidden(false);
-      fetchUsersPosts(user.phoneNumber);
-      fetchUser(user.phoneNumber);
-    }, [user.phoneNumber])
-  );
+    useFocusEffect(
+      useCallback(() => {
+        StatusBar.setHidden(false);
 
-  const goToFriends = () => {
-    navigation.navigate({ name: "FRIENDS", key: uuid(), params: { user } });
-  };
+        const {
+          user: { phoneNumber }
+        } = route.params;
 
-  const renderTop = () => (
-    <Top
-      user={user}
-      numPosts={posts.length}
-      scrollY={scrollY}
-      onPressFriends={goToFriends}
-    />
-  );
+        fetchUser(phoneNumber);
 
-  const handleOnPressPost = (post: PostType) => {
-    navigation.navigate({
-      name: "POST",
-      key: uuid(),
-      params: { post: { ...post, user } }
-    });
-  };
+        if (checkIsFriend() === "friends") fetchUsersPosts(phoneNumber);
+      }, [route.params.user.phoneNumber, user.friends])
+    );
 
-  return (
-    <Screen style={styles.container}>
-      <Grid
-        onPressPost={handleOnPressPost}
-        onScroll={onScroll}
-        ListHeaderComponentStyle={styles.headerContainer}
-        ListHeaderComponent={renderTop}
-        posts={posts}
+    const goToFriends = () => {
+      navigation.navigate({ name: "FRIENDS", key: uuid(), params: { user } });
+    };
+
+    const renderTop = () => (
+      <Top
+        user={user}
+        numPosts={posts.length}
+        scrollY={scrollY}
+        onPressFriends={goToFriends}
       />
-    </Screen>
-  );
-};
+    );
+
+    const handleOnPressPost = (post: PostType) => {
+      navigation.navigate({
+        name: "POST",
+        key: uuid(),
+        params: { post: { ...post, user } }
+      });
+    };
+
+    return (
+      <Screen style={styles.container}>
+        <Grid
+          user={user}
+          onPressPost={handleOnPressPost}
+          onScroll={onScroll}
+          friendStatus={checkIsFriend()}
+          ListHeaderComponentStyle={styles.headerContainer}
+          ListHeaderComponent={renderTop}
+          posts={posts}
+        />
+      </Screen>
+    );
+  },
+  (prevProps, nextProps) => isEqual(prevProps.user, nextProps.user)
+);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,5 +1,5 @@
 import { RootState } from "../types";
-import { user } from "./user";
+import { currentUser } from "./user";
 
 const s = (state: RootState) => state.auth || {};
 
@@ -7,4 +7,5 @@ export const jwt = (state: RootState) => s(state).jwt;
 
 export const authPhoneNumber = (state: RootState) => s(state).phoneNumber;
 
-export const isAuthorized = (state: RootState) => !!s(state).jwt && !!user(state);
+export const isAuthorized = (state: RootState) =>
+  !!s(state).jwt && !!currentUser(state);
