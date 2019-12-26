@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Animated,
-  FlatList,
   ListRenderItemInfo,
   StyleSheet,
   View,
@@ -93,7 +92,11 @@ export const Grid: React.FC<GridProps> = ({
         </View>
       );
 
-    return <Text>Loading posts...</Text>;
+    return (
+      <View style={styles.emptyStateContainer}>
+        <Text style={TextStyles.large}>Loading posts...</Text>
+      </View>
+    );
   };
 
   return (

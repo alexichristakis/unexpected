@@ -3,7 +3,7 @@ import { Animated, StatusBar, StyleSheet } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { PostType } from "unexpected-cloud/models/post";
@@ -75,7 +75,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser={true}
+        isUser
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}
@@ -108,7 +108,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
   },
   (prevProps, nextProps) =>
     prevProps.stale === nextProps.stale &&
-    _.isEqual(prevProps.user, nextProps.user)
+    isEqual(prevProps.user, nextProps.user)
 );
 
 const styles = StyleSheet.create({

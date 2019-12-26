@@ -18,12 +18,14 @@ import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
+import posts from "@components/Profile/Grid/test_data";
 
 /* need to change to watch user from redux state and use phone number from route for fetching purposes only */
 
 const mapStateToProps = (state: RootState, props: ProfileProps) => ({
   phoneNumber: selectors.phoneNumber(state),
-  user: selectors.user(state, props.route.params.user),
+  postsLoading: selectors.postLoading(state),
+  user: selectors.user(state, props.route.params, props.route.params.user),
   posts: selectors.usersPosts(state, props.route.params.user)
 });
 const mapDispatchToProps = {
@@ -59,7 +61,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     );
 
     const checkIsFriend = () => {
-      if (!user.friends) return "unknown";
+      if (!user || !user.friends) return "unknown";
       if (user.friends.includes(phoneNumber)) return "friends";
       else return "notFriends";
     };
@@ -74,8 +76,9 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
 
         fetchUser(phoneNumber);
 
+        // if friends fetch and render posts too
         if (checkIsFriend() === "friends") fetchUsersPosts(phoneNumber);
-      }, [route.params.user.phoneNumber, user.friends])
+      }, [route.params.user.phoneNumber, user])
     );
 
     const goToFriends = () => {
@@ -113,13 +116,15 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       </Screen>
     );
   },
-  (prevProps, nextProps) => isEqual(prevProps.user, nextProps.user)
+  (prevProps, nextProps) =>
+    isEqual(prevProps.user, nextProps.user) &&
+    prevProps.posts.length === nextProps.posts.length &&
+    prevProps.postsLoading === nextProps.postsLoading
 );
 
 const styles = StyleSheet.create({
   container: {
     paddingTop: SB_HEIGHT(),
-    // paddingHorizontal: 20,
     alignItems: "center"
   },
   headerContainer: {

@@ -14,8 +14,8 @@ const phoneNumberFromProps = (_: RootState, props: { phoneNumber: string }) =>
   props.phoneNumber;
 
 export const usersPostState = createSelector(
-  [phoneNumberFromProps, usersSelector],
-  (phoneNumber, users) => users[phoneNumber] || {}
+  [usersSelector, phoneNumberFromProps],
+  (users, phoneNumber) => users[phoneNumber] || {}
 );
 
 export const usersPosts = createSelector(
