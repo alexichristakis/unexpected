@@ -1,6 +1,8 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 
+import ShutterSVG from "@assets/svg/shutter.svg";
+
 export interface ShutterProps {
   onPress: () => void;
   dark?: boolean;
@@ -11,9 +13,11 @@ export const Shutter = ({ onPress, dark, style }: ShutterProps) => {
 
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor }]}
+      // style={styles.container}
       onPress={onPress}
-    />
+    >
+      <ShutterSVG width={70} height={70} />
+    </TouchableOpacity>
   );
 };
 

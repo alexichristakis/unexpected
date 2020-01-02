@@ -80,7 +80,7 @@ class Camera extends React.Component<CameraProps, CameraState> {
   };
 
   render() {
-    const { type, focus, flashMode } = this.state;
+    const { direction, focus, flashMode } = this.state;
     const { style, round, size } = this.props;
 
     const cameraStyle: ViewStyle = { ...style };
@@ -104,7 +104,7 @@ class Camera extends React.Component<CameraProps, CameraState> {
             autoFocus="on"
             autoFocusPointOfInterest={focus}
             style={[styles.camera, cameraStyle]}
-            type={type}
+            type={direction}
             captureAudio={false}
           />
         </TouchableWithoutFeedback>

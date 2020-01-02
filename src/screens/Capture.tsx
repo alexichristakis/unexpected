@@ -75,15 +75,15 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
   const onToggleFlashMode = () => {
     if (camera) {
       if (flashMode === "on") {
-        setFlashMode("off");
-      }
-
-      if (flashMode === "off") {
         setFlashMode("auto");
       }
 
-      if (flashMode === "auto") {
+      if (flashMode === "off") {
         setFlashMode("on");
+      }
+
+      if (flashMode === "auto") {
+        setFlashMode("off");
       }
 
       camera.setFlashMode(flashMode);
@@ -95,9 +95,13 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
       <View style={styles.background} />
       <Camera ref={setCamera} style={styles.camera} />
       <View style={styles.buttonContainer}>
-        <ToggleFlashModeButton mode={flashMode} onPress={onToggleFlashMode} />
+        <View style={{ flex: 1, alignItems: "flex-start" }}>
+          <ToggleFlashModeButton mode={flashMode} onPress={onToggleFlashMode} />
+        </View>
         <Shutter onPress={onTakePhoto} style={styles.shutter} />
-        <FlipCameraButton mode={direction} onPress={onFlipCamera} />
+        <View style={{ flex: 1, alignItems: "flex-end" }}>
+          <FlipCameraButton mode={direction} onPress={onFlipCamera} />
+        </View>
       </View>
     </Screen>
   );
