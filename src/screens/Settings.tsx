@@ -4,7 +4,8 @@ import {
   ListRenderItemInfo,
   StyleSheet,
   Text,
-  View
+  View,
+  Share
 } from "react-native";
 
 import { useFocusEffect } from "@react-navigation/core";
@@ -87,6 +88,13 @@ const Settings: React.FC<SettingsProps> = React.memo(
       navigation.navigate("PERMISSIONS");
     };
 
+    const shareUnexpected = async () => {
+      const result = await Share.share({
+        title: "share Unexpected",
+        message: "https://expect.photos"
+      });
+    };
+
     const getUsers = () => {
       return _.filter(users, o =>
         _.includes(user.friendRequests, o.phoneNumber)
@@ -142,6 +150,11 @@ const Settings: React.FC<SettingsProps> = React.memo(
           title="permissions"
           style={styles.button}
           onPress={navigateToPermissions}
+        />
+        <Button
+          title="share Unexpected"
+          style={styles.button}
+          onPress={shareUnexpected}
         />
         {/* <Button
           title="sync contacts"

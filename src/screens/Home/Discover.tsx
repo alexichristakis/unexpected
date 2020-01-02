@@ -86,6 +86,7 @@ export const Discover: React.FC<DiscoverProps &
     nativeEvent
   }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
     setLoading(true);
+
     const response = await client.get<UserType[]>(
       `/user/search/${nativeEvent.text}`,
       {
@@ -95,7 +96,9 @@ export const Discover: React.FC<DiscoverProps &
 
     const { data } = response;
 
-    const results = data.filter(o => o.phoneNumber !== phoneNumber);
+    const results = data.length
+      ? data.filter(o => o.phoneNumber !== phoneNumber)
+      : [];
 
     setResponses(results);
     setLoading(false);
