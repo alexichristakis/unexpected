@@ -11,7 +11,7 @@ export const Shutter = ({ onPress, dark, style }: ShutterProps) => {
 
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor }, style]}
+      style={[styles.container, { backgroundColor }]}
       onPress={onPress}
     />
   );

@@ -68,6 +68,13 @@ export default (
       return { ...state, camera: { enabled: true, timeOfExpiry: time } };
     }
 
+    case ActionTypes.DEBUG_ENABLE_CAMERA: {
+      return {
+        ...state,
+        camera: { enabled: true, timeOfExpiry: moment().add(10, "hours") }
+      };
+    }
+
     case ActionTypes.EXPIRE_CAMERA: {
       return { ...state, camera: { enabled: false, timeOfExpiry: undefined } };
     }
@@ -279,7 +286,8 @@ export enum ActionTypes {
   SET_APP_STATUS = "app/SET_APP_STATUS",
   SET_NET_INFO = "app/SET_NET_INFO",
   NETWORK_OFFLINE = "app/NETWORK_OFFLINE",
-  NETWORK_ONLINE = "app/NETWORK_ONLINE"
+  NETWORK_ONLINE = "app/NETWORK_ONLINE",
+  DEBUG_ENABLE_CAMERA = "debug/ENABLE_CAMERA"
 }
 
 export const Actions = {
@@ -287,6 +295,7 @@ export const Actions = {
     createAction(ActionTypes.PROCESS_NOTIFICATION, { notification }),
   setCameraTimer: (time: Moment) =>
     createAction(ActionTypes.SET_CAMERA_TIMER, { time }),
+  enableCamera: () => createAction(ActionTypes.DEBUG_ENABLE_CAMERA),
   expireCamera: () => createAction(ActionTypes.EXPIRE_CAMERA),
   setAppStatus: (status: AppStatusType) =>
     createAction(ActionTypes.SET_APP_STATUS, { status }),

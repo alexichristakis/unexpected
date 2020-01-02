@@ -8,7 +8,12 @@ import {
   ViewStyle
 } from "react-native";
 
-import { RNCamera, TakePictureOptions } from "react-native-camera";
+import {
+  RNCamera,
+  FlashMode,
+  TakePictureOptions,
+  CameraType
+} from "react-native-camera";
 
 export interface CameraProps {
   front?: boolean;
@@ -19,7 +24,8 @@ export interface CameraProps {
 }
 
 export interface CameraState {
-  type: keyof typeof RNCamera.Constants.Type;
+  direction: keyof CameraType;
+  flashMode: keyof FlashMode;
   focus: { x: number; y: number };
   layout: { width: number; height: number };
 }
@@ -31,21 +37,19 @@ class Camera extends React.Component<CameraProps, CameraState> {
 
     const { front } = props;
     this.state = {
-      type: front
-        ? RNCamera.Constants.Type.front
-        : RNCamera.Constants.Type.back,
+      direction: front ? "front" : "back",
+      flashMode: "auto",
       focus: { x: 0.5, y: 0.5 },
       layout: { width: 0, height: 0 }
     };
   }
 
-  flip = () => {
-    const { type } = this.state;
-    if (type === RNCamera.Constants.Type.front) {
-      this.setState({ type: RNCamera.Constants.Type.back });
-    } else {
-      this.setState({ type: RNCamera.Constants.Type.front });
-    }
+  setDirection = (direction: keyof CameraType) => {
+    this.setState({ direction });
+  };
+
+  setFlashMode = (flashMode: keyof FlashMode) => {
+    this.setState({ flashMode });
   };
 
   takePhoto = async () => {
@@ -76,7 +80,7 @@ class Camera extends React.Component<CameraProps, CameraState> {
   };
 
   render() {
-    const { type, focus } = this.state;
+    const { type, focus, flashMode } = this.state;
     const { style, round, size } = this.props;
 
     const cameraStyle: ViewStyle = { ...style };
@@ -96,6 +100,7 @@ class Camera extends React.Component<CameraProps, CameraState> {
           <RNCamera
             ref={this.camera}
             onLayout={this.handleCameraLayout}
+            flashMode={flashMode}
             autoFocus="on"
             autoFocusPointOfInterest={focus}
             style={[styles.camera, cameraStyle]}
@@ -119,7 +124,7 @@ class Camera extends React.Component<CameraProps, CameraState> {
 
 const styles = StyleSheet.create({
   camera: {
-    backgroundColor: "red"
+    backgroundColor: "black"
     // flex: 1
   }
 });

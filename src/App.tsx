@@ -222,12 +222,13 @@ const Router: React.FC = () => {
             <Stack.Screen
               name="CAPTURE"
               options={{
-                headerTitle: "capture",
-                headerTitleStyle: TextStyles.large,
-                headerTintColor: "#231F20",
-                headerStyle: {
-                  backgroundColor: "white"
-                }
+                headerShown: false
+                // headerTitle: "capture",
+                // headerTitleStyle: TextStyles.large,
+                // headerTintColor: "#231F20",
+                // headerStyle: {
+                //   backgroundColor: "white"
+                // }
               }}
             >
               {({ navigation }) => (
