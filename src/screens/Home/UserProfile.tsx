@@ -20,6 +20,7 @@ import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
+  postsLoading: selectors.postLoading(state),
   user: selectors.currentUser(state),
   posts: selectors.currentUsersPosts(state),
   stale: selectors.currentUsersPostsStale(state)
@@ -41,7 +42,15 @@ export interface UserProfileOwnProps {
 export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 
 export const UserProfile: React.FC<UserProfileProps> = React.memo(
-  ({ navigation, fetchUser, fetchUsersPosts, stale, posts, user }) => {
+  ({
+    navigation,
+    fetchUser,
+    fetchUsersPosts,
+    stale,
+    posts,
+    postsLoading,
+    user
+  }) => {
     const [scrollY] = useState(new Animated.Value(0));
     const [onScroll] = useState(
       Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
@@ -97,6 +106,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     return (
       <Screen style={styles.container}>
         <Grid
+          loading={postsLoading}
           onPressPost={handleOnPressPost}
           onScroll={onScroll}
           ListHeaderComponentStyle={styles.headerContainer}

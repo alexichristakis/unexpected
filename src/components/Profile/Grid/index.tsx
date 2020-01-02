@@ -24,6 +24,7 @@ export interface GridProps {
   onScroll?: any;
   user?: UserType;
   friendStatus?: "friends" | "notFriends" | "unknown";
+  loading: boolean;
   onPressPost: (item: PostType) => void;
   ListHeaderComponentStyle?: ViewStyle;
   ListHeaderComponent?: React.ComponentType<any>;
@@ -32,6 +33,7 @@ export interface GridProps {
 
 export const Grid: React.FC<GridProps> = ({
   friendStatus = "friends",
+  loading,
   onPressPost,
   ListHeaderComponentStyle,
   ListHeaderComponent,
@@ -92,9 +94,18 @@ export const Grid: React.FC<GridProps> = ({
         </View>
       );
 
+    if (loading)
+      return (
+        <View style={styles.emptyStateContainer}>
+          <Text style={TextStyles.large}>Loading posts...</Text>
+        </View>
+      );
+
     return (
       <View style={styles.emptyStateContainer}>
-        <Text style={TextStyles.large}>Loading posts...</Text>
+        <Text style={TextStyles.medium}>{`${formatName(
+          user
+        )} doesn't have any moments yet`}</Text>
       </View>
     );
   };

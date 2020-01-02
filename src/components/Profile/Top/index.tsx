@@ -118,7 +118,7 @@ export const Top: React.FC<ProfileTopProps> = ({
           </View>
           {renderHeaderButton()}
         </View>
-        <View style={[styles.row, { marginBottom: isUser ? 0 : 20 }]}>
+        <View style={styles.row}>
           <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
             <UserImage
               phoneNumber={phoneNumber}
