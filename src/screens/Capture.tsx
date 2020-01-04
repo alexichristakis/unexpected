@@ -67,8 +67,6 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
       if (direction === "front") {
         setDirection("back");
       }
-
-      camera.setDirection(direction);
     }
   };
 
@@ -85,15 +83,18 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
       if (flashMode === "auto") {
         setFlashMode("off");
       }
-
-      camera.setFlashMode(flashMode);
     }
   };
 
   return (
     <Screen style={styles.container}>
       <View style={styles.background} />
-      <Camera ref={setCamera} style={styles.camera} />
+      <Camera
+        flashMode={flashMode}
+        direction={direction}
+        ref={setCamera}
+        style={styles.camera}
+      />
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1, alignItems: "flex-start" }}>
           <ToggleFlashModeButton mode={flashMode} onPress={onToggleFlashMode} />

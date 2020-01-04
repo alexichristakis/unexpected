@@ -32,10 +32,14 @@ export interface PostImageProps {
 export const _PostImage: React.FC<PostImageProps &
   PostImageReduxProps> = React.memo(
   ({ phoneNumber, id, width, height, cache, requestCache }) => {
+    // const [loading, setLoading] = useState(true);
+
     useEffect(() => {
+      // if the cache doesnt have a record of this photo download it
       if (!cache[id]) {
         requestCache(phoneNumber, id);
       } else {
+        // otherwise check to make sure it exists, then download
         RNFS.exists(cache[id].uri).then(res => {
           if (!res) requestCache(phoneNumber, id);
         });

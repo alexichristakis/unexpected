@@ -16,7 +16,8 @@ import {
 } from "react-native-camera";
 
 export interface CameraProps {
-  front?: boolean;
+  direction?: keyof CameraType;
+  flashMode?: keyof FlashMode;
   round?: boolean;
   size?: number;
   containerStyle?: ViewStyle;
@@ -24,32 +25,16 @@ export interface CameraProps {
 }
 
 export interface CameraState {
-  direction: keyof CameraType;
-  flashMode: keyof FlashMode;
   focus: { x: number; y: number };
   layout: { width: number; height: number };
 }
 
 class Camera extends React.Component<CameraProps, CameraState> {
   private camera = React.createRef<RNCamera>();
-  constructor(props: CameraProps) {
-    super(props);
 
-    const { front } = props;
-    this.state = {
-      direction: front ? "front" : "back",
-      flashMode: "auto",
-      focus: { x: 0.5, y: 0.5 },
-      layout: { width: 0, height: 0 }
-    };
-  }
-
-  setDirection = (direction: keyof CameraType) => {
-    this.setState({ direction });
-  };
-
-  setFlashMode = (flashMode: keyof FlashMode) => {
-    this.setState({ flashMode });
+  state = {
+    focus: { x: 0.5, y: 0.5 },
+    layout: { width: 0, height: 0 }
   };
 
   takePhoto = async () => {
@@ -80,8 +65,14 @@ class Camera extends React.Component<CameraProps, CameraState> {
   };
 
   render() {
-    const { direction, focus, flashMode } = this.state;
-    const { style, round, size } = this.props;
+    const { focus } = this.state;
+    const {
+      style,
+      flashMode = "auto",
+      direction = "back",
+      round,
+      size
+    } = this.props;
 
     const cameraStyle: ViewStyle = { ...style };
     if (size && round) {
