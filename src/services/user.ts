@@ -46,7 +46,7 @@ export class UserService extends CRUDService<UserModel, UserType> {
   async cameraEnabled(phoneNumber: string) {
     const user = await this.findOne({ phoneNumber }, ["notifications"]);
 
-    if (!user) return false;
+    if (!user) return { enabled: false };
 
     const { notifications } = user;
 
@@ -58,11 +58,11 @@ export class UserService extends CRUDService<UserModel, UserType> {
       const end = start.clone().add(10, "minutes");
 
       if (currentTime.isBetween(start, end, undefined, "[]")) {
-        return true;
+        return { enabled: true, start: start.toISOString() };
       }
     }
 
-    return false;
+    return { enabled: false };
   }
 
   async setNotificationTimes(times: UserNotificationRecord[]) {
@@ -147,8 +147,8 @@ export class UserService extends CRUDService<UserModel, UserType> {
         )
         .exec(),
       this.notificationService.notifyUserModel(
-        userFrom,
-        `${userTo.firstName} ${userTo.lastName} accepted your friend request.`
+        userTo,
+        `${userFrom.firstName} ${userFrom.lastName} accepted your friend request.`
       )
     ]);
   }

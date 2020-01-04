@@ -14,6 +14,10 @@ import { UserService } from "../services/user";
 import { User as UserModel, UserType } from "../models/user";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 
+export type CameraEnabledReturn = ReturnType<
+  UserController["getIsCameraEnabled"]
+>;
+
 @Controller("/user")
 @UseAuth(AuthMiddleware)
 export class UserController {
@@ -142,6 +146,4 @@ export class UserController {
       return this.userService.unfriend(phoneNumber, to);
     }
   }
-  // @Put()
-  // async unFollowUser() {}
 }
