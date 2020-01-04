@@ -90,7 +90,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const shareUnexpected = async () => {
       const result = await Share.share({
-        title: "share Unexpected",
+        title: "share unexpected",
         message: "https://expect.photos"
       });
     };

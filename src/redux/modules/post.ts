@@ -15,6 +15,9 @@ import {
 import { FeedReturnType } from "unexpected-cloud/controllers/post";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
+import ImageResizer, {
+  Response as ImageResizerResponse
+} from "react-native-image-resizer";
 
 import client, { getHeaders } from "@api";
 import { AxiosResponse } from "axios";
@@ -147,9 +150,17 @@ function* onSendPost(
       description
     };
 
+    const image: ImageResizerResponse = yield ImageResizer.createResizedImage(
+      uri,
+      1000,
+      1200,
+      "JPEG",
+      50
+    );
+
     const body = new FormData();
     body.append("image", {
-      uri,
+      uri: image.uri,
       height,
       width,
       type: "image/jpeg",
