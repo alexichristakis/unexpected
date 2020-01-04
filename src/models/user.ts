@@ -1,5 +1,6 @@
 import { Default, Format, Required, Schema, Property } from "@tsed/common";
-import { Model, ObjectID, Indexed, Unique } from "@tsed/mongoose";
+import { Model, ObjectID, Indexed, Unique, PostHook } from "@tsed/mongoose";
+import { SlackLogService } from "../services/logger";
 
 export interface NotificationPreferencesType {
   timezone: string;
@@ -67,6 +68,12 @@ export class User {
 
   // @Required()
   // notificationPreferences: NotificationPreferences;
+
+  @PostHook("save")
+  static postSave(doc: User) {
+    const logger = new SlackLogService();
+    logger.sendMessage("new user", `${doc.firstName} ${doc.lastName}`);
+  }
 }
 
 export type UserNotificationRecord = {

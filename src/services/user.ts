@@ -10,6 +10,7 @@ import {
   UserType,
   UserNotificationRecord
 } from "../models/user";
+import { PostType } from "../models/post";
 import { NotificationService } from "./notification";
 
 @Service()
@@ -41,6 +42,28 @@ export class UserService extends CRUDService<UserModel, UserType> {
         })
         .exec();
     }
+  }
+
+  async updateValidNotifications(post: PostType) {
+    const { createdAt, userPhoneNumber } = post;
+
+    const time = moment(createdAt);
+    const user = await this.findOne({ phoneNumber: userPhoneNumber }, [
+      "notifications"
+    ]);
+
+    if (!user) return;
+
+    const { notifications } = user;
+    const updatedNotifications = notifications.filter(
+      notification =>
+        !time.isBetween(notification, moment(notification).add(10, "minutes"))
+    );
+
+    return this.updateOne(
+      { phoneNumber: userPhoneNumber },
+      { notifications: updatedNotifications }
+    );
   }
 
   async cameraEnabled(phoneNumber: string) {

@@ -1,6 +1,22 @@
-import { Default, Format, Required, Schema, Property } from "@tsed/common";
-import { Model, ObjectID, Indexed, Unique } from "@tsed/mongoose";
-import { UserType } from "./user";
+import {
+  Default,
+  Format,
+  Required,
+  Schema,
+  Property,
+  Inject
+} from "@tsed/common";
+import {
+  Model,
+  ObjectID,
+  Indexed,
+  Unique,
+  PostHook,
+  MongooseModel
+} from "@tsed/mongoose";
+
+import { SlackLogService } from "../services/logger";
+import { User, UserType } from "./user";
 
 @Model()
 export class Post {
@@ -24,6 +40,21 @@ export class Post {
   @Format("date-time")
   @Default(Date.now)
   createdAt: Date = new Date();
+
+  // this would be a more elegant solution
+  @PostHook("save")
+  static postSave(doc: Post) {
+    // const { userPhoneNumber, createdAt } = doc;
+
+    // const userModel = (new User()).getModelForClass(User);
+
+    // const user = this.User.findOne({ phoneNumber: userPhoneNumber });
+    const logger = new SlackLogService();
+    logger.sendMessage(
+      "new post",
+      `${doc.userPhoneNumber} "${doc.description}"`
+    );
+  }
 }
 
 export type PostType = Omit<Post, "_id"> & { id: string };

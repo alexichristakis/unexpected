@@ -18,8 +18,11 @@ export class PostService extends CRUDService<PostModel, PostType> {
   @Inject(UserService)
   userService: UserService;
 
-  createNewPost = async (Post: PostType) => {
-    return this.create(Post);
+  createNewPost = async (post: PostType) => {
+    return Promise.all([
+      this.create(post),
+      this.userService.updateValidNotifications(post)
+    ]);
   };
 
   getUsersPosts = async (phoneNumber: string) => {
