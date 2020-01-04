@@ -6,6 +6,7 @@ import moment, { Moment, MomentTimezone } from "moment-timezone";
 import { UserNotificationRecord, UserType } from "../models/user";
 import { UserService } from "./user";
 import { NotificationService } from "./notification";
+import { SlackLogService } from "./logger";
 
 export enum AgendaJobs {
   GENERATE_NOTIFICATIONS = "GENERATE_NOTIFICATIONS",
@@ -23,6 +24,9 @@ export class SchedulerService {
   @Inject(UserService)
   private userService: UserService;
 
+  @Inject(SlackLogService)
+  private slackLogger: SlackLogService;
+
   private agenda: Agenda;
 
   async $afterRoutesInit() {
@@ -34,6 +38,7 @@ export class SchedulerService {
     this.agenda.processEvery("5 minutes");
 
     // this.agenda.on("complete", job => {
+
     //   $log.info(`Job ${job.attrs.name} finished`);
     // });
 
@@ -46,6 +51,10 @@ export class SchedulerService {
           this.notificationService.notifyUserModelPhotoTime(
             to,
             "time to take & share a photo"
+          );
+          this.slackLogger.sendMessage(
+            "notification sent",
+            `${to.phoneNumber} -- ${to.firstName} ${to.lastName}`
           );
         });
 
