@@ -64,7 +64,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       else return "notFriends";
     };
 
-    useFocusEffect(
+    useFocusEffect(() =>
       useCallback(() => {
         StatusBar.setHidden(false);
 

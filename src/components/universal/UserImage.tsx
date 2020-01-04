@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 import RNFS from "react-native-fs";
+import moment from "moment";
 import { connect } from "react-redux";
 
 import { Actions as ImageActions } from "@redux/modules/image";
@@ -9,7 +10,6 @@ import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
 const mapStateToProps = (state: RootState) => ({
-  jwt: selectors.jwt(state),
   cache: selectors.profilePhotoCache(state)
 });
 
@@ -27,7 +27,7 @@ export interface UserImageProps extends UserImageReduxProps {
   size: number;
 }
 export const _UserImage: React.FC<UserImageProps> = React.memo(
-  ({ phoneNumber, size, cache, jwt, requestCache }) => {
+  ({ phoneNumber, size, cache, requestCache }) => {
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
 
@@ -37,7 +37,10 @@ export const _UserImage: React.FC<UserImageProps> = React.memo(
         requestCache(phoneNumber);
       } else {
         RNFS.exists(cache[phoneNumber].uri).then(res => {
-          if (!res) requestCache(phoneNumber);
+          // if the file doesn't exist or if it's over a day old re-fetch
+          if (!res || moment(moment()).diff(cache[phoneNumber].ts, "day") > 1) {
+            requestCache(phoneNumber);
+          }
         });
       }
     }, []);
