@@ -3,7 +3,7 @@ import { MongooseService } from "@tsed/mongoose";
 import Agenda from "agenda";
 import moment, { Moment, MomentTimezone } from "moment-timezone";
 
-import { UserNotificationRecord } from "../models/user";
+import { UserNotificationRecord, UserType } from "../models/user";
 import { UserService } from "./user";
 import { NotificationService } from "./notification";
 
@@ -63,31 +63,11 @@ export class SchedulerService {
           let generatedTimes: UserNotificationRecord[] = [];
 
           users.forEach(user => {
-            const { phoneNumber, timezone } = user;
-
-            const NUM_NOTIFICATIONS = 2;
-            const times = this.generateTimes(timezone, NUM_NOTIFICATIONS);
-
-            generatedTimes.push({ phoneNumber, notifications: times });
-
-            times.forEach(time => {
-              const dateInstance = moment(time);
-
-              $log.info(
-                `notification for ${user.firstName} at: ${dateInstance.format(
-                  "dddd, MMMM Do YYYY, h:mm:ss a"
-                )}`
-              );
-
-              this.agenda.schedule(
-                dateInstance.toDate(),
-                AgendaJobs.SEND_NOTIFICATION,
-                { to: user }
-              );
-            });
+            const res = this.scheduleNotificationForUser(user);
+            generatedTimes.push(res);
           });
 
-          this.userService.setNotificationTimes(generatedTimes);
+          await this.userService.setNotificationTimes(generatedTimes);
         });
 
         await this.agenda.start();
@@ -97,6 +77,34 @@ export class SchedulerService {
       });
     });
   }
+
+  // takes a user, schedules n notifications for them, returns the times
+  scheduleNotificationForUser = (user: UserType) => {
+    const { phoneNumber, timezone } = user;
+
+    // to eventually pull from user entity
+    const NUM_NOTIFICATIONS = 2;
+
+    const times = this.generateTimes(timezone, NUM_NOTIFICATIONS);
+
+    times.forEach(time => {
+      const dateInstance = moment(time);
+
+      $log.info(
+        `notification for ${user.firstName} at: ${dateInstance.format(
+          "dddd, MMMM Do YYYY, h:mm:ss a"
+        )}`
+      );
+
+      this.agenda.schedule(
+        dateInstance.toDate(),
+        AgendaJobs.SEND_NOTIFICATION,
+        { to: user }
+      );
+    });
+
+    return { phoneNumber, notifications: times };
+  };
 
   private generateTimes = (
     timezone: string = "America/New_York",
@@ -121,7 +129,7 @@ export class SchedulerService {
   };
 
   scheduleNotificationGeneration = async () => {
-    await this.agenda.now(AgendaJobs.GENERATE_NOTIFICATIONS);
-    // await this.agenda.every("day", AgendaJobs.GENERATE_NOTIFICATIONS);
+    // await this.agenda.now(AgendaJobs.GENERATE_NOTIFICATIONS);
+    await this.agenda.every("day", AgendaJobs.GENERATE_NOTIFICATIONS);
   };
 }
