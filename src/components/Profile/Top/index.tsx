@@ -87,7 +87,7 @@ export const Top: React.FC<ProfileTopProps> = ({
         </TouchableOpacity>
       );
 
-    return <FriendButton circle showLabel={true} user={user} />;
+    // return <FriendButton circle showLabel={true} user={user} />;
   };
 
   return (

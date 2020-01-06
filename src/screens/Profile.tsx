@@ -10,6 +10,7 @@ import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
 
 import { Top, Grid } from "@components/Profile";
+import { NavBar, FriendButton } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
@@ -17,6 +18,7 @@ import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
 import posts from "@components/Profile/Grid/test_data";
+import { formatName } from "@lib/utils";
 
 /* need to change to watch user from redux state and use phone number from route for fetching purposes only */
 
@@ -64,8 +66,9 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       else return "notFriends";
     };
 
-    useFocusEffect(() =>
+    useFocusEffect(
       useCallback(() => {
+        console.log(route, navigation);
         StatusBar.setHidden(false);
 
         const {
@@ -102,6 +105,13 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
 
     return (
       <Screen style={styles.container}>
+        <NavBar
+          backButtonText={"search"}
+          // showTitle
+          title={formatName(user)}
+          navigation={navigation}
+          rightButton={<FriendButton circle showLabel={true} user={user} />}
+        />
         <Grid
           loading={postsLoading}
           user={user}

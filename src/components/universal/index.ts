@@ -9,6 +9,7 @@ export * from "./TouchableScale";
 export * from "./UserRow";
 export * from "./ItemSeparator";
 export * from "./FriendButton";
+export * from "./NavBar";
 
 import FriendButton from "./FriendButton";
 import PostImage from "./PostImage";

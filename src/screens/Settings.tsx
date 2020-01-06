@@ -64,7 +64,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
   }) => {
     useLightStatusBar();
 
-    useFocusEffect(() =>
+    useFocusEffect(
       useCallback(() => {
         fetchUsers(user.friendRequests, ["firstName", "lastName"]);
       }, [])

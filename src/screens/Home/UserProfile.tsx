@@ -58,7 +58,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       })
     );
 
-    useFocusEffect(() =>
+    useFocusEffect(
       useCallback(() => {
         StatusBar.setHidden(false);
         fetchUser();

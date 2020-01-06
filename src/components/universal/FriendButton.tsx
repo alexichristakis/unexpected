@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Text,
   View,
   ViewStyle,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import { connect } from "react-redux";
 import { UserType } from "unexpected-cloud/models/user";
+import Animated, {
+  Transition,
+  Transitioning,
+  TransitioningView
+} from "react-native-reanimated";
 
 /* some svgs */
 import AddFriendSVG from "@assets/svg/plus_button.svg";
@@ -23,7 +29,15 @@ import { Button } from "./Button";
 
 const ICON_SIZE = 40;
 
-const mapStateToProps = (state: RootState) => ({
+export interface FriendButtonProps {
+  user: UserType;
+  circle?: boolean;
+  showLabel?: boolean;
+  size?: TextSizes;
+  style?: ViewStyle;
+}
+
+const mapStateToProps = (state: RootState, props: FriendButtonProps) => ({
   currentUser: selectors.currentUser(state)
 });
 const mapDispatchToProps = {
@@ -39,20 +53,11 @@ export type FriendButtonReduxProps = ReduxPropsType<
   typeof mapDispatchToProps
 >;
 
-export interface FriendButtonProps {
-  user: UserType;
-  circle?: boolean;
-  showLabel?: boolean;
-  size?: TextSizes;
-  style?: ViewStyle;
-}
-
 const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   style,
   circle,
   showLabel,
   user,
-  size = TextSizes.medium,
   currentUser,
   sendFriendRequest,
   cancelFriendRequest,
@@ -60,6 +65,9 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   acceptRequest,
   denyRequest
 }) => {
+  const [loading, setLoading] = useState(false);
+  const ref = React.createRef<TransitioningView>();
+
   const getState = () => {
     const { friends, requestedFriends, friendRequests } = currentUser;
 
@@ -78,12 +86,19 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
     return "none";
   };
 
+  useEffect(() => {
+    if (loading) {
+      ref.current?.animateNextTransition();
+      setLoading(false);
+    }
+  }, [getState()]);
+
   const title = (state: ReturnType<typeof getState>) => {
     switch (state) {
       case "friends":
         return "friends";
       case "requested":
-        return "cancel request";
+        return "requested";
       case "none":
         return "add friend";
       default:
@@ -104,10 +119,15 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
     }
   };
 
-  if (currentUser.phoneNumber !== user.phoneNumber) {
+  const onPressWrapper = (fn: () => void) => () => {
+    fn();
+    setLoading(true);
+    ref.current?.animateNextTransition();
+  };
+
+  const renderButton = () => {
     const state = getState();
 
-    // if (circle) {
     if (state !== "received") {
       const icon =
         state === "none" ? (
@@ -119,61 +139,56 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
         );
 
       return (
-        <TouchableOpacity onPress={action(state)}>{icon}</TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center"
+          }}
+        >
+          <Text style={[styles.label]}>{title(state)}</Text>
+          <TouchableOpacity onPress={onPressWrapper(action(state))}>
+            {icon}
+          </TouchableOpacity>
+        </View>
       );
     }
 
     return (
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => acceptRequest(user)}>
+        <TouchableOpacity onPress={onPressWrapper(() => acceptRequest(user))}>
           <FriendSVG width={ICON_SIZE} height={ICON_SIZE} />
         </TouchableOpacity>
         <TouchableOpacity
           style={{ marginLeft: 10 }}
-          onPress={() => denyRequest(user)}
+          onPress={onPressWrapper(() => denyRequest(user))}
         >
           <DenySVG width={ICON_SIZE} height={ICON_SIZE} />
         </TouchableOpacity>
       </View>
     );
-    // }
+  };
 
-    // if (state !== "received")
-    //   return (
-    //     <Button
-    //       size={size}
-    //       style={[styles.button, style]}
-    //       title={title(state)}
-    //       onPress={action(state)}
-    //     />
-    //   );
+  const transition = (
+    <Transition.Together>
+      <Transition.In type="fade" />
+      <Transition.Out type="fade" />
+      <Transition.Change interpolation="easeInOut" />
+    </Transition.Together>
+  );
 
-    // return (
-    //   <View style={styles.flex}>
-    //     {showLabel && (
-    //       <Text
-    //         style={styles.label}
-    //       >{`${user.firstName} wants to be friends:`}</Text>
-    //     )}
-    //     <View style={styles.buttonContainer}>
-    //       <Button
-    //         style={styles.button}
-    //         size={size}
-    //         title="accept"
-    //         onPress={() => acceptRequest(user)}
-    //       />
-    //       <Button
-    //         style={[styles.button, { marginLeft: 10 }]}
-    //         size={size}
-    //         title="delete"
-    //         onPress={() => denyRequest(user)}
-    //       />
-    //     </View>
-    //   </View>
-    // );
-  }
-
-  return null;
+  return (
+    <Transitioning.View
+      style={{ flex: 1, alignItems: "flex-end" }}
+      transition={transition}
+      ref={ref}
+    >
+      {loading ? (
+        <ActivityIndicator style={{ height: ICON_SIZE }} size={"large"} />
+      ) : (
+        renderButton()
+      )}
+    </Transitioning.View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -184,8 +199,8 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   label: {
-    ...TextStyles.medium,
-    marginBottom: 10
+    ...TextStyles.small,
+    marginRight: 10
   },
   button: {
     flex: 1

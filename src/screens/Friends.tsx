@@ -1,5 +1,11 @@
 import React, { useCallback, useState } from "react";
-import { Animated, ListRenderItemInfo, StyleSheet } from "react-native";
+import {
+  Animated,
+  ListRenderItemInfo,
+  StyleSheet,
+  View,
+  Text
+} from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -8,13 +14,19 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
-import { ItemSeparator, UserRow } from "@components/universal";
-import { SB_HEIGHT, TextStyles } from "@lib/styles";
+import {
+  ItemSeparator,
+  UserRow,
+  FriendButton,
+  NavBar
+} from "@components/universal";
+import { SB_HEIGHT, TextStyles, TextSizes } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { UserType } from "unexpected-cloud/models/user";
 import { StackParamList } from "../App";
+import { formatName } from "@lib/utils";
 
 const mapStateToProps = (state: RootState, props: FriendsProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -75,9 +87,15 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
     return _.filter(users, o => _.includes(user.friends, o.phoneNumber));
   };
 
-  const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => (
-    <UserRow onPress={handleOnPressUser} user={item} />
-  );
+  const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
+    const actions = [
+      <FriendButton key="friend" size={TextSizes.small} user={item} />
+    ];
+
+    return (
+      <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
+    );
+  };
 
   const animatedHeaderStyle = {
     transform: [
@@ -96,15 +114,28 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
     </Animated.Text>
   );
 
+  const renderEmptyComponent = () => {
+    return (
+      <View style={styles.emptyStateContainer}>
+        <Text
+          style={TextStyles.medium}
+        >{`${user.firstName} doesn't have any friends yet. Send them a request to be their first!`}</Text>
+      </View>
+    );
+  };
+
   const renderSeparatorComponent = () => <ItemSeparator />;
 
   return (
     <Screen style={styles.container}>
+      <NavBar backButtonText={formatName(user)} navigation={navigation} />
       <Animated.FlatList
         style={styles.list}
         onScroll={onScroll}
         renderItem={renderUserRow}
+        contentContainerStyle={{ paddingHorizontal: 20 }}
         ListHeaderComponent={renderTop}
+        ListEmptyComponent={renderEmptyComponent}
         ItemSeparatorComponent={renderSeparatorComponent}
         data={getUsers()}
       />
@@ -116,7 +147,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: SB_HEIGHT(),
-    paddingHorizontal: 20,
     justifyContent: "center"
   },
   header: {
@@ -127,6 +157,10 @@ const styles = StyleSheet.create({
   list: {
     height: "100%",
     width: "100%"
+  },
+  emptyStateContainer: {
+    marginTop: 20
+    // alignItems: "center"
   }
 });
 

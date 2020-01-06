@@ -7,7 +7,7 @@ export interface HeaderProps {
   title: string;
   scrollY: Animated.Value;
 }
-export const Header: React.FC<HeaderProps> = ({ title, scrollY }) => {
+const Header: React.FC<HeaderProps> = ({ title, scrollY }) => {
   const animatedContainerStyle = {
     transform: [
       {
@@ -40,7 +40,9 @@ export const Header: React.FC<HeaderProps> = ({ title, scrollY }) => {
 
   return (
     <Animated.View style={[styles.container, animatedContainerStyle]}>
-      <Animated.Text style={[styles.text, animatedTextStyle]}>{title}</Animated.Text>
+      <Animated.Text style={[styles.text, animatedTextStyle]}>
+        {title}
+      </Animated.Text>
     </Animated.View>
   );
 };
