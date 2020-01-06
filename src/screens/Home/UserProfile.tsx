@@ -4,11 +4,11 @@ import { StatusBar, StyleSheet } from "react-native";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import isEqual from "lodash/isEqual";
+import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
-import Animated from "react-native-reanimated";
 
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
@@ -80,7 +80,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser
+        isUser={true}
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}

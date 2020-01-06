@@ -3,8 +3,8 @@ import {
   Animated,
   ListRenderItemInfo,
   StyleSheet,
-  View,
-  Text
+  Text,
+  View
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
@@ -15,18 +15,18 @@ import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
 import {
-  ItemSeparator,
-  UserRow,
   FriendButton,
-  NavBar
+  ItemSeparator,
+  NavBar,
+  UserRow
 } from "@components/universal";
-import { SB_HEIGHT, TextStyles, TextSizes } from "@lib/styles";
+import { SB_HEIGHT, TextSizes, TextStyles } from "@lib/styles";
+import { formatName } from "@lib/utils";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { UserType } from "unexpected-cloud/models/user";
 import { StackParamList } from "../App";
-import { formatName } from "@lib/utils";
 
 const mapStateToProps = (state: RootState, props: FriendsProps) => ({
   phoneNumber: selectors.phoneNumber(state),

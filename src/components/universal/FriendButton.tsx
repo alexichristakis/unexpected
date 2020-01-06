@@ -1,25 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   StyleSheet,
   Text,
-  View,
-  ViewStyle,
   TouchableOpacity,
-  ActivityIndicator
+  View,
+  ViewStyle
 } from "react-native";
-import { connect } from "react-redux";
-import { UserType } from "unexpected-cloud/models/user";
 import Animated, {
   Transition,
   Transitioning,
   TransitioningView
 } from "react-native-reanimated";
+import { connect } from "react-redux";
+import { UserType } from "unexpected-cloud/models/user";
 
 /* some svgs */
-import AddFriendSVG from "@assets/svg/plus_button.svg";
 import PendingFriendSVG from "@assets/svg/arrow_button.svg";
-import FriendSVG from "@assets/svg/check_button.svg";
 import DenySVG from "@assets/svg/cancel_button.svg";
+import FriendSVG from "@assets/svg/check_button.svg";
+import AddFriendSVG from "@assets/svg/plus_button.svg";
 
 import { TextSizes, TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";

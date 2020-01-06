@@ -2,9 +2,9 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import { FlashMode } from "react-native-camera";
 
-import FlashOnSVG from "@assets/svg/flash_on.svg";
-import FlashOffSVG from "@assets/svg/flash_off.svg";
 import FlashAutoSVG from "@assets/svg/flash_auto.svg";
+import FlashOffSVG from "@assets/svg/flash_off.svg";
+import FlashOnSVG from "@assets/svg/flash_on.svg";
 
 export interface ToggleFlashModeButtonProps {
   mode: keyof FlashMode;

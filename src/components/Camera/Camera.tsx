@@ -9,10 +9,10 @@ import {
 } from "react-native";
 
 import {
-  RNCamera,
+  CameraType,
   FlashMode,
-  TakePictureOptions,
-  CameraType
+  RNCamera,
+  TakePictureOptions
 } from "react-native-camera";
 
 export interface CameraProps {
@@ -30,12 +30,12 @@ export interface CameraState {
 }
 
 class Camera extends React.Component<CameraProps, CameraState> {
-  private camera = React.createRef<RNCamera>();
 
   state = {
     focus: { x: 0.5, y: 0.5 },
     layout: { width: 0, height: 0 }
   };
+  private camera = React.createRef<RNCamera>();
 
   takePhoto = async () => {
     if (this.camera.current) {

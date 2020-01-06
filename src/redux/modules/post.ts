@@ -1,6 +1,9 @@
 import immer from "immer";
 import moment, { Moment } from "moment";
 import { TakePictureResponse } from "react-native-camera/types";
+import ImageResizer, {
+  Response as ImageResizerResponse
+} from "react-native-image-resizer";
 import {
   all,
   call,
@@ -15,9 +18,6 @@ import {
 import { FeedReturnType } from "unexpected-cloud/controllers/post";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
-import ImageResizer, {
-  Response as ImageResizerResponse
-} from "react-native-image-resizer";
 
 import client, { getHeaders } from "@api";
 import { AxiosResponse } from "axios";

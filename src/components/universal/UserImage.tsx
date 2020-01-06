@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
-import RNFS from "react-native-fs";
 import moment from "moment";
+import RNFS from "react-native-fs";
 import { connect } from "react-redux";
 
 import { Actions as ImageActions } from "@redux/modules/image";

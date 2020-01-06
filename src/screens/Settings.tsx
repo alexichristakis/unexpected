@@ -2,10 +2,10 @@ import React, { useCallback } from "react";
 import {
   FlatList,
   ListRenderItemInfo,
+  Share,
   StyleSheet,
   Text,
-  View,
-  Share
+  View
 } from "react-native";
 
 import { useFocusEffect } from "@react-navigation/core";
@@ -117,7 +117,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
       const actions = [
-        <FriendButton circle key="friend" size={TextSizes.small} user={item} />
+        <FriendButton circle={true} key="friend" size={TextSizes.small} user={item} />
       ];
 
       return (

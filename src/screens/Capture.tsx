@@ -7,16 +7,16 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import Camera, {
+  FlipCameraButton,
   Shutter,
-  ToggleFlashModeButton,
-  FlipCameraButton
+  ToggleFlashModeButton
 } from "@components/Camera";
 import { useLightStatusBar } from "@hooks";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { CameraType, FlashMode } from "react-native-camera";
 import { StackParamList } from "../App";
-import { FlashMode, CameraType } from "react-native-camera";
 
 const mapStateToProps = (state: RootState) => ({
   cameraPermission: selectors.cameraPermissions(state)

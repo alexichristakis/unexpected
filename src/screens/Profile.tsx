@@ -1,25 +1,25 @@
 import React, { useCallback, useState } from "react";
 import { StatusBar, StyleSheet } from "react-native";
 
-import isEqual from "lodash/isEqual";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Screen } from "react-native-screens";
+import isEqual from "lodash/isEqual";
 import Animated, { TransitioningView } from "react-native-reanimated";
+import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
 
-import { Top, Grid } from "@components/Profile";
-import { NavBar, FriendButton } from "@components/universal";
+import { Grid, Top } from "@components/Profile";
+import posts from "@components/Profile/Grid/test_data";
+import { FriendButton, NavBar } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
+import { formatName } from "@lib/utils";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
-import posts from "@components/Profile/Grid/test_data";
-import { formatName } from "@lib/utils";
 
 const { useCode, block, call, greaterThan, lessOrEq, cond } = Animated;
 
@@ -134,7 +134,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           title={formatName(user)}
           navigation={navigation}
           rightButton={
-            <FriendButton circle showLabel={!showTitle} user={user} />
+            <FriendButton circle={true} showLabel={!showTitle} user={user} />
           }
         />
         <Grid

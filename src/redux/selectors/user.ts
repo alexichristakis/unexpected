@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 
-import { RootState } from "../types";
 import { UserType } from "unexpected-cloud/models/user";
+import { RootState } from "../types";
 
 const s = (state: RootState) => state.user;
 

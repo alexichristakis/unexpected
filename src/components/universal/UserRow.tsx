@@ -2,11 +2,11 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { TextStyles } from "@lib/styles";
+import { formatName } from "@lib/utils";
 import { UserType } from "unexpected-cloud/models/user";
 import { Button } from "./Button";
 import FriendButton from "./FriendButton";
 import UserImage from "./UserImage";
-import { formatName } from "@lib/utils";
 
 export interface UserRowProps {
   // actions?: Array<{ title: string; onPress: () => void }>;
