@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  Animated,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Animated from "react-native-reanimated";
 
 import Gear from "@assets/svg/gear.svg";
 import { Button, FriendButton, UserImage } from "@components/universal";
@@ -16,7 +11,7 @@ export interface ProfileTopProps {
   user: UserType;
   isUser?: boolean; // is currently signed in user
   numPosts: number;
-  scrollY: Animated.Value;
+  scrollY: Animated.Value<number>;
   onPressFriends: () => void;
   onPressImage?: () => void;
   onPressName?: () => void;
@@ -134,9 +129,9 @@ export const Top: React.FC<ProfileTopProps> = ({
           </View>
         </View>
       </Animated.View>
-      <Animated.View style={[styles.header, animatedHeaderStyle]}>
+      {/* <Animated.View style={[styles.header, animatedHeaderStyle]}>
         <Text style={TextStyles.large}>{`${firstName} ${lastName}`}</Text>
-      </Animated.View>
+      </Animated.View> */}
     </>
   );
 };

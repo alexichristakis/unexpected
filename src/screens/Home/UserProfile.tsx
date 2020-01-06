@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Animated, StatusBar, StyleSheet } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -8,6 +8,7 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
+import Animated from "react-native-reanimated";
 
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
@@ -52,11 +53,6 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     user
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
-    const [onScroll] = useState(
-      Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-        useNativeDriver: true
-      })
-    );
 
     useFocusEffect(
       useCallback(() => {
@@ -108,7 +104,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
         <Grid
           loading={postsLoading}
           onPressPost={handleOnPressPost}
-          onScroll={onScroll}
+          scrollY={scrollY}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
           posts={posts}

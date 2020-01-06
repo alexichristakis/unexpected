@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from "react";
-import { Animated, StatusBar, StyleSheet } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 
 import isEqual from "lodash/isEqual";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
+import Animated, { TransitioningView } from "react-native-reanimated";
 import { connect } from "react-redux";
 import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
@@ -19,6 +20,8 @@ import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
 import posts from "@components/Profile/Grid/test_data";
 import { formatName } from "@lib/utils";
+
+const { useCode, block, call, greaterThan, lessOrEq, cond } = Animated;
 
 /* need to change to watch user from redux state and use phone number from route for fetching purposes only */
 
@@ -53,11 +56,29 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     phoneNumber,
     route
   }) => {
+    const [showTitle, setShowTitle] = useState(false);
     const [scrollY] = useState(new Animated.Value(0));
-    const [onScroll] = useState(
-      Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-        useNativeDriver: true
-      })
+    const ref = React.createRef<TransitioningView>();
+
+    useCode(
+      () =>
+        block([
+          cond(
+            greaterThan(scrollY, 100),
+            call([], ([]) => {
+              ref.current?.animateNextTransition();
+              setShowTitle(true);
+            })
+          ),
+          cond(
+            lessOrEq(scrollY, 100),
+            call([], ([]) => {
+              ref.current?.animateNextTransition();
+              setShowTitle(false);
+            })
+          )
+        ]),
+      [showTitle]
     );
 
     const checkIsFriend = () => {
@@ -68,7 +89,6 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
 
     useFocusEffect(
       useCallback(() => {
-        console.log(route, navigation);
         StatusBar.setHidden(false);
 
         const {
@@ -79,6 +99,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
 
         // if friends fetch and render posts too
         if (checkIsFriend() === "friends") fetchUsersPosts(phoneNumber);
+
+        return () => {};
       }, [route.params.user.phoneNumber, !!user])
     );
 
@@ -106,17 +128,20 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     return (
       <Screen style={styles.container}>
         <NavBar
+          transitionRef={ref}
           backButtonText={"search"}
-          // showTitle
+          showTitle={showTitle}
           title={formatName(user)}
           navigation={navigation}
-          rightButton={<FriendButton circle showLabel={true} user={user} />}
+          rightButton={
+            <FriendButton circle showLabel={!showTitle} user={user} />
+          }
         />
         <Grid
           loading={postsLoading}
           user={user}
           onPressPost={handleOnPressPost}
-          onScroll={onScroll}
+          scrollY={scrollY}
           friendStatus={checkIsFriend()}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}

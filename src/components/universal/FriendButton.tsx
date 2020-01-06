@@ -25,7 +25,6 @@ import { TextSizes, TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { Button } from "./Button";
 
 const ICON_SIZE = 40;
 
@@ -145,7 +144,9 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
             alignItems: "center"
           }}
         >
-          <Text style={[styles.label]}>{title(state)}</Text>
+          {showLabel ? (
+            <Text style={[styles.label]}>{title(state)}</Text>
+          ) : null}
           <TouchableOpacity onPress={onPressWrapper(action(state))}>
             {icon}
           </TouchableOpacity>
@@ -178,9 +179,9 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
 
   return (
     <Transitioning.View
-      style={{ flex: 1, alignItems: "flex-end" }}
-      transition={transition}
       ref={ref}
+      transition={transition}
+      style={{ flex: 1, alignItems: "flex-end" }}
     >
       {loading ? (
         <ActivityIndicator style={{ height: ICON_SIZE }} size={"large"} />

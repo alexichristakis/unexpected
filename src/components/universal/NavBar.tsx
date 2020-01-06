@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, {
+  Transition,
+  Transitioning,
+  TransitioningView
+} from "react-native-reanimated";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import BackButtonIcon from "@assets/svg/back_chevron.svg";
-import { SB_HEIGHT, TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib/styles";
 import { StackParamList } from "../../App";
 
 export interface NavBarProps {
+  transitionRef?: React.Ref<TransitioningView>;
   backButtonText?: string;
   showTitle?: boolean;
   title?: string;
@@ -16,38 +21,51 @@ export interface NavBarProps {
   navigation: NativeStackNavigationProp<StackParamList>;
 }
 
-export const NavBar: React.FC<NavBarProps> = ({
-  backButtonText,
-  showTitle,
-  title,
-  navigation,
-  rightButton
-}) => {
-  const onPressBackButton = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    }
-  };
+export const NavBar: React.FC<NavBarProps> = React.memo(
+  ({
+    transitionRef,
+    backButtonText,
+    showTitle,
+    title,
+    navigation,
+    rightButton
+  }) => {
+    const onPressBackButton = () => {
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      }
+    };
 
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={onPressBackButton} style={styles.backButton}>
-        <BackButtonIcon width={25} height={25} />
-        {backButtonText ? (
-          <Text style={styles.backButtonText}>{backButtonText}</Text>
-        ) : null}
-      </TouchableOpacity>
-      {showTitle ? <Text style={styles.title}>{title}</Text> : null}
-      {rightButton}
-    </View>
-  );
-};
+    const transition = (
+      <Transition.Together>
+        <Transition.In type="fade" />
+        <Transition.Out type="fade" />
+        <Transition.Change interpolation="easeInOut" />
+      </Transition.Together>
+    );
+
+    return (
+      <Transitioning.View
+        ref={transitionRef}
+        transition={transition}
+        style={styles.container}
+      >
+        <TouchableOpacity onPress={onPressBackButton} style={styles.backButton}>
+          <BackButtonIcon width={25} height={25} />
+          {backButtonText ? (
+            <Text style={styles.backButtonText}>{backButtonText}</Text>
+          ) : null}
+        </TouchableOpacity>
+        {showTitle ? <Text style={styles.title}>{title}</Text> : null}
+        {rightButton}
+      </Transitioning.View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
-    // position: "absolute",
     width: "100%",
-    // paddingTop: SB_HEIGHT() + 10,
     paddingBottom: 10,
     paddingHorizontal: 10,
     flexDirection: "row",
@@ -55,10 +73,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   backButton: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center"
   },
   title: {
+    flex: 2,
+    textAlign: "center",
     ...TextStyles.large
   },
   backButtonText: {

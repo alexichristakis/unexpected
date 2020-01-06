@@ -1,13 +1,14 @@
 import React from "react";
 import {
-  Animated,
   ListRenderItemInfo,
   StyleSheet,
   View,
   ViewStyle,
-  Text
+  Text,
+  FlatList
 } from "react-native";
 
+import Animated from "react-native-reanimated";
 import groupBy from "lodash/groupBy";
 import moment from "moment";
 import { PostType } from "unexpected-cloud/models/post";
@@ -21,7 +22,7 @@ import { UserType } from "unexpected-cloud/models/user";
 import { formatName } from "@lib/utils";
 
 export interface GridProps {
-  onScroll?: any;
+  scrollY?: Animated.Value<number>;
   user?: UserType;
   friendStatus?: "friends" | "notFriends" | "unknown";
   loading: boolean;
@@ -37,7 +38,7 @@ export const Grid: React.FC<GridProps> = ({
   onPressPost,
   ListHeaderComponentStyle,
   ListHeaderComponent,
-  onScroll,
+  scrollY,
   user,
   posts
 }) => {
@@ -111,16 +112,27 @@ export const Grid: React.FC<GridProps> = ({
   };
 
   return (
-    <Animated.FlatList
+    <FlatList
       style={styles.list}
-      onScroll={onScroll}
-      showsVerticalScrollIndicator={false}
       ListHeaderComponentStyle={ListHeaderComponentStyle}
       ListHeaderComponent={ListHeaderComponent}
       ItemSeparatorComponent={renderSeparatorComponent}
       ListEmptyComponent={renderEmptyComponent}
       renderItem={renderMonth}
       data={months}
+      renderScrollComponent={props => (
+        <Animated.ScrollView
+          {...props}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            {
+              useNativeDriver: true
+            }
+          )}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     />
   );
 };
