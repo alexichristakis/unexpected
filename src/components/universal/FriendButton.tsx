@@ -18,7 +18,7 @@ import { UserType } from "unexpected-cloud/models/user";
 /* some svgs */
 import PendingFriendSVG from "@assets/svg/arrow_button.svg";
 import DenySVG from "@assets/svg/cancel_button.svg";
-import FriendSVG from "@assets/svg/check_button.svg";
+import CheckSVG from "@assets/svg/check_button.svg";
 import AddFriendSVG from "@assets/svg/plus_button.svg";
 
 import { TextSizes, TextStyles } from "@lib/styles";
@@ -26,14 +26,11 @@ import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
-const ICON_SIZE = 40;
+const ICON_SIZE = 35;
 
 export interface FriendButtonProps {
   user: UserType;
-  circle?: boolean;
   showLabel?: boolean;
-  size?: TextSizes;
-  style?: ViewStyle;
 }
 
 const mapStateToProps = (state: RootState, props: FriendButtonProps) => ({
@@ -53,8 +50,6 @@ export type FriendButtonReduxProps = ReduxPropsType<
 >;
 
 const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
-  style,
-  circle,
   showLabel,
   user,
   currentUser,
@@ -132,7 +127,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
         state === "none" ? (
           <AddFriendSVG width={ICON_SIZE} height={ICON_SIZE} />
         ) : state === "friends" ? (
-          <FriendSVG width={ICON_SIZE} height={ICON_SIZE} />
+          <CheckSVG width={ICON_SIZE} height={ICON_SIZE} />
         ) : (
           <PendingFriendSVG width={ICON_SIZE} height={ICON_SIZE} />
         );
@@ -156,8 +151,13 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
 
     return (
       <View style={styles.buttonContainer}>
+        {showLabel ? (
+          <Text
+            style={[styles.label]}
+          >{`${user.firstName} sent you a request`}</Text>
+        ) : null}
         <TouchableOpacity onPress={onPressWrapper(() => acceptRequest(user))}>
-          <FriendSVG width={ICON_SIZE} height={ICON_SIZE} />
+          <CheckSVG width={ICON_SIZE} height={ICON_SIZE} />
         </TouchableOpacity>
         <TouchableOpacity
           style={{ marginLeft: 10 }}
@@ -177,19 +177,21 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
     </Transition.Together>
   );
 
-  return (
-    <Transitioning.View
-      ref={ref}
-      transition={transition}
-      style={{ flex: 1, alignItems: "flex-end" }}
-    >
-      {loading ? (
-        <ActivityIndicator style={{ height: ICON_SIZE }} size={"large"} />
-      ) : (
-        renderButton()
-      )}
-    </Transitioning.View>
-  );
+  if (user.phoneNumber !== currentUser.phoneNumber)
+    return (
+      <Transitioning.View
+        ref={ref}
+        transition={transition}
+        style={{ flex: 1, alignItems: "flex-end" }}
+      >
+        {loading ? (
+          <ActivityIndicator style={{ height: ICON_SIZE }} size={"large"} />
+        ) : (
+          renderButton()
+        )}
+      </Transitioning.View>
+    );
+  else return null;
 };
 
 const styles = StyleSheet.create({
@@ -197,6 +199,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   buttonContainer: {
+    alignItems: "center",
     flexDirection: "row"
   },
   label: {

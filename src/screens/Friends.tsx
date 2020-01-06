@@ -66,6 +66,8 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
   useFocusEffect(
     useCallback(() => {
       fetchUsers(user.friends, ["firstName", "lastName"]);
+
+      return () => {};
     }, [])
   );
 

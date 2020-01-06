@@ -51,7 +51,7 @@ export const NavBar: React.FC<NavBarProps> = React.memo(
         style={styles.container}
       >
         <TouchableOpacity onPress={onPressBackButton} style={styles.backButton}>
-          <BackButtonIcon width={25} height={25} />
+          <BackButtonIcon width={20} height={20} />
           {backButtonText ? (
             <Text style={styles.backButtonText}>{backButtonText}</Text>
           ) : null}
@@ -66,7 +66,7 @@ export const NavBar: React.FC<NavBarProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingBottom: 10,
+    paddingBottom: 5,
     paddingHorizontal: 10,
     flexDirection: "row",
     alignItems: "center",

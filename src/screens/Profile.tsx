@@ -11,7 +11,6 @@ import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
 
 import { Grid, Top } from "@components/Profile";
-import posts from "@components/Profile/Grid/test_data";
 import { FriendButton, NavBar } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { formatName } from "@lib/utils";
@@ -101,7 +100,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
         if (checkIsFriend() === "friends") fetchUsersPosts(phoneNumber);
 
         return () => {};
-      }, [route.params.user.phoneNumber, !!user])
+      }, [route.params.user.phoneNumber, checkIsFriend()])
     );
 
     const goToFriends = () => {
@@ -131,11 +130,9 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           transitionRef={ref}
           backButtonText={"search"}
           showTitle={showTitle}
-          title={formatName(user)}
+          title={user.firstName}
           navigation={navigation}
-          rightButton={
-            <FriendButton circle={true} showLabel={!showTitle} user={user} />
-          }
+          rightButton={<FriendButton showLabel={!showTitle} user={user} />}
         />
         <Grid
           loading={postsLoading}
