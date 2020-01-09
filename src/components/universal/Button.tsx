@@ -92,7 +92,7 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     alignSelf: "stretch",
     justifyContent: "center",
     alignItems: "center",

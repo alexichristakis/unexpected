@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-community/async-storage";
 import { AxiosError, AxiosResponse } from "axios";
 import { BATCH, batchActions } from "redux-batched-actions";
 import { persistStore, REHYDRATE } from "redux-persist";
@@ -80,9 +81,6 @@ export default (
     }
 
     case ActionTypes.LOGOUT: {
-      Navigation.navigate("HOME");
-      setTimeout(() => Navigation.navigate("UNAUTHENTICATED"), 100);
-
       return {
         ...state,
         jwt: null
@@ -162,10 +160,17 @@ function* onVerifyCodeRequest(
     }
 }
 
+function* onLogout() {
+  Navigation.navigate("HOME");
+  setTimeout(() => Navigation.navigate("UNAUTHENTICATED"), 100);
+  setTimeout(() => AsyncStorage.clear(), 200);
+}
+
 export function* authSagas() {
   yield all([
     yield takeLatest(ActionTypes.REQUEST_AUTH, onLoginRequest),
-    yield takeLatest(ActionTypes.CHECK_CODE, onVerifyCodeRequest)
+    yield takeLatest(ActionTypes.CHECK_CODE, onVerifyCodeRequest),
+    yield takeLatest(ActionTypes.LOGOUT, onLogout)
   ]);
 }
 
