@@ -5,6 +5,8 @@ import { RootState } from "../types";
 
 const s = (state: RootState) => state.user;
 
+export const userError = createSelector(s, state => state.error);
+
 export const userLoading = createSelector(s, state => state.loading);
 
 export const users = createSelector(s, state => state.users);

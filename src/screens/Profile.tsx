@@ -18,7 +18,6 @@ import uuid from "uuid/v4";
 import { Grid, Top } from "@components/Profile";
 import { FriendButton, NavBar } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
-import { formatName } from "@lib/utils";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";

@@ -32,8 +32,9 @@ export interface FriendButtonProps {
   showLabel?: boolean;
 }
 
-const mapStateToProps = (state: RootState, props: FriendButtonProps) => ({
-  currentUser: selectors.currentUser(state)
+const mapStateToProps = (state: RootState) => ({
+  currentUser: selectors.currentUser(state),
+  error: selectors.userError(state)
 });
 const mapDispatchToProps = {
   sendFriendRequest: UserActions.friendUser,
@@ -50,6 +51,7 @@ export type FriendButtonReduxProps = ReduxPropsType<
 
 const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   showLabel,
+  error,
   user,
   currentUser,
   sendFriendRequest,
@@ -84,7 +86,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
       ref.current?.animateNextTransition();
       setLoading(false);
     }
-  }, [getState()]);
+  }, [getState(), error]);
 
   const title = (state: ReturnType<typeof getState>) => {
     switch (state) {
