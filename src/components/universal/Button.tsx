@@ -1,23 +1,16 @@
 import React, { useState } from "react";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TextStyle,
-  ViewProps
-} from "react-native";
+import { ActivityIndicator, StyleSheet, ViewProps } from "react-native";
 import Animated from "react-native-reanimated";
 import { bInterpolateColor } from "react-native-redash";
 
-import { Colors, TextSizes, TextStyles } from "@lib/styles";
+import { Colors, TextStyles } from "@lib/styles";
 
 import TapHandler from "./TapHandler";
 
 const { Value } = Animated;
 
 export interface ButtonProps extends ViewProps {
-  light?: boolean;
   icon?: SVGElement;
-  size?: TextSizes;
   disabled?: boolean;
   loading?: boolean;
   title: string;
@@ -27,23 +20,12 @@ export interface ButtonProps extends ViewProps {
 export const Button: React.FC<ButtonProps> = ({
   style,
   icon,
-  light,
   disabled,
   loading,
   title,
   onPress
 }) => {
   const [value] = useState(new Value(0));
-
-  const containerStyle = {
-    borderColor: light ? Colors.lightGray : Colors.nearBlack,
-    borderWidth: light ? 5 : 1
-  };
-
-  const textColor: TextStyle = {
-    color: light ? Colors.lightGray : Colors.nearBlack,
-    fontWeight: light ? "600" : "normal"
-  };
 
   return (
     <TapHandler
@@ -53,7 +35,6 @@ export const Button: React.FC<ButtonProps> = ({
       style={[
         style,
         styles.container,
-        containerStyle,
         {
           backgroundColor: bInterpolateColor(
             value,
@@ -93,11 +74,13 @@ export const Button: React.FC<ButtonProps> = ({
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
+    borderColor: Colors.nearBlack,
+    borderWidth: 1,
     alignSelf: "stretch",
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 10,
     borderRadius: 4,
-    paddingHorizontal: 30
+    paddingHorizontal: 10
   }
 });

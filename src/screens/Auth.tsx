@@ -50,6 +50,8 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
   useFocusEffect(
     useCallback(() => {
       reset();
+
+      return () => {};
     }, [])
   );
 
@@ -69,7 +71,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
         style={styles.subContainer}
         onPress={Keyboard.dismiss}
       >
-        <Text style={styles.title}>expect.photos</Text>
+        <Text style={styles.title}>unexpected</Text>
         <Text style={styles.subtitle}>random photo sharing</Text>
         <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
           {({ values, handleChange, handleSubmit }) => {
@@ -93,10 +95,8 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
                   onChange={handleChange("code")}
                 />
                 <Button
-                  light={true}
-                  disabled={values.phoneNumber.length !== 10}
+                  // disabled={values.phoneNumber.length  10}
                   style={styles.button}
-                  size="large"
                   title={isAwaitingCode ? "verify code" : "send text message"}
                   onPress={handleSubmit}
                 />
