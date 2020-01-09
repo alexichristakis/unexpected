@@ -161,7 +161,7 @@ const Router: React.FC = () => {
                 name="FEED"
                 options={{
                   tabBarIcon: ({ color }) => (
-                    <FeedIcon width={30} height={30} fill={color} />
+                    <FeedIcon width={25} height={25} fill={color} />
                   )
                 }}
               >
@@ -189,7 +189,7 @@ const Router: React.FC = () => {
                 name="DISCOVER"
                 options={{
                   tabBarIcon: ({ color }) => (
-                    <DiscoverIcon width={35} height={35} fill={color} />
+                    <DiscoverIcon width={30} height={30} fill={color} />
                   )
                 }}
               >
