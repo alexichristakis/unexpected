@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
-  Text,
   TextStyle,
-  TouchableOpacity,
   ViewProps
 } from "react-native";
+import Animated from "react-native-reanimated";
+import { bInterpolateColor } from "react-native-redash";
 
 import { Colors, TextSizes, TextStyles } from "@lib/styles";
+
+import TapHandler from "./TapHandler";
+
+const { Value } = Animated;
 
 export interface ButtonProps extends ViewProps {
   light?: boolean;
@@ -23,11 +27,10 @@ export const Button: React.FC<ButtonProps> = ({
   light,
   disabled,
   loading,
-  size = "medium",
   title,
   onPress
 }) => {
-  const [touched, onTouch] = useState(false);
+  const [value] = useState(new Value(0));
 
   const containerStyle = {
     borderColor: light ? Colors.lightGray : Colors.nearBlack,
@@ -40,28 +43,54 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <TouchableOpacity
+    <TapHandler
       disabled={disabled}
-      style={[styles.container, style, containerStyle]}
+      value={value}
       onPress={onPress}
-      onPressIn={() => onTouch(true)}
-      onPressOut={() => onTouch(false)}
+      style={[
+        style,
+        styles.container,
+        containerStyle,
+        {
+          backgroundColor: bInterpolateColor(
+            value,
+            Colors.background,
+            Colors.nearBlack
+          )
+        }
+      ]}
     >
       {loading ? (
         <ActivityIndicator />
       ) : (
-        <Text style={[TextStyles[size], textColor]}>{title}</Text>
+        <Animated.Text
+          style={[
+            TextStyles.small,
+            {
+              textTransform: "uppercase",
+              color: bInterpolateColor(
+                value,
+                Colors.nearBlack,
+                Colors.background
+              )
+            }
+          ]}
+        >
+          {title}
+        </Animated.Text>
       )}
-    </TouchableOpacity>
+    </TapHandler>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignSelf: "stretch",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 10
-    // paddingHorizontal: 30
+    paddingVertical: 10,
+    borderRadius: 4,
+    paddingHorizontal: 30
   }
 });

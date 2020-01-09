@@ -188,7 +188,8 @@ const Settings: React.FC<SettingsProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20
+    padding: 20,
+    backgroundColor: "white"
   },
   listHeaderContainer: {
     width: "100%"
