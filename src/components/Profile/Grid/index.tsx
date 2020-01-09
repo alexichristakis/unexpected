@@ -10,7 +10,11 @@ import {
 
 import groupBy from "lodash/groupBy";
 import moment from "moment";
-import Animated from "react-native-reanimated";
+import Animated, {
+  Transitioning,
+  TransitioningView,
+  Transition
+} from "react-native-reanimated";
 import { PostType } from "unexpected-cloud/models/post";
 
 import LockSVG from "@assets/svg/lock.svg";
@@ -22,6 +26,7 @@ import { Month, Months } from "./Month";
 import testPosts from "./test_data";
 
 export interface GridProps {
+  transitionRef?: React.Ref<TransitioningView>;
   scrollY?: Animated.Value<number>;
   user?: UserType;
   friendStatus?: "friends" | "notFriends" | "unknown";
@@ -34,6 +39,7 @@ export interface GridProps {
 
 export const Grid: React.FC<GridProps> = ({
   friendStatus = "friends",
+  transitionRef,
   loading,
   onPressPost,
   ListHeaderComponentStyle,
@@ -89,9 +95,9 @@ export const Grid: React.FC<GridProps> = ({
           <Text style={[TextStyles.large, { marginTop: 20, marginBottom: 10 }]}>
             This user is private.
           </Text>
-          <Text style={TextStyles.medium}>{`Friend ${formatName(
-            user
-          )} in order to see their posts.`}</Text>
+          <Text
+            style={TextStyles.medium}
+          >{`Friend ${user.firstName} to see their posts.`}</Text>
         </View>
       );
 
@@ -111,29 +117,43 @@ export const Grid: React.FC<GridProps> = ({
     );
   };
 
+  const transition = (
+    <Transition.Together>
+      <Transition.In type="fade" />
+      <Transition.Out type="fade" />
+      <Transition.Change interpolation="easeInOut" />
+    </Transition.Together>
+  );
+
   return (
-    <FlatList
+    <Transitioning.View
       style={styles.list}
-      ListHeaderComponentStyle={ListHeaderComponentStyle}
-      ListHeaderComponent={ListHeaderComponent}
-      ItemSeparatorComponent={renderSeparatorComponent}
-      ListEmptyComponent={renderEmptyComponent}
-      renderItem={renderMonth}
-      data={months}
-      renderScrollComponent={props => (
-        <Animated.ScrollView
-          {...props}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            {
-              useNativeDriver: true
-            }
-          )}
-          scrollEventThrottle={16}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-    />
+      ref={transitionRef}
+      transition={transition}
+    >
+      <FlatList
+        style={styles.list}
+        ListHeaderComponentStyle={ListHeaderComponentStyle}
+        ListHeaderComponent={ListHeaderComponent}
+        ItemSeparatorComponent={renderSeparatorComponent}
+        ListEmptyComponent={renderEmptyComponent}
+        renderItem={renderMonth}
+        data={months as any}
+        renderScrollComponent={props => (
+          <Animated.ScrollView
+            {...props}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              {
+                useNativeDriver: true
+              }
+            )}
+          />
+        )}
+      />
+    </Transitioning.View>
   );
 };
 

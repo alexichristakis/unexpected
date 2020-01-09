@@ -59,6 +59,8 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
         StatusBar.setHidden(false);
         fetchUser();
         if (stale) fetchUsersPosts();
+
+        return () => {};
       }, [stale])
     );
 
@@ -80,7 +82,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser={true}
+        isUser
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}

@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from "react";
 import {
-  Animated,
+  FlatList,
   ListRenderItemInfo,
   StyleSheet,
   Text,
   View
 } from "react-native";
 
+import Animated from "react-native-reanimated";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
@@ -57,11 +58,6 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
   const { user } = route.params;
 
   const [scrollY] = useState(new Animated.Value(0));
-  const [onScroll] = useState(
-    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-      useNativeDriver: true
-    })
-  );
 
   useFocusEffect(
     useCallback(() => {
@@ -90,9 +86,7 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
   };
 
   const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-    const actions = [
-      <FriendButton key="friend" size={TextSizes.small} user={item} />
-    ];
+    const actions = [<FriendButton key="friend" user={item} />];
 
     return (
       <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
@@ -131,15 +125,27 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
   return (
     <Screen style={styles.container}>
       <NavBar backButtonText={formatName(user)} navigation={navigation} />
-      <Animated.FlatList
+      <FlatList
         style={styles.list}
-        onScroll={onScroll}
         renderItem={renderUserRow}
         contentContainerStyle={{ paddingHorizontal: 20 }}
         ListHeaderComponent={renderTop}
         ListEmptyComponent={renderEmptyComponent}
         ItemSeparatorComponent={renderSeparatorComponent}
         data={getUsers()}
+        renderScrollComponent={props => (
+          <Animated.ScrollView
+            {...props}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              {
+                useNativeDriver: true
+              }
+            )}
+          />
+        )}
       />
     </Screen>
   );

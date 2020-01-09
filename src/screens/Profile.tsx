@@ -1,4 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useLayoutEffect
+} from "react";
 import { StatusBar, StyleSheet } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
@@ -56,8 +61,41 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     route
   }) => {
     const [showTitle, setShowTitle] = useState(false);
+    const [releasedPosts, setReleasedPosts] = useState(posts);
     const [scrollY] = useState(new Animated.Value(0));
-    const ref = React.createRef<TransitioningView>();
+
+    const navBarTransitionRef = React.createRef<TransitioningView>();
+    const gridTransitionRef = React.createRef<TransitioningView>();
+
+    const getFriendStatusState = () => {
+      if (!user || !user.friends) return "unknown";
+      if (user.friends.includes(phoneNumber)) return "friends";
+      else return "notFriends";
+    };
+
+    useEffect(() => {
+      const {
+        user: { phoneNumber }
+      } = route.params;
+
+      fetchUser(phoneNumber);
+
+      // if friends fetch and render posts too
+      if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
+    }, [getFriendStatusState()]);
+
+    useLayoutEffect(() => {
+      gridTransitionRef.current?.animateNextTransition();
+      setReleasedPosts(posts);
+    }, [posts.length]);
+
+    useFocusEffect(
+      useCallback(() => {
+        StatusBar.setHidden(false);
+
+        return () => {};
+      }, [route.params.user.phoneNumber])
+    );
 
     useCode(
       () =>
@@ -65,42 +103,19 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           cond(
             greaterThan(scrollY, 100),
             call([], ([]) => {
-              ref.current?.animateNextTransition();
+              navBarTransitionRef.current?.animateNextTransition();
               setShowTitle(true);
             })
           ),
           cond(
             lessOrEq(scrollY, 100),
             call([], ([]) => {
-              ref.current?.animateNextTransition();
+              navBarTransitionRef.current?.animateNextTransition();
               setShowTitle(false);
             })
           )
         ]),
       [showTitle]
-    );
-
-    const checkIsFriend = () => {
-      if (!user || !user.friends) return "unknown";
-      if (user.friends.includes(phoneNumber)) return "friends";
-      else return "notFriends";
-    };
-
-    useFocusEffect(
-      useCallback(() => {
-        StatusBar.setHidden(false);
-
-        const {
-          user: { phoneNumber }
-        } = route.params;
-
-        fetchUser(phoneNumber);
-
-        // if friends fetch and render posts too
-        if (checkIsFriend() === "friends") fetchUsersPosts(phoneNumber);
-
-        return () => {};
-      }, [route.params.user.phoneNumber, checkIsFriend()])
     );
 
     const goToFriends = () => {
@@ -127,7 +142,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     return (
       <Screen style={styles.container}>
         <NavBar
-          transitionRef={ref}
+          transitionRef={navBarTransitionRef}
+          // TODO: get backbutton text from route params
           backButtonText={"search"}
           showTitle={showTitle}
           title={user.firstName}
@@ -135,14 +151,15 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           rightButton={<FriendButton showLabel={!showTitle} user={user} />}
         />
         <Grid
+          transitionRef={gridTransitionRef}
           loading={postsLoading}
           user={user}
           onPressPost={handleOnPressPost}
           scrollY={scrollY}
-          friendStatus={checkIsFriend()}
+          friendStatus={getFriendStatusState()}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
-          posts={posts}
+          posts={releasedPosts}
         />
       </Screen>
     );

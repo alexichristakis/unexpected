@@ -150,21 +150,23 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
     }
 
     return (
-      <View style={styles.buttonContainer}>
+      <View style={{ alignItems: "center", flexDirection: "row" }}>
         {showLabel ? (
           <Text
             style={[styles.label]}
           >{`${user.firstName} sent you a request`}</Text>
         ) : null}
-        <TouchableOpacity onPress={onPressWrapper(() => acceptRequest(user))}>
-          <CheckSVG width={ICON_SIZE} height={ICON_SIZE} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ marginLeft: 10 }}
-          onPress={onPressWrapper(() => denyRequest(user))}
-        >
-          <DenySVG width={ICON_SIZE} height={ICON_SIZE} />
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={onPressWrapper(() => acceptRequest(user))}>
+            <CheckSVG width={ICON_SIZE} height={ICON_SIZE} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ marginLeft: 10 }}
+            onPress={onPressWrapper(() => denyRequest(user))}
+          >
+            <DenySVG width={ICON_SIZE} height={ICON_SIZE} />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };

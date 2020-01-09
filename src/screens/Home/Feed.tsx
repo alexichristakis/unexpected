@@ -100,6 +100,8 @@ export const Feed: React.FC<FeedProps> = React.memo(
         } else {
           StatusBar.setHidden(true);
         }
+
+        return () => {};
       }, [statusBarVisible])
     );
 

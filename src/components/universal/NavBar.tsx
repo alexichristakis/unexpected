@@ -1,4 +1,9 @@
-import React, { useEffect } from "react";
+import React, {
+  useEffect,
+  PropsWithChildren,
+  ReactPropTypes,
+  PropsWithRef
+} from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   Transition,
@@ -60,7 +65,10 @@ export const NavBar: React.FC<NavBarProps> = React.memo(
         {rightButton}
       </Transitioning.View>
     );
-  }
+  },
+  (prevProps, nextProps) =>
+    prevProps.showTitle === nextProps.showTitle &&
+    prevProps.title === nextProps.title
 );
 
 const styles = StyleSheet.create({
