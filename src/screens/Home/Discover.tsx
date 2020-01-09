@@ -25,7 +25,6 @@ import {
 } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT, TextSizes, TextStyles } from "@lib/styles";
-import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Screen } from "react-native-screens";
@@ -54,17 +53,10 @@ export const Discover: React.FC<DiscoverProps &
   useDarkStatusBar();
 
   const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-    const actions = [
-      <FriendButton key="friend" size={TextSizes.small} user={item} />
-    ];
+    const actions = [<FriendButton key="friend" user={item} />];
 
     return (
-      <UserRow
-        // key={index}
-        onPress={handleOnPressUser}
-        user={item}
-        actions={actions}
-      />
+      <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
     );
   };
 
@@ -76,6 +68,7 @@ export const Discover: React.FC<DiscoverProps &
         name: "PROFILE",
         key: uuid(),
         params: {
+          prevRoute: "Search",
           user: toUser
         }
       });

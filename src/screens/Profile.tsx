@@ -119,7 +119,11 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     );
 
     const goToFriends = () => {
-      navigation.navigate({ name: "FRIENDS", key: uuid(), params: { user } });
+      navigation.navigate({
+        name: "FRIENDS",
+        key: uuid(),
+        params: { user }
+      });
     };
 
     const renderTop = () => (
@@ -135,7 +139,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       navigation.navigate({
         name: "POST",
         key: uuid(),
-        params: { post: { ...post, user } }
+        params: { prevRoute: user.firstName, post: { ...post, user } }
       });
     };
 
@@ -143,9 +147,9 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       <Screen style={styles.container}>
         <NavBar
           transitionRef={navBarTransitionRef}
-          // TODO: get backbutton text from route params
-          backButtonText={"search"}
+          backButtonText={route.params.prevRoute}
           showTitle={showTitle}
+          showBackButtonText={!showTitle}
           title={user.firstName}
           navigation={navigation}
           rightButton={<FriendButton showLabel={!showTitle} user={user} />}

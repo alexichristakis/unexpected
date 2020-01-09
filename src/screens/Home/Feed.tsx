@@ -184,14 +184,22 @@ export const Feed: React.FC<FeedProps> = React.memo(
     };
 
     const handleOnPressPost = (post: FeedPostType) => {
-      navigation.navigate({ name: "POST", key: uuid(), params: { post } });
+      navigation.navigate({
+        name: "POST",
+        key: uuid(),
+        params: { prevRoute: "Feed", post }
+      });
     };
 
     const handleOnPressUser = (user: UserType) => {
       if (phoneNumber === user.phoneNumber) {
         navigation.navigate("USER_PROFILE");
       } else {
-        navigation.navigate({ name: "PROFILE", key: uuid(), params: { user } });
+        navigation.navigate({
+          name: "PROFILE",
+          key: uuid(),
+          params: { prevRoute: "Feed", user }
+        });
       }
     };
 

@@ -20,6 +20,7 @@ import { StackParamList } from "../../App";
 export interface NavBarProps {
   transitionRef?: React.Ref<TransitioningView>;
   backButtonText?: string;
+  showBackButtonText?: boolean;
   showTitle?: boolean;
   title?: string;
   rightButton?: JSX.Element;
@@ -30,7 +31,8 @@ export const NavBar: React.FC<NavBarProps> = React.memo(
   ({
     transitionRef,
     backButtonText,
-    showTitle,
+    showBackButtonText = false,
+    showTitle = false,
     title,
     navigation,
     rightButton
@@ -57,7 +59,7 @@ export const NavBar: React.FC<NavBarProps> = React.memo(
       >
         <TouchableOpacity onPress={onPressBackButton} style={styles.backButton}>
           <BackButtonIcon width={20} height={20} />
-          {backButtonText ? (
+          {showBackButtonText ? (
             <Text style={styles.backButtonText}>{backButtonText}</Text>
           ) : null}
         </TouchableOpacity>

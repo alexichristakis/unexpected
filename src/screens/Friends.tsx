@@ -75,6 +75,7 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
         name: "PROFILE",
         key: uuid(),
         params: {
+          prevRoute: "Friends",
           user: toUser
         }
       });

@@ -49,6 +49,10 @@ import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
 import ProfileIcon from "./assets/svg/profile.svg";
 
+type BaseParams = {
+  prevRoute: string;
+};
+
 export type StackParamList = {
   AUTHENTICATED: undefined;
   UNAUTHENTICATED: undefined;
@@ -59,13 +63,13 @@ export type StackParamList = {
   USER_PROFILE: undefined;
   AUTH: undefined;
   SHARE: undefined;
-  POST: { post: FeedPostType };
-  PROFILE: { user: UserType };
+  POST: BaseParams & { post: FeedPostType };
+  PROFILE: BaseParams & { user: UserType };
+  FRIENDS: { user: UserType };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: { nextRoute: keyof StackParamList };
   NEW_PROFILE_PICTURE: undefined;
-  FRIENDS: { user: UserType };
   EDIT_BIO: undefined;
 };
 

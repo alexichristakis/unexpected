@@ -67,6 +67,8 @@ const Settings: React.FC<SettingsProps> = React.memo(
     useFocusEffect(
       useCallback(() => {
         fetchUsers(user.friendRequests, ["firstName", "lastName"]);
+
+        return () => {};
       }, [])
     );
 
@@ -109,6 +111,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
           name: "PROFILE",
           key: uuid(),
           params: {
+            prevRoute: user.firstName,
             user: toUser
           }
         });
@@ -116,9 +119,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
     };
 
     const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-      const actions = [
-        <FriendButton circle={true} key="friend" size={TextSizes.small} user={item} />
-      ];
+      const actions = [<FriendButton key="friend" user={item} />];
 
       return (
         <UserRow onPress={handleOnPressUser} user={item} actions={actions} />

@@ -97,7 +97,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       navigation.navigate({
         name: "POST",
         key: uuid(),
-        params: { post: { ...post, user } }
+        params: { prevRoute: user.firstName, post: { ...post, user } }
       });
     };
 
