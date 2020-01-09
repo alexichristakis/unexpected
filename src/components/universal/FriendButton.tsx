@@ -1,13 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  ViewStyle
+  View
 } from "react-native";
-import Animated, {
+import {
   Transition,
   Transitioning,
   TransitioningView
@@ -21,7 +20,7 @@ import DenySVG from "@assets/svg/cancel_button.svg";
 import CheckSVG from "@assets/svg/check_button.svg";
 import AddFriendSVG from "@assets/svg/plus_button.svg";
 
-import { TextSizes, TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -133,12 +132,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
         );
 
       return (
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center"
-          }}
-        >
+        <View style={styles.container}>
           {showLabel ? (
             <Text style={[styles.label]}>{title(state)}</Text>
           ) : null}
@@ -150,7 +144,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
     }
 
     return (
-      <View style={{ alignItems: "center", flexDirection: "row" }}>
+      <View style={styles.container}>
         {showLabel ? (
           <Text
             style={[styles.label]}
@@ -184,7 +178,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
       <Transitioning.View
         ref={ref}
         transition={transition}
-        style={{ flex: 1, alignItems: "flex-end" }}
+        style={styles.transitioningView}
       >
         {loading ? (
           <ActivityIndicator style={{ height: ICON_SIZE }} size={"large"} />
@@ -197,8 +191,13 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
 };
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1
+  transitioningView: {
+    flex: 1,
+    alignItems: "flex-end"
+  },
+  container: {
+    flexDirection: "row",
+    alignItems: "center"
   },
   buttonContainer: {
     alignItems: "center",
@@ -207,10 +206,6 @@ const styles = StyleSheet.create({
   label: {
     ...TextStyles.small,
     marginRight: 10
-  },
-  button: {
-    flex: 1
-    // alignSelf: "stretch"
   }
 });
 

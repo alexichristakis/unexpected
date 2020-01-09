@@ -16,14 +16,17 @@ const { Value } = Animated;
 
 export interface ButtonProps extends ViewProps {
   light?: boolean;
+  icon?: SVGElement;
   size?: TextSizes;
   disabled?: boolean;
   loading?: boolean;
   title: string;
   onPress: () => void;
 }
+
 export const Button: React.FC<ButtonProps> = ({
   style,
+  icon,
   light,
   disabled,
   loading,
@@ -63,21 +66,25 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator />
       ) : (
-        <Animated.Text
-          style={[
-            TextStyles.small,
-            {
-              textTransform: "uppercase",
-              color: bInterpolateColor(
-                value,
-                Colors.nearBlack,
-                Colors.background
-              )
-            }
-          ]}
-        >
-          {title}
-        </Animated.Text>
+        <>
+          {icon}
+          <Animated.Text
+            style={[
+              TextStyles.small,
+              {
+                marginLeft: icon ? 5 : 0,
+                textTransform: "uppercase",
+                color: bInterpolateColor(
+                  value,
+                  Colors.nearBlack,
+                  Colors.background
+                )
+              }
+            ]}
+          >
+            {title}
+          </Animated.Text>
+        </>
       )}
     </TapHandler>
   );
