@@ -76,7 +76,21 @@ export class SchedulerService {
             generatedTimes.push(res);
           });
 
-          await this.userService.setNotificationTimes(generatedTimes);
+          await Promise.all([
+            this.userService.setNotificationTimes(generatedTimes),
+            this.slackLogger.sendMessage(
+              "notifications generated",
+              `\`\`\`${generatedTimes.reduce((prev, curr) => {
+                return (prev += ` { ${
+                  curr.phoneNumber
+                }: ${curr.notifications
+                  .map(noti =>
+                    moment.tz(noti, "America/Los_Angeles").format("h:mm:ss a")
+                  )
+                  .join(", ")} }`);
+              }, "")}\`\`\``
+            )
+          ]);
         });
 
         await this.agenda.start();
