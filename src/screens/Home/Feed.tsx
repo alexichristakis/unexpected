@@ -19,14 +19,13 @@ import { connect } from "react-redux";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
-import { Top } from "@components/Feed";
-import { Button, Post } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
+import { Posts } from "@components/Feed";
 
 const {
   Value,
@@ -137,16 +136,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => (
-      <Post
-        entranceAnimatedValue={entranceAnimatedValue}
-        index={index}
-        onPressPhoto={() => handleOnPressPost(item)}
-        onPressName={() => handleOnPressUser(item.user)}
-        post={item}
-      />
-    );
-
     const animatedStatusBarStyle = {
       transform: [{ translateY: statusBarAnimatedValue }]
     };
@@ -209,34 +198,20 @@ export const Feed: React.FC<FeedProps> = React.memo(
 
     const { sortedPosts, latest } = getPosts();
 
-    const renderTop = () => (
-      <Top
-        latest={latest}
-        readyForRefresh={readyForRefresh}
-        refreshing={refreshing}
-        scrollY={scrollY}
-      />
-    );
-
-    const renderEmptyComponent = () => (
-      <Button title="share your first photo" onPress={handleOnPressShare} />
-    );
-
     return (
       <Screen style={styles.container}>
-        <AnimatedFlatList
-          onScrollEndDrag={handleScrollEndDrag}
-          onScroll={onScroll({ y: scrollY })}
-          scrollEventThrottle={16}
-          style={styles.list}
-          ListHeaderComponentStyle={styles.headerContainer}
-          ListHeaderComponent={renderTop}
-          ListEmptyComponent={renderEmptyComponent}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.contentContainer}
-          data={sortedPosts}
-          renderItem={renderPost}
+        <Posts
+          posts={sortedPosts}
+          scrollY={scrollY}
+          readyForRefresh={readyForRefresh}
+          refreshing={refreshing}
+          latest={latest}
+          onPressPost={handleOnPressPost}
+          onPressUser={handleOnPressUser}
+          onPressShare={handleOnPressShare}
+          handleScrollEndDrag={handleScrollEndDrag}
         />
+
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
       </Screen>
     );
@@ -249,11 +224,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: "center"
   },
-  contentContainer: {
-    paddingTop: SB_HEIGHT(),
-    paddingBottom: 50,
-    alignItems: "center"
-  },
   list: {
     width: "100%"
   },
@@ -264,10 +234,6 @@ const styles = StyleSheet.create({
     top: 0,
     height: SB_HEIGHT(),
     backgroundColor: "white"
-  },
-  headerContainer: {
-    zIndex: 1,
-    alignSelf: "stretch"
   }
 });
 

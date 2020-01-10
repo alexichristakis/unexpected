@@ -24,6 +24,7 @@ import { formatName } from "@lib/utils";
 import { UserType } from "unexpected-cloud/models/user";
 import { Month, Months } from "./Month";
 import testPosts from "./test_data";
+import { onScroll } from "react-native-redash";
 
 export interface GridProps {
   transitionRef?: React.Ref<TransitioningView>;
@@ -144,12 +145,7 @@ export const Grid: React.FC<GridProps> = ({
             {...props}
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-              {
-                useNativeDriver: true
-              }
-            )}
+            onScroll={onScroll({ y: scrollY })}
           />
         )}
       />
