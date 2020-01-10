@@ -37,25 +37,22 @@ export class SchedulerService {
 
     this.agenda.processEvery("5 minutes");
 
-    // this.agenda.on("complete", job => {
-
-    //   $log.info(`Job ${job.attrs.name} finished`);
-    // });
-
     await new Promise(resolve => {
       this.agenda.once("ready", async () => {
         await this.agenda.purge();
 
-        this.agenda.define(AgendaJobs.SEND_NOTIFICATION, args => {
+        this.agenda.define(AgendaJobs.SEND_NOTIFICATION, async args => {
           const { to } = args.attrs.data;
-          this.notificationService.notifyUserModelPhotoTime(
-            to,
-            "time to take & share a photo"
-          );
-          this.slackLogger.sendMessage(
-            "notification sent",
-            `${to.phoneNumber} -- ${to.firstName} ${to.lastName}`
-          );
+          await Promise.all([
+            this.notificationService.notifyUserModelPhotoTime(
+              to,
+              "time to take & share a photo"
+            ),
+            this.slackLogger.sendMessage(
+              "notification sent",
+              `${to.phoneNumber} -- ${to.firstName} ${to.lastName}`
+            )
+          ]);
         });
 
         this.agenda.define(AgendaJobs.GENERATE_NOTIFICATIONS, async () => {
