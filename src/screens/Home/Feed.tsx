@@ -25,7 +25,12 @@ import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
-import { Posts } from "@components/Feed";
+import {
+  Posts,
+  FocusedImage,
+  Measurement,
+  FocusedImageType
+} from "@components/Feed";
 
 const {
   Value,
@@ -37,10 +42,6 @@ const {
   greaterOrEq,
   useCode
 } = Animated;
-
-const AnimatedFlatList: typeof FlatList = Animated.createAnimatedComponent(
-  FlatList
-);
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -72,9 +73,10 @@ export const Feed: React.FC<FeedProps> = React.memo(
   }) => {
     const [readyForRefresh, setReadyForRefresh] = useState<0 | 1>(1);
     const [statusBarVisible, setStatusBarVisible] = useState(true);
-    const [entranceAnimatedValue] = useState(new Animated.Value(0));
     const [statusBarAnimatedValue] = useState(new Animated.Value(0));
     const [scrollY] = useState(new Value(0));
+
+    const [focusedImage, setFocusedImage] = useState<FocusedImageType>();
 
     useEffect(() => {
       fetchFeed();
@@ -83,14 +85,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }
     }, []);
-
-    useEffect(() => {
-      Animated.timing(entranceAnimatedValue, {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.quad
-      }).start();
-    }, [feed.posts.length]);
 
     useFocusEffect(
       useCallback(() => {
@@ -123,6 +117,8 @@ export const Feed: React.FC<FeedProps> = React.memo(
         ]),
       [readyForRefresh, statusBarVisible]
     );
+
+    const onGestureBegan = () => {};
 
     const handleScrollEndDrag = ({
       nativeEvent
@@ -196,6 +192,10 @@ export const Feed: React.FC<FeedProps> = React.memo(
       navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
     };
 
+    const handleOnGestureBegan = (image: FocusedImageType) => {
+      setFocusedImage(image);
+    };
+
     const { sortedPosts, latest } = getPosts();
 
     return (
@@ -206,12 +206,13 @@ export const Feed: React.FC<FeedProps> = React.memo(
           readyForRefresh={readyForRefresh}
           refreshing={refreshing}
           latest={latest}
+          onGestureBegan={handleOnGestureBegan}
           onPressPost={handleOnPressPost}
           onPressUser={handleOnPressUser}
           onPressShare={handleOnPressShare}
           handleScrollEndDrag={handleScrollEndDrag}
         />
-
+        {focusedImage && <FocusedImage {...focusedImage} />}
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
       </Screen>
     );

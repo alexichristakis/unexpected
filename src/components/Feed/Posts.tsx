@@ -14,10 +14,17 @@ import { onScroll } from "react-native-redash";
 import { FeedPostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
-import { Button, Post } from "@components/universal";
+import {
+  Button,
+  Post,
+  ZoomHandler,
+  ZoomHandlerGestureBeganPayload,
+  PostImage
+} from "@components/universal";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, SB_HEIGHT } from "@lib/styles";
 
 import { Top } from "./Top";
+import { FocusedImageType, Measurement } from "./FocusedImage";
 
 const {
   Value,
@@ -32,6 +39,7 @@ const {
 
 export interface PostsProps {
   scrollY: Animated.Value<number>;
+  onGestureBegan: (image: FocusedImageType) => void;
   onPressPost: (post: FeedPostType) => void;
   onPressUser: (user: UserType) => void;
   onPressShare: () => void;
@@ -41,12 +49,14 @@ export interface PostsProps {
   readyForRefresh: 0 | 1;
   posts: FeedPostType[];
 }
+
 export const Posts: React.FC<PostsProps> = React.memo(
   ({
     scrollY,
     refreshing,
     readyForRefresh,
     posts,
+    onGestureBegan,
     onPressPost,
     onPressUser,
     onPressShare,
@@ -76,15 +86,32 @@ export const Posts: React.FC<PostsProps> = React.memo(
     );
 
     const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => {
+      const { photoId, userPhoneNumber } = item;
+
       const handleOnPressPhoto = () => onPressPost(item);
       const handleOnPressName = () => onPressUser(item.user);
+      const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) =>
+        onGestureBegan({
+          ...payload,
+          id: photoId,
+          phoneNumber: userPhoneNumber
+        });
 
       return (
         <Post
           index={index}
           post={item}
+          renderImage={() => (
+            <ZoomHandler onGestureBegan={handleOnGestureBegan}>
+              <PostImage
+                width={SCREEN_WIDTH - 40}
+                height={(SCREEN_WIDTH - 40) * 1.2}
+                phoneNumber={userPhoneNumber}
+                id={photoId}
+              />
+            </ZoomHandler>
+          )}
           entranceAnimatedValue={animatedValue}
-          onPressPhoto={handleOnPressPhoto}
           onPressName={handleOnPressName}
         />
       );
