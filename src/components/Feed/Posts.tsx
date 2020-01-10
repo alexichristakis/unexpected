@@ -40,6 +40,7 @@ const {
 export interface PostsProps {
   scrollY: Animated.Value<number>;
   onGestureBegan: (image: FocusedImageType) => void;
+  onGestureComplete: () => void;
   onPressPost: (post: FeedPostType) => void;
   onPressUser: (user: UserType) => void;
   onPressShare: () => void;
@@ -57,11 +58,13 @@ export const Posts: React.FC<PostsProps> = React.memo(
     readyForRefresh,
     posts,
     onGestureBegan,
+    onGestureComplete,
     onPressPost,
     onPressUser,
     onPressShare,
     latest
   }) => {
+    const [scrollEnabled, setScrollEnabled] = useState(true);
     const [animatedValue] = useState(new Animated.Value(0));
 
     useEffect(() => {
@@ -90,19 +93,31 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
       const handleOnPressPhoto = () => onPressPost(item);
       const handleOnPressName = () => onPressUser(item.user);
-      const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) =>
+      const handleOnGestureBegan = (
+        payload: ZoomHandlerGestureBeganPayload
+      ) => {
+        setScrollEnabled(false);
         onGestureBegan({
           ...payload,
           id: photoId,
           phoneNumber: userPhoneNumber
         });
+      };
+
+      const handleOnGestureComplete = () => {
+        setScrollEnabled(true);
+        onGestureComplete();
+      };
 
       return (
         <Post
           index={index}
           post={item}
           renderImage={() => (
-            <ZoomHandler onGestureBegan={handleOnGestureBegan}>
+            <ZoomHandler
+              onGestureComplete={handleOnGestureComplete}
+              onGestureBegan={handleOnGestureBegan}
+            >
               <PostImage
                 width={SCREEN_WIDTH - 40}
                 height={(SCREEN_WIDTH - 40) * 1.2}
@@ -128,6 +143,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
         renderScrollComponent={props => (
           <Animated.ScrollView
             {...props}
+            scrollEnabled={scrollEnabled}
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
             onScroll={onScroll({ y: scrollY })}

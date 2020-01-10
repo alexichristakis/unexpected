@@ -196,6 +196,10 @@ export const Feed: React.FC<FeedProps> = React.memo(
       setFocusedImage(image);
     };
 
+    const handleOnGestureComplete = () => {
+      setFocusedImage(undefined);
+    };
+
     const { sortedPosts, latest } = getPosts();
 
     return (
@@ -207,6 +211,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
           refreshing={refreshing}
           latest={latest}
           onGestureBegan={handleOnGestureBegan}
+          onGestureComplete={handleOnGestureComplete}
           onPressPost={handleOnPressPost}
           onPressUser={handleOnPressUser}
           onPressShare={handleOnPressShare}
