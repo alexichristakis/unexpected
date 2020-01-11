@@ -9,7 +9,12 @@ import { connect } from "react-redux";
 import uuid from "uuid/v4";
 import moment from "moment";
 
-import { NavBar, PostImage } from "@components/universal";
+import {
+  NavBar,
+  PostImage,
+  ZoomHandler,
+  ZoomHandlerGestureBeganPayload
+} from "@components/universal";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
@@ -18,6 +23,7 @@ import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { useDarkStatusBar } from "@hooks";
 import { StackParamList } from "../App";
+import { FocusedImageType, FocusedImage } from "@components/Feed";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state)
@@ -42,6 +48,8 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
   route
 }) => {
   const [scrollY] = useState(new Animated.Value(0));
+
+  const [focusedImage, setFocusedImage] = useState<FocusedImageType>();
 
   const { prevRoute, post } = route.params;
 
@@ -69,6 +77,20 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
 
   const { description, createdAt, userPhoneNumber, photoId, user } = post;
 
+  const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) => {
+    setFocusedImage({
+      id: photoId,
+      phoneNumber: userPhoneNumber,
+      width: SCREEN_WIDTH,
+      height: 1.2 * SCREEN_WIDTH,
+      ...payload
+    });
+  };
+
+  const handleOnGestureComplete = () => {
+    setFocusedImage(undefined);
+  };
+
   return (
     <Screen style={styles.container}>
       <NavBar
@@ -93,22 +115,29 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
           </TouchableOpacity>
           <Text style={TextStyles.medium}>{moment(createdAt).fromNow()}</Text>
         </Animated.View>
-        <PostImage
-          phoneNumber={userPhoneNumber}
-          id={photoId}
-          width={SCREEN_WIDTH}
-          height={SCREEN_WIDTH * 1.2}
-        />
+        <ZoomHandler
+          onGestureComplete={handleOnGestureComplete}
+          onGestureBegan={handleOnGestureBegan}
+        >
+          <PostImage
+            phoneNumber={userPhoneNumber}
+            id={photoId}
+            width={SCREEN_WIDTH}
+            height={SCREEN_WIDTH * 1.2}
+          />
+        </ZoomHandler>
         <View style={styles.footer}>
           <Text style={TextStyles.medium}>{description}</Text>
         </View>
       </Animated.ScrollView>
+      {focusedImage && <FocusedImage {...focusedImage} />}
     </Screen>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     paddingTop: SB_HEIGHT()
   },
   header: {

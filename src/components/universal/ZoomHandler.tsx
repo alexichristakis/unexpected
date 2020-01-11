@@ -9,8 +9,6 @@ import {
 } from "react-native-gesture-handler";
 import { delay } from "react-native-redash";
 
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
-
 import {
   onGestureEvent,
   withDecay,

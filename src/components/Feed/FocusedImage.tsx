@@ -19,6 +19,8 @@ export type Measurement = {
 export type FocusedImageType = {
   id: string;
   phoneNumber: string;
+  width: number;
+  height: number;
 } & ZoomHandlerGestureBeganPayload;
 
 export interface FocusedImageProps extends FocusedImageType {}
@@ -26,6 +28,8 @@ export interface FocusedImageProps extends FocusedImageType {}
 export const FocusedImage: React.FC<FocusedImageProps> = ({
   id,
   phoneNumber,
+  width,
+  height,
   measurement,
   scale,
   translateX,
@@ -51,8 +55,8 @@ export const FocusedImage: React.FC<FocusedImageProps> = ({
         <PostImage
           id={id}
           phoneNumber={phoneNumber}
-          width={SCREEN_WIDTH - 40}
-          height={1.2 * (SCREEN_WIDTH - 40)}
+          width={width}
+          height={height}
         />
       </Animated.View>
     </View>

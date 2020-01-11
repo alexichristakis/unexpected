@@ -99,6 +99,8 @@ export const Posts: React.FC<PostsProps> = React.memo(
         setScrollEnabled(false);
         onGestureBegan({
           ...payload,
+          width: SCREEN_WIDTH,
+          height: (SCREEN_WIDTH - 40) * 1.2,
           id: photoId,
           phoneNumber: userPhoneNumber
         });
