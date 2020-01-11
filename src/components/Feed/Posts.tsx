@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
-  FlatListProps,
   ListRenderItemInfo,
-  ViewStyle
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleSheet
 } from "react-native";
 
 import Animated, { Easing } from "react-native-reanimated";
@@ -11,32 +12,44 @@ import { onScroll } from "react-native-redash";
 import { FeedPostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
-import { Post } from "@components/universal";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
+import {
+  Button,
+  Post,
+  PostImage,
+  ZoomedImageType,
+  ZoomHandler,
+  ZoomHandlerGestureBeganPayload
+} from "@components/universal";
+import { SB_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 
-const AnimatedFlatList: typeof FlatList = Animated.createAnimatedComponent(
-  FlatList
-);
+import { Top } from "./Top";
 
-export interface PostsProps extends Partial<FlatListProps<FeedPostType>> {
-  scrollY?: Animated.Value<number>;
-  onPressPost?: (post: FeedPostType) => void;
-  onPressUser?: (user: UserType) => void;
-  ListHeaderComponentStyle?: ViewStyle;
-  ListHeaderComponent?: React.ComponentType<any>;
+export interface PostsProps {
+  scrollY: Animated.Value<number>;
+  onGestureBegan: (image: ZoomedImageType) => void;
+  onGestureComplete: () => void;
+  onPressUser: (user: UserType) => void;
+  onPressShare: () => void;
+  handleScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  latest?: Date;
+  refreshing: boolean;
+  readyForRefresh: 0 | 1;
   posts: FeedPostType[];
 }
+
 export const Posts: React.FC<PostsProps> = React.memo(
   ({
     scrollY,
+    refreshing,
+    readyForRefresh,
     posts,
-    onPressPost = () => {},
-    onPressUser = () => {},
-    ListHeaderComponent,
-    ListHeaderComponentStyle,
-    contentContainerStyle,
-    ...rest
+    onGestureBegan,
+    onGestureComplete,
+    onPressUser,
+    onPressShare,
+    latest
   }) => {
+    const [scrollEnabled, setScrollEnabled] = useState(true);
     const [animatedValue] = useState(new Animated.Value(0));
 
     useEffect(() => {
@@ -47,33 +60,98 @@ export const Posts: React.FC<PostsProps> = React.memo(
       }).start();
     }, [posts.length]);
 
-    const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => (
-      <Post
-        entranceAnimatedValue={animatedValue}
-        index={index}
-        onPressPhoto={() => onPressPost(item)}
-        onPressName={() => onPressUser(item.user)}
-        post={item}
+    const renderTop = () => (
+      <Top
+        latest={latest}
+        readyForRefresh={readyForRefresh}
+        refreshing={refreshing}
+        scrollY={scrollY}
       />
     );
 
+    const renderEmptyComponent = () => (
+      <Button title="share your first photo" onPress={onPressShare} />
+    );
+
+    const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => {
+      const { photoId, userPhoneNumber } = item;
+
+      const handleOnPressName = () => onPressUser(item.user);
+      const handleOnGestureBegan = (
+        payload: ZoomHandlerGestureBeganPayload
+      ) => {
+        setScrollEnabled(false);
+        onGestureBegan({
+          ...payload,
+          width: SCREEN_WIDTH - 40,
+          height: (SCREEN_WIDTH - 40) * 1.2,
+          id: photoId,
+          phoneNumber: userPhoneNumber
+        });
+      };
+
+      const handleOnGestureComplete = () => {
+        setScrollEnabled(true);
+        onGestureComplete();
+      };
+
+      const renderImage = () => (
+        <ZoomHandler
+          onGestureComplete={handleOnGestureComplete}
+          onGestureBegan={handleOnGestureBegan}
+        >
+          <PostImage
+            width={SCREEN_WIDTH - 40}
+            height={(SCREEN_WIDTH - 40) * 1.2}
+            phoneNumber={userPhoneNumber}
+            id={photoId}
+          />
+        </ZoomHandler>
+      );
+
+      return (
+        <Post
+          index={index}
+          post={item}
+          renderImage={renderImage}
+          entranceAnimatedValue={animatedValue}
+          onPressName={handleOnPressName}
+        />
+      );
+    };
+
     return (
-      <AnimatedFlatList
-        onScroll={onScroll({ y: scrollY })}
-        scrollEventThrottle={16}
-        ListHeaderComponentStyle={ListHeaderComponentStyle}
-        ListHeaderComponent={ListHeaderComponent}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={[
-          contentContainerStyle,
-          { paddingBottom: 50, alignItems: "center" }
-        ]}
+      <FlatList
         data={posts}
         renderItem={renderPost}
-        {...rest}
+        ListHeaderComponent={renderTop}
+        ListHeaderComponentStyle={styles.headerContainer}
+        ListEmptyComponent={renderEmptyComponent}
+        contentContainerStyle={styles.contentContainer}
+        renderScrollComponent={props => (
+          <Animated.ScrollView
+            {...props}
+            scrollEnabled={scrollEnabled}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+            onScroll={onScroll({ y: scrollY })}
+          />
+        )}
       />
     );
-  }
-  // ({ posts: prevPosts }, { posts: nextPosts }) =>
-  //   prevPosts.length === nextPosts.length
+  },
+  ({ posts: prevPosts }, { posts: nextPosts }) =>
+    prevPosts.length === nextPosts.length
 );
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingTop: SB_HEIGHT(),
+    paddingBottom: 50,
+    alignItems: "center"
+  },
+  headerContainer: {
+    zIndex: 1,
+    alignSelf: "stretch"
+  }
+});

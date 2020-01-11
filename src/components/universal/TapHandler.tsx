@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react";
-import { ViewStyle, StyleProp } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 
+import { State, TapGestureHandler } from "react-native-gesture-handler";
 import Animated, { Easing } from "react-native-reanimated";
-import { TapGestureHandler, State } from "react-native-gesture-handler";
-import { onGestureEvent, contains, timing, delay } from "react-native-redash";
+import { contains, delay, onGestureEvent, timing } from "react-native-redash";
 
 interface TapHandlerProps {
   value: Animated.Value<number>;
@@ -91,5 +91,6 @@ export default ({
   const content = <Animated.View style={style}>{children}</Animated.View>;
 
   if (disabled) return content;
+
   return <TapGestureHandler {...gestureHandler}>{content}</TapGestureHandler>;
 };

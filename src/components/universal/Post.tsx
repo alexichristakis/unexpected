@@ -13,7 +13,7 @@ export interface PostProps {
   entranceAnimatedValue?: Animated.Value<number>;
   index?: number;
   post: FeedPostType;
-  onPressPhoto?: () => void;
+  renderImage: () => JSX.Element;
   onPressName?: () => void;
 }
 export const Post: React.FC<PostProps> = ({
@@ -21,7 +21,7 @@ export const Post: React.FC<PostProps> = ({
   index = 0,
   post,
   onPressName,
-  onPressPhoto
+  renderImage
 }) => {
   const { userPhoneNumber, photoId, description } = post;
 
@@ -47,14 +47,7 @@ export const Post: React.FC<PostProps> = ({
         </TouchableOpacity>
         <Text style={TextStyles.small}>{moment(post.createdAt).fromNow()}</Text>
       </View>
-      <TouchableScale onPress={onPressPhoto}>
-        <PostImage
-          width={SCREEN_WIDTH - 40}
-          height={(SCREEN_WIDTH - 40) * 1.2}
-          phoneNumber={userPhoneNumber}
-          id={photoId}
-        />
-      </TouchableScale>
+      {renderImage()}
       <Text style={styles.description}>{description}</Text>
     </Animated.View>
   );

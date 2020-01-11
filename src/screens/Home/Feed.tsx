@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  FlatList,
-  ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StatusBar,
@@ -13,19 +11,17 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
 import Haptics from "react-native-haptic-feedback";
 import Animated, { Easing } from "react-native-reanimated";
-import { onScroll } from "react-native-redash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
+import uuid from "uuid/v4";
 
-import { Top } from "@components/Feed";
-import { Button, Post } from "@components/universal";
+import { Posts } from "@components/Feed";
+import { ZoomedImage, ZoomedImageType } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
 
 const {
@@ -38,10 +34,6 @@ const {
   greaterOrEq,
   useCode
 } = Animated;
-
-const AnimatedFlatList: typeof FlatList = Animated.createAnimatedComponent(
-  FlatList
-);
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -73,9 +65,9 @@ export const Feed: React.FC<FeedProps> = React.memo(
   }) => {
     const [readyForRefresh, setReadyForRefresh] = useState<0 | 1>(1);
     const [statusBarVisible, setStatusBarVisible] = useState(true);
-    const [entranceAnimatedValue] = useState(new Animated.Value(0));
-    const [statusBarAnimatedValue] = useState(new Animated.Value(0));
+    const [statusBarAnimatedValue] = useState(new Value(0));
     const [scrollY] = useState(new Value(0));
+    const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
 
     useEffect(() => {
       fetchFeed();
@@ -84,14 +76,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }
     }, []);
-
-    useEffect(() => {
-      Animated.timing(entranceAnimatedValue, {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.quad
-      }).start();
-    }, [feed.posts.length]);
 
     useFocusEffect(
       useCallback(() => {
@@ -137,16 +121,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => (
-      <Post
-        entranceAnimatedValue={entranceAnimatedValue}
-        index={index}
-        onPressPhoto={() => handleOnPressPost(item)}
-        onPressName={() => handleOnPressUser(item.user)}
-        post={item}
-      />
-    );
-
     const animatedStatusBarStyle = {
       transform: [{ translateY: statusBarAnimatedValue }]
     };
@@ -183,14 +157,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
       return { sortedPosts, latest };
     };
 
-    const handleOnPressPost = (post: FeedPostType) => {
-      navigation.navigate({
-        name: "POST",
-        key: uuid(),
-        params: { prevRoute: "Feed", post }
-      });
-    };
-
     const handleOnPressUser = (user: UserType) => {
       if (phoneNumber === user.phoneNumber) {
         navigation.navigate("USER_PROFILE");
@@ -207,36 +173,31 @@ export const Feed: React.FC<FeedProps> = React.memo(
       navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
     };
 
+    const handleOnGestureBegan = (image: ZoomedImageType) => {
+      setZoomedImage(image);
+    };
+
+    const handleOnGestureComplete = () => {
+      setZoomedImage(undefined);
+    };
+
     const { sortedPosts, latest } = getPosts();
-
-    const renderTop = () => (
-      <Top
-        latest={latest}
-        readyForRefresh={readyForRefresh}
-        refreshing={refreshing}
-        scrollY={scrollY}
-      />
-    );
-
-    const renderEmptyComponent = () => (
-      <Button title="share your first photo" onPress={handleOnPressShare} />
-    );
 
     return (
       <Screen style={styles.container}>
-        <AnimatedFlatList
-          onScrollEndDrag={handleScrollEndDrag}
-          onScroll={onScroll({ y: scrollY })}
-          scrollEventThrottle={16}
-          style={styles.list}
-          ListHeaderComponentStyle={styles.headerContainer}
-          ListHeaderComponent={renderTop}
-          ListEmptyComponent={renderEmptyComponent}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.contentContainer}
-          data={sortedPosts}
-          renderItem={renderPost}
+        <Posts
+          posts={sortedPosts}
+          scrollY={scrollY}
+          readyForRefresh={readyForRefresh}
+          refreshing={refreshing}
+          latest={latest}
+          onGestureBegan={handleOnGestureBegan}
+          onGestureComplete={handleOnGestureComplete}
+          onPressUser={handleOnPressUser}
+          onPressShare={handleOnPressShare}
+          handleScrollEndDrag={handleScrollEndDrag}
         />
+        {zoomedImage && <ZoomedImage {...zoomedImage} />}
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
       </Screen>
     );
@@ -249,11 +210,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: "center"
   },
-  contentContainer: {
-    paddingTop: SB_HEIGHT(),
-    paddingBottom: 50,
-    alignItems: "center"
-  },
   list: {
     width: "100%"
   },
@@ -264,10 +220,6 @@ const styles = StyleSheet.create({
     top: 0,
     height: SB_HEIGHT(),
     backgroundColor: "white"
-  },
-  headerContainer: {
-    zIndex: 1,
-    alignSelf: "stretch"
   }
 });
 

@@ -4,7 +4,7 @@ import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import RNFS from "react-native-fs";
 import { connect } from "react-redux";
 
-import { Colors } from "@lib/styles";
+import { Colors, SCREEN_WIDTH } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -22,7 +22,6 @@ export type PostImageReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-
 export interface PostImageProps {
   phoneNumber: string;
   id: string;
@@ -32,8 +31,6 @@ export interface PostImageProps {
 export const _PostImage: React.FC<PostImageProps &
   PostImageReduxProps> = React.memo(
   ({ phoneNumber, id, width, height, cache, requestCache }) => {
-    // const [loading, setLoading] = useState(true);
-
     useEffect(() => {
       // if the cache doesnt have a record of this photo download it
       if (!cache[id]) {
@@ -46,25 +43,27 @@ export const _PostImage: React.FC<PostImageProps &
       }
     }, []);
 
-    if (cache[id]) {
+    if (cache[id])
       return (
         <Image
           source={{ uri: cache[id].uri }}
-          style={[styles.image, { width, height }]}
-        />
-      );
-    } else {
-      return (
-        <View
+          // source={require("@assets/png/test.png")}
           style={[
             styles.image,
-            { width, height, alignItems: "center", justifyContent: "center" }
+            {
+              width,
+              height
+            }
           ]}
-        >
-          <ActivityIndicator color={Colors.lightGray} size={"large"} />
-        </View>
+        />
       );
-    }
+
+    // loading state
+    return (
+      <View style={[styles.loadingContainer, { width, height }]}>
+        <ActivityIndicator color={Colors.lightGray} size={"large"} />
+      </View>
+    );
   },
   (prevProps, nextProps) => {
     const { cache: prevCache } = prevProps;
@@ -89,5 +88,10 @@ const styles = StyleSheet.create({
   image: {
     resizeMode: "cover",
     backgroundColor: Colors.gray
+  },
+  loadingContainer: {
+    backgroundColor: Colors.gray,
+    alignItems: "center",
+    justifyContent: "center"
   }
 });

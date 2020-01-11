@@ -11,9 +11,9 @@ import {
 import groupBy from "lodash/groupBy";
 import moment from "moment";
 import Animated, {
+  Transition,
   Transitioning,
-  TransitioningView,
-  Transition
+  TransitioningView
 } from "react-native-reanimated";
 import { PostType } from "unexpected-cloud/models/post";
 
@@ -21,6 +21,7 @@ import LockSVG from "@assets/svg/lock.svg";
 import { Colors, TextStyles } from "@lib/styles";
 
 import { formatName } from "@lib/utils";
+import { onScroll } from "react-native-redash";
 import { UserType } from "unexpected-cloud/models/user";
 import { Month, Months } from "./Month";
 import testPosts from "./test_data";
@@ -144,12 +145,7 @@ export const Grid: React.FC<GridProps> = ({
             {...props}
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-              {
-                useNativeDriver: true
-              }
-            )}
+            onScroll={onScroll({ y: scrollY })}
           />
         )}
       />
