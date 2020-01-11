@@ -1,30 +1,49 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
+import { StyleSheet, View, StyleProp, ViewStyle } from "react-native";
 
-import ShutterSVG from "@assets/svg/shutter.svg";
+import Haptics from "react-native-haptic-feedback";
+
+import OuterSVG from "@assets/svg/shutter_outer.svg";
+import InnerSVG from "@assets/svg/shutter_inner.svg";
+import { TouchableScale } from "@components/universal";
 
 export interface ShutterProps {
   onPress: () => void;
-  dark?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
-export const Shutter = ({ onPress, dark, style }: ShutterProps) => {
-  const backgroundColor = dark ? "black" : "white";
+export const Shutter: React.FC<ShutterProps> = ({ onPress, style }) => {
+  const handleOnPress = () => {
+    Haptics.trigger("impactMedium");
+    onPress();
+  };
 
   return (
-    <TouchableOpacity
-      // style={styles.container}
-      onPress={onPress}
-    >
-      <ShutterSVG width={70} height={70} />
-    </TouchableOpacity>
+    <View style={[style, styles.center]}>
+      <View style={styles.container}>
+        <View style={StyleSheet.absoluteFill}>
+          <OuterSVG width={70} height={70} />
+        </View>
+        <TouchableScale
+          style={StyleSheet.absoluteFill}
+          toScale={0.9}
+          onPress={handleOnPress}
+        >
+          <InnerSVG width={50} height={50} />
+        </TouchableScale>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: 50,
-    height: 50,
-    borderRadius: 25
+    width: 70,
+    height: 70,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  center: {
+    alignItems: "center",
+    justifyContent: "center"
   }
 });

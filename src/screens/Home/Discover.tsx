@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import client, { getHeaders } from "@api";
-import { RouteProp, useFocusEffect } from "@react-navigation/core";
+import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";

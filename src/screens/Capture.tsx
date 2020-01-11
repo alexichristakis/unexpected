@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
   camera: {
     ...StyleSheet.absoluteFillObject,
     bottom: 100,
+    overflow: "hidden",
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10
   },
