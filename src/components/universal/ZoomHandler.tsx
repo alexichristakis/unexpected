@@ -22,14 +22,26 @@ import {
 } from "react-native-redash";
 import { FocusedImageType, Measurement } from "@components/Feed";
 
-const { or, and, not, useCode, block, cond, eq, set, call } = Animated;
-const { BEGAN, ACTIVE, UNDETERMINED } = State;
+const {
+  or,
+  and,
+  not,
+  useCode,
+  block,
+  cond,
+  eq,
+  set,
+  call,
+  onChange,
+  debug
+} = Animated;
+const { BEGAN, ACTIVE, FAILED, CANCELLED, END, UNDETERMINED } = State;
 
 export type ZoomHandlerGestureBeganPayload = {
   measurement: Measurement;
-  transform: {
-    [key: string]: Animated.Node<number>;
-  }[];
+  scale: Animated.Value<number>;
+  translateX: Animated.Value<number>;
+  translateY: Animated.Value<number>;
 };
 
 export interface ZoomHandlerProps {
@@ -65,18 +77,16 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
                   ReactNative.findNodeHandle(childRef.current)!,
                   (x, y, width, height, pageX, pageY) => {
                     onGestureBegan({
-                      transform: [
-                        { scale },
-                        { translateY: dragY },
-                        { translateX: dragX }
-                      ],
+                      scale,
+                      translateY: dragY,
+                      translateX: dragX,
                       measurement: { x: pageX, y: pageY, w: width, h: height }
                     });
+                    opacity.setValue(0);
                   }
                 );
               }
-            }),
-            set(opacity, 0)
+            })
           ]),
           cond(and(not(pinchActive), not(panActive)), [
             set(scale, timing({ to: 1, from: scale, duration, easing })),

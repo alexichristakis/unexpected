@@ -7,7 +7,7 @@ import {
   PostImage,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
-import { SCREEN_WIDTH } from "@lib/styles";
+import { SCREEN_WIDTH, Colors } from "@lib/styles";
 
 export type Measurement = {
   x: number;
@@ -27,15 +27,25 @@ export const FocusedImage: React.FC<FocusedImageProps> = ({
   id,
   phoneNumber,
   measurement,
-  transform
+  scale,
+  translateX,
+  translateY
 }) => {
+  const opacity = scale.interpolate({
+    inputRange: [0, 1, 2],
+    outputRange: [0.5, 0, 0.5]
+  });
+
   return (
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.root]}>
+      <Animated.View
+        style={[StyleSheet.absoluteFill, styles.background, { opacity }]}
+      />
       <Animated.View
         style={{
           left: measurement.x,
           top: measurement.y,
-          transform
+          transform: [{ scale }, { translateX }, { translateY }]
         }}
       >
         <PostImage
@@ -52,5 +62,8 @@ export const FocusedImage: React.FC<FocusedImageProps> = ({
 const styles = StyleSheet.create({
   root: {
     zIndex: 10
+  },
+  background: {
+    backgroundColor: Colors.gray
   }
 });
