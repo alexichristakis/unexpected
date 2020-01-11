@@ -8,15 +8,18 @@ import {
   View
 } from "react-native";
 
+import { RouteProp } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import { Formik } from "formik";
 
-import { Button, Input, PendingPostImage } from "@components/universal";
-import { TextSizes } from "@lib/styles";
+import { Button, Input, PendingPostImage, NavBar } from "@components/universal";
+import { TextSizes, SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { Formik } from "formik";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
   image: selectors.currentImage(state),
@@ -26,14 +29,17 @@ const mapDispatchToProps = {
   sendPost: PostActions.sendPost
 };
 
-export interface SharePostOwnProps {}
+export interface SharePostOwnProps {
+  navigation: NativeStackNavigationProp<StackParamList, "SHARE">;
+  route: RouteProp<StackParamList, "SHARE">;
+}
 export type SharePostReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
 const initialFormValues = { description: "" };
 const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
-  ({ sendPost, image, sending }) => {
+  ({ sendPost, image, sending, navigation }) => {
     useEffect(() => {});
 
     const handleSubmit = (values: typeof initialFormValues) => {
@@ -42,6 +48,11 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
 
     return (
       <Screen style={styles.container}>
+        <NavBar
+          showBackButtonText
+          backButtonText="Capture"
+          navigation={navigation}
+        />
         <TouchableOpacity
           style={styles.subContainer}
           activeOpacity={1}
@@ -86,6 +97,7 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 35,
     alignItems: "center",
     justifyContent: "center"
   },

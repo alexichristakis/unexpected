@@ -3,9 +3,10 @@ import { StyleSheet, View, StyleProp, ViewStyle } from "react-native";
 
 import Haptics from "react-native-haptic-feedback";
 
+import { TouchableScale } from "@components/universal";
+
 import OuterSVG from "@assets/svg/shutter_outer.svg";
 import InnerSVG from "@assets/svg/shutter_inner.svg";
-import { TouchableScale } from "@components/universal";
 
 export interface ShutterProps {
   onPress: () => void;

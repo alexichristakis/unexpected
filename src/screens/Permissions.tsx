@@ -57,7 +57,6 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
             </Text>
             <Button
               style={styles.button}
-              size="small"
               title="notifications"
               onPress={requestNotifications}
             />
@@ -68,7 +67,6 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
             </Text>
             <Button
               style={styles.button}
-              size="small"
               title="camera"
               onPress={() => request(PermissionTypes.CAMERA)}
             />
@@ -82,7 +80,6 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
             </Text>
             <Button
               style={styles.button}
-              size="small"
               title="contacts"
               onPress={() => request(PermissionTypes.CONTACTS)}
             />
@@ -94,7 +91,6 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
 
             <Button
               style={styles.button}
-              size="small"
               title="location"
               onPress={() => request(PermissionTypes.LOCATION)}
             />

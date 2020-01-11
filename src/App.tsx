@@ -62,7 +62,7 @@ export type StackParamList = {
   FEED: undefined;
   USER_PROFILE: undefined;
   AUTH: undefined;
-  SHARE: undefined;
+  SHARE: BaseParams;
   POST: BaseParams & { post: FeedPostType };
   PROFILE: BaseParams & { user: UserType };
   FRIENDS: { user: UserType };
@@ -212,29 +212,14 @@ const Router: React.FC = () => {
           headerTitle: "share",
           headerTitleStyle: TextStyles.large,
           headerTintColor: "#231F20",
-          headerHideShadow: true,
-          headerStyle: {
-            backgroundColor: "white"
-          },
-          contentStyle: { backgroundColor: "white" }
+          headerHideShadow: true
         }}
       />
 
       <Stack.Screen name="CAPTURE">
         {({ route }) => (
           <Stack.Navigator>
-            <Stack.Screen
-              name="CAPTURE"
-              options={{
-                headerShown: false
-                // headerTitle: "capture",
-                // headerTitleStyle: TextStyles.large,
-                // headerTintColor: "#231F20",
-                // headerStyle: {
-                //   backgroundColor: "white"
-                // }
-              }}
-            >
+            <Stack.Screen name="CAPTURE" options={{ headerShown: false }}>
               {({ navigation }) => (
                 <Capture navigation={navigation} route={route} />
               )}
@@ -242,16 +227,7 @@ const Router: React.FC = () => {
             <Stack.Screen
               name="SHARE"
               component={Share}
-              options={{
-                headerTitle: "share",
-                headerTitleStyle: TextStyles.large,
-                headerTintColor: "#231F20",
-                headerHideShadow: true,
-                headerStyle: {
-                  backgroundColor: "white"
-                },
-                contentStyle: { backgroundColor: "white" }
-              }}
+              options={{ headerShown: false }}
             />
           </Stack.Navigator>
         )}
