@@ -13,6 +13,8 @@ import {
   NavBar,
   PostImage,
   ZoomHandler,
+  ZoomedImageType,
+  ZoomedImage,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
 import { Actions as ImageActions } from "@redux/modules/image";
@@ -23,7 +25,6 @@ import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { useDarkStatusBar } from "@hooks";
 import { StackParamList } from "../App";
-import { FocusedImageType, FocusedImage } from "@components/Feed";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state)
@@ -49,7 +50,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
 }) => {
   const [scrollY] = useState(new Animated.Value(0));
 
-  const [focusedImage, setFocusedImage] = useState<FocusedImageType>();
+  const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
 
   const { prevRoute, post } = route.params;
 
@@ -77,19 +78,16 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
 
   const { description, createdAt, userPhoneNumber, photoId, user } = post;
 
-  const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) => {
-    setFocusedImage({
+  const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) =>
+    setZoomedImage({
       id: photoId,
       phoneNumber: userPhoneNumber,
       width: SCREEN_WIDTH,
       height: 1.2 * SCREEN_WIDTH,
       ...payload
     });
-  };
 
-  const handleOnGestureComplete = () => {
-    setFocusedImage(undefined);
-  };
+  const handleOnGestureComplete = () => setZoomedImage(undefined);
 
   return (
     <Screen style={styles.container}>
@@ -130,7 +128,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
           <Text style={TextStyles.medium}>{description}</Text>
         </View>
       </Animated.ScrollView>
-      {focusedImage && <FocusedImage {...focusedImage} />}
+      {zoomedImage && <ZoomedImage {...zoomedImage} />}
     </Screen>
   );
 };

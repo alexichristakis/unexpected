@@ -1,13 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-  FlatList,
-  ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StatusBar,
   StyleSheet
 } from "react-native";
 
+import uuid from "uuid/v4";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
@@ -15,21 +14,15 @@ import Haptics from "react-native-haptic-feedback";
 import Animated, { Easing } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 import { UserType } from "unexpected-cloud/models/user";
 
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import uuid from "uuid/v4";
 import { StackParamList } from "../../App";
-import {
-  Posts,
-  FocusedImage,
-  Measurement,
-  FocusedImageType
-} from "@components/Feed";
+import { Posts } from "@components/Feed";
+import { ZoomedImage, ZoomedImageType } from "@components/universal";
 
 const {
   Value,
@@ -75,7 +68,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const [statusBarAnimatedValue] = useState(new Animated.Value(0));
     const [scrollY] = useState(new Value(0));
 
-    const [focusedImage, setFocusedImage] = useState<FocusedImageType>();
+    const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
 
     useEffect(() => {
       fetchFeed();
@@ -116,8 +109,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
         ]),
       [readyForRefresh, statusBarVisible]
     );
-
-    const onGestureBegan = () => {};
 
     const handleScrollEndDrag = ({
       nativeEvent
@@ -167,14 +158,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
       return { sortedPosts, latest };
     };
 
-    const handleOnPressPost = (post: FeedPostType) => {
-      navigation.navigate({
-        name: "POST",
-        key: uuid(),
-        params: { prevRoute: "Feed", post }
-      });
-    };
-
     const handleOnPressUser = (user: UserType) => {
       if (phoneNumber === user.phoneNumber) {
         navigation.navigate("USER_PROFILE");
@@ -191,12 +174,12 @@ export const Feed: React.FC<FeedProps> = React.memo(
       navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
     };
 
-    const handleOnGestureBegan = (image: FocusedImageType) => {
-      setFocusedImage(image);
+    const handleOnGestureBegan = (image: ZoomedImageType) => {
+      setZoomedImage(image);
     };
 
     const handleOnGestureComplete = () => {
-      setFocusedImage(undefined);
+      setZoomedImage(undefined);
     };
 
     const { sortedPosts, latest } = getPosts();
@@ -211,12 +194,11 @@ export const Feed: React.FC<FeedProps> = React.memo(
           latest={latest}
           onGestureBegan={handleOnGestureBegan}
           onGestureComplete={handleOnGestureComplete}
-          onPressPost={handleOnPressPost}
           onPressUser={handleOnPressUser}
           onPressShare={handleOnPressShare}
           handleScrollEndDrag={handleScrollEndDrag}
         />
-        {focusedImage && <FocusedImage {...focusedImage} />}
+        {zoomedImage && <ZoomedImage {...zoomedImage} />}
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
       </Screen>
     );

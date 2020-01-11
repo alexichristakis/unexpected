@@ -11,6 +11,7 @@ export * from "./ItemSeparator";
 export * from "./FriendButton";
 export * from "./NavBar";
 export * from "./ZoomHandler";
+export * from "./ZoomedImage";
 
 import FriendButton from "./FriendButton";
 import PostImage from "./PostImage";

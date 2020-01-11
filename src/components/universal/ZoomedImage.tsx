@@ -16,16 +16,16 @@ export type Measurement = {
   h: number;
 };
 
-export type FocusedImageType = {
+export type ZoomedImageType = {
   id: string;
   phoneNumber: string;
   width: number;
   height: number;
 } & ZoomHandlerGestureBeganPayload;
 
-export interface FocusedImageProps extends FocusedImageType {}
+export interface ZoomedImageProps extends ZoomedImageType {}
 
-export const FocusedImage: React.FC<FocusedImageProps> = ({
+export const ZoomedImage: React.FC<ZoomedImageProps> = ({
   id,
   phoneNumber,
   width,

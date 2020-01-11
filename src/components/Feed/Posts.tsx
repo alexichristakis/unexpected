@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
-  FlatListProps,
   ListRenderItemInfo,
-  ViewStyle,
   StyleSheet,
   NativeSyntheticEvent,
   NativeScrollEvent
@@ -18,30 +16,18 @@ import {
   Button,
   Post,
   ZoomHandler,
+  ZoomedImageType,
   ZoomHandlerGestureBeganPayload,
   PostImage
 } from "@components/universal";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, SB_HEIGHT } from "@lib/styles";
+import { SCREEN_WIDTH, SB_HEIGHT } from "@lib/styles";
 
 import { Top } from "./Top";
-import { FocusedImageType, Measurement } from "./FocusedImage";
-
-const {
-  Value,
-  block,
-  cond,
-  call,
-  and,
-  lessThan,
-  greaterOrEq,
-  useCode
-} = Animated;
 
 export interface PostsProps {
   scrollY: Animated.Value<number>;
-  onGestureBegan: (image: FocusedImageType) => void;
+  onGestureBegan: (image: ZoomedImageType) => void;
   onGestureComplete: () => void;
-  onPressPost: (post: FeedPostType) => void;
   onPressUser: (user: UserType) => void;
   onPressShare: () => void;
   handleScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
@@ -59,7 +45,6 @@ export const Posts: React.FC<PostsProps> = React.memo(
     posts,
     onGestureBegan,
     onGestureComplete,
-    onPressPost,
     onPressUser,
     onPressShare,
     latest
@@ -91,7 +76,6 @@ export const Posts: React.FC<PostsProps> = React.memo(
     const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => {
       const { photoId, userPhoneNumber } = item;
 
-      const handleOnPressPhoto = () => onPressPost(item);
       const handleOnPressName = () => onPressUser(item.user);
       const handleOnGestureBegan = (
         payload: ZoomHandlerGestureBeganPayload
@@ -99,7 +83,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
         setScrollEnabled(false);
         onGestureBegan({
           ...payload,
-          width: SCREEN_WIDTH,
+          width: SCREEN_WIDTH - 40,
           height: (SCREEN_WIDTH - 40) * 1.2,
           id: photoId,
           phoneNumber: userPhoneNumber
@@ -153,9 +137,9 @@ export const Posts: React.FC<PostsProps> = React.memo(
         )}
       />
     );
-  }
-  // ({ posts: prevPosts }, { posts: nextPosts }) =>
-  //   prevPosts.length === nextPosts.length
+  },
+  ({ posts: prevPosts }, { posts: nextPosts }) =>
+    prevPosts.length === nextPosts.length
 );
 
 const styles = StyleSheet.create({

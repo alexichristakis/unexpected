@@ -18,7 +18,7 @@ import {
   bInterpolate,
   useValues
 } from "react-native-redash";
-import { FocusedImageType, Measurement } from "@components/Feed";
+import { ZoomedImage, Measurement } from "@components/universal";
 
 const {
   or,
