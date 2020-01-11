@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import Animated from "react-native-reanimated";
@@ -7,7 +7,7 @@ import {
   PostImage,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
-import { Colors, SCREEN_WIDTH } from "@lib/styles";
+import { Colors } from "@lib/styles";
 
 export type Measurement = {
   x: number;
@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
     zIndex: 10
   },
   background: {
-    backgroundColor: Colors.gray
+    backgroundColor: Colors.nearBlack
   }
 });

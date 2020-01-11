@@ -9,31 +9,16 @@ import {
 import Animated, { Easing } from "react-native-reanimated";
 import { delay } from "react-native-redash";
 
-import { Measurement, ZoomedImage } from "@components/universal";
+import { Measurement } from "@components/universal";
 import {
-  bInterpolate,
   contains,
   onGestureEvent,
   timing,
-  useDiff,
-  useValues,
-  withDecay
+  useValues
 } from "react-native-redash";
 
-const {
-  or,
-  and,
-  not,
-  useCode,
-  block,
-  cond,
-  eq,
-  set,
-  call,
-  onChange,
-  debug
-} = Animated;
-const { BEGAN, ACTIVE, FAILED, CANCELLED, END, UNDETERMINED } = State;
+const { or, and, not, useCode, block, cond, eq, set, call } = Animated;
+const { BEGAN, ACTIVE, UNDETERMINED } = State;
 
 export type ZoomHandlerGestureBeganPayload = {
   measurement: Measurement;
@@ -121,8 +106,8 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
       >
         <Animated.View>
           <PanGestureHandler
+            avgTouches
             ref={panRef}
-            avgTouches={true}
             minPointers={2}
             minDist={10}
             simultaneousHandlers={pinchRef}

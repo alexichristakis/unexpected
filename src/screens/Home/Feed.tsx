@@ -65,9 +65,8 @@ export const Feed: React.FC<FeedProps> = React.memo(
   }) => {
     const [readyForRefresh, setReadyForRefresh] = useState<0 | 1>(1);
     const [statusBarVisible, setStatusBarVisible] = useState(true);
-    const [statusBarAnimatedValue] = useState(new Animated.Value(0));
+    const [statusBarAnimatedValue] = useState(new Value(0));
     const [scrollY] = useState(new Value(0));
-
     const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
 
     useEffect(() => {
