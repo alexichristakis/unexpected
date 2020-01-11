@@ -1,24 +1,24 @@
 import React from "react";
 import ReactNative, { UIManager } from "react-native";
 
-import Animated, { Easing } from "react-native-reanimated";
 import {
-  State,
+  PanGestureHandler,
   PinchGestureHandler,
-  PanGestureHandler
+  State
 } from "react-native-gesture-handler";
+import Animated, { Easing } from "react-native-reanimated";
 import { delay } from "react-native-redash";
 
+import { Measurement, ZoomedImage } from "@components/universal";
 import {
-  onGestureEvent,
-  withDecay,
+  bInterpolate,
   contains,
+  onGestureEvent,
   timing,
   useDiff,
-  bInterpolate,
-  useValues
+  useValues,
+  withDecay
 } from "react-native-redash";
-import { ZoomedImage, Measurement } from "@components/universal";
 
 const {
   or,
@@ -122,7 +122,7 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
         <Animated.View>
           <PanGestureHandler
             ref={panRef}
-            avgTouches
+            avgTouches={true}
             minPointers={2}
             minDist={10}
             simultaneousHandlers={pinchRef}

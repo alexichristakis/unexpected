@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import Animated from "react-native-reanimated";
 
@@ -7,7 +7,7 @@ import {
   PostImage,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
-import { SCREEN_WIDTH, Colors } from "@lib/styles";
+import { Colors, SCREEN_WIDTH } from "@lib/styles";
 
 export type Measurement = {
   x: number;

@@ -82,7 +82,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser
+        isUser={true}
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}

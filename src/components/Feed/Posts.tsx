@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import {
   FlatList,
   ListRenderItemInfo,
-  StyleSheet,
+  NativeScrollEvent,
   NativeSyntheticEvent,
-  NativeScrollEvent
+  StyleSheet
 } from "react-native";
 
 import Animated, { Easing } from "react-native-reanimated";
@@ -15,12 +15,12 @@ import { UserType } from "unexpected-cloud/models/user";
 import {
   Button,
   Post,
-  ZoomHandler,
+  PostImage,
   ZoomedImageType,
-  ZoomHandlerGestureBeganPayload,
-  PostImage
+  ZoomHandler,
+  ZoomHandlerGestureBeganPayload
 } from "@components/universal";
-import { SCREEN_WIDTH, SB_HEIGHT } from "@lib/styles";
+import { SB_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 
 import { Top } from "./Top";
 
@@ -95,23 +95,25 @@ export const Posts: React.FC<PostsProps> = React.memo(
         onGestureComplete();
       };
 
+      const renderImage = () => (
+        <ZoomHandler
+          onGestureComplete={handleOnGestureComplete}
+          onGestureBegan={handleOnGestureBegan}
+        >
+          <PostImage
+            width={SCREEN_WIDTH - 40}
+            height={(SCREEN_WIDTH - 40) * 1.2}
+            phoneNumber={userPhoneNumber}
+            id={photoId}
+          />
+        </ZoomHandler>
+      );
+
       return (
         <Post
           index={index}
           post={item}
-          renderImage={() => (
-            <ZoomHandler
-              onGestureComplete={handleOnGestureComplete}
-              onGestureBegan={handleOnGestureBegan}
-            >
-              <PostImage
-                width={SCREEN_WIDTH - 40}
-                height={(SCREEN_WIDTH - 40) * 1.2}
-                phoneNumber={userPhoneNumber}
-                id={photoId}
-              />
-            </ZoomHandler>
-          )}
+          renderImage={renderImage}
           entranceAnimatedValue={animatedValue}
           onPressName={handleOnPressName}
         />

@@ -1,8 +1,8 @@
 import React, {
   useCallback,
-  useState,
   useEffect,
-  useLayoutEffect
+  useLayoutEffect,
+  useState
 } from "react";
 import { StatusBar, StyleSheet } from "react-native";
 

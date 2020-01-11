@@ -1,29 +1,29 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import Animated from "react-native-reanimated";
 import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import moment from "moment";
+import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
-import moment from "moment";
 
 import {
   NavBar,
   PostImage,
-  ZoomHandler,
-  ZoomedImageType,
   ZoomedImage,
+  ZoomedImageType,
+  ZoomHandler,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
+import { useDarkStatusBar } from "@hooks";
+import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import { formatName } from "@lib/utils";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import { formatName } from "@lib/utils";
-import { useDarkStatusBar } from "@hooks";
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
@@ -92,7 +92,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
   return (
     <Screen style={styles.container}>
       <NavBar
-        showBackButtonText
+        showBackButtonText={true}
         navigation={navigation}
         backButtonText={prevRoute}
       />

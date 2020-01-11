@@ -6,7 +6,6 @@ import {
   StyleSheet
 } from "react-native";
 
-import uuid from "uuid/v4";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
@@ -15,14 +14,15 @@ import Animated, { Easing } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { UserType } from "unexpected-cloud/models/user";
+import uuid from "uuid/v4";
 
+import { Posts } from "@components/Feed";
+import { ZoomedImage, ZoomedImageType } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../../App";
-import { Posts } from "@components/Feed";
-import { ZoomedImage, ZoomedImageType } from "@components/universal";
 
 const {
   Value,

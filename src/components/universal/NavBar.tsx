@@ -1,8 +1,8 @@
 import React, {
-  useEffect,
   PropsWithChildren,
+  PropsWithRef,
   ReactPropTypes,
-  PropsWithRef
+  useEffect
 } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
