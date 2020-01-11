@@ -63,7 +63,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     refreshing,
     shouldLaunchPermissions
   }) => {
-    const [readyForRefresh, setReadyForRefresh] = useState<0 | 1>(1);
+    const [readyForRefresh, setReadyForRefresh] = useState<0 | 1>(0);
     const [statusBarVisible, setStatusBarVisible] = useState(true);
     const [statusBarAnimatedValue] = useState(new Value(0));
     const [scrollY] = useState(new Value(0));
@@ -151,9 +151,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
 
     const getPosts = () => {
       const sortedPosts = _.sortBy(feed.posts, o => -o.createdAt);
-
       const latest = sortedPosts.length ? sortedPosts[0].createdAt : undefined;
-
       return { sortedPosts, latest };
     };
 
@@ -195,7 +193,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
           onGestureComplete={handleOnGestureComplete}
           onPressUser={handleOnPressUser}
           onPressShare={handleOnPressShare}
-          handleScrollEndDrag={handleScrollEndDrag}
+          onScrollEndDrag={handleScrollEndDrag}
         />
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
@@ -209,9 +207,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     alignItems: "center"
-  },
-  list: {
-    width: "100%"
   },
   statusBar: {
     position: "absolute",

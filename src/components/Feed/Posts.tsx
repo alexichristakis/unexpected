@@ -30,7 +30,7 @@ export interface PostsProps {
   onGestureComplete: () => void;
   onPressUser: (user: UserType) => void;
   onPressShare: () => void;
-  handleScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
   latest?: Date;
   refreshing: boolean;
   readyForRefresh: 0 | 1;
@@ -43,6 +43,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
     refreshing,
     readyForRefresh,
     posts,
+    onScrollEndDrag,
     onGestureBegan,
     onGestureComplete,
     onPressUser,
@@ -127,6 +128,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
         ListHeaderComponent={renderTop}
         ListHeaderComponentStyle={styles.headerContainer}
         ListEmptyComponent={renderEmptyComponent}
+        onScrollEndDrag={onScrollEndDrag}
         contentContainerStyle={styles.contentContainer}
         renderScrollComponent={props => (
           <Animated.ScrollView
@@ -140,8 +142,10 @@ export const Posts: React.FC<PostsProps> = React.memo(
       />
     );
   },
-  ({ posts: prevPosts }, { posts: nextPosts }) =>
-    prevPosts.length === nextPosts.length
+  (prevProps, nextProps) =>
+    prevProps.posts.length === nextProps.posts.length &&
+    prevProps.readyForRefresh === nextProps.readyForRefresh &&
+    prevProps.refreshing === nextProps.refreshing
 );
 
 const styles = StyleSheet.create({

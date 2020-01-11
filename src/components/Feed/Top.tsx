@@ -120,10 +120,7 @@ export const Top: React.FC<FeedTopProps> = React.memo(
         </>
       );
     }
-  },
-  (prevProps, nextProps) =>
-    prevProps.refreshing === nextProps.refreshing &&
-    prevProps.readyForRefresh === nextProps.readyForRefresh
+  }
 );
 
 const styles = StyleSheet.create({
