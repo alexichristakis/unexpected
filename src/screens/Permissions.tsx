@@ -88,7 +88,6 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
             <Text style={[styles.text, TextStyles.small]}>
               location is helpful so that you dont need to set your timezone
             </Text>
-
             <Button
               style={styles.button}
               title="location"

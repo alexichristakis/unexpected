@@ -3,10 +3,9 @@ import { StyleSheet, View } from "react-native";
 
 import Animated from "react-native-reanimated";
 
-import {
-  PostImage,
-  ZoomHandlerGestureBeganPayload
-} from "@components/universal";
+import PostImage from "./PostImage";
+import { ZoomHandlerGestureBeganPayload } from "./ZoomHandler";
+
 import { Colors } from "@lib/styles";
 
 export type Measurement = {

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useRef, createRef } from "react";
 import {
+  View,
   FlatList,
   ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  StyleSheet
+  StyleSheet,
+  ViewToken
 } from "react-native";
 
 import Animated, { Easing } from "react-native-reanimated";
@@ -20,9 +22,19 @@ import {
   ZoomHandler,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
-import { SB_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
+import { Colors, SB_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
 
 import { Top } from "./Top";
+
+const VIEWABILITY_CONFIG = {
+  itemVisiblePercentThreshold: 10,
+  minimumViewTime: 100
+};
+
+export const FEED_POST_WIDTH = SCREEN_WIDTH - 40;
+export const FEED_POST_HEIGHT = 1.2 * FEED_POST_WIDTH;
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 export interface PostsProps {
   scrollY: Animated.Value<number>;
@@ -52,6 +64,25 @@ export const Posts: React.FC<PostsProps> = React.memo(
   }) => {
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const [animatedValue] = useState(new Animated.Value(0));
+    const [viewableItems, setViewableItems] = useState<(number | null)[]>([]);
+
+    const cellRefs = useRef<{ [id: string]: React.RefObject<typeof Post> }>({});
+    const onViewableItemsChangedRef = useRef(
+      ({ changed }: { changed: ViewToken[] }) => {
+        const refs = cellRefs.current;
+
+        changed.forEach(change => {
+          const ref = refs[change.item.id];
+          if (!ref || !ref.current) return;
+
+          if (change.isViewable) {
+            ref.current.setVisible();
+          } else {
+            ref.current.setNotVisible();
+          }
+        });
+      }
+    );
 
     useEffect(() => {
       Animated.timing(animatedValue, {
@@ -84,8 +115,8 @@ export const Posts: React.FC<PostsProps> = React.memo(
         setScrollEnabled(false);
         onGestureBegan({
           ...payload,
-          width: SCREEN_WIDTH - 40,
-          height: (SCREEN_WIDTH - 40) * 1.2,
+          width: FEED_POST_WIDTH,
+          height: FEED_POST_HEIGHT,
           id: photoId,
           phoneNumber: userPhoneNumber
         });
@@ -102,16 +133,18 @@ export const Posts: React.FC<PostsProps> = React.memo(
           onGestureBegan={handleOnGestureBegan}
         >
           <PostImage
-            width={SCREEN_WIDTH - 40}
-            height={(SCREEN_WIDTH - 40) * 1.2}
+            width={FEED_POST_WIDTH}
+            height={FEED_POST_HEIGHT}
             phoneNumber={userPhoneNumber}
             id={photoId}
           />
         </ZoomHandler>
       );
 
+      cellRefs.current[item.id] = createRef();
       return (
         <Post
+          ref={cellRefs.current[item.id]}
           index={index}
           post={item}
           renderImage={renderImage}
@@ -122,23 +155,21 @@ export const Posts: React.FC<PostsProps> = React.memo(
     };
 
     return (
-      <FlatList
+      <AnimatedFlatList
         data={posts}
         renderItem={renderPost}
+        scrollEnabled={scrollEnabled}
+        showsVerticalScrollIndicator={false}
+        windowSize={3}
+        onViewableItemsChanged={onViewableItemsChangedRef.current}
+        viewabilityConfig={VIEWABILITY_CONFIG}
         ListHeaderComponent={renderTop}
         ListHeaderComponentStyle={styles.headerContainer}
         ListEmptyComponent={renderEmptyComponent}
         onScrollEndDrag={onScrollEndDrag}
         contentContainerStyle={styles.contentContainer}
-        renderScrollComponent={props => (
-          <Animated.ScrollView
-            {...props}
-            scrollEnabled={scrollEnabled}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
-            onScroll={onScroll({ y: scrollY })}
-          />
-        )}
+        scrollEventThrottle={16}
+        onScroll={onScroll({ y: scrollY })}
       />
     );
   },
@@ -149,6 +180,9 @@ export const Posts: React.FC<PostsProps> = React.memo(
 );
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   contentContainer: {
     paddingTop: SB_HEIGHT(),
     paddingBottom: 50,

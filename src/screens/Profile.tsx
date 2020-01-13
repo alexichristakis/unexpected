@@ -26,8 +26,6 @@ import { StackParamList } from "../App";
 
 const { useCode, block, call, greaterThan, lessOrEq, cond } = Animated;
 
-/* need to change to watch user from redux state and use phone number from route for fetching purposes only */
-
 const mapStateToProps = (state: RootState, props: ProfileProps) => ({
   phoneNumber: selectors.phoneNumber(state),
   postsLoading: selectors.postLoading(state),
