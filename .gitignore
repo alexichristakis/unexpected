@@ -1,3 +1,32 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+
+# production
+*/**/dist/
+*/**/buid/
+
+# misc
+.DS_Store
+
+# keys
+certifications/
+google_cloud.json
+.env
+**/*.cer 
+**/*.p8
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # OSX
 #
 .DS_Store
@@ -62,3 +91,4 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
