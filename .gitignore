@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # OSX
 #
 .DS_Store
@@ -63,32 +62,3 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
-=======
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-node_modules/
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-
-# production
-dist/
-
-# misc
-.DS_Store
-
-# keys
-certifications/
-google_cloud.json
-.env
-**/*.cer 
-**/*.p8
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
->>>>>>> server/master
