@@ -2,7 +2,9 @@
   "name": "unexpected",
   "private": true,
   "scripts": {
-    "check-types": "cd packages/app && yarn check-types && cd ../server && yarn check-types",
+    "types-cloud": "cd packages/server && yarn tsc",
+    "types-app": "cd packages/app && yarn check-types",
+    "check-types": "types-cloud && types-app",
     "preinstall": "node packages/server/preinstall.js",
     "postinstall": "patch-package"
   },
@@ -13,6 +15,8 @@
     "packages/*"
   ],
   "dependencies": {
+    "@unexpected/server": "file:./packages/server",
+    "@unexpected/global": "file:./packages/global",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27"

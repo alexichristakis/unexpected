@@ -4,9 +4,8 @@ import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
-import { FeedReturnType } from "unexpected-cloud/controllers/post";
+import { FeedReturnType } from "@unexpected/server";
 import { FeedPostType, PostType } from "unexpected-cloud/models/post";
-import 
 import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
