@@ -1,0 +1,212 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Profile /> & <UserProfile /> <Grid /> exists 1`] = `
+<AnimatedComponent
+  data={
+    Array [
+      Object {
+        "createdAt": 1970-01-01T00:00:00.000Z,
+        "description": "this is a post",
+        "id": "0",
+        "photoId": "0",
+        "userPhoneNumber": "2069409629",
+      },
+      Object {
+        "createdAt": 1970-01-01T00:00:00.000Z,
+        "description": "this is another post",
+        "id": "1",
+        "photoId": "1",
+        "userPhoneNumber": "2069409629",
+      },
+    ]
+  }
+  numColumns={3}
+  renderItem={[Function]}
+  style={
+    Object {
+      "height": "100%",
+      "width": "100%",
+    }
+  }
+/>
+`;
+
+exports[`<Profile /> & <UserProfile /> <Top /> exists 1`] = `
+<Fragment>
+  <AnimatedComponent
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "alignSelf": "stretch",
+          "paddingTop": 5,
+        },
+        Object {
+          "transform": Array [
+            Object {
+              "translateY": undefined,
+            },
+          ],
+        },
+      ]
+    }
+  >
+    <TouchableOpacity
+      activeOpacity={0.2}
+      disabled={true}
+      style={
+        Array [
+          Object {
+            "alignSelf": "stretch",
+            "flex": 1,
+            "flexDirection": "row",
+          },
+          Object {
+            "flexDirection": "column",
+            "marginBottom": 20,
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "rgb(10, 10, 10)",
+              "fontFamily": "AvenirNext-Regular",
+              "fontSize": 26,
+            }
+          }
+          testID="user-name"
+        >
+          Test User
+        </Text>
+      </View>
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+          }
+        }
+      >
+        <Text
+          style={
+            Array [
+              Object {
+                "color": "rgb(10, 10, 10)",
+                "fontFamily": "AvenirNext-Regular",
+                "fontSize": 20,
+              },
+            ]
+          }
+          testID="num-moments"
+        >
+          2 moments, 
+        </Text>
+        <Text
+          onPress={[MockFunction]}
+          style={
+            Array [
+              Object {
+                "color": "rgb(10, 10, 10)",
+                "fontFamily": "AvenirNext-Regular",
+                "fontSize": 20,
+              },
+            ]
+          }
+          testID="friends"
+        >
+          0 friends
+        </Text>
+      </View>
+    </TouchableOpacity>
+    <View
+      style={
+        Array [
+          Object {
+            "alignSelf": "stretch",
+            "flex": 1,
+            "flexDirection": "row",
+          },
+          Object {
+            "marginBottom": 20,
+          },
+        ]
+      }
+    >
+      <TouchableOpacity
+        activeOpacity={0.2}
+        disabled={true}
+      >
+        <Connect(Component)
+          phoneNumber="2069409629"
+          size={236.66666666666666}
+        />
+      </TouchableOpacity>
+      <View
+        style={
+          Object {
+            "flex": 1,
+            "marginLeft": 20,
+          }
+        }
+      >
+        <Text
+          style={
+            Object {
+              "color": "rgb(10, 10, 10)",
+              "flex": 1,
+              "fontFamily": "AvenirNext-Regular",
+              "fontSize": 16,
+            }
+          }
+        >
+          this is a test bio
+        </Text>
+      </View>
+    </View>
+  </AnimatedComponent>
+  <AnimatedComponent
+    style={
+      Array [
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "white",
+          "left": 0,
+          "paddingVertical": 10,
+          "position": "absolute",
+          "right": 0,
+          "top": 0,
+        },
+        Object {
+          "transform": Array [
+            Object {
+              "translateY": undefined,
+            },
+          ],
+        },
+      ]
+    }
+  >
+    <Text
+      style={
+        Object {
+          "color": "rgb(10, 10, 10)",
+          "fontFamily": "AvenirNext-Regular",
+          "fontSize": 20,
+        }
+      }
+    >
+      Test User
+    </Text>
+  </AnimatedComponent>
+</Fragment>
+`;

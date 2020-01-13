@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="84.5805856%" id="radialGradient-1">
+            <stop stop-color="#FF00E5" offset="0%"></stop>
+            <stop stop-color="#0A1BFF" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="capture-button-copy">
+            <g id="Group-2">
+                <circle id="Oval-Copy-3" stroke="url(#radialGradient-1)" stroke-width="7" fill="#000000" cx="32" cy="32" r="28.5"></circle>
+                <g id="camera" transform="translate(13.000000, 13.000000)" fill="#FFFFFF">
+                    <path d="M31,7.78703704 L7,7.78703704 C3.54822031,7.78703704 0.75,10.5852574 0.75,14.037037 L0.75,23.962963 C0.75,27.4147426 3.54822031,30.212963 7,30.212963 L31,30.212963 C34.4517797,30.212963 37.25,27.4147426 37.25,23.962963 L37.25,14.037037 C37.25,10.5852574 34.4517797,7.78703704 31,7.78703704 Z M19,10.5092593 C23.6893066,10.5092593 27.4907407,14.3106934 27.4907407,19 C27.4907407,23.6893066 23.6893066,27.4907407 19,27.4907407 C14.3106934,27.4907407 10.5092593,23.6893066 10.5092593,19 C10.5092593,14.3106934 14.3106934,10.5092593 19,10.5092593 Z" id="Combined-Shape" stroke="#FFFFFF" stroke-width="1.5"></path>
+                    <circle id="Oval" cx="19" cy="19" r="4.22222222"></circle>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
