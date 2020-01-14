@@ -18,7 +18,8 @@ node_modules/
 
 # keys
 certifications/
-*/**/app.yaml
+*/server/app.yaml
+*/server/google_cloud.json
 .env
 **/*.cer 
 **/*.p8
