@@ -2,9 +2,11 @@
   "name": "unexpected",
   "private": true,
   "scripts": {
+    "pods": " cd packages/app/ios && pod install",
     "types-cloud": "cd packages/server && yarn tsc",
     "types-app": "cd packages/app && yarn check-types",
     "check-types": "yarn types-cloud && yarn types-app",
+    "check-updates": "ncu -n && ncu -n --packageFile packages/app/package.json && ncu -n --packageFile packages/server/package.json",
     "postinstall": "patch-package"
   },
   "engines": {

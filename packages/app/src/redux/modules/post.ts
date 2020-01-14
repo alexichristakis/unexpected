@@ -149,6 +149,7 @@ function* onSendPost(
 
     const body = new FormData();
     body.append("image", {
+      // @ts-ignore
       uri: image.uri,
       height,
       width,

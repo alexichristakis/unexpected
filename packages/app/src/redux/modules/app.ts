@@ -1,7 +1,4 @@
-import NetInfo, {
-  NetInfoState,
-  NetInfoStateType
-} from "@react-native-community/netinfo";
+import NetInfo, { NetInfoState } from "@react-native-community/netinfo";
 import immer from "immer";
 import moment, { Moment } from "moment-timezone";
 import {
@@ -12,44 +9,33 @@ import {
 import { Notification, Notifications } from "react-native-notifications";
 import { REHYDRATE } from "redux-persist";
 import { eventChannel } from "redux-saga";
-import {
-  all,
-  call,
-  fork,
-  put,
-  select,
-  take,
-  takeEvery,
-  takeLatest
-} from "redux-saga/effects";
+import { all, call, put, select, take, takeEvery } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
-import { TIMER_LENGTH } from "@lib/styles";
 import * as selectors from "../selectors";
-import {
-  ActionsUnion,
-  createAction,
-  ExtractActionFromActionCreator
-} from "../utils";
+import { ActionsUnion, createAction } from "../utils";
 import { Actions as UserActions } from "./user";
+import { NOTIFICATION_MINUTES } from "@unexpected/global";
 
 export interface AppState {
   appStatus: AppStatusType;
-  networkStatus: NetInfoState & { backendReachable: boolean };
+  networkStatus: {
+    isConnected: boolean;
+    isInternetReachable: boolean;
+    isBackendReachable: boolean;
+  };
   camera: {
     enabled: boolean;
-    timeOfExpiry?: Moment;
+    timeOfExpiry?: string;
   };
 }
 
 const initialState: AppState = {
   appStatus: "active",
   networkStatus: {
-    type: NetInfoStateType.unknown,
-    backendReachable: true,
     isConnected: false,
     isInternetReachable: false,
-    details: null
+    isBackendReachable: true
   },
   camera: {
     enabled: false,
@@ -65,13 +51,23 @@ export default (
     case ActionTypes.SET_CAMERA_TIMER: {
       const { time } = action.payload;
 
-      return { ...state, camera: { enabled: true, timeOfExpiry: time } };
+      return {
+        ...state,
+        camera: { enabled: true, timeOfExpiry: time.toISOString() }
+      };
     }
 
     case ActionTypes.DEBUG_ENABLE_CAMERA: {
+      const timeOfExpiry = moment()
+        .add(10, "hours")
+        .toISOString();
+
       return {
         ...state,
-        camera: { enabled: true, timeOfExpiry: moment().add(10, "hours") }
+        camera: {
+          enabled: true,
+          timeOfExpiry
+        }
       };
     }
 
@@ -87,9 +83,11 @@ export default (
 
     case ActionTypes.SET_NET_INFO: {
       const { netInfo } = action.payload;
+      const { isInternetReachable, isConnected } = netInfo;
 
       return immer(state, draft => {
-        draft.networkStatus = { ...draft.networkStatus, ...netInfo };
+        draft.networkStatus.isInternetReachable = !!isInternetReachable;
+        draft.networkStatus.isConnected = !!isConnected;
 
         return draft;
       });
@@ -97,7 +95,7 @@ export default (
 
     case ActionTypes.NETWORK_OFFLINE: {
       return immer(state, draft => {
-        draft.networkStatus.backendReachable = false;
+        draft.networkStatus.isBackendReachable = false;
 
         return draft;
       });
@@ -105,7 +103,7 @@ export default (
 
     case ActionTypes.NETWORK_ONLINE: {
       return immer(state, draft => {
-        draft.networkStatus.backendReachable = true;
+        draft.networkStatus.isBackendReachable = true;
 
         return draft;
       });
@@ -182,7 +180,7 @@ function* notificationWatcher() {
       if (data.photoTime) {
         const { time }: { time: Date } = data;
 
-        const expiry = moment(time).add(TIMER_LENGTH, "minutes");
+        const expiry = moment(time).add(NOTIFICATION_MINUTES, "minutes");
 
         yield put(Actions.setCameraTimer(expiry));
       }
@@ -229,7 +227,9 @@ function* checkCameraStatus() {
 
       if (enabled) {
         yield put(
-          Actions.setCameraTimer(moment(start).add(TIMER_LENGTH, "minutes"))
+          Actions.setCameraTimer(
+            moment(start).add(NOTIFICATION_MINUTES, "minutes")
+          )
         );
       }
     } catch (err) {

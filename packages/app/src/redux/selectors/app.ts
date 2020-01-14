@@ -10,6 +10,6 @@ export const isInternetReachable = (state: RootState) =>
   !!networkInfo(state).isInternetReachable;
 
 export const isBackendReachable = (state: RootState) =>
-  networkInfo(state).backendReachable;
+  networkInfo(state).isBackendReachable;
 
 export const camera = (state: RootState) => s(state).camera;

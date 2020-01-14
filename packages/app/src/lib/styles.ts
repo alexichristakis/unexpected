@@ -10,8 +10,6 @@ export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get(
   "window"
 );
 
-export const TIMER_LENGTH = 10;
-
 /* PROFILE GRID */
 export const IMAGE_GUTTER = 2;
 export const NUM_COLUMNS = 5;

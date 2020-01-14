@@ -5,10 +5,6 @@ import { persistStore, REHYDRATE } from "redux-persist";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";
-import {
-  CheckCodeReturnType,
-  VerifyPhoneReturnType
-} from "unexpected-cloud/controllers/verify";
 import Navigation from "../../navigation";
 import {
   ActionsUnion,
@@ -101,9 +97,7 @@ function* onLoginRequest(
     yield put(Actions.successTextingCode());
   } else
     try {
-      const res: AxiosResponse<VerifyPhoneReturnType> = yield client.post(
-        `/verify/${phoneNumber}`
-      );
+      const res = yield client.post(`/verify/${phoneNumber}`);
       if (res.data) {
         yield put(Actions.successTextingCode());
       }
@@ -124,9 +118,7 @@ function* onVerifyCodeRequest(
     ]);
   } else
     try {
-      const res: AxiosResponse<CheckCodeReturnType> = yield client.post(
-        `/verify/${phoneNumber}/${code}`
-      );
+      const res = yield client.post(`/verify/${phoneNumber}/${code}`);
 
       const { data } = res;
 

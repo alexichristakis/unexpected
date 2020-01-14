@@ -2,11 +2,10 @@ import { Service, Inject } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import uniqBy from "lodash/uniqBy";
 import keyBy from "lodash/keyBy";
-
 import { Post, FeedPost } from "@unexpected/global";
 
-import { CRUDService } from "./crud";
 import { Post as PostModel } from "../models/post";
+import { CRUDService } from "./crud";
 import { UserService } from "./user";
 
 @Service()

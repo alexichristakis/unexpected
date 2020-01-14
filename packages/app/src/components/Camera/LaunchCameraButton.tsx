@@ -9,11 +9,11 @@ import { connect } from "react-redux";
 
 import SVG from "@assets/svg/camera_button.svg";
 import { TouchableScale } from "@components/universal";
-import { TIMER_LENGTH } from "@lib/styles";
 import { Actions as AppActions } from "@redux/modules/app";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../../App";
+import { NOTIFICATION_MINUTES } from "@unexpected/global";
 
 const mapStateToProps = (state: RootState) => ({
   ...selectors.camera(state)
@@ -62,7 +62,8 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
 
     const getFill = () =>
       100 -
-      (moment(timeOfExpiry).diff(moment()) / 1000 / 60 / TIMER_LENGTH) * 100;
+      (moment(timeOfExpiry).diff(moment()) / 1000 / 60 / NOTIFICATION_MINUTES) *
+        100;
 
     const handleAnimationComplete = () => {
       if (enabled && getFill() >= 100) {
