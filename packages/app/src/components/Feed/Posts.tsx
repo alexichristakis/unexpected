@@ -11,8 +11,7 @@ import {
 
 import Animated, { Easing } from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
-import { FeedPostType } from "unexpected-cloud/models/post";
-import { UserType } from "unexpected-cloud/models/user";
+import { User, FeedPost } from "@unexpected/global";
 
 import {
   Button,
@@ -40,13 +39,13 @@ export interface PostsProps {
   scrollY: Animated.Value<number>;
   onGestureBegan: (image: ZoomedImageType) => void;
   onGestureComplete: () => void;
-  onPressUser: (user: UserType) => void;
+  onPressUser: (user: User) => void;
   onPressShare: () => void;
   onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
   latest?: Date;
   refreshing: boolean;
   readyForRefresh: 0 | 1;
-  posts: FeedPostType[];
+  posts: FeedPost[];
 }
 
 export const Posts: React.FC<PostsProps> = React.memo(
@@ -105,7 +104,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
       <Button title="share your first photo" onPress={onPressShare} />
     );
 
-    const renderPost = ({ item, index }: ListRenderItemInfo<FeedPostType>) => {
+    const renderPost = ({ item, index }: ListRenderItemInfo<FeedPost>) => {
       const { photoId, userPhoneNumber } = item;
 
       const handleOnPressName = () => onPressUser(item.user);

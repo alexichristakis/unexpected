@@ -1,25 +1,18 @@
-import React, {
-  useEffect,
-  useState,
-  useImperativeHandle,
-  forwardRef
-} from "react";
+import React, { useState, useImperativeHandle, forwardRef } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import moment from "moment";
 import Animated from "react-native-reanimated";
-import { FeedPostType, PostType } from "unexpected-cloud/models/post";
 
+import { FeedPost } from "@unexpected/global";
 import { SCREEN_WIDTH, TextStyles, Colors } from "@lib/styles";
-import PostImage from "./PostImage";
-import { TouchableScale } from "./TouchableScale";
 import { formatName } from "@lib/utils";
 
 export interface PostProps {
   viewable?: boolean;
   entranceAnimatedValue?: Animated.Value<number>;
   index?: number;
-  post: FeedPostType;
+  post: FeedPost;
   renderImage: () => JSX.Element;
   onPressName?: () => void;
 }

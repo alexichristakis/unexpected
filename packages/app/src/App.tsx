@@ -17,15 +17,14 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
-import { FeedPostType } from "unexpected-cloud/models/post";
-import { UserType } from "unexpected-cloud/models/user";
+import { FeedPost, User } from "@unexpected/global";
 
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
 
 import { LaunchCameraButton } from "@components/Camera";
+import Connection from "@components/Connection";
 import { isIPhoneX, TextStyles } from "@lib/styles";
-import Connection from "./components/Connection";
 import { useReduxState } from "./hooks";
 import Navigation from "./navigation";
 
@@ -63,9 +62,9 @@ export type StackParamList = {
   USER_PROFILE: undefined;
   AUTH: undefined;
   SHARE: BaseParams;
-  POST: BaseParams & { post: FeedPostType };
-  PROFILE: BaseParams & { user: UserType };
-  FRIENDS: { user: UserType };
+  POST: BaseParams & { post: FeedPost };
+  PROFILE: BaseParams & { user: User };
+  FRIENDS: { user: User };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: { nextRoute: keyof StackParamList };

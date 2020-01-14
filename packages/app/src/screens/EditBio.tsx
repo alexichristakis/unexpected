@@ -18,7 +18,6 @@ import { connect } from "react-redux";
 
 import { Input } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";

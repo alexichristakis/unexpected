@@ -4,8 +4,8 @@ import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
-import { FeedReturnType } from "@unexpected/server";
-import { FeedPostType, PostType } from "unexpected-cloud/models/post";
+import { FeedPost, Post } from "@unexpected/global";
+
 import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
@@ -21,18 +21,18 @@ import { Actions as AppActions } from "./app";
 
 export interface FeedState {
   // frames: Array<{
-  //   posts: PostType[];
+  //   posts: Post[];
   //   start: Date;
   //   end: Date;
   // }>;
-  posts: FeedPostType[];
+  posts: FeedPost[];
   lastFetched: Date;
   stale: boolean;
 }
 export interface PostState {
   users: {
     [phoneNumber: string]: {
-      posts: PostType[];
+      posts: Post[];
       lastFetched: Date;
       stale: boolean;
     };
@@ -190,7 +190,7 @@ function* onFetchUsersPosts(
 
     // default to fetching authenticated user's feed
     const userFetched = phoneNumber ? phoneNumber : userPhoneNumber;
-    const posts: AxiosResponse<PostType[]> = yield client.get(
+    const posts: AxiosResponse<Post[]> = yield client.get(
       `/post/${userFetched}`,
       {
         headers: getHeaders({ jwt })
@@ -215,12 +215,9 @@ function* onFetchFeed(
 
     const from = fromDate ? fromDate : feedState.lastFetched;
 
-    const res: AxiosResponse<FeedReturnType> = yield client.get(
-      `post/${phoneNumber}/feed`,
-      {
-        headers: getHeaders({ jwt })
-      }
-    );
+    const res = yield client.get(`post/${phoneNumber}/feed`, {
+      headers: getHeaders({ jwt })
+    });
 
     const { data: posts } = res;
 
@@ -251,11 +248,11 @@ export enum ActionTypes {
 export const Actions = {
   fetchUsersPosts: (phoneNumber?: string) =>
     createAction(ActionTypes.FETCH_USERS_POSTS, { phoneNumber }),
-  fetchUsersPostsSuccess: (phoneNumber: string, posts: PostType[]) =>
+  fetchUsersPostsSuccess: (phoneNumber: string, posts: Post[]) =>
     createAction(ActionTypes.FETCH_USERS_POSTS_SUCCESS, { phoneNumber, posts }),
   fetchFeed: (fromDate?: Date) =>
     createAction(ActionTypes.FETCH_FEED, { fromDate }),
-  fetchFeedSuccess: (posts: FeedReturnType) =>
+  fetchFeedSuccess: (posts: FeedPost[]) =>
     createAction(ActionTypes.FETCH_FEED_SUCCESS, { posts }),
   sendPost: (description: string) =>
     createAction(ActionTypes.SEND_POST, { description }),

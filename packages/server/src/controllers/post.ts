@@ -8,11 +8,10 @@ import {
   Inject
 } from "@tsed/common";
 
+import { Post } from "@unexpected/global";
+
 import { PostService } from "../services/post";
 import { AuthMiddleware, Select } from "../middlewares/auth";
-import { PostType, FeedPostType } from "../models/post";
-
-export type FeedReturnType = FeedPostType[];
 
 @Controller("/post")
 @UseAuth(AuthMiddleware)
@@ -24,7 +23,7 @@ export class PostController {
   @UseAuth(AuthMiddleware, { select: Select.phoneFromPath })
   sendPost(
     @PathParams("phoneNumber") phoneNumber: string,
-    @BodyParams("post") post: PostType
+    @BodyParams("post") post: Post
   ) {
     return this.postService.createNewPost({
       ...post,
@@ -38,9 +37,7 @@ export class PostController {
   }
 
   @Get("/:phoneNumber/feed")
-  async getUsersFeed(
-    @PathParams("phoneNumber") phoneNumber: string
-  ): Promise<FeedReturnType> {
+  async getUsersFeed(@PathParams("phoneNumber") phoneNumber: string) {
     const feed = await this.postService.getFeedForUser(phoneNumber);
 
     return feed;

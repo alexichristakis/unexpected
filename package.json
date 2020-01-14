@@ -5,7 +5,6 @@
     "types-cloud": "cd packages/server && yarn tsc",
     "types-app": "cd packages/app && yarn check-types",
     "check-types": "types-cloud && types-app",
-    "preinstall": "node packages/server/preinstall.js",
     "postinstall": "patch-package"
   },
   "engines": {
@@ -15,11 +14,8 @@
     "packages/*"
   ],
   "dependencies": {
-    "@unexpected/server": "file:./packages/server",
-    "@unexpected/global": "file:./packages/global",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0",
-    "moment-timezone": "^0.5.27"
+    "@unexpected/server": "./packages/server",
+    "@unexpected/global": "./packages/global"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",

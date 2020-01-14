@@ -2,19 +2,6 @@ import { Default, Format, Required, Schema, Property } from "@tsed/common";
 import { Model, ObjectID, Indexed, Unique, PostHook } from "@tsed/mongoose";
 import { SlackLogService } from "../services/logger";
 
-export interface NotificationPreferencesType {
-  timezone: string;
-}
-
-@Schema({})
-class NotificationPreferences {
-  @ObjectID("id")
-  _id: string;
-
-  @Required()
-  timezone: string;
-}
-
 @Model()
 export class User {
   @ObjectID("id")
@@ -75,15 +62,3 @@ export class User {
     logger.sendMessage("new user", `${doc.firstName} ${doc.lastName}`);
   }
 }
-
-export type UserNotificationRecord = {
-  phoneNumber: string;
-  notifications: string[];
-};
-
-export type UserType = Omit<User, "_id" | "createdAt">;
-export type PartialUserType = {
-  phoneNumber: string;
-  firstName: string;
-  lastName: string;
-};

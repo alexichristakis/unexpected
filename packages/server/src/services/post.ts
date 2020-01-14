@@ -1,24 +1,23 @@
 import { Service, Inject } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Document } from "mongoose";
 import uniqBy from "lodash/uniqBy";
 import keyBy from "lodash/keyBy";
-import assign from "lodash/assign";
+
+import { Post, FeedPost } from "@unexpected/global";
 
 import { CRUDService } from "./crud";
-import { Post as PostModel, PostType, FeedPostType } from "../models/post";
-import { User as UserModel, UserType } from "../models/user";
+import { Post as PostModel } from "../models/post";
 import { UserService } from "./user";
 
 @Service()
-export class PostService extends CRUDService<PostModel, PostType> {
+export class PostService extends CRUDService<PostModel, Post> {
   @Inject(PostModel)
   model: MongooseModel<PostModel>;
 
   @Inject(UserService)
   userService: UserService;
 
-  createNewPost = async (post: PostType) => {
+  createNewPost = async (post: Post) => {
     return Promise.all([
       this.create(post),
       this.userService.updateValidNotifications(post)
@@ -53,7 +52,7 @@ export class PostService extends CRUDService<PostModel, PostType> {
       ({ phoneNumber }) => phoneNumber
     );
 
-    let ret: FeedPostType[] = [];
+    let ret: FeedPost[] = [];
     posts.forEach(
       ({ id, description, userPhoneNumber, createdAt, photoId }) => {
         ret.push({

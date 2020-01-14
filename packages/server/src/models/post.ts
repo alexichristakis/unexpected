@@ -56,6 +56,3 @@ export class Post {
     );
   }
 }
-
-export type PostType = Omit<Post, "_id"> & { id: string };
-export type FeedPostType = PostType & { user: UserType };
