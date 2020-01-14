@@ -3,12 +3,12 @@ import { MongooseModel } from "@tsed/mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import moment from "moment";
+import { User } from "@unexpected/global";
 
 import { VerificationMessage as VerificationMessageModel } from "../models/verification-message";
 import { SALT_ROUNDS } from "../lib/constants";
 import { TwilioService } from "./twilio";
 import { UserService } from "./user";
-import { UserType } from "../models/user";
 
 @Service()
 export class AuthService {
@@ -47,7 +47,7 @@ export class AuthService {
   async checkVerification(
     phoneNumber: string,
     sentCode: string
-  ): Promise<{ verified: boolean; user?: UserType }> {
+  ): Promise<{ verified: boolean; user?: User }> {
     const verificationMessage = await this.verificationMessageModel
       .findOne({
         phoneNumber

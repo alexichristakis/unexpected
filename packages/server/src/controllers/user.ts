@@ -9,9 +9,10 @@ import {
   Patch,
   QueryParams
 } from "@tsed/common";
+import { User } from "@unexpected/global";
 
 import { UserService } from "../services/user";
-import { User as UserModel, UserType } from "../models/user";
+import { User as UserModel } from "../models/user";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 
 export type CameraEnabledReturn = ReturnType<
@@ -63,9 +64,7 @@ export class UserController {
   @UseAuth(AuthMiddleware, {
     select: Select.phoneFromUserFromBody
   })
-  async createUser(
-    @BodyParams("user") user: UserType
-  ): Promise<UserModel | void> {
+  async createUser(@BodyParams("user") user: User): Promise<UserModel | void> {
     return this.userService.createNewUser(user);
   }
 
@@ -75,7 +74,7 @@ export class UserController {
   })
   async updateUser(
     @PathParams("phoneNumber") phoneNumber: string,
-    @BodyParams("user") user: Partial<UserType>
+    @BodyParams("user") user: Partial<User>
   ): Promise<UserModel> {
     await this.userService.updateOne({ phoneNumber }, user);
 

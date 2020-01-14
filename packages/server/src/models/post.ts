@@ -16,7 +16,6 @@ import {
 } from "@tsed/mongoose";
 
 import { SlackLogService } from "../services/logger";
-import { User, UserType } from "./user";
 
 @Model()
 export class Post {

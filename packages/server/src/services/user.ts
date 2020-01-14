@@ -3,25 +3,21 @@ import { MongooseModel } from "@tsed/mongoose";
 import { Document } from "mongoose";
 import _ from "lodash";
 import moment from "moment";
+import { User, Post, UserNotificationRecord } from "@unexpected/global";
 
 import { CRUDService } from "./crud";
-import {
-  User as UserModel,
-  UserType,
-  UserNotificationRecord
-} from "../models/user";
-import { PostType } from "../models/post";
+import { User as UserModel } from "../models/user";
 import { NotificationService } from "./notification";
 
 @Service()
-export class UserService extends CRUDService<UserModel, UserType> {
+export class UserService extends CRUDService<UserModel, User> {
   @Inject(UserModel)
   model: MongooseModel<UserModel>;
 
   @Inject(NotificationService)
   notificationService: NotificationService;
 
-  async createNewUser(newUser: UserType) {
+  async createNewUser(newUser: User) {
     const user = await this.getByPhoneNumber(newUser.phoneNumber);
 
     if (user) return user;
@@ -44,7 +40,7 @@ export class UserService extends CRUDService<UserModel, UserType> {
     }
   }
 
-  async updateValidNotifications(post: PostType) {
+  async updateValidNotifications(post: Post) {
     const { createdAt, userPhoneNumber } = post;
 
     const time = moment(createdAt);

@@ -4,7 +4,7 @@
   "scripts": {
     "types-cloud": "cd packages/server && yarn tsc",
     "types-app": "cd packages/app && yarn check-types",
-    "check-types": "types-cloud && types-app",
+    "check-types": "yarn types-cloud && yarn types-app",
     "postinstall": "patch-package"
   },
   "engines": {

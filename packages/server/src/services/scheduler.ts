@@ -1,9 +1,10 @@
 import { $log, Inject, Service } from "@tsed/common";
 import { MongooseService } from "@tsed/mongoose";
 import Agenda from "agenda";
-import moment, { Moment, MomentTimezone } from "moment-timezone";
+import moment from "moment-timezone";
 
-import { UserNotificationRecord, UserType } from "../models/user";
+import { UserNotificationRecord, User } from "@unexpected/global";
+
 import { UserService } from "./user";
 import { NotificationService } from "./notification";
 import { SlackLogService } from "./logger";
@@ -99,7 +100,7 @@ export class SchedulerService {
   }
 
   // takes a user, schedules n notifications for them, returns the times
-  scheduleNotificationForUser = (user: UserType) => {
+  scheduleNotificationForUser = (user: User) => {
     const { phoneNumber, timezone } = user;
 
     // to eventually pull from user entity

@@ -7,8 +7,7 @@ import {
 } from "@tsed/common";
 import { Forbidden, Unauthorized } from "ts-httpexceptions";
 import jwt from "jsonwebtoken";
-
-import { UserType } from "../models/user";
+import { User } from "@unexpected/global";
 
 @Middleware()
 export class AuthMiddleware implements IMiddleware {
@@ -40,7 +39,7 @@ export class AuthMiddleware implements IMiddleware {
 }
 
 export const Select = {
-  phoneFromUserFromBody: (data: Req): Partial<UserType> => {
+  phoneFromUserFromBody: (data: Req): Partial<User> => {
     return data.body.user.phoneNumber;
   },
   phoneFromPath: (data: Req): any => {
@@ -49,7 +48,7 @@ export const Select = {
 };
 
 export const Verify = {
-  userPhoneNumberMatchesToken: (data: UserType, phoneNumber: string) => {
+  userPhoneNumberMatchesToken: (data: User, phoneNumber: string) => {
     return data.phoneNumber === phoneNumber;
   }
 };
