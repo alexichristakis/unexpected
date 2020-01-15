@@ -7,6 +7,7 @@ import Animated from "react-native-reanimated";
 import { FeedPost } from "@unexpected/global";
 import { SCREEN_WIDTH, TextStyles, Colors } from "@lib/styles";
 import { formatName } from "@lib/utils";
+import { FEED_POST_WIDTH } from "@lib/constants";
 
 export interface PostProps {
   viewable?: boolean;
@@ -47,7 +48,7 @@ export const Post: React.FC<PostProps> = React.memo(
 
     return (
       <Animated.View style={[styles.container, animatedContainer]}>
-        <View style={styles.row}>
+        <View style={styles.header}>
           <TouchableOpacity onPress={onPressName}>
             <Text style={[TextStyles.large, styles.name]}>
               {formatName(user)}
@@ -72,21 +73,18 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 40
   },
-  row: {
+  header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
-  },
-  filler: {
-    width: SCREEN_WIDTH - 40,
-    height: 1.2 * (SCREEN_WIDTH - 40),
-    backgroundColor: Colors.gray
+    justifyContent: "space-between",
+    paddingHorizontal: 20
   },
   name: {
     marginBottom: 10
   },
   description: {
     ...TextStyles.medium,
-    marginTop: 10
+    marginTop: 10,
+    paddingHorizontal: 20
   }
 });

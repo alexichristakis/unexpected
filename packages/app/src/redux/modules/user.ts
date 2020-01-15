@@ -15,7 +15,7 @@ import {
 } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
-import { UserType } from "unexpected-cloud/models/user";
+import { User } from "@unexpected/global";
 
 import Navigation from "../../navigation";
 import * as selectors from "../selectors";
@@ -26,9 +26,9 @@ import {
 } from "../utils";
 
 export interface UserState {
-  // readonly user: UserType;
+  // readonly user: User;
   readonly phoneNumber: string;
-  readonly users: { [phoneNumber: string]: UserType };
+  readonly users: { [phoneNumber: string]: User };
   readonly loading: boolean;
   readonly error: any;
 }
@@ -178,7 +178,7 @@ export default (
     case ActionTypes.ON_ERROR: {
       const { err } = action.payload;
 
-      return { ...state, error: err };
+      return { ...state, loading: false, error: err };
     }
 
     default:
@@ -199,7 +199,7 @@ function* onFetchUser(
       ? `/user/${phoneNumber}`
       : `/user/${userPhoneNumber}`;
 
-    const res: AxiosResponse<UserType> = yield call(client.get, endpoint, {
+    const res: AxiosResponse<User> = yield call(client.get, endpoint, {
       headers: getHeaders({ jwt })
     });
 
@@ -218,7 +218,7 @@ function* onCreateUser(
 
   const { name } = action.payload;
 
-  const newUser: UserType = {
+  const newUser: User = {
     ...name,
     phoneNumber,
     notifications: [],
@@ -237,7 +237,7 @@ function* onCreateUser(
     ]);
   } else
     try {
-      const res: AxiosResponse<UserType> = yield client.put(
+      const res: AxiosResponse<User> = yield client.put(
         "/user",
         { user: newUser },
         {
@@ -265,7 +265,7 @@ function* onUpdateUser(
   const { user } = action.payload;
 
   try {
-    const res: AxiosResponse<UserType> = yield client.patch(
+    const res: AxiosResponse<User> = yield client.patch(
       `/user/${phoneNumber}`,
       { user: { ...user } },
       {
@@ -291,7 +291,7 @@ function* onFetchUsers(
     let endpoint = `/user?phoneNumbers=${phoneNumbers.join(",")}`;
     if (selectOn) endpoint += `&select=${selectOn.join(",")}`;
 
-    const res: AxiosResponse<UserType[]> = yield client.get(endpoint, {
+    const res: AxiosResponse<User[]> = yield client.get(endpoint, {
       headers: getHeaders({ jwt })
     });
 
@@ -468,11 +468,11 @@ export const Actions = {
     createAction(ActionTypes.FETCH_USERS, { phoneNumbers, selectOn }),
   createUser: (name: { firstName: string; lastName: string }) =>
     createAction(ActionTypes.CREATE_NEW_USER, { name }),
-  createUserSuccess: (user: UserType) =>
+  createUserSuccess: (user: User) =>
     createAction(ActionTypes.CREATE_USER_SUCCESS, { user }),
-  loadUsers: (users: UserType[], complete?: boolean) =>
+  loadUsers: (users: User[], complete?: boolean) =>
     createAction(ActionTypes.LOAD_USERS, { users, complete }),
-  updateUser: (user: Partial<UserType>) =>
+  updateUser: (user: Partial<User>) =>
     createAction(ActionTypes.UPDATE_USER, { user }),
 
   /* adding friends, accepting friends, etc... */

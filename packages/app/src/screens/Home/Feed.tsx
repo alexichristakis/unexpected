@@ -205,7 +205,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     alignItems: "center"
   },
   statusBar: {

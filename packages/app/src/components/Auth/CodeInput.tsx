@@ -54,7 +54,6 @@ export const CodeInput: React.FC<CodeInputProps> = ({
       style={[animatedStyle, style]}
     >
       <Input
-        light={true}
         size={TextSizes.title}
         textInputRef={setRef}
         label="enter that code here"

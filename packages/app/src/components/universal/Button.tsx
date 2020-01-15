@@ -13,6 +13,7 @@ export interface ButtonProps extends ViewProps {
   icon?: SVGElement;
   disabled?: boolean;
   loading?: boolean;
+  white?: boolean;
   title: string;
   onPress: () => void;
 }
@@ -23,6 +24,7 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   loading,
   title,
+  white,
   onPress
 }) => {
   const [value] = useState(new Value(0));
@@ -38,7 +40,7 @@ export const Button: React.FC<ButtonProps> = ({
         {
           backgroundColor: bInterpolateColor(
             value,
-            Colors.background,
+            white ? "white" : Colors.background,
             Colors.nearBlack
           )
         }
@@ -77,7 +79,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.nearBlack,
     borderWidth: 1,
     alignSelf: "stretch",
-
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 10,

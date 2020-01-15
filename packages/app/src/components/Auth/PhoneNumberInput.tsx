@@ -77,7 +77,6 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 
   return (
     <Input
-      light={true}
       size={TextSizes.title}
       textInputRef={setRef}
       style={[styles.textInput, style]}

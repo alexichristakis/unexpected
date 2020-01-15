@@ -49,44 +49,33 @@ const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
           <Text style={TextStyles.large}>create your account</Text>
         </View>
         <Formik initialValues={initialFormValues} onSubmit={handleSubmit}>
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            isSubmitting
-          }) => {
-            return (
-              <KeyboardAvoidingView
-                enabled={true}
-                behavior="padding"
-                style={styles.formFields}
-              >
-                <Input
-                  label="enter your first name"
-                  placeholder="first name"
-                  value={values.firstName}
-                  onChangeText={handleChange("firstName")}
-                />
-                <Input
-                  label="and last name"
-                  placeholder="last name"
-                  value={values.lastName}
-                  onChangeText={handleChange("lastName")}
-                />
-                <Button
-                  size="medium"
-                  loading={loading}
-                  disabled={validate(values)}
-                  style={{ marginBottom: 45 }}
-                  title="get started"
-                  onPress={handleSubmit}
-                />
-              </KeyboardAvoidingView>
-            );
-          }}
+          {({ values, handleChange, handleSubmit }) => (
+            <KeyboardAvoidingView
+              enabled={true}
+              behavior="padding"
+              style={styles.formFields}
+            >
+              <Input
+                label="enter your first name"
+                placeholder="first name"
+                value={values.firstName}
+                onChangeText={handleChange("firstName")}
+              />
+              <Input
+                label="and last name"
+                placeholder="last name"
+                value={values.lastName}
+                onChangeText={handleChange("lastName")}
+              />
+              <Button
+                // loading={loading}
+                // disabled={validate(values)}
+                style={{ marginBottom: 45 }}
+                title="get started"
+                onPress={handleSubmit}
+              />
+            </KeyboardAvoidingView>
+          )}
         </Formik>
       </TouchableOpacity>
     </Screen>

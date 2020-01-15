@@ -21,7 +21,8 @@ import {
   ZoomHandler,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
-import { Colors, SB_HEIGHT, SCREEN_WIDTH } from "@lib/styles";
+import { SB_HEIGHT } from "@lib/styles";
+import { FEED_POST_HEIGHT, FEED_POST_WIDTH } from "@lib/constants";
 
 import { Top } from "./Top";
 
@@ -29,9 +30,6 @@ const VIEWABILITY_CONFIG = {
   itemVisiblePercentThreshold: 10,
   minimumViewTime: 100
 };
-
-export const FEED_POST_WIDTH = SCREEN_WIDTH - 40;
-export const FEED_POST_HEIGHT = 1.2 * FEED_POST_WIDTH;
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -99,7 +97,12 @@ export const Posts: React.FC<PostsProps> = React.memo(
     );
 
     const renderEmptyComponent = () => (
-      <Button title="share your first photo" onPress={onPressShare} />
+      <Button
+        white
+        title="share your first photo"
+        style={{ marginHorizontal: 20 }}
+        onPress={onPressShare}
+      />
     );
 
     const renderPost = ({ item, index }: ListRenderItemInfo<FeedPost>) => {
@@ -152,6 +155,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
     return (
       <AnimatedFlatList
+        style={styles.container}
         data={posts}
         renderItem={renderPost}
         scrollEnabled={scrollEnabled}
@@ -177,7 +181,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    width: "100%"
   },
   contentContainer: {
     paddingTop: SB_HEIGHT(),

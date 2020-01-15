@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignSelf: "stretch",
+    paddingHorizontal: 20,
     paddingTop: 5,
     paddingBottom: 20
   },
@@ -137,8 +138,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: 100,
     top: 40,
-    left: 0,
-    right: 0
+    left: 20,
+    right: 20
   },
   row: {
     alignSelf: "stretch",

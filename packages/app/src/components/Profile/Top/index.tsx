@@ -2,13 +2,13 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import Gear from "@assets/svg/gear.svg";
-import { Button, FriendButton, UserImage } from "@components/universal";
+import { User } from "@unexpected/global";
+import { Button, UserImage } from "@components/universal";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import { UserType } from "unexpected-cloud/models/user";
+import Gear from "@assets/svg/gear.svg";
 
 export interface ProfileTopProps {
-  user: UserType;
+  user: User;
   isUser?: boolean; // is currently signed in user
   numPosts: number;
   scrollY: Animated.Value<number>;
@@ -48,29 +48,21 @@ export const Top: React.FC<ProfileTopProps> = ({
     ]
   };
 
-  const animatedHeaderStyle = {
-    transform: [
-      {
-        translateY: scrollY.interpolate({
-          inputRange: [-50, 0, 100, 200],
-          outputRange: [-200, -100, 100, 200]
-        })
-      }
-    ]
-  };
-
   const renderNotificationIndicator = () => {
     if (!isUser || !friendRequests.length) return null;
 
     return (
-      <View style={styles.notificationIndicator}>
+      <TouchableOpacity
+        onPress={onPressName}
+        style={styles.notificationIndicator}
+      >
         <Text
           testID="notifications"
           style={[TextStyles.medium, { color: "white" }]}
         >
           {friendRequests.length}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -81,58 +73,48 @@ export const Top: React.FC<ProfileTopProps> = ({
           <Gear fill={Colors.nearBlack} width={30} height={30} />
         </TouchableOpacity>
       );
-
-    // return <FriendButton circle showLabel={true} user={user} />;
   };
 
   return (
-    <>
-      <Animated.View style={[styles.container, animatedStyle]}>
-        <View style={styles.headerContainer}>
-          <View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
-                testID="user-name"
-                style={TextStyles.title}
-              >{`${firstName} ${lastName}`}</Text>
-              {renderNotificationIndicator()}
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text
-                testID="num-moments"
-                style={[TextStyles.large]}
-              >{`${numPosts} ${numPosts === 1 ? "moment" : "moments"}, `}</Text>
-              <Text
-                testID="friends"
-                style={[TextStyles.large]}
-                onPress={onPressFriends}
-              >{`${friends.length} ${
-                friends.length === 1 ? "friend" : "friends"
-              }`}</Text>
-            </View>
+    <Animated.View style={[styles.container, animatedStyle]}>
+      <View style={styles.headerContainer}>
+        <View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              testID="user-name"
+              style={TextStyles.title}
+            >{`${firstName} ${lastName}`}</Text>
+            {renderNotificationIndicator()}
           </View>
-          {renderHeaderButton()}
-        </View>
-        <View style={styles.row}>
-          <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
-            <UserImage
-              phoneNumber={phoneNumber}
-              size={(SCREEN_WIDTH - 40) / 3}
-            />
-          </TouchableOpacity>
-          <View style={styles.bio}>
-            {bio.length || !onPressAddBio ? (
-              <Text style={styles.bioText}>{bio}</Text>
-            ) : (
-              <Button title="add a bio" onPress={onPressAddBio} />
-            )}
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              testID="num-moments"
+              style={[TextStyles.large]}
+            >{`${numPosts} ${numPosts === 1 ? "moment" : "moments"}, `}</Text>
+            <Text
+              testID="friends"
+              style={[TextStyles.large]}
+              onPress={onPressFriends}
+            >{`${friends.length} ${
+              friends.length === 1 ? "friend" : "friends"
+            }`}</Text>
           </View>
         </View>
-      </Animated.View>
-      {/* <Animated.View style={[styles.header, animatedHeaderStyle]}>
-        <Text style={TextStyles.large}>{`${firstName} ${lastName}`}</Text>
-      </Animated.View> */}
-    </>
+        {renderHeaderButton()}
+      </View>
+      <View style={styles.row}>
+        <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
+          <UserImage phoneNumber={phoneNumber} size={(SCREEN_WIDTH - 40) / 3} />
+        </TouchableOpacity>
+        <View style={styles.bio}>
+          {bio.length || !onPressAddBio ? (
+            <Text style={styles.bioText}>{bio}</Text>
+          ) : (
+            <Button white title="add a bio" onPress={onPressAddBio} />
+          )}
+        </View>
+      </View>
+    </Animated.View>
   );
 };
 

@@ -65,7 +65,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 
   return (
     <Screen style={styles.container}>
-      <Background />
+      {/* <Background /> */}
       <TouchableOpacity
         activeOpacity={1}
         style={styles.subContainer}
@@ -130,12 +130,12 @@ const styles = StyleSheet.create({
   title: {
     ...TextStyles.title,
     fontSize: 40,
-    fontWeight: "500",
-    color: "white"
+    fontWeight: "500"
+    // color: "white"
   },
   subtitle: {
-    ...TextStyles.large,
-    color: "white"
+    ...TextStyles.large
+    // color: "white"
   },
   button: {
     marginBottom: 45
