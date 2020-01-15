@@ -54,7 +54,10 @@ export class UserService extends CRUDService<UserModel, User> {
     const { notifications } = user;
     const updatedNotifications = notifications.filter(
       notification =>
-        !time.isBetween(notification, moment(notification).add(10, "minutes"))
+        !time.isBetween(
+          notification,
+          moment(notification).add(NOTIFICATION_MINUTES, "minutes")
+        )
     );
 
     return this.updateOne(

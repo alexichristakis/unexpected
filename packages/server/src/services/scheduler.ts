@@ -2,6 +2,7 @@ import { $log, Inject, Service } from "@tsed/common";
 import { MongooseService } from "@tsed/mongoose";
 import Agenda from "agenda";
 import moment from "moment-timezone";
+import uuid from "uuid/v4";
 
 import { UserNotificationRecord, User } from "@unexpected/global";
 
@@ -120,7 +121,7 @@ export class SchedulerService {
       this.agenda.schedule(
         dateInstance.toDate(),
         AgendaJobs.SEND_NOTIFICATION,
-        { to: user }
+        { to: user, id: uuid() }
       );
     });
 
@@ -131,7 +132,16 @@ export class SchedulerService {
     timezone: string = "America/New_York",
     n: number
   ): string[] => {
-    const start = moment.tz(moment().add(1, "day"), timezone).hour(10);
+    const time = moment.tz(timezone);
+
+    let start = time.clone();
+    if (time.get("hour") < 10) {
+      start.hour(10);
+    } else {
+      start.add(1, "day").hour(10);
+    }
+
+    // const start = moment.tz(moment().add(1, "day"), timezone).hour(10);
     const end = start.clone().hour(22);
 
     const endTime = +end;
