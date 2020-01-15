@@ -34,17 +34,15 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={disabled}
       value={value}
       onPress={onPress}
-      style={[
-        style,
-        styles.container,
-        {
-          backgroundColor: bInterpolateColor(
-            value,
-            white ? "white" : Colors.background,
-            Colors.nearBlack
-          )
-        }
-      ]}
+      style={styles.container}
+      containerStyle={style}
+      animatedStyle={{
+        backgroundColor: bInterpolateColor(
+          value,
+          white ? "white" : Colors.background,
+          Colors.nearBlack
+        )
+      }}
     >
       {loading ? (
         <ActivityIndicator />
