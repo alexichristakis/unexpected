@@ -23,6 +23,7 @@ import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
+import { useDarkStatusBar } from "@hooks";
 
 const { useCode, block, call, greaterThan, lessOrEq, cond } = Animated;
 
@@ -70,6 +71,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       else return "notFriends";
     };
 
+    useDarkStatusBar();
+
     useEffect(() => {
       const {
         user: { phoneNumber }
@@ -85,14 +88,6 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       gridTransitionRef.current?.animateNextTransition();
       setReleasedPosts(posts);
     }, [posts.length]);
-
-    useFocusEffect(
-      useCallback(() => {
-        StatusBar.setHidden(false);
-
-        return () => {};
-      }, [route.params.user.phoneNumber])
-    );
 
     useCode(
       () =>

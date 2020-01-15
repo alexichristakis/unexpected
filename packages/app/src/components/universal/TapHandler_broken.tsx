@@ -97,10 +97,4 @@ export default ({
   if (disabled) return content;
 
   // return <TapGestureHandler {...gestureHandler}>{content}</TapGestureHandler>;
-
-  return (
-    <BaseButton onActiveStateChange={} onPress={onPress}>
-      {content}
-    </BaseButton>
-  );
 };

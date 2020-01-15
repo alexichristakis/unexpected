@@ -13,9 +13,9 @@ import Haptics from "react-native-haptic-feedback";
 import Animated, { Easing } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { UserType } from "unexpected-cloud/models/user";
 import uuid from "uuid/v4";
 
+import { User } from "@unexpected/global";
 import { Posts } from "@components/Feed";
 import { ZoomedImage, ZoomedImageType } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
@@ -155,7 +155,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
       return { sortedPosts, latest };
     };
 
-    const handleOnPressUser = (user: UserType) => {
+    const handleOnPressUser = (user: User) => {
       if (phoneNumber === user.phoneNumber) {
         navigation.navigate("USER_PROFILE");
       } else {

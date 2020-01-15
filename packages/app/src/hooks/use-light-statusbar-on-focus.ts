@@ -7,7 +7,7 @@ export function useLightStatusBar() {
 
   return useEffect(() => {
     if (isFocused) {
-      StatusBar.setHidden(false);
+      StatusBar.setHidden(false, "fade");
       StatusBar.setBarStyle("light-content", true);
     }
     // else StatusBar.setBarStyle("dark-content", true);
