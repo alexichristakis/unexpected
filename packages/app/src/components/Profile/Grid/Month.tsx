@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
+import { Post } from "@unexpected/global";
 
 import { TextStyles } from "@lib/styles";
 
@@ -23,15 +23,15 @@ export enum Months {
 }
 
 export interface MonthProps {
-  onPressPost: (item: PostType) => void;
+  onPressPost: (item: Post) => void;
   showHeader: boolean;
   month: Months;
-  posts: PostType[];
+  posts: Post[];
 }
 
 export const Month: React.FC<MonthProps> = React.memo(
   ({ month, posts, showHeader, onPressPost }) => {
-    const generateRows = (posts: PostType[]) => {
+    const generateRows = (posts: Post[]) => {
       const rows: RowType[] = [];
 
       for (let index = 0; index < posts.length; ) {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   headerContainer: {
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     marginBottom: 10,
     flexDirection: "row",
     justifyContent: "space-between",

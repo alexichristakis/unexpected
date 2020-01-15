@@ -15,27 +15,26 @@ import Animated, {
   Transitioning,
   TransitioningView
 } from "react-native-reanimated";
-import { PostType } from "unexpected-cloud/models/post";
+import { Post, User } from "@unexpected/global";
 
 import LockSVG from "@assets/svg/lock.svg";
 import { Colors, TextStyles } from "@lib/styles";
 
 import { formatName } from "@lib/utils";
 import { onScroll } from "react-native-redash";
-import { UserType } from "unexpected-cloud/models/user";
 import { Month, Months } from "./Month";
 import testPosts from "./test_data";
 
 export interface GridProps {
   transitionRef?: React.Ref<TransitioningView>;
   scrollY?: Animated.Value<number>;
-  user?: UserType;
+  user?: User;
   friendStatus?: "friends" | "notFriends" | "unknown";
   loading: boolean;
-  onPressPost: (item: PostType) => void;
+  onPressPost: (item: Post) => void;
   ListHeaderComponentStyle?: ViewStyle;
   ListHeaderComponent?: React.ComponentType<any>;
-  posts: PostType[];
+  posts: Post[];
 }
 
 export const Grid: React.FC<GridProps> = ({
@@ -50,7 +49,7 @@ export const Grid: React.FC<GridProps> = ({
   posts
 }) => {
   // returns object mapping month (0, 1, 2, ...) to array of posts
-  const generateMonths = (posts: PostType[]) => {
+  const generateMonths = (posts: Post[]) => {
     if (friendStatus !== "friends") return [];
 
     const map = groupBy(posts, ({ createdAt }) =>
@@ -76,7 +75,7 @@ export const Grid: React.FC<GridProps> = ({
   }: ListRenderItemInfo<{
     id: string;
     month: Months;
-    posts: PostType[];
+    posts: Post[];
   }>) => (
     <Month
       showHeader={index > 0}
@@ -160,11 +159,10 @@ const styles = StyleSheet.create({
   },
   separator: {
     alignSelf: "stretch",
-    marginTop: 20,
-    marginBottom: 10,
+    marginVertical: 10,
     marginHorizontal: 40,
-    height: 1,
-    backgroundColor: Colors.lightGray
+    height: 1
+    // backgroundColor: Colors.lightGray
   },
   emptyStateContainer: {
     alignItems: "center"

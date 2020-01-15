@@ -12,8 +12,8 @@ import { TouchableScale } from "@components/universal";
 import { Actions as AppActions } from "@redux/modules/app";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { NOTIFICATION_MINUTES } from "@lib/constants";
 import { StackParamList } from "../../App";
-import { NOTIFICATION_MINUTES } from "@unexpected/global";
 
 const mapStateToProps = (state: RootState) => ({
   ...selectors.camera(state)
@@ -74,7 +74,7 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
     if (visible)
       return (
         <Animated.View
-          pointerEvents={"box-none"}
+          pointerEvents="box-none"
           style={[styles.container, { transform: [{ scale }] }]}
         >
           <TouchableScale onPress={handleOnPress}>

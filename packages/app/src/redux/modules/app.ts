@@ -11,11 +11,11 @@ import { REHYDRATE } from "redux-persist";
 import { eventChannel } from "redux-saga";
 import { all, call, put, select, take, takeEvery } from "redux-saga/effects";
 
+import { NOTIFICATION_MINUTES } from "@lib/constants";
 import client, { getHeaders } from "@api";
 import * as selectors from "../selectors";
 import { ActionsUnion, createAction } from "../utils";
 import { Actions as UserActions } from "./user";
-import { NOTIFICATION_MINUTES } from "@unexpected/global";
 
 export interface AppState {
   appStatus: AppStatusType;

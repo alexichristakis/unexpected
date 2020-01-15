@@ -1,7 +1,5 @@
 import Animated, { Easing } from "react-native-reanimated";
-import { UserType } from "unexpected-cloud/models/user";
+import { User } from "@unexpected/global";
 
-export const formatName = (user?: UserType) =>
+export const formatName = (user?: User) =>
   user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : "";
-
-// ANIMATION UTILS

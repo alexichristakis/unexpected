@@ -65,23 +65,21 @@ export const Posts: React.FC<PostsProps> = React.memo(
     const [animatedValue] = useState(new Animated.Value(0));
     const [viewableItems, setViewableItems] = useState<(number | null)[]>([]);
 
-    const cellRefs = useRef<{ [id: string]: React.RefObject<typeof Post> }>({});
-    const onViewableItemsChangedRef = useRef(
-      ({ changed }: { changed: ViewToken[] }) => {
-        const refs = cellRefs.current;
-
-        changed.forEach(change => {
-          const ref = refs[change.item.id];
-          if (!ref || !ref.current) return;
-
-          if (change.isViewable) {
-            ref.current.setVisible();
-          } else {
-            ref.current.setNotVisible();
-          }
-        });
-      }
-    );
+    // const cellRefs = useRef<{ [id: string]: React.RefObject<typeof Post> }>({});
+    // const onViewableItemsChangedRef = useRef(
+    //   ({ changed }: { changed: ViewToken[] }) => {
+    //     // const refs = cellRefs.current;
+    //     // changed.forEach(change => {
+    //     //   const ref = refs[change.item.id];
+    //     //   if (!ref || !ref.current) return;
+    //     //   if (change.isViewable) {
+    //     //     ref.current.setVisible();
+    //     //   } else {
+    //     //     ref.current.setNotVisible();
+    //     //   }
+    //     // });
+    //   }
+    // );
 
     useEffect(() => {
       Animated.timing(animatedValue, {
@@ -140,10 +138,9 @@ export const Posts: React.FC<PostsProps> = React.memo(
         </ZoomHandler>
       );
 
-      cellRefs.current[item.id] = createRef();
       return (
         <Post
-          ref={cellRefs.current[item.id]}
+          // ref={cellRefs.current[item.id]}
           index={index}
           post={item}
           renderImage={renderImage}
@@ -160,8 +157,8 @@ export const Posts: React.FC<PostsProps> = React.memo(
         scrollEnabled={scrollEnabled}
         showsVerticalScrollIndicator={false}
         windowSize={3}
-        onViewableItemsChanged={onViewableItemsChangedRef.current}
-        viewabilityConfig={VIEWABILITY_CONFIG}
+        // onViewableItemsChanged={onViewableItemsChangedRef.current}
+        // viewabilityConfig={VIEWABILITY_CONFIG}
         ListHeaderComponent={renderTop}
         ListHeaderComponentStyle={styles.headerContainer}
         ListEmptyComponent={renderEmptyComponent}

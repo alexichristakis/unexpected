@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.nearBlack,
     borderWidth: 1,
     alignSelf: "stretch",
+
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 10,

@@ -17,18 +17,21 @@ export interface PostProps {
   onPressName?: () => void;
 }
 
-const _Post: React.FC<PostProps> = React.memo(
-  (
-    { entranceAnimatedValue = 1, index = 0, post, onPressName, renderImage },
-    ref
-  ) => {
-    const [visible, setVisible] = useState(false);
+export const Post: React.FC<PostProps> = React.memo(
+  ({
+    entranceAnimatedValue = 1,
+    index = 0,
+    post,
+    onPressName,
+    renderImage
+  }) => {
+    // const [visible, setVisible] = useState(false);
     const { description, user, createdAt } = post;
 
-    useImperativeHandle(ref, () => ({
-      setVisible: () => setVisible(true),
-      setNotVisible: () => setVisible(false)
-    }));
+    // useImperativeHandle(ref, () => ({
+    //   setVisible: () => setVisible(true),
+    //   setNotVisible: () => setVisible(false)
+    // }));
 
     const animatedContainer = {
       transform: [
@@ -52,7 +55,7 @@ const _Post: React.FC<PostProps> = React.memo(
           </TouchableOpacity>
           <Text style={TextStyles.small}>{moment(createdAt).fromNow()}</Text>
         </View>
-        {visible ? renderImage() : <View style={styles.filler} />}
+        {renderImage()}
         <Text style={styles.description}>{description}</Text>
       </Animated.View>
     );
@@ -60,10 +63,10 @@ const _Post: React.FC<PostProps> = React.memo(
   (prevProps, nextProps) => prevProps.viewable === nextProps.viewable
 );
 
-export const Post = forwardRef<
-  { setVisible: () => void; setNotVisible: () => void },
-  PostProps
->(_Post);
+// export const Post = forwardRef<
+//   { setVisible: () => void; setNotVisible: () => void },
+//   PostProps
+// >(_Post);
 
 const styles = StyleSheet.create({
   container: {

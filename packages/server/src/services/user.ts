@@ -5,6 +5,7 @@ import _ from "lodash";
 import moment from "moment";
 import { User, Post, UserNotificationRecord } from "@unexpected/global";
 
+import { NOTIFICATION_MINUTES } from "../lib/constants";
 import { CRUDService } from "./crud";
 import { User as UserModel } from "../models/user";
 import { NotificationService } from "./notification";
@@ -74,7 +75,7 @@ export class UserService extends CRUDService<UserModel, User> {
     // check to see if the current time is between what's given
     for (let i = 0; i < notifications.length; i++) {
       const start = moment(notifications[i]);
-      const end = start.clone().add(10, "minutes");
+      const end = start.clone().add(NOTIFICATION_MINUTES, "minutes");
 
       if (currentTime.isBetween(start, end, undefined, "[]")) {
         return { enabled: true, start: start.toISOString() };

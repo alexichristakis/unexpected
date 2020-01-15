@@ -13,6 +13,8 @@ import {
 } from "@redux/modules/permissions";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackParamList } from "App";
 
 const mapStateToProps = (state: RootState) => ({
   ...selectors.permissions(state)
@@ -26,13 +28,16 @@ export type PermissionsReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-export interface PermissionsOwnProps {}
+export interface PermissionsOwnProps {
+  navigation: NativeStackNavigationProp<StackParamList, "PERMISSIONS">;
+}
 export type PermissionsProps = PermissionsOwnProps & PermissionsReduxProps;
 
 const Permissions: React.FC<PermissionsProps> = React.memo(
   ({
     request,
     requestNotifications,
+    navigation,
     notifications,
     camera,
     location,
@@ -47,10 +52,10 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
 
     return (
       <Screen style={styles.container}>
-        <Text style={[TextStyles.medium, styles.header]}>
-          we need your permission for a couple of things:
-        </Text>
         <View style={styles.table}>
+          <Text style={[TextStyles.medium, styles.header]}>
+            we need your permission for a couple of things:
+          </Text>
           <View style={styles.row}>
             <Text style={[styles.text, TextStyles.small]}>
               notifications are needed so you know when you can post
@@ -95,6 +100,7 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
             />
           </View>
         </View>
+        <Button title="dismiss" onPress={() => navigation.goBack()} />
       </Screen>
     );
   }
@@ -103,7 +109,9 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20
+    padding: 20,
+    paddingBottom: 70,
+    justifyContent: "space-between"
     // alignItems: "center"
   },
   table: {
