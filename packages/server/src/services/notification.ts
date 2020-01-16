@@ -82,6 +82,7 @@ export class NotificationService {
     body: string
   ) {
     const { deviceOS, deviceToken } = user;
+
     return this.send(deviceToken, deviceOS, body, true);
   }
 }

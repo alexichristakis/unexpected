@@ -12,7 +12,6 @@
     "allowSyntheticDefaultImports": true,
     "strictPropertyInitialization": false
   },
-  "files": ["./declarations.d.ts"],
   "include": ["packages/"],
   "exclude": ["node_modules/"]
 }

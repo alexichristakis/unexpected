@@ -5,7 +5,8 @@ import {
   Put,
   PathParams,
   UseAuth,
-  Inject
+  Inject,
+  Delete
 } from "@tsed/common";
 
 import { Post } from "@unexpected/global";
@@ -41,5 +42,10 @@ export class PostController {
     const feed = await this.postService.getFeedForUser(phoneNumber);
 
     return feed;
+  }
+
+  @Delete("/:id")
+  async deletePost(@PathParams("id") id: string) {
+    return this.postService.delete(id);
   }
 }
