@@ -61,6 +61,7 @@ export default (
   switch (action.type) {
     case ActionTypes.FETCH_FEED:
     case ActionTypes.FETCH_USERS_POSTS:
+    case ActionTypes.DELETE_POST:
     case ActionTypes.SEND_POST: {
       return immer(state, draft => {
         draft.loading = true;
@@ -102,6 +103,16 @@ export default (
       return immer(state, draft => {
         draft.loading = false;
         draft.feed = { posts, stale: false, lastFetched: new Date() };
+      });
+    }
+
+    case ActionTypes.DELETE_POST_SUCCESS: {
+      const { phoneNumber } = action.payload;
+      return immer(state, draft => {
+        draft.users[phoneNumber].stale = true;
+        draft.feed.stale = true;
+
+        return draft;
       });
     }
 
@@ -228,9 +239,29 @@ function* onFetchFeed(
   }
 }
 
+function* onDeletePost(
+  action: ExtractActionFromActionCreator<typeof Actions.deletePost>
+) {
+  const { id } = action.payload;
+
+  try {
+    const jwt = yield select(selectors.jwt);
+    const phoneNumber = yield select(selectors.phoneNumber);
+
+    const res = yield client.delete(`post/${id}`, {
+      headers: getHeaders({ jwt })
+    });
+
+    yield put(Actions.deletePostSuccess(phoneNumber));
+  } catch (err) {
+    yield put(Actions.onError(err.message));
+  }
+}
+
 export function* postSagas() {
   yield all([
     yield takeLatest(ActionTypes.SEND_POST, onSendPost),
+    yield takeLatest(ActionTypes.DELETE_POST, onDeletePost),
     yield takeLatest(ActionTypes.FETCH_USERS_POSTS, onFetchUsersPosts),
     yield takeLatest(ActionTypes.FETCH_FEED, onFetchFeed)
   ]);
@@ -243,6 +274,8 @@ export enum ActionTypes {
   FETCH_FEED_SUCCESS = "post/FETCH_FEED_SUCCESS",
   SEND_POST = "post/SEND_POST",
   SEND_POST_SUCCESS = "post/SEND_POST_SUCCESS",
+  DELETE_POST = "post/DELETE",
+  DELETE_POST_SUCCESS = "post/DELETE_SUCCESS",
   ON_ERROR = "post/ERROR"
 }
 
@@ -255,9 +288,15 @@ export const Actions = {
     createAction(ActionTypes.FETCH_FEED, { fromDate }),
   fetchFeedSuccess: (posts: FeedPost[]) =>
     createAction(ActionTypes.FETCH_FEED_SUCCESS, { posts }),
+
   sendPost: (description: string) =>
     createAction(ActionTypes.SEND_POST, { description }),
   sendPostSuccess: (phoneNumber: string) =>
     createAction(ActionTypes.SEND_POST_SUCCESS, { phoneNumber }),
+
+  deletePost: (id: string) => createAction(ActionTypes.DELETE_POST, { id }),
+  deletePostSuccess: (phoneNumber: string) =>
+    createAction(ActionTypes.DELETE_POST_SUCCESS, { phoneNumber }),
+
   onError: (error: string) => createAction(ActionTypes.ON_ERROR, { error })
 };

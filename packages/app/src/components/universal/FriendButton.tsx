@@ -12,7 +12,7 @@ import {
   TransitioningView
 } from "react-native-reanimated";
 import { connect } from "react-redux";
-import { UserType } from "unexpected-cloud/models/user";
+import { User } from "@unexpected/global";
 
 /* some svgs */
 import PendingFriendSVG from "@assets/svg/arrow_button.svg";
@@ -28,7 +28,7 @@ import { ReduxPropsType, RootState } from "@redux/types";
 const ICON_SIZE = 35;
 
 export interface FriendButtonProps {
-  user: UserType;
+  user: User;
   showLabel?: boolean;
 }
 

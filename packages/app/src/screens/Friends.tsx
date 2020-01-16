@@ -15,18 +15,13 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
-import {
-  FriendButton,
-  ItemSeparator,
-  NavBar,
-  UserRow
-} from "@components/universal";
+import { ItemSeparator, NavBar, UserRow } from "@components/universal";
 import { SB_HEIGHT, TextSizes, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { UserType } from "unexpected-cloud/models/user";
+import { User } from "@unexpected/global";
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState, props: FriendsProps) => ({
@@ -67,7 +62,7 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
     }, [])
   );
 
-  const handleOnPressUser = (toUser: UserType) => {
+  const handleOnPressUser = (toUser: User) => {
     if (phoneNumber === toUser.phoneNumber) {
       navigation.navigate("USER_PROFILE");
     } else {
@@ -86,7 +81,7 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
     return _.filter(users, o => _.includes(user.friends, o.phoneNumber));
   };
 
-  const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => (
+  const renderUserRow = ({ item, index }: ListRenderItemInfo<User>) => (
     <UserRow onPress={handleOnPressUser} user={item} />
   );
 
