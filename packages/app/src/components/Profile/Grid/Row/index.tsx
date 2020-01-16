@@ -1,7 +1,6 @@
 import React from "react";
 
-import { PostType } from "unexpected-cloud/models/post";
-
+import { Post } from "@unexpected/global";
 import { PostImage, TouchableScale } from "@components/universal";
 
 import A from "./A";
@@ -11,7 +10,7 @@ import C from "./C";
 export type RowType = {
   id: string;
   type: RowTypes;
-  posts: PostType[];
+  posts: Post[];
 };
 
 export enum RowTypes {
@@ -21,11 +20,11 @@ export enum RowTypes {
 }
 
 export interface RowProps extends Omit<RowType, "id"> {
-  onPressPost: (item: PostType) => void;
+  onPressPost: (item: Post) => void;
 }
 
 export const Row: React.FC<RowProps> = ({ type, posts, onPressPost }) => {
-  const renderPost = (post: PostType, size: number) => (
+  const renderPost = (post: Post, size: number) => (
     <TouchableScale key={post.photoId} onPress={() => onPressPost(post)}>
       <PostImage
         width={size}

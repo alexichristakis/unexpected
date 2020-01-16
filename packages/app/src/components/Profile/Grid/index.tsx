@@ -137,6 +137,7 @@ export const Grid: React.FC<GridProps> = ({
         ListHeaderComponent={ListHeaderComponent}
         ItemSeparatorComponent={renderSeparatorComponent}
         ListEmptyComponent={renderEmptyComponent}
+        contentContainerStyle={styles.contentContainer}
         renderItem={renderMonth}
         data={months as any}
         renderScrollComponent={props => (
@@ -156,6 +157,9 @@ const styles = StyleSheet.create({
   list: {
     height: "100%",
     width: "100%"
+  },
+  contentContainer: {
+    paddingBottom: 40
   },
   separator: {
     alignSelf: "stretch",

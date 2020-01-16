@@ -2,11 +2,11 @@
 import axios, { AxiosInstance } from "axios";
 
 /* get the server URL and instantiate the client */
-const server = __DEV__
-  ? "http://localhost:5000"
-  : "https://expect-photos.appspot.com";
+// const server = __DEV__
+//   ? "http://localhost:5000"
+//   : "https://expect-photos.appspot.com";
 // const server = "https://www.api.expect.photos";
-// const server = "https://expect-photos.appspot.com";
+const server = "https://expect-photos.appspot.com";
 
 export default axios.create({ baseURL: server });
 
