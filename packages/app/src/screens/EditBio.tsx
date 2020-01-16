@@ -7,7 +7,8 @@ import {
   Text,
   TextInputKeyPressEventData,
   TextInputSubmitEditingEventData,
-  View
+  View,
+  KeyboardAvoidingView
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
@@ -16,7 +17,7 @@ import _ from "lodash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { Input } from "@components/universal";
+import { Input, Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
@@ -43,6 +44,7 @@ export interface EditBioProps {
 const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
   user: { bio },
   loading,
+  navigation,
   updateUser
 }) => {
   const [text, setText] = useState(bio);
@@ -61,6 +63,10 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
     if (nativeEvent.key === "Enter") {
       Keyboard.dismiss();
     }
+  };
+
+  const handleOnPressDismiss = () => {
+    navigation.goBack();
   };
 
   return (
@@ -83,6 +89,13 @@ const EditBio: React.FC<EditBioProps & EditBioReduxProps> = ({
         onKeyPress={handleKeyPress}
         onSubmitEditing={handleOnPressSubmit}
       />
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={80}
+        style={styles.keyboardAvoiding}
+        behavior="padding"
+      >
+        <Button title="dismiss" onPress={handleOnPressDismiss} />
+      </KeyboardAvoidingView>
     </Screen>
   );
 };
@@ -96,6 +109,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: "row",
     justifyContent: "space-between"
+  },
+  keyboardAvoiding: {
+    bottom: 100,
+    left: 20,
+    right: 20,
+
+    position: "absolute"
+    // marginTop: 100
   }
 });
 

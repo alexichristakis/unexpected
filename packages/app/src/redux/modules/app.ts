@@ -72,7 +72,10 @@ export default (
     }
 
     case ActionTypes.EXPIRE_CAMERA: {
-      return { ...state, camera: { enabled: false, timeOfExpiry: undefined } };
+      return {
+        ...state,
+        camera: { enabled: false, timeOfExpiry: undefined }
+      };
     }
 
     case ActionTypes.SET_APP_STATUS: {
@@ -202,9 +205,9 @@ const notificationEmitter = () => {
     );
 
     Notifications.events().registerRemoteNotificationOpened(
-      (notification, completion) => {
+      (notification, complete) => {
         emit({ notification });
-        completion();
+        complete();
       }
     );
 

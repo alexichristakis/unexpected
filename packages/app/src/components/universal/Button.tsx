@@ -31,7 +31,7 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <TapHandler
-      disabled={disabled}
+      disabled={disabled || loading}
       value={value}
       onPress={onPress}
       style={styles.container}

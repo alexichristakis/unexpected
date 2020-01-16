@@ -153,9 +153,7 @@ function* onVerifyCodeRequest(
 }
 
 function* onLogout() {
-  Navigation.navigate("HOME");
-  setTimeout(() => Navigation.navigate("UNAUTHENTICATED"), 100);
-  setTimeout(() => AsyncStorage.clear(), 200);
+  yield AsyncStorage.clear();
 }
 
 export function* authSagas() {

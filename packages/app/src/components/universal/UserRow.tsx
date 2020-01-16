@@ -3,23 +3,18 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
-import { UserType } from "unexpected-cloud/models/user";
-import { Button } from "./Button";
+import { User } from "@unexpected/global";
+
 import FriendButton from "./FriendButton";
 import UserImage from "./UserImage";
 
 export interface UserRowProps {
   // actions?: Array<{ title: string; onPress: () => void }>;
-  actions?: JSX.Element[];
-  onPress: (user: UserType) => void;
-  user: UserType;
+  onPress: (user: User) => void;
+  user: User;
 }
 
-export const UserRow: React.FC<UserRowProps> = ({
-  user,
-  onPress,
-  actions = []
-}) => {
+export const UserRow: React.FC<UserRowProps> = ({ user, onPress }) => {
   const handleOnPress = () => {
     onPress(user);
   };
@@ -29,7 +24,7 @@ export const UserRow: React.FC<UserRowProps> = ({
       <UserImage phoneNumber={user.phoneNumber} size={40} />
       <Text style={styles.name}>{formatName(user)}</Text>
       <View style={styles.buttonContainer}>
-        {actions.map(action => action)}
+        <FriendButton user={user} />
       </View>
     </TouchableOpacity>
   );

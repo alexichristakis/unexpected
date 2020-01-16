@@ -13,6 +13,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
 import Contacts from "react-native-contacts";
 import uuid from "uuid/v4";
+import { Screen } from "react-native-screens";
+import { connect } from "react-redux";
 
 import {
   Button,
@@ -26,9 +28,8 @@ import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
-import { UserType } from "unexpected-cloud/models/user";
+import { User } from "@unexpected/global";
+
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
@@ -103,7 +104,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
       );
     };
 
-    const handleOnPressUser = (toUser: UserType) => {
+    const handleOnPressUser = (toUser: User) => {
       if (phoneNumber === toUser.phoneNumber) {
         navigation.navigate("USER_PROFILE");
       } else {
@@ -118,13 +119,9 @@ const Settings: React.FC<SettingsProps> = React.memo(
       }
     };
 
-    const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-      const actions = [<FriendButton key="friend" user={item} />];
-
-      return (
-        <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
-      );
-    };
+    const renderUserRow = ({ item, index }: ListRenderItemInfo<User>) => (
+      <UserRow onPress={handleOnPressUser} user={item} />
+    );
 
     const renderListHeader = (length: number) =>
       length ? (
@@ -180,6 +177,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
           ListHeaderComponent={renderListHeader(friendRequests.length)}
           ListFooterComponent={renderListFooter(friendRequests.length)}
         />
+        <Button title="dismiss" onPress={navigation.goBack} />
       </Screen>
     );
   }
@@ -189,6 +187,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    paddingBottom: 50,
     backgroundColor: "white"
   },
   listHeaderContainer: {

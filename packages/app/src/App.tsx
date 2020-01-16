@@ -125,149 +125,149 @@ const HomeTab: React.FC<Props> = ({
   );
 };
 
+const renderTabBar = (tabBarProps: BottomTabBarProps) => (
+  <>
+    <LaunchCameraButton />
+    <BottomTabBar {...tabBarProps} />
+  </>
+);
+
+const AuthenticatedRoot = () => (
+  <Stack.Navigator screenOptions={{ presentation: "modal" }}>
+    <Stack.Screen name="HOME" options={{ headerShown: false }}>
+      {rootStackScreenProps => {
+        // dont keep this
+        rootStackScreenProps.navigation.addListener("focus", () =>
+          StatusBar.setBarStyle("dark-content", true)
+        );
+
+        return (
+          <Tabs.Navigator
+            tabBarOptions={{
+              tabStyle: { paddingTop: isIPhoneX ? 15 : 0 },
+              style: { backgroundColor: "white", borderTopWidth: 0 },
+              showLabel: false,
+              activeTintColor: "#231F20",
+              inactiveTintColor: "#9C9C9C"
+            }}
+            tabBar={renderTabBar}
+          >
+            <Tabs.Screen
+              name="FEED"
+              options={{
+                tabBarIcon: ({ color }) => (
+                  <FeedIcon width={25} height={25} fill={color} />
+                )
+              }}
+            >
+              {tabScreenProps => (
+                <HomeTab name="FEED" component={Feed} {...tabScreenProps} />
+              )}
+            </Tabs.Screen>
+            <Tabs.Screen
+              name="USER_PROFILE"
+              options={{
+                tabBarIcon: ({ color }) => (
+                  <ProfileIcon width={45} height={45} fill={color} />
+                )
+              }}
+            >
+              {tabScreenProps => (
+                <HomeTab
+                  name="USER_PROFILE"
+                  component={UserProfile}
+                  {...tabScreenProps}
+                />
+              )}
+            </Tabs.Screen>
+            <Tabs.Screen
+              name="DISCOVER"
+              options={{
+                tabBarIcon: ({ color }) => (
+                  <DiscoverIcon width={30} height={30} fill={color} />
+                )
+              }}
+            >
+              {tabScreenProps => (
+                <HomeTab
+                  name="DISCOVER"
+                  component={Discover}
+                  {...tabScreenProps}
+                />
+              )}
+            </Tabs.Screen>
+          </Tabs.Navigator>
+        );
+      }}
+    </Stack.Screen>
+    <Stack.Screen
+      name="NEW_PROFILE_PICTURE"
+      component={NewProfilePicture}
+      options={{
+        headerTitle: "share",
+        headerTitleStyle: TextStyles.large,
+        headerTintColor: "#231F20",
+        headerHideShadow: true
+      }}
+    />
+
+    <Stack.Screen name="CAPTURE">
+      {({ route }) => (
+        <Stack.Navigator>
+          <Stack.Screen name="CAPTURE" options={{ headerShown: false }}>
+            {({ navigation }) => (
+              <Capture navigation={navigation} route={route} />
+            )}
+          </Stack.Screen>
+          <Stack.Screen
+            name="SHARE"
+            component={Share}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      )}
+    </Stack.Screen>
+    <Stack.Screen name="SETTINGS" component={Settings} />
+    <Stack.Screen name="PERMISSIONS" component={Permissions} />
+    <Stack.Screen name="EDIT_BIO" component={EditBio} />
+  </Stack.Navigator>
+);
+
+const UnathenticatedRoot = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="AUTH"
+      options={{ headerShown: false }}
+      component={Auth}
+    />
+    <Stack.Screen
+      name="SIGN_UP"
+      options={{ headerShown: false }}
+      component={SignUp}
+    />
+  </Stack.Navigator>
+);
+
 const Router: React.FC = () => {
   // get authorized state, dont re-render root component when this changes.
-  const isAuthorized = useReduxState(selectors.isAuthorized, () => true);
-
-  const renderTabBar = (tabBarProps: BottomTabBarProps) => (
-    <>
-      <LaunchCameraButton />
-      <BottomTabBar {...tabBarProps} />
-    </>
-  );
-
-  const AuthenticatedRoot = () => (
-    <Stack.Navigator screenOptions={{ presentation: "modal" }}>
-      <Stack.Screen name="HOME" options={{ headerShown: false }}>
-        {rootStackScreenProps => {
-          // dont keep this
-          rootStackScreenProps.navigation.addListener("focus", () =>
-            StatusBar.setBarStyle("dark-content", true)
-          );
-
-          return (
-            <Tabs.Navigator
-              tabBarOptions={{
-                tabStyle: { paddingTop: isIPhoneX ? 15 : 0 },
-                style: { backgroundColor: "white", borderTopWidth: 0 },
-                showLabel: false,
-                activeTintColor: "#231F20",
-                inactiveTintColor: "#9C9C9C"
-              }}
-              tabBar={renderTabBar}
-            >
-              <Tabs.Screen
-                name="FEED"
-                options={{
-                  tabBarIcon: ({ color }) => (
-                    <FeedIcon width={25} height={25} fill={color} />
-                  )
-                }}
-              >
-                {tabScreenProps => (
-                  <HomeTab name="FEED" component={Feed} {...tabScreenProps} />
-                )}
-              </Tabs.Screen>
-              <Tabs.Screen
-                name="USER_PROFILE"
-                options={{
-                  tabBarIcon: ({ color }) => (
-                    <ProfileIcon width={45} height={45} fill={color} />
-                  )
-                }}
-              >
-                {tabScreenProps => (
-                  <HomeTab
-                    name="USER_PROFILE"
-                    component={UserProfile}
-                    {...tabScreenProps}
-                  />
-                )}
-              </Tabs.Screen>
-              <Tabs.Screen
-                name="DISCOVER"
-                options={{
-                  tabBarIcon: ({ color }) => (
-                    <DiscoverIcon width={30} height={30} fill={color} />
-                  )
-                }}
-              >
-                {tabScreenProps => (
-                  <HomeTab
-                    name="DISCOVER"
-                    component={Discover}
-                    {...tabScreenProps}
-                  />
-                )}
-              </Tabs.Screen>
-            </Tabs.Navigator>
-          );
-        }}
-      </Stack.Screen>
-      <Stack.Screen
-        name="NEW_PROFILE_PICTURE"
-        component={NewProfilePicture}
-        options={{
-          headerTitle: "share",
-          headerTitleStyle: TextStyles.large,
-          headerTintColor: "#231F20",
-          headerHideShadow: true
-        }}
-      />
-
-      <Stack.Screen name="CAPTURE">
-        {({ route }) => (
-          <Stack.Navigator>
-            <Stack.Screen name="CAPTURE" options={{ headerShown: false }}>
-              {({ navigation }) => (
-                <Capture navigation={navigation} route={route} />
-              )}
-            </Stack.Screen>
-            <Stack.Screen
-              name="SHARE"
-              component={Share}
-              options={{ headerShown: false }}
-            />
-          </Stack.Navigator>
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="SETTINGS" component={Settings} />
-      <Stack.Screen name="PERMISSIONS" component={Permissions} />
-      <Stack.Screen name="EDIT_BIO" component={EditBio} />
-    </Stack.Navigator>
-  );
-
-  const UnathenticatedRoot = () => (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="AUTH"
-        options={{ headerShown: false }}
-        component={Auth}
-      />
-      <Stack.Screen
-        name="SIGN_UP"
-        options={{ headerShown: false }}
-        component={SignUp}
-      />
-    </Stack.Navigator>
-  );
+  const isAuthorized = useReduxState(selectors.isAuthorized);
 
   return (
     <NavigationNativeContainer ref={Navigation.setTopLevelNavigator}>
-      <Stack.Navigator
-        screenOptions={{ animation: "fade" }}
-        initialRouteName={isAuthorized ? "AUTHENTICATED" : "UNAUTHENTICATED"}
-      >
-        <Stack.Screen
-          name="AUTHENTICATED"
-          options={{ headerShown: false }}
-          component={AuthenticatedRoot}
-        />
-        <Stack.Screen
-          name="UNAUTHENTICATED"
-          options={{ headerShown: false }}
-          component={UnathenticatedRoot}
-        />
+      <Stack.Navigator screenOptions={{ animation: "fade" }}>
+        {isAuthorized ? (
+          <Stack.Screen
+            name="AUTHENTICATED"
+            options={{ headerShown: false }}
+            component={AuthenticatedRoot}
+          />
+        ) : (
+          <Stack.Screen
+            name="UNAUTHENTICATED"
+            options={{ headerShown: false }}
+            component={UnathenticatedRoot}
+          />
+        )}
       </Stack.Navigator>
     </NavigationNativeContainer>
   );

@@ -3308,10 +3308,10 @@ image-size@^0.6.0:
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.6.3.tgz#e7e5c65bb534bd7cdcedd6cb5166272a85f75fb2"
   integrity sha512-47xSUiQioGaB96nqtp5/q55m0aBQSQdyIloMOc/x+QVTDZLNmXE892IIDrJ0hM1A5vcNUDD5tDffkSP5lCaIIA==
 
-immer@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-5.3.0.tgz#4fd8328def4d2962f7082775764aa96063902850"
-  integrity sha512-kx1vWMcIxGGg/3j4gTckWVc0buyxI4CC5usMDWE/7LXPK6Poxz1ivf0opC9Ma+G6/dN85F5y2SQ2xBFvdreh8Q==
+immer@^5.3.2:
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-5.3.2.tgz#e3a1c9f3550f925278fd86b8d2d644f7d5e9561b"
+  integrity sha512-wPWsSV0fv8iT7QQVs3rxBDWTbi5pHrVgnQv/McMfaRGJTLfQ3jFMEr08UibqS8hM17KCQXcjjYYzQzYe5e7BIA==
 
 import-fresh@^2.0.0:
   version "2.0.0"
@@ -5356,10 +5356,10 @@ react-native-iphone-x-helper@^1.2.1:
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
   integrity sha512-/VbpIEp8tSNNHIvstuA3Swx610whci1Zpc9mqNkqn14DkMbw+ORviln2u0XyHG1kPvvwTNGZY6QpeFwxYaSdbQ==
 
-react-native-notifications@3.0.0-beta.4:
-  version "3.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/react-native-notifications/-/react-native-notifications-3.0.0-beta.4.tgz#2cde9ff73d32269c884fade474a931c169034490"
-  integrity sha512-mRJzXGhsJMiFjC1D1oYxlWhRvzN51a1LdyTgVK1gsDtGbGj9qs2VajUyPRhnoYULCTv25xb9ZheKO5QzvAMp9Q==
+react-native-notifications@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-notifications/-/react-native-notifications-3.0.0.tgz#6b331cafb3fc844fa1ffd571cb599a59639ae077"
+  integrity sha512-nwN2zS8Um+dcnlEurNJLhP3JVZAJN7vVDce0DFel9p+kicDVdW9UoUxjA0Efi2UA3inM4CGb0wZe1pSAMSY6HQ==
 
 react-native-permissions@^2.0.8:
   version "2.0.9"

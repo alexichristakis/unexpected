@@ -16,6 +16,7 @@ import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
+import { Screen } from "react-native-screens";
 
 import {
   FriendButton,
@@ -27,8 +28,8 @@ import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT, TextSizes, TextStyles } from "@lib/styles";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { Screen } from "react-native-screens";
-import { UserType } from "unexpected-cloud/models/user";
+import { User } from "@unexpected/global";
+
 import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
@@ -47,20 +48,16 @@ export interface DiscoverProps {
 }
 export const Discover: React.FC<DiscoverProps &
   DiscoverReduxProps> = React.memo(({ phoneNumber, jwt, navigation }) => {
-  const [responses, setResponses] = useState<UserType[]>([]);
+  const [responses, setResponses] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
   useDarkStatusBar();
 
-  const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-    const actions = [<FriendButton key="friend" user={item} />];
+  const renderUserRow = ({ item, index }: ListRenderItemInfo<User>) => (
+    <UserRow onPress={handleOnPressUser} user={item} />
+  );
 
-    return (
-      <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
-    );
-  };
-
-  const handleOnPressUser = (toUser: UserType) => {
+  const handleOnPressUser = (toUser: User) => {
     if (phoneNumber === toUser.phoneNumber) {
       navigation.navigate("USER_PROFILE");
     } else {
@@ -80,7 +77,7 @@ export const Discover: React.FC<DiscoverProps &
   }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
     setLoading(true);
 
-    const response = await client.get<UserType[]>(
+    const response = await client.get<User[]>(
       `/user/search/${nativeEvent.text}`,
       {
         headers: getHeaders({ jwt })

@@ -212,7 +212,7 @@ PODS:
     - React
   - react-native-netinfo (5.3.2):
     - React
-  - react-native-notifications (3.0.0-beta.3):
+  - react-native-notifications (3.0.0):
     - React
   - react-native-safe-area-context (0.6.2):
     - React
@@ -448,7 +448,7 @@ SPEC CHECKSUMS:
   react-native-contacts: 9c89131a1f63af0618d54af5ca1cd88b06d41a05
   react-native-image-resizer: 1ffe71ec5f2596c3a24d42548c03bfbfb06fe810
   react-native-netinfo: 817823a90f13ced48413875c0820df04c3aae28d
-  react-native-notifications: c569a741f031621d29a79ba34ce3db300190e5b1
+  react-native-notifications: babab4bcceb9feaced4184cdf8c02db6a4b6c5aa
   react-native-safe-area-context: 25260c5d0b9c53fd7aa88e569e2edae72af1f6a3
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360

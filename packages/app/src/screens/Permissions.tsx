@@ -6,6 +6,7 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import { Button } from "@components/universal";
+import { useLightStatusBar } from "@hooks";
 import { SCREEN_HEIGHT, TextStyles } from "@lib/styles";
 import {
   Actions as PermissionsActions,
@@ -43,12 +44,7 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
     location,
     contacts
   }) => {
-    const isFocused = useIsFocused();
-
-    useEffect(() => {
-      if (isFocused) StatusBar.setBarStyle("light-content", true);
-      else StatusBar.setBarStyle("dark-content", true);
-    }, [isFocused]);
+    useLightStatusBar();
 
     return (
       <Screen style={styles.container}>

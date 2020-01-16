@@ -17,6 +17,7 @@
       "@hooks": ["hooks"]
     }
   },
+  "files": ["./declarations.d.ts"],
   "include": ["src"],
   "exclude": [
     "node_modules",

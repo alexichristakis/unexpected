@@ -86,13 +86,9 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
     return _.filter(users, o => _.includes(user.friends, o.phoneNumber));
   };
 
-  const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => {
-    const actions = [<FriendButton key="friend" user={item} />];
-
-    return (
-      <UserRow onPress={handleOnPressUser} user={item} actions={actions} />
-    );
-  };
+  const renderUserRow = ({ item, index }: ListRenderItemInfo<UserType>) => (
+    <UserRow onPress={handleOnPressUser} user={item} />
+  );
 
   const animatedHeaderStyle = {
     transform: [
