@@ -48,6 +48,21 @@ export const Top: React.FC<ProfileTopProps> = ({
     ]
   };
 
+  const animatedLoaderStyle = {
+    opacity: scrollY.interpolate({
+      inputRange: [-100, 0, 50],
+      outputRange: [1, 0, 0]
+    }),
+    transform: [
+      {
+        translateY: scrollY.interpolate({
+          inputRange: [-50, 0, 50],
+          outputRange: [-20, 0, 0]
+        })
+      }
+    ]
+  };
+
   const renderNotificationIndicator = () => {
     if (!isUser || !friendRequests.length) return null;
 
@@ -76,45 +91,55 @@ export const Top: React.FC<ProfileTopProps> = ({
   };
 
   return (
-    <Animated.View style={[styles.container, animatedStyle]}>
-      <View style={styles.headerContainer}>
-        <View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text
-              testID="user-name"
-              style={TextStyles.title}
-            >{`${firstName} ${lastName}`}</Text>
-            {renderNotificationIndicator()}
+    <>
+      <Animated.View style={[styles.container, animatedStyle]}>
+        <View style={styles.headerContainer}>
+          <View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                testID="user-name"
+                style={TextStyles.title}
+              >{`${firstName} ${lastName}`}</Text>
+              {renderNotificationIndicator()}
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                testID="num-moments"
+                style={[TextStyles.large]}
+              >{`${numPosts} ${numPosts === 1 ? "moment" : "moments"}, `}</Text>
+              <Text
+                testID="friends"
+                style={[TextStyles.large]}
+                onPress={onPressFriends}
+              >{`${friends.length} ${
+                friends.length === 1 ? "friend" : "friends"
+              }`}</Text>
+            </View>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text
-              testID="num-moments"
-              style={[TextStyles.large]}
-            >{`${numPosts} ${numPosts === 1 ? "moment" : "moments"}, `}</Text>
-            <Text
-              testID="friends"
-              style={[TextStyles.large]}
-              onPress={onPressFriends}
-            >{`${friends.length} ${
-              friends.length === 1 ? "friend" : "friends"
-            }`}</Text>
+          {renderHeaderButton()}
+        </View>
+        <View style={styles.row}>
+          <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
+            <UserImage
+              phoneNumber={phoneNumber}
+              size={(SCREEN_WIDTH - 40) / 3}
+            />
+          </TouchableOpacity>
+          <View style={styles.bio}>
+            {bio.length || !onPressAddBio ? (
+              <Text style={styles.bioText}>{bio}</Text>
+            ) : (
+              <Button white title="add a bio" onPress={onPressAddBio} />
+            )}
           </View>
         </View>
-        {renderHeaderButton()}
-      </View>
-      <View style={styles.row}>
-        <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
-          <UserImage phoneNumber={phoneNumber} size={(SCREEN_WIDTH - 40) / 3} />
-        </TouchableOpacity>
-        <View style={styles.bio}>
-          {bio.length || !onPressAddBio ? (
-            <Text style={styles.bioText}>{bio}</Text>
-          ) : (
-            <Button white title="add a bio" onPress={onPressAddBio} />
-          )}
-        </View>
-      </View>
-    </Animated.View>
+      </Animated.View>
+      <Animated.Text
+        style={[TextStyles.large, styles.loaderContainer, animatedLoaderStyle]}
+      >
+        {"release to refresh"}
+      </Animated.Text>
+    </>
   );
 };
 
@@ -133,6 +158,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     marginBottom: 20
+  },
+  loaderContainer: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    alignItems: "center"
   },
   row: {
     alignSelf: "stretch",

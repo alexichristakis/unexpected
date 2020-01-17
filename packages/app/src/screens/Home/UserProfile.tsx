@@ -7,8 +7,8 @@ import isEqual from "lodash/isEqual";
 import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
+import { Post } from "@unexpected/global";
 
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
@@ -58,6 +58,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       useCallback(() => {
         StatusBar.setHidden(false);
         fetchUser();
+
         if (stale) fetchUsersPosts();
 
         return () => {};
@@ -82,7 +83,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser={true}
+        isUser
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}
@@ -93,7 +94,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       />
     );
 
-    const handleOnPressPost = (post: PostType) => {
+    const handleOnPressPost = (post: Post) => {
       navigation.navigate({
         name: "POST",
         key: uuid(),

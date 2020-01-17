@@ -14,8 +14,8 @@ export type RowType = {
 };
 
 export enum RowTypes {
-  A, // takes 4 posts
-  B, // takes 0-5 posts
+  A, // takes 0-5 posts
+  B, // takes 4 posts
   C //  takes 4 posts
 }
 

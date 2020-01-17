@@ -1,59 +1,32 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { PostType } from "unexpected-cloud/models/post";
+import { Post } from "@unexpected/global";
 
 import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/styles";
 
 export interface AProps {
-  renderPost: (post: PostType, size: number) => JSX.Element;
-  posts: PostType[];
+  renderPost: (post: Post, size: number) => JSX.Element;
+  posts: Post[];
 }
 
-export const ASizes = {
-  large: COLUMN_WIDTH * 2 + IMAGE_GUTTER,
-  small: COLUMN_WIDTH
-};
+export const ASize = COLUMN_WIDTH;
 
 const A: React.FC<AProps> = ({ renderPost, posts }) => {
-  const version = Math.random() * 3;
+  const renderPosts = () => {
+    const elements: JSX.Element[] = [];
+    for (let i = 0; i < 5; i++) {
+      if (i <= posts.length - 1) {
+        elements.push(renderPost(posts[i], ASize));
+      } else {
+        elements.push(<View key={i} style={styles.filler} />);
+      }
+    }
 
-  if (version < 1) {
-    return (
-      <View style={styles.container}>
-        {renderPost(posts[0], ASizes.large)}
-        <View style={styles.middleColumn}>
-          {renderPost(posts[1], ASizes.small)}
-          {renderPost(posts[2], ASizes.small)}
-        </View>
-        {renderPost(posts[3], ASizes.large)}
-      </View>
-    );
-  }
+    return elements;
+  };
 
-  if (version < 2) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.middleColumn}>
-          {renderPost(posts[0], ASizes.small)}
-          {renderPost(posts[1], ASizes.small)}
-        </View>
-        {renderPost(posts[2], ASizes.large)}
-        {renderPost(posts[3], ASizes.large)}
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      {renderPost(posts[2], ASizes.large)}
-      {renderPost(posts[3], ASizes.large)}
-      <View style={styles.middleColumn}>
-        {renderPost(posts[0], ASizes.small)}
-        {renderPost(posts[1], ASizes.small)}
-      </View>
-    </View>
-  );
+  return <View style={styles.container}>{renderPosts()}</View>;
 };
 
 const styles = StyleSheet.create({
@@ -64,10 +37,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: IMAGE_GUTTER,
     marginVertical: IMAGE_GUTTER / 2
   },
-  middleColumn: {
-    justifyContent: "space-between",
-    width: ASizes.small,
-    height: ASizes.large
+  filler: {
+    width: ASize,
+    height: ASize
   }
 });
 

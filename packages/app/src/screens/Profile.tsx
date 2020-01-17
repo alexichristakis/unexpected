@@ -12,7 +12,7 @@ import isEqual from "lodash/isEqual";
 import Animated, { TransitioningView } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { PostType } from "unexpected-cloud/models/post";
+import { Post } from "@unexpected/global";
 import uuid from "uuid/v4";
 
 import { Grid, Top } from "@components/Profile";
@@ -127,7 +127,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       />
     );
 
-    const handleOnPressPost = (post: PostType) => {
+    const handleOnPressPost = (post: Post) => {
       navigation.navigate({
         name: "POST",
         key: uuid(),
@@ -147,9 +147,9 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           rightButton={<FriendButton showLabel={!showTitle} user={user} />}
         />
         <Grid
+          user={user}
           transitionRef={gridTransitionRef}
           loading={postsLoading}
-          user={user}
           onPressPost={handleOnPressPost}
           scrollY={scrollY}
           friendStatus={getFriendStatusState()}

@@ -38,10 +38,11 @@ export const Month: React.FC<MonthProps> = React.memo(
         const remainingPosts = posts.length - index;
 
         let addedPosts = 0;
-        if (remainingPosts <= 5) {
+        if (remainingPosts <= 3) {
+          // single row of photos
           rows.push({
             id: uuid(),
-            type: RowTypes.B,
+            type: RowTypes.A,
             posts: posts.slice(index)
           });
 
@@ -53,19 +54,11 @@ export const Month: React.FC<MonthProps> = React.memo(
           if (version === 0) {
             rows.push({
               id,
-              type: RowTypes.A,
+              type: RowTypes.B,
               posts: posts.slice(index, index + 4)
             });
 
             addedPosts = 4;
-          } else if (version === 1) {
-            rows.push({
-              id,
-              type: RowTypes.B,
-              posts: posts.slice(index, index + 5)
-            });
-
-            addedPosts = 5;
           } else {
             rows.push({
               id,
