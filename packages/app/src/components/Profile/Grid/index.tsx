@@ -23,7 +23,7 @@ import { Colors, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { onScroll } from "react-native-redash";
 import { Month, Months } from "./Month";
-import testPosts from "./test_data";
+// import testPosts from "./test_data";
 
 export interface GridProps {
   transitionRef?: React.Ref<TransitioningView>;
@@ -67,7 +67,7 @@ export const Grid: React.FC<GridProps> = ({
       }));
   };
 
-  const months = generateMonths(testPosts);
+  const months = generateMonths(posts);
 
   const renderMonth = ({
     item,

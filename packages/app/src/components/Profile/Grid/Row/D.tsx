@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
+import random from "lodash/random";
 import { Post } from "@unexpected/global";
 
 import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/constants";
@@ -11,47 +12,36 @@ export interface DProps {
 }
 
 export const DSizes = {
-  large: COLUMN_WIDTH(5, 2) + IMAGE_GUTTER,
+  large: COLUMN_WIDTH(5, 4) + 3 * IMAGE_GUTTER,
   small: COLUMN_WIDTH(5, 1)
 };
 
 const D: React.FC<DProps> = ({ renderPost, posts }) => {
-  const version = Math.random() * 3;
+  const version = random(1);
 
-  if (version < 1) {
+  if (version) {
     return (
       <View style={styles.container}>
         {renderPost(posts[0], DSizes.large)}
-        <View style={styles.middleColumn}>
+        <View style={styles.column}>
           {renderPost(posts[1], DSizes.small)}
           {renderPost(posts[2], DSizes.small)}
+          {renderPost(posts[3], DSizes.small)}
+          {renderPost(posts[4], DSizes.small)}
         </View>
-        {renderPost(posts[3], DSizes.large)}
-      </View>
-    );
-  }
-
-  if (version < 2) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.middleColumn}>
-          {renderPost(posts[0], DSizes.small)}
-          {renderPost(posts[1], DSizes.small)}
-        </View>
-        {renderPost(posts[2], DSizes.large)}
-        {renderPost(posts[3], DSizes.large)}
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      {renderPost(posts[2], DSizes.large)}
-      {renderPost(posts[3], DSizes.large)}
-      <View style={styles.middleColumn}>
-        {renderPost(posts[0], DSizes.small)}
+      <View style={styles.column}>
         {renderPost(posts[1], DSizes.small)}
+        {renderPost(posts[2], DSizes.small)}
+        {renderPost(posts[3], DSizes.small)}
+        {renderPost(posts[4], DSizes.small)}
       </View>
+      {renderPost(posts[0], DSizes.large)}
     </View>
   );
 };
@@ -64,7 +54,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: IMAGE_GUTTER,
     marginVertical: IMAGE_GUTTER / 2
   },
-  middleColumn: {
+  column: {
     justifyContent: "space-between",
     width: DSizes.small,
     height: DSizes.large

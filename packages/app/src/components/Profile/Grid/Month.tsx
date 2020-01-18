@@ -54,18 +54,22 @@ export const Month: React.FC<MonthProps> = React.memo(
 
           switch (version) {
             case RowTypes.A: {
-              addedPosts = 5;
-              rows.push({
-                id,
-                type: RowTypes.A,
-                posts: posts.slice(index, index + addedPosts)
-              });
+              if (remainingPosts >= 5) {
+                addedPosts = 5;
+
+                rows.push({
+                  id,
+                  type: RowTypes.A,
+                  posts: posts.slice(index, index + addedPosts)
+                });
+              }
 
               break;
             }
 
             case RowTypes.B: {
               addedPosts = 4;
+
               rows.push({
                 id,
                 type: RowTypes.B,
@@ -77,6 +81,7 @@ export const Month: React.FC<MonthProps> = React.memo(
 
             case RowTypes.C: {
               addedPosts = 4;
+
               rows.push({
                 id,
                 type: RowTypes.C,
@@ -87,12 +92,15 @@ export const Month: React.FC<MonthProps> = React.memo(
             }
 
             case RowTypes.D: {
-              addedPosts = 4;
-              rows.push({
-                id,
-                type: RowTypes.D,
-                posts: posts.slice(index, index + addedPosts)
-              });
+              if (remainingPosts >= 5) {
+                addedPosts = 5;
+
+                rows.push({
+                  id,
+                  type: RowTypes.D,
+                  posts: posts.slice(index, index + addedPosts)
+                });
+              }
 
               break;
             }
