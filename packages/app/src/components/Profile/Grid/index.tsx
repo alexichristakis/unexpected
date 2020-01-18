@@ -67,7 +67,7 @@ export const Grid: React.FC<GridProps> = ({
       }));
   };
 
-  const months = generateMonths(posts);
+  const months = generateMonths(testPosts);
 
   const renderMonth = ({
     item,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   contentContainer: {
-    paddingBottom: 40
+    paddingBottom: 100
   },
   separator: {
     alignSelf: "stretch",

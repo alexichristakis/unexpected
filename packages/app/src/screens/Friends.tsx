@@ -23,6 +23,7 @@ import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { User } from "@unexpected/global";
 import { StackParamList } from "../App";
+import { onScroll } from "react-native-redash";
 
 const mapStateToProps = (state: RootState, props: FriendsProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -116,7 +117,11 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
 
   return (
     <Screen style={styles.container}>
-      <NavBar backButtonText={formatName(user)} navigation={navigation} />
+      <NavBar
+        showBackButtonText
+        backButtonText={user.firstName}
+        navigation={navigation}
+      />
       <FlatList
         style={styles.list}
         renderItem={renderUserRow}
@@ -130,12 +135,7 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
             {...props}
             scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-              {
-                useNativeDriver: true
-              }
-            )}
+            onScroll={onScroll({ y: scrollY })}
           />
         )}
       />
