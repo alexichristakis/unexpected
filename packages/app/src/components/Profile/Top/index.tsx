@@ -95,14 +95,14 @@ export const Top: React.FC<ProfileTopProps> = ({
       <Animated.View style={[styles.container, animatedStyle]}>
         <View style={styles.headerContainer}>
           <View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={styles.headerRow}>
               <Text
                 testID="user-name"
                 style={TextStyles.title}
               >{`${firstName} ${lastName}`}</Text>
               {renderNotificationIndicator()}
             </View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={styles.headerRow}>
               <Text
                 testID="num-moments"
                 style={[TextStyles.large]}
@@ -159,10 +159,15 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 20
   },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
   loaderContainer: {
     position: "absolute",
     left: 20,
     right: 20,
+    bottom: 20,
     alignItems: "center"
   },
   row: {
@@ -179,7 +184,6 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     borderRadius: 15,
-
     padding: 5,
     backgroundColor: Colors.pink,
     justifyContent: "center",
