@@ -112,6 +112,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
       index => {
         if (!index) {
           deletePost(id);
+          navigation.goBack();
         }
       }
     );

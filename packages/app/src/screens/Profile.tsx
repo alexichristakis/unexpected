@@ -1,10 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState
-} from "react";
-import { StatusBar, StyleSheet } from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import {
+  StyleSheet,
+  NativeSyntheticEvent,
+  NativeScrollEvent
+} from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -14,6 +13,7 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import { Post } from "@unexpected/global";
 import uuid from "uuid/v4";
+import Haptics from "react-native-haptic-feedback";
 
 import { Grid, Top } from "@components/Profile";
 import { FriendButton, NavBar } from "@components/universal";
@@ -135,6 +135,24 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       });
     };
 
+    const handleOnScrollEndDrag = (
+      event: NativeSyntheticEvent<NativeScrollEvent>
+    ) => {
+      const {
+        nativeEvent: {
+          contentOffset: { y }
+        }
+      } = event;
+
+      if (y < -100) {
+        Haptics.trigger("impactMedium");
+        fetchUser(phoneNumber);
+
+        // if friends fetch and render posts too
+        if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
+      }
+    };
+
     return (
       <Screen style={styles.container}>
         <NavBar
@@ -153,6 +171,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           onPressPost={handleOnPressPost}
           scrollY={scrollY}
           friendStatus={getFriendStatusState()}
+          onScrollEndDrag={handleOnScrollEndDrag}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
           posts={releasedPosts}

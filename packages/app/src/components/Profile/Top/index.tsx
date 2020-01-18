@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { User } from "@unexpected/global";
-import { Button, UserImage } from "@components/universal";
+import { Button, UserImage, PullToRefresh } from "@components/universal";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import Gear from "@assets/svg/gear.svg";
 
@@ -43,21 +43,6 @@ export const Top: React.FC<ProfileTopProps> = ({
         translateY: scrollY.interpolate({
           inputRange: [-50, 0, 50],
           outputRange: [-50, 0, 0]
-        })
-      }
-    ]
-  };
-
-  const animatedLoaderStyle = {
-    opacity: scrollY.interpolate({
-      inputRange: [-100, 0, 50],
-      outputRange: [1, 0, 0]
-    }),
-    transform: [
-      {
-        translateY: scrollY.interpolate({
-          inputRange: [-50, 0, 50],
-          outputRange: [-20, 0, 0]
         })
       }
     ]
@@ -134,11 +119,7 @@ export const Top: React.FC<ProfileTopProps> = ({
           </View>
         </View>
       </Animated.View>
-      <Animated.Text
-        style={[TextStyles.large, styles.loaderContainer, animatedLoaderStyle]}
-      >
-        {"release to refresh"}
-      </Animated.Text>
+      <PullToRefresh scrollY={scrollY} />
     </>
   );
 };

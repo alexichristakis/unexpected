@@ -1,5 +1,10 @@
 import React, { useCallback, useState } from "react";
-import { StatusBar, StyleSheet } from "react-native";
+import {
+  StatusBar,
+  StyleSheet,
+  NativeSyntheticEvent,
+  NativeScrollEvent
+} from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -8,8 +13,9 @@ import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
-import { Post } from "@unexpected/global";
+import Haptics from "react-native-haptic-feedback";
 
+import { Post } from "@unexpected/global";
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
 import { SB_HEIGHT } from "@lib/styles";
@@ -102,12 +108,29 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       });
     };
 
+    const handleOnScrollEndDrag = (
+      event: NativeSyntheticEvent<NativeScrollEvent>
+    ) => {
+      const {
+        nativeEvent: {
+          contentOffset: { y }
+        }
+      } = event;
+
+      if (y < -100) {
+        Haptics.trigger("impactMedium");
+        fetchUser();
+        fetchUsersPosts();
+      }
+    };
+
     return (
       <Screen style={styles.container}>
         <Grid
           loading={postsLoading}
           onPressPost={handleOnPressPost}
           scrollY={scrollY}
+          onScrollEndDrag={handleOnScrollEndDrag}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
           posts={posts}
