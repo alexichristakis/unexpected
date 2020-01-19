@@ -5356,20 +5356,20 @@ react-native-iphone-x-helper@^1.2.1:
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
   integrity sha512-/VbpIEp8tSNNHIvstuA3Swx610whci1Zpc9mqNkqn14DkMbw+ORviln2u0XyHG1kPvvwTNGZY6QpeFwxYaSdbQ==
 
-react-native-notifications@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-notifications/-/react-native-notifications-3.0.0.tgz#6b331cafb3fc844fa1ffd571cb599a59639ae077"
-  integrity sha512-nwN2zS8Um+dcnlEurNJLhP3JVZAJN7vVDce0DFel9p+kicDVdW9UoUxjA0Efi2UA3inM4CGb0wZe1pSAMSY6HQ==
+react-native-notifications@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-notifications/-/react-native-notifications-3.1.0.tgz#288becfcd8128603331ea4bd86843a3d93df5cbd"
+  integrity sha512-IuE4nrWZ7lnmlLrPhG77S7fRqBiL6Iu960u05Moy3p9077bszCpXsU04zXvakGf5jEu84KATKI4V56kbDR84jQ==
 
 react-native-permissions@^2.0.8:
   version "2.0.9"
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-2.0.9.tgz#5eabdaa952dd099d14e3790af691f49ff2de0895"
   integrity sha512-64F95x4Y1RqsQiPco+Qs+OAm3rKUTRfWDMpp1f0If9YfRXOxxVFJqf7mSlVvlSY4pZAhZgLVydOmA7aTTduPUw==
 
-react-native-reanimated@^1.4.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-1.5.0.tgz#9b9e0d4d0658276a2ac7493e0b283b881a517267"
-  integrity sha512-p6zYKIpLaL/1Y7P9sIG/Ut/Vlm7LU4Mxax/CV8VHG1YSHH7qbdLzJ3XfUMAyKJaeapclSl+fYE9vS6EG3xM45g==
+react-native-reanimated@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-1.7.0.tgz#896db2576552ac59d288a1f6c7f00afc171f240c"
+  integrity sha512-FQWSqP605eQVJumuK2HpR+7heF0ZI+qfy4jNguv3Xv8nPFHeIgZaRTXHCEQL2AcuSIj50zy8jGJf5l134QMQWQ==
 
 react-native-redash@^9.5.4:
   version "9.6.0"
@@ -5386,10 +5386,10 @@ react-native-safe-area-context@^0.6.2:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-0.6.2.tgz#d467ac8a953426bfbb6d8f417222b0dc3952be7a"
   integrity sha512-VtBW0JymVCwVt0TGxTv25Co3wtOv3Yb/K5pAUYkjKXNhWFDz5ZwUG/Yho/p0EkWYlFdroJcSqlvVFl2n3AU7SA==
 
-react-native-screens@^2.0.0-alpha.24:
-  version "2.0.0-alpha.24"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.24.tgz#b904b85cdabc2de9717e9a598bb1e63e912bd33e"
-  integrity sha512-rvqUk8ZAIUUG3jYpJtDr2pLmwt2+VMQcZq4mHWbKGEtBsRjqLpCfAneMS10vUfxEyZw+X0bk+uzMpzrq5rfCfA==
+react-native-screens@^2.0.0-alpha.25:
+  version "2.0.0-alpha.25"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.25.tgz#790d273b41d8dde37aa3e43bc662444aff18cd20"
+  integrity sha512-IxKOqPxIWwyJhFOvfkxU/NSFzM5PRiyWWL8g0WCPozVU1KNEtJQp7j0sONkTLGQDkGwLbDu0kuGawT1zXMnE5A==
   dependencies:
     debounce "^1.2.0"
 

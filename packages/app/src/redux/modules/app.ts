@@ -131,6 +131,7 @@ function* appWatcher() {
 
     if (appStatus) {
       if (appStatus === "active") {
+        console.log("CHECK CAMERA");
         yield call(checkCameraStatus);
       }
 
@@ -143,10 +144,11 @@ function* appWatcher() {
   }
 }
 
-const appEmitter = () => {
-  return eventChannel(emit => {
+const appEmitter = () =>
+  eventChannel(emit => {
     const appStatusHandler = (state: AppStatusType) =>
       emit({ appStatus: state });
+
     const netInfoHandler = (state: NetInfoState) => emit({ netInfo: state });
 
     AppStatus.addEventListener("change", appStatusHandler);
@@ -157,7 +159,6 @@ const appEmitter = () => {
       AppStatus.removeEventListener("change", appStatusHandler);
     };
   });
-};
 
 function* notificationWatcher() {
   const notificationChannel = yield call(notificationEmitter);
@@ -181,7 +182,7 @@ function* notificationWatcher() {
 
       // notification is to start the photo clock
       if (data.photoTime) {
-        const { time }: { time: Date } = data;
+        const { time } = data;
 
         const expiry = moment(time).add(NOTIFICATION_MINUTES, "minutes");
 
@@ -191,48 +192,50 @@ function* notificationWatcher() {
   }
 }
 
-const notificationEmitter = () => {
-  return eventChannel(emit => {
-    const tokenSubscriber = Notifications.events().registerRemoteNotificationsRegistered(
-      event => {
+const notificationEmitter = () =>
+  eventChannel(emit => {
+    const subscribers = [
+      Notifications.events().registerRemoteNotificationsRegistered(event => {
         emit({ token: event.deviceToken });
-      }
-    );
+      }),
+      Notifications.events().registerNotificationReceivedForeground(
+        (notification, complete) => {
+          emit({ notification });
+          complete({ badge: false, alert: false, sound: false });
+        }
+      ),
+      Notifications.events().registerNotificationReceivedBackground(
+        (notification, complete) => {
+          emit({ notification });
+          complete({ badge: true, alert: true, sound: true });
+        }
+      ),
+      Notifications.events().registerNotificationOpened(
+        (notification, complete) => {
+          emit({ notification });
+          complete();
+        }
+      )
+    ];
 
-    const receivedSubscriber = Notifications.events().registerNotificationReceived(
-      (notification, complete) => {
-        emit({ notification });
-        complete({ badge: false, alert: false, sound: false });
-      }
-    );
-
-    const openedSubscriber = Notifications.events().registerRemoteNotificationOpened(
-      (notification, complete) => {
-        emit({ notification });
-        complete();
-      }
-    );
-
-    return () => {
-      tokenSubscriber.remove();
-      receivedSubscriber.remove();
-      openedSubscriber.remove();
-    };
+    return () => {};
   });
-};
 
 function* checkCameraStatus() {
   const jwt = yield select(selectors.jwt);
+
   if (jwt) {
     // check if camera should be enabled
     const phoneNumber = yield select(selectors.phoneNumber);
 
     try {
-      const {
-        data: { enabled, start }
-      } = yield call(client.get, `/user/${phoneNumber}/camera`, {
+      const res = yield client.get(`/user/${phoneNumber}/camera`, {
         headers: getHeaders({ jwt })
       });
+
+      const {
+        data: { enabled, start }
+      } = res;
 
       if (enabled) {
         yield put(

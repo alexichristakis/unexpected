@@ -212,7 +212,7 @@ PODS:
     - React
   - react-native-netinfo (5.3.2):
     - React
-  - react-native-notifications (3.0.0):
+  - react-native-notifications (3.1.0):
     - React
   - react-native-safe-area-context (0.6.2):
     - React
@@ -263,9 +263,9 @@ PODS:
     - React
   - RNReactNativeHapticFeedback (1.8.2):
     - React
-  - RNReanimated (1.5.0):
+  - RNReanimated (1.7.0):
     - React
-  - RNScreens (2.0.0-alpha.24):
+  - RNScreens (2.0.0-alpha.25):
     - React
   - RNSVG (9.13.6):
     - React
@@ -448,7 +448,7 @@ SPEC CHECKSUMS:
   react-native-contacts: 9c89131a1f63af0618d54af5ca1cd88b06d41a05
   react-native-image-resizer: 1ffe71ec5f2596c3a24d42548c03bfbfb06fe810
   react-native-netinfo: 817823a90f13ced48413875c0820df04c3aae28d
-  react-native-notifications: babab4bcceb9feaced4184cdf8c02db6a4b6c5aa
+  react-native-notifications: 208904de966fa1f636e66023dd796438fa778c5b
   react-native-safe-area-context: 25260c5d0b9c53fd7aa88e569e2edae72af1f6a3
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
@@ -466,8 +466,8 @@ SPEC CHECKSUMS:
   RNGestureHandler: 02905abe54e1f6e59c081a10b4bd689721e17aa6
   RNPermissions: 2f74237e97b08beda01e914301e12524ddddf5b8
   RNReactNativeHapticFeedback: e11a4da0ce174e9f88b03cbaf5d76d94633cdee2
-  RNReanimated: 1761c14b3982fc77fc9fdad6ea2f42ed861c342a
-  RNScreens: 52650fc6874b8ba68a88da452833562fcf45afb5
+  RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
+  RNScreens: 031d10e2b648afc9546f16b6a786d2efc6870310
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
