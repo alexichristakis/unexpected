@@ -4,15 +4,17 @@ import Agenda from "agenda";
 import moment from "moment-timezone";
 import uuid from "uuid/v4";
 
-import { UserNotificationRecord, User } from "@unexpected/global";
+import { User } from "@unexpected/global";
 
 import { UserService } from "./user";
 import { NotificationService } from "./notification";
 import { SlackLogService } from "./logger";
+import { AuthService } from "./auth";
 
 export enum AgendaJobs {
   GENERATE_NOTIFICATIONS = "GENERATE_NOTIFICATIONS",
-  SEND_NOTIFICATION = "SEND_NOTIFICATION"
+  SEND_NOTIFICATION = "SEND_NOTIFICATION",
+  CLEAR_CODES = "CLEAR_CODES"
 }
 
 @Service()
@@ -25,6 +27,9 @@ export class SchedulerService {
 
   @Inject(UserService)
   private userService: UserService;
+
+  @Inject(AuthService)
+  private authService: AuthService;
 
   @Inject(SlackLogService)
   private slackLogger: SlackLogService;
@@ -68,32 +73,29 @@ export class SchedulerService {
             "lastName"
           ]);
 
-          let generatedTimes: UserNotificationRecord[] = [];
-
-          users.forEach(user => {
-            const res = this.scheduleNotificationForUser(user);
-            generatedTimes.push(res);
-          });
+          const generatedTimes = await Promise.all(
+            users.map(user => this.scheduleNotificationForUser(user))
+          );
 
           await Promise.all([
             this.userService.setNotificationTimes(generatedTimes),
-            this.slackLogger.sendMessage(
-              "notifications generated",
-              `\`\`\`${generatedTimes.reduce((prev, curr) => {
-                return (prev += ` { ${
-                  curr.phoneNumber
-                }: ${curr.notifications
-                  .map(noti =>
-                    moment.tz(noti, "America/Los_Angeles").format("h:mm:ss a")
-                  )
-                  .join(", ")} }`);
-              }, "")}\`\`\``
-            )
+            this.slackLogger.logNotifications(generatedTimes)
           ]);
         });
 
+        this.agenda.define(AgendaJobs.CLEAR_CODES, async () => {
+          await this.authService.clearOldCodes();
+        });
+
         await this.agenda.start();
-        await this.scheduleNotificationGeneration();
+
+        /* every day at 4am */
+        await this.agenda.every(
+          "0 4 * * *",
+          [AgendaJobs.GENERATE_NOTIFICATIONS, AgendaJobs.CLEAR_CODES],
+          {},
+          { timezone: "America/New_York" }
+        );
 
         resolve();
       });
@@ -101,7 +103,7 @@ export class SchedulerService {
   }
 
   // takes a user, schedules n notifications for them, returns the times
-  scheduleNotificationForUser = (user: User) => {
+  scheduleNotificationForUser = async (user: User) => {
     const { phoneNumber, timezone } = user;
 
     // to eventually pull from user entity
@@ -109,21 +111,23 @@ export class SchedulerService {
 
     const times = this.generateTimes(timezone, NUM_NOTIFICATIONS);
 
-    times.forEach(time => {
-      const dateInstance = moment(time);
+    const jobs = await Promise.all(
+      times.map(time => {
+        const dateInstance = moment(time);
 
-      $log.info(
-        `notification for ${user.firstName} at: ${dateInstance.format(
-          "dddd, MMMM Do YYYY, h:mm:ss a"
-        )}`
-      );
+        $log.info(
+          `notification for ${user.firstName} at: ${dateInstance.format(
+            "dddd, MMMM Do YYYY, h:mm:ss a"
+          )}`
+        );
 
-      this.agenda.schedule(
-        dateInstance.toDate(),
-        AgendaJobs.SEND_NOTIFICATION,
-        { to: user, id: uuid() }
-      );
-    });
+        return this.agenda.schedule(
+          dateInstance.toDate(),
+          AgendaJobs.SEND_NOTIFICATION,
+          { to: user, id: uuid() }
+        );
+      })
+    );
 
     return { phoneNumber, notifications: times };
   };
@@ -157,10 +161,5 @@ export class SchedulerService {
     }
 
     return times;
-  };
-
-  scheduleNotificationGeneration = async () => {
-    // await this.agenda.now(AgendaJobs.GENERATE_NOTIFICATIONS);
-    await this.agenda.every("day", AgendaJobs.GENERATE_NOTIFICATIONS);
   };
 }

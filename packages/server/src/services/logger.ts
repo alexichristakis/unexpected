@@ -1,5 +1,8 @@
 import { Service } from "@tsed/common";
 import { WebClient, ChatPostMessageArguments } from "@slack/web-api";
+import moment from "moment-timezone";
+
+import { UserNotificationRecord } from "@unexpected/global";
 
 export type Topics = "Post" | "New User" | "";
 
@@ -13,5 +16,18 @@ export class SlackLogService {
       channel: "CSBMSNQG6",
       text: `${topic}: ${body}`
     });
+  }
+
+  async logNotifications(times: UserNotificationRecord[]) {
+    return this.sendMessage(
+      "notifications generated",
+      `\`\`\`${times.reduce((prev, curr) => {
+        return (prev += ` { ${
+          curr.phoneNumber
+        }: ${curr.notifications
+          .map(noti => moment.tz(noti, "America/New_York").format("h:mm:ss a"))
+          .join(", ")} }`);
+      }, "")}\`\`\``
+    );
   }
 }
