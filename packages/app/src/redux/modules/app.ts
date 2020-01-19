@@ -193,25 +193,31 @@ function* notificationWatcher() {
 
 const notificationEmitter = () => {
   return eventChannel(emit => {
-    Notifications.events().registerRemoteNotificationsRegistered(event => {
-      emit({ token: event.deviceToken });
-    });
+    const tokenSubscriber = Notifications.events().registerRemoteNotificationsRegistered(
+      event => {
+        emit({ token: event.deviceToken });
+      }
+    );
 
-    Notifications.events().registerNotificationReceived(
+    const receivedSubscriber = Notifications.events().registerNotificationReceived(
       (notification, complete) => {
         emit({ notification });
         complete({ badge: false, alert: false, sound: false });
       }
     );
 
-    Notifications.events().registerRemoteNotificationOpened(
+    const openedSubscriber = Notifications.events().registerRemoteNotificationOpened(
       (notification, complete) => {
         emit({ notification });
         complete();
       }
     );
 
-    return () => {};
+    return () => {
+      tokenSubscriber.remove();
+      receivedSubscriber.remove();
+      openedSubscriber.remove();
+    };
   });
 };
 

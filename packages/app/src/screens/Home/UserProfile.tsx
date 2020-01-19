@@ -1,5 +1,10 @@
 import React, { useCallback, useState } from "react";
-import { StatusBar, StyleSheet } from "react-native";
+import {
+  StatusBar,
+  StyleSheet,
+  NativeSyntheticEvent,
+  NativeScrollEvent
+} from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -7,9 +12,10 @@ import isEqual from "lodash/isEqual";
 import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { PostType } from "unexpected-cloud/models/post";
 import uuid from "uuid/v4";
+import Haptics from "react-native-haptic-feedback";
 
+import { Post } from "@unexpected/global";
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
 import { SB_HEIGHT } from "@lib/styles";
@@ -58,6 +64,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       useCallback(() => {
         StatusBar.setHidden(false);
         fetchUser();
+
         if (stale) fetchUsersPosts();
 
         return () => {};
@@ -82,7 +89,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser={true}
+        isUser
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}
@@ -93,12 +100,28 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       />
     );
 
-    const handleOnPressPost = (post: PostType) => {
+    const handleOnPressPost = (post: Post) => {
       navigation.navigate({
         name: "POST",
         key: uuid(),
         params: { prevRoute: user.firstName, post: { ...post, user } }
       });
+    };
+
+    const handleOnScrollEndDrag = (
+      event: NativeSyntheticEvent<NativeScrollEvent>
+    ) => {
+      const {
+        nativeEvent: {
+          contentOffset: { y }
+        }
+      } = event;
+
+      if (y < -100) {
+        Haptics.trigger("impactMedium");
+        fetchUser();
+        fetchUsersPosts();
+      }
     };
 
     return (
@@ -107,6 +130,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           loading={postsLoading}
           onPressPost={handleOnPressPost}
           scrollY={scrollY}
+          onScrollEndDrag={handleOnScrollEndDrag}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
           posts={posts}

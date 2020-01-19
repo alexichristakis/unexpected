@@ -1,10 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState
-} from "react";
-import { StatusBar, StyleSheet } from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import {
+  StyleSheet,
+  NativeSyntheticEvent,
+  NativeScrollEvent
+} from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -12,8 +11,9 @@ import isEqual from "lodash/isEqual";
 import Animated, { TransitioningView } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { PostType } from "unexpected-cloud/models/post";
+import { Post } from "@unexpected/global";
 import uuid from "uuid/v4";
+import Haptics from "react-native-haptic-feedback";
 
 import { Grid, Top } from "@components/Profile";
 import { FriendButton, NavBar } from "@components/universal";
@@ -127,12 +127,30 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       />
     );
 
-    const handleOnPressPost = (post: PostType) => {
+    const handleOnPressPost = (post: Post) => {
       navigation.navigate({
         name: "POST",
         key: uuid(),
         params: { prevRoute: user.firstName, post: { ...post, user } }
       });
+    };
+
+    const handleOnScrollEndDrag = (
+      event: NativeSyntheticEvent<NativeScrollEvent>
+    ) => {
+      const {
+        nativeEvent: {
+          contentOffset: { y }
+        }
+      } = event;
+
+      if (y < -100) {
+        Haptics.trigger("impactMedium");
+        fetchUser(phoneNumber);
+
+        // if friends fetch and render posts too
+        if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
+      }
     };
 
     return (
@@ -147,12 +165,13 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           rightButton={<FriendButton showLabel={!showTitle} user={user} />}
         />
         <Grid
+          user={user}
           transitionRef={gridTransitionRef}
           loading={postsLoading}
-          user={user}
           onPressPost={handleOnPressPost}
           scrollY={scrollY}
           friendStatus={getFriendStatusState()}
+          onScrollEndDrag={handleOnScrollEndDrag}
           ListHeaderComponentStyle={styles.headerContainer}
           ListHeaderComponent={renderTop}
           posts={releasedPosts}

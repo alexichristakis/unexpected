@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import uuid from "uuid/v4";
+import random from "lodash/random";
 import { Post } from "@unexpected/global";
 
 import { TextStyles } from "@lib/styles";
@@ -38,42 +39,71 @@ export const Month: React.FC<MonthProps> = React.memo(
         const remainingPosts = posts.length - index;
 
         let addedPosts = 0;
-        if (remainingPosts <= 5) {
+        if (remainingPosts <= 3) {
+          // single row of photos
           rows.push({
             id: uuid(),
-            type: RowTypes.B,
+            type: RowTypes.A,
             posts: posts.slice(index)
           });
 
           addedPosts = remainingPosts;
         } else {
-          const version = Math.floor(Math.random() * 3);
+          const version = random(Object.keys(RowTypes).length);
           const id = uuid();
 
-          if (version === 0) {
-            rows.push({
-              id,
-              type: RowTypes.A,
-              posts: posts.slice(index, index + 4)
-            });
+          switch (version) {
+            case RowTypes.A: {
+              if (remainingPosts >= 5) {
+                addedPosts = 5;
 
-            addedPosts = 4;
-          } else if (version === 1) {
-            rows.push({
-              id,
-              type: RowTypes.B,
-              posts: posts.slice(index, index + 5)
-            });
+                rows.push({
+                  id,
+                  type: RowTypes.A,
+                  posts: posts.slice(index, index + addedPosts)
+                });
+              }
 
-            addedPosts = 5;
-          } else {
-            rows.push({
-              id,
-              type: RowTypes.C,
-              posts: posts.slice(index, index + 4)
-            });
+              break;
+            }
 
-            addedPosts = 4;
+            case RowTypes.B: {
+              addedPosts = 4;
+
+              rows.push({
+                id,
+                type: RowTypes.B,
+                posts: posts.slice(index, index + addedPosts)
+              });
+
+              break;
+            }
+
+            case RowTypes.C: {
+              addedPosts = 4;
+
+              rows.push({
+                id,
+                type: RowTypes.C,
+                posts: posts.slice(index, index + addedPosts)
+              });
+
+              break;
+            }
+
+            case RowTypes.D: {
+              if (remainingPosts >= 5) {
+                addedPosts = 5;
+
+                rows.push({
+                  id,
+                  type: RowTypes.D,
+                  posts: posts.slice(index, index + addedPosts)
+                });
+              }
+
+              break;
+            }
           }
         }
 

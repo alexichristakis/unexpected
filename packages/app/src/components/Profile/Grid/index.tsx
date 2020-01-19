@@ -5,7 +5,9 @@ import {
   StyleSheet,
   Text,
   View,
-  ViewStyle
+  ViewStyle,
+  NativeScrollEvent,
+  NativeSyntheticEvent
 } from "react-native";
 
 import groupBy from "lodash/groupBy";
@@ -23,7 +25,7 @@ import { Colors, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { onScroll } from "react-native-redash";
 import { Month, Months } from "./Month";
-import testPosts from "./test_data";
+// import testPosts from "./test_data";
 
 export interface GridProps {
   transitionRef?: React.Ref<TransitioningView>;
@@ -31,6 +33,7 @@ export interface GridProps {
   user?: User;
   friendStatus?: "friends" | "notFriends" | "unknown";
   loading: boolean;
+  onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
   onPressPost: (item: Post) => void;
   ListHeaderComponentStyle?: ViewStyle;
   ListHeaderComponent?: React.ComponentType<any>;
@@ -44,6 +47,7 @@ export const Grid: React.FC<GridProps> = ({
   onPressPost,
   ListHeaderComponentStyle,
   ListHeaderComponent,
+  onScrollEndDrag,
   scrollY,
   user,
   posts
@@ -140,6 +144,7 @@ export const Grid: React.FC<GridProps> = ({
         contentContainerStyle={styles.contentContainer}
         renderItem={renderMonth}
         data={months as any}
+        onScrollEndDrag={onScrollEndDrag}
         renderScrollComponent={props => (
           <Animated.ScrollView
             {...props}
@@ -159,7 +164,7 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   contentContainer: {
-    paddingBottom: 40
+    paddingBottom: 100
   },
   separator: {
     alignSelf: "stretch",

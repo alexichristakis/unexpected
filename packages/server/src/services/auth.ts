@@ -44,6 +44,10 @@ export class AuthService {
       .catch(error => error);
   }
 
+  async clearOldCodes() {
+    return this.verificationMessageModel.deleteMany({}).exec();
+  }
+
   async checkVerification(
     phoneNumber: string,
     sentCode: string

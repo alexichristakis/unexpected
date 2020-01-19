@@ -1,60 +1,20 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { PostType } from "unexpected-cloud/models/post";
+import { Post } from "@unexpected/global";
 
-import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/styles";
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/constants";
 
 export interface AProps {
-  renderPost: (post: PostType, size: number) => JSX.Element;
-  posts: PostType[];
+  renderPost: (post: Post, size: number) => JSX.Element;
+  posts: Post[];
 }
 
-export const ASizes = {
-  large: COLUMN_WIDTH * 2 + IMAGE_GUTTER,
-  small: COLUMN_WIDTH
-};
-
-const A: React.FC<AProps> = ({ renderPost, posts }) => {
-  const version = Math.random() * 3;
-
-  if (version < 1) {
-    return (
-      <View style={styles.container}>
-        {renderPost(posts[0], ASizes.large)}
-        <View style={styles.middleColumn}>
-          {renderPost(posts[1], ASizes.small)}
-          {renderPost(posts[2], ASizes.small)}
-        </View>
-        {renderPost(posts[3], ASizes.large)}
-      </View>
-    );
-  }
-
-  if (version < 2) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.middleColumn}>
-          {renderPost(posts[0], ASizes.small)}
-          {renderPost(posts[1], ASizes.small)}
-        </View>
-        {renderPost(posts[2], ASizes.large)}
-        {renderPost(posts[3], ASizes.large)}
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      {renderPost(posts[2], ASizes.large)}
-      {renderPost(posts[3], ASizes.large)}
-      <View style={styles.middleColumn}>
-        {renderPost(posts[0], ASizes.small)}
-        {renderPost(posts[1], ASizes.small)}
-      </View>
-    </View>
-  );
-};
+const A: React.FC<AProps> = ({ renderPost, posts }) => (
+  <View style={styles.container}>
+    {posts.map(post => renderPost(post, COLUMN_WIDTH(posts.length)))}
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -63,11 +23,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: IMAGE_GUTTER,
     marginVertical: IMAGE_GUTTER / 2
-  },
-  middleColumn: {
-    justifyContent: "space-between",
-    width: ASizes.small,
-    height: ASizes.large
   }
 });
 

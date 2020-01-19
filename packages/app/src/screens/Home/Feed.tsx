@@ -63,7 +63,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
     refreshing,
     shouldLaunchPermissions
   }) => {
-    const [readyForRefresh, setReadyForRefresh] = useState<0 | 1>(0);
     const [statusBarVisible, setStatusBarVisible] = useState(true);
     const [statusBarAnimatedValue] = useState(new Value(0));
     const [scrollY] = useState(new Value(0));
@@ -93,33 +92,13 @@ export const Feed: React.FC<FeedProps> = React.memo(
       () =>
         block([
           cond(
-            lessThan(scrollY, -100),
-            call([], ([]) => setReadyForRefresh(1))
-          ),
-          cond(
-            greaterOrEq(scrollY, -100),
-            call([], ([]) => setReadyForRefresh(0))
-          ),
-          cond(
             greaterOrEq(scrollY, 40),
             call([], ([]) => hideStatusBar()),
             call([], ([]) => showStatusBar())
           )
         ]),
-      [readyForRefresh, statusBarVisible]
+      [statusBarVisible]
     );
-
-    const handleScrollEndDrag = ({
-      nativeEvent
-    }: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const {
-        contentOffset: { y }
-      } = nativeEvent;
-      if (y < -100) {
-        Haptics.trigger("impactMedium");
-        fetchFeed();
-      }
-    };
 
     const animatedStatusBarStyle = {
       transform: [{ translateY: statusBarAnimatedValue }]
@@ -155,6 +134,21 @@ export const Feed: React.FC<FeedProps> = React.memo(
       return { sortedPosts, latest };
     };
 
+    const handleOnScrollEndDrag = (
+      event: NativeSyntheticEvent<NativeScrollEvent>
+    ) => {
+      const {
+        nativeEvent: {
+          contentOffset: { y }
+        }
+      } = event;
+
+      if (y < -100) {
+        Haptics.trigger("impactMedium");
+        fetchFeed();
+      }
+    };
+
     const handleOnPressUser = (user: User) => {
       if (phoneNumber === user.phoneNumber) {
         navigation.navigate("USER_PROFILE");
@@ -186,14 +180,13 @@ export const Feed: React.FC<FeedProps> = React.memo(
         <Posts
           posts={sortedPosts}
           scrollY={scrollY}
-          readyForRefresh={readyForRefresh}
           refreshing={refreshing}
           latest={latest}
+          onScrollEndDrag={handleOnScrollEndDrag}
           onGestureBegan={handleOnGestureBegan}
           onGestureComplete={handleOnGestureComplete}
           onPressUser={handleOnPressUser}
           onPressShare={handleOnPressShare}
-          onScrollEndDrag={handleScrollEndDrag}
         />
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />

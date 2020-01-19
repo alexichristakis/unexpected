@@ -1,32 +1,59 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { PostType } from "unexpected-cloud/models/post";
+import { Post } from "@unexpected/global";
 
-import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/styles";
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/constants";
 
 export interface BProps {
-  renderPost: (post: PostType, size: number) => JSX.Element;
-  posts: PostType[];
+  renderPost: (post: Post, size: number) => JSX.Element;
+  posts: Post[];
 }
 
-export const BSize = COLUMN_WIDTH;
+export const BSizes = {
+  large: COLUMN_WIDTH(5, 2) + IMAGE_GUTTER,
+  small: COLUMN_WIDTH(5, 1)
+};
 
 const B: React.FC<BProps> = ({ renderPost, posts }) => {
-  const renderPosts = () => {
-    const elements: JSX.Element[] = [];
-    for (let i = 0; i < 5; i++) {
-      if (i <= posts.length - 1) {
-        elements.push(renderPost(posts[i], BSize));
-      } else {
-        elements.push(<View key={i} style={styles.filler} />);
-      }
-    }
+  const version = Math.random() * 3;
 
-    return elements;
-  };
+  if (version < 1) {
+    return (
+      <View style={styles.container}>
+        {renderPost(posts[0], BSizes.large)}
+        <View style={styles.middleColumn}>
+          {renderPost(posts[1], BSizes.small)}
+          {renderPost(posts[2], BSizes.small)}
+        </View>
+        {renderPost(posts[3], BSizes.large)}
+      </View>
+    );
+  }
 
-  return <View style={styles.container}>{renderPosts()}</View>;
+  if (version < 2) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.middleColumn}>
+          {renderPost(posts[0], BSizes.small)}
+          {renderPost(posts[1], BSizes.small)}
+        </View>
+        {renderPost(posts[2], BSizes.large)}
+        {renderPost(posts[3], BSizes.large)}
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      {renderPost(posts[2], BSizes.large)}
+      {renderPost(posts[3], BSizes.large)}
+      <View style={styles.middleColumn}>
+        {renderPost(posts[0], BSizes.small)}
+        {renderPost(posts[1], BSizes.small)}
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -37,9 +64,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: IMAGE_GUTTER,
     marginVertical: IMAGE_GUTTER / 2
   },
-  filler: {
-    width: BSize,
-    height: BSize
+  middleColumn: {
+    justifyContent: "space-between",
+    width: BSizes.small,
+    height: BSizes.large
   }
 });
 

@@ -1,19 +1,19 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { PostType } from "unexpected-cloud/models/post";
+import { Post } from "@unexpected/global";
 
-import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/styles";
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/constants";
 
 export interface CProps {
-  renderPost: (post: PostType, size: number) => JSX.Element;
-  posts: PostType[];
+  renderPost: (post: Post, size: number) => JSX.Element;
+  posts: Post[];
 }
 
 export const CSizes = {
-  large: 3 * COLUMN_WIDTH + 2 * IMAGE_GUTTER,
-  medium: 2 * COLUMN_WIDTH + IMAGE_GUTTER,
-  small: COLUMN_WIDTH
+  large: COLUMN_WIDTH(5, 3) + 2 * IMAGE_GUTTER,
+  medium: COLUMN_WIDTH(5, 2) + IMAGE_GUTTER,
+  small: COLUMN_WIDTH(5)
 };
 
 const C: React.FC<CProps> = ({ renderPost, posts }) => {

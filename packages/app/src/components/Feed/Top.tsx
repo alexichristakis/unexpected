@@ -5,57 +5,23 @@ import moment, { Moment } from "moment";
 import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 
-import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
-
-const {
-  Value,
-  block,
-  cond,
-  set,
-  sub,
-  onChange,
-  call,
-  and,
-  lessThan,
-  greaterOrEq,
-  useCode
-} = Animated;
+import { PullToRefresh } from "@components/universal";
+import { SCREEN_WIDTH, TextStyles, SB_HEIGHT } from "@lib/styles";
 
 export interface FeedTopProps {
   latest?: Date;
-  readyForRefresh: 0 | 1;
   refreshing: boolean;
   scrollY: Animated.Value<number>;
 }
-export const Top: React.FC<FeedTopProps> = React.memo(
-  ({ latest, scrollY, readyForRefresh, refreshing }) => {
-    useEffect(() => {
-      if (readyForRefresh) {
-        Haptics.trigger("impactLight");
-      }
-    }, [readyForRefresh]);
 
+export const Top: React.FC<FeedTopProps> = React.memo(
+  ({ latest, scrollY, refreshing }) => {
     const animatedStyle = {
       transform: [
         {
           translateY: scrollY.interpolate({
             inputRange: [-50, 0, 50],
             outputRange: [-50, 0, 0]
-          })
-        }
-      ]
-    };
-
-    const animatedLoaderStyle = {
-      opacity: scrollY.interpolate({
-        inputRange: [-100, 0, 50],
-        outputRange: [1, 0, 0]
-      }),
-      transform: [
-        {
-          translateY: scrollY.interpolate({
-            inputRange: [-50, 0, 50],
-            outputRange: [-20, 0, 0]
           })
         }
       ]
@@ -78,15 +44,7 @@ export const Top: React.FC<FeedTopProps> = React.memo(
 
       return (
         <>
-          <Animated.Text
-            style={[
-              TextStyles.large,
-              styles.loaderContainer,
-              animatedLoaderStyle
-            ]}
-          >
-            {readyForRefresh === 1 ? "release to refresh" : "pull to refresh"}
-          </Animated.Text>
+          <PullToRefresh scrollY={scrollY} />
           <Animated.View style={[styles.container, animatedStyle]}>
             <View style={styles.textContainer}>
               <Text style={TextStyles.title}>{formatTitle(date)}</Text>
@@ -101,15 +59,7 @@ export const Top: React.FC<FeedTopProps> = React.memo(
     } else {
       return (
         <>
-          <Animated.Text
-            style={[
-              TextStyles.large,
-              styles.loaderContainer,
-              animatedLoaderStyle
-            ]}
-          >
-            {readyForRefresh === 1 ? "release to refresh" : "pull to refresh"}
-          </Animated.Text>
+          <PullToRefresh scrollY={scrollY} />
           <Animated.View style={[styles.container, animatedStyle]}>
             <View style={styles.textContainer}>
               <Text style={TextStyles.title}>Feed</Text>
@@ -137,7 +87,7 @@ const styles = StyleSheet.create({
   loaderContainer: {
     position: "absolute",
     height: 100,
-    top: 40,
+    bottom: 20,
     left: 20,
     right: 20
   },

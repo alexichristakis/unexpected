@@ -42,7 +42,6 @@ export interface PostsProps {
   onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
   latest?: Date;
   refreshing: boolean;
-  readyForRefresh: 0 | 1;
   posts: FeedPost[];
 }
 
@@ -50,7 +49,6 @@ export const Posts: React.FC<PostsProps> = React.memo(
   ({
     scrollY,
     refreshing,
-    readyForRefresh,
     posts,
     onScrollEndDrag,
     onGestureBegan,
@@ -88,12 +86,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
     }, [posts.length]);
 
     const renderTop = () => (
-      <Top
-        latest={latest}
-        readyForRefresh={readyForRefresh}
-        refreshing={refreshing}
-        scrollY={scrollY}
-      />
+      <Top latest={latest} refreshing={refreshing} scrollY={scrollY} />
     );
 
     const renderEmptyComponent = () => (
@@ -175,7 +168,6 @@ export const Posts: React.FC<PostsProps> = React.memo(
   },
   (prevProps, nextProps) =>
     prevProps.posts.length === nextProps.posts.length &&
-    prevProps.readyForRefresh === nextProps.readyForRefresh &&
     prevProps.refreshing === nextProps.refreshing
 );
 
