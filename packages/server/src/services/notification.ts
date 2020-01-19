@@ -1,12 +1,12 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Provider, Notification } from "apn";
+import { Notification, Provider } from "apn";
 import moment from "moment";
 import { Document } from "mongoose";
 
-import { UserService } from "./user";
 import { User as UserModel } from "../models/user";
 import { SentryService } from "./sentry";
+import { UserService } from "./user";
 
 const settings = {
   fcm: {
@@ -14,9 +14,9 @@ const settings = {
   },
   apns: {
     token: {
-      key: <string>process.env.APNS_KEY,
-      keyId: <string>process.env.APNS_KEY_ID,
-      teamId: <string>process.env.APNS_TEAM_ID
+      key: process.env.APNS_KEY as string,
+      keyId: process.env.APNS_KEY_ID as string,
+      teamId: process.env.APNS_TEAM_ID as string
     },
     production: !!process.env.PORT ? true : false
   }

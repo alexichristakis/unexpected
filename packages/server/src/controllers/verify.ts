@@ -1,4 +1,4 @@
-import { Inject, Controller, Post, PathParams } from "@tsed/common";
+import { Controller, Inject, PathParams, Post } from "@tsed/common";
 
 import { AuthService } from "../services/auth";
 import { UserService } from "../services/user";

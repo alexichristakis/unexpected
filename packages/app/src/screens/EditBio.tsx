@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   Keyboard,
+  KeyboardAvoidingView,
   NativeSyntheticEvent,
   StyleSheet,
   Text,
   TextInputKeyPressEventData,
   TextInputSubmitEditingEventData,
-  View,
-  KeyboardAvoidingView
+  View
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
@@ -17,7 +17,7 @@ import _ from "lodash";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import { Input, Button } from "@components/universal";
+import { Button, Input } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";

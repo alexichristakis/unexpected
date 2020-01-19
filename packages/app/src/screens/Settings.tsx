@@ -12,9 +12,9 @@ import { useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
 import Contacts from "react-native-contacts";
-import uuid from "uuid/v4";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import uuid from "uuid/v4";
 
 import {
   Button,

@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useMemo, useRef, createRef } from "react";
+import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
 import {
-  View,
   FlatList,
   ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleSheet,
+  View,
   ViewToken
 } from "react-native";
 
+import { FeedPost, User } from "@unexpected/global";
 import Animated, { Easing } from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
-import { User, FeedPost } from "@unexpected/global";
 
 import {
   Button,
@@ -21,8 +21,8 @@ import {
   ZoomHandler,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
-import { SB_HEIGHT } from "@lib/styles";
 import { FEED_POST_HEIGHT, FEED_POST_WIDTH } from "@lib/constants";
+import { SB_HEIGHT } from "@lib/styles";
 
 import { Top } from "./Top";
 
@@ -59,7 +59,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
   }) => {
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const [animatedValue] = useState(new Animated.Value(0));
-    const [viewableItems, setViewableItems] = useState<(number | null)[]>([]);
+    const [viewableItems, setViewableItems] = useState<Array<number | null>>([]);
 
     // const cellRefs = useRef<{ [id: string]: React.RefObject<typeof Post> }>({});
     // const onViewableItemsChangedRef = useRef(
@@ -91,7 +91,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
     const renderEmptyComponent = () => (
       <Button
-        white
+        white={true}
         title="share your first photo"
         style={{ marginHorizontal: 20 }}
         onPress={onPressShare}

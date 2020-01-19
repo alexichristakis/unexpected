@@ -1,12 +1,12 @@
 import {
-  Controller,
   BodyParams,
+  Controller,
   Get,
-  Put,
-  PathParams,
-  UseAuth,
   Inject,
-  Patch
+  Patch,
+  PathParams,
+  Put,
+  UseAuth
 } from "@tsed/common";
 import moment from "moment";
 

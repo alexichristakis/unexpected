@@ -3,12 +3,12 @@ import {
   ServerLoader,
   ServerSettings
 } from "@tsed/common";
-import "@tsed/multipartfiles";
 import "@tsed/mongoose";
+import "@tsed/multipartfiles";
 
-import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import compress from "compression";
+import cookieParser from "cookie-parser";
 import methodOverride from "method-override";
 
 const PROD = !!process.env.PORT;

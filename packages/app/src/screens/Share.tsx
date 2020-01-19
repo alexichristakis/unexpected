@@ -10,12 +10,12 @@ import {
 
 import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Formik } from "formik";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { Formik } from "formik";
 
-import { Button, Input, PendingPostImage, NavBar } from "@components/universal";
-import { TextSizes, SB_HEIGHT } from "@lib/styles";
+import { Button, Input, NavBar, PendingPostImage } from "@components/universal";
+import { SB_HEIGHT, TextSizes } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -49,7 +49,7 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
     return (
       <Screen style={styles.container}>
         <NavBar
-          showBackButtonText
+          showBackButtonText={true}
           backButtonText="Capture"
           navigation={navigation}
         />

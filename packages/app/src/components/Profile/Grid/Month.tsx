@@ -1,8 +1,8 @@
+import { Post } from "@unexpected/global";
+import random from "lodash/random";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import uuid from "uuid/v4";
-import random from "lodash/random";
-import { Post } from "@unexpected/global";
 
 import { TextStyles } from "@lib/styles";
 

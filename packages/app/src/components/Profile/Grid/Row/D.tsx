@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import random from "lodash/random";
 import { Post } from "@unexpected/global";
+import random from "lodash/random";
 
 import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/constants";
 

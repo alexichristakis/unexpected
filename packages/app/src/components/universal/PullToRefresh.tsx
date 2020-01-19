@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import Animated from "react-native-reanimated";
-import { useValues, bInterpolate } from "react-native-redash";
 import Haptics from "react-native-haptic-feedback";
+import Animated from "react-native-reanimated";
+import { bInterpolate, useValues } from "react-native-redash";
 
 import { TextStyles } from "@lib/styles";
 

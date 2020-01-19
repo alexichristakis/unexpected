@@ -1,5 +1,5 @@
-import { Inject, Service } from "@tsed/common";
 import * as Sentry from "@sentry/node";
+import { Inject, Service } from "@tsed/common";
 
 @Service()
 export class SentryService {

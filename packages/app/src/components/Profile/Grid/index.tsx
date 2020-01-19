@@ -2,14 +2,15 @@ import React from "react";
 import {
   FlatList,
   ListRenderItemInfo,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   StyleSheet,
   Text,
   View,
-  ViewStyle,
-  NativeScrollEvent,
-  NativeSyntheticEvent
+  ViewStyle
 } from "react-native";
 
+import { Post, User } from "@unexpected/global";
 import groupBy from "lodash/groupBy";
 import moment from "moment";
 import Animated, {
@@ -17,7 +18,6 @@ import Animated, {
   Transitioning,
   TransitioningView
 } from "react-native-reanimated";
-import { Post, User } from "@unexpected/global";
 
 import LockSVG from "@assets/svg/lock.svg";
 import { Colors, TextStyles } from "@lib/styles";

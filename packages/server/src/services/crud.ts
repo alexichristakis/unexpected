@@ -1,9 +1,9 @@
-import { Service, Inject } from "@tsed/common";
+import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 
 // type Test = Pick<UserModel, ['firstName', 'deviceToken']>
 
-type Selector<T> = Partial<keyof T>[];
+type Selector<T> = Array<Partial<keyof T>>;
 
 // type MakePick<Type, Keys extends (keyof Type)[]> = { [Key in Keys]: Type[Key] };
 
@@ -22,12 +22,6 @@ type Selector<T> = Partial<keyof T>[];
 // @Service()
 export abstract class CRUDService<Model, Type> {
   public abstract model: MongooseModel<Model>;
-
-  private formatSelector = (querySelector: Selector<Model> = []): string => {
-    return querySelector.reduce((prev, curr, i) => {
-      return (prev += `${curr} `);
-    }, "");
-  };
 
   /* get */
   getId = (id: string, querySelector: Selector<Model> = []) => {
@@ -81,5 +75,11 @@ export abstract class CRUDService<Model, Type> {
 
   delete = (_id: string) => {
     return this.model.deleteOne({ _id }).exec();
+  };
+
+  private formatSelector = (querySelector: Selector<Model> = []): string => {
+    return querySelector.reduce((prev, curr, i) => {
+      return (prev += `${curr} `);
+    }, "");
   };
 }

@@ -1,12 +1,12 @@
 import { $log, Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import moment from "moment";
 import { User } from "@unexpected/global";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import moment from "moment";
 
-import { VerificationMessage as VerificationMessageModel } from "../models/verification-message";
 import { SALT_ROUNDS } from "../lib/constants";
+import { VerificationMessage as VerificationMessageModel } from "../models/verification-message";
 import { TwilioService } from "./twilio";
 import { UserService } from "./user";
 
@@ -88,7 +88,7 @@ export class AuthService {
   }
 
   generateJWT(phoneNumber: string): string {
-    const privateKey = <string>process.env.AUTH_PRIVATE_KEY;
+    const privateKey = process.env.AUTH_PRIVATE_KEY as string;
     const token = jwt.sign({ phoneNumber }, privateKey, { algorithm: "RS256" });
 
     return token;

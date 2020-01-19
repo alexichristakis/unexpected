@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import { BaseButton } from "react-native-gesture-handler";
 import Animated, { Easing } from "react-native-reanimated";
-import { ViewStyle, StyleProp } from "react-native";
 
 export interface TouchableScaleProps {
   onPress?: () => void;

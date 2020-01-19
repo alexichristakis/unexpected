@@ -12,12 +12,12 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp
 } from "@react-navigation/native-stack";
+import { FeedPost, User } from "@unexpected/global";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
-import { FeedPost, User } from "@unexpected/global";
 
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";

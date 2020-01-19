@@ -9,7 +9,6 @@
     "deploy": "appcenter codepush release-react -a alexi/unexpected -t '0.0.2'",
     "deploy-production": "appcenter codepush release-react -a alexi/unexpected -t '0.0.2' -d Production",
     "check-types": "tsc -p . --noEmit --skipLibCheck",
-    "lint": "tslint -c tslint.json 'src/**/*.ts*' --fix",
     "test": "jest",
     "postinstall": "patch-package"
   },
@@ -62,16 +61,10 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-context": "^1.1.2",
     "enzyme-context-redux": "^2.0.0",
-    "husky": "^3.1.0",
     "metro-react-native-babel-preset": "^0.57.0",
     "patch-package": "^6.2.0",
     "react-native-svg-transformer": "^0.14.3",
     "react-test-renderer": "16.12.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "yarn lint && yarn check-types && yarn test"
-    }
   },
   "jest": {
     "preset": "react-native",

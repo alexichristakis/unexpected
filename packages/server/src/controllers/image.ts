@@ -1,18 +1,18 @@
 import {
   Controller,
-  Inject,
-  Put,
   Get,
+  Inject,
   PathParams,
+  Put,
   UseAfter,
   UseAuth
 } from "@tsed/common";
 import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
 import multer from "multer";
 
+import { AuthMiddleware } from "../middlewares/auth";
 import { SendImageMiddleware } from "../middlewares/send-image";
 import { ImageService } from "../services/images";
-import { AuthMiddleware } from "../middlewares/auth";
 
 @Controller("/image")
 export class ImageController {

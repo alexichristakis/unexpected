@@ -1,3 +1,4 @@
+import { User } from "@unexpected/global";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -12,7 +13,6 @@ import {
   TransitioningView
 } from "react-native-reanimated";
 import { connect } from "react-redux";
-import { User } from "@unexpected/global";
 
 /* some svgs */
 import PendingFriendSVG from "@assets/svg/arrow_button.svg";

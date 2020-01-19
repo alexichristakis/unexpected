@@ -1,29 +1,29 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
-  StyleSheet,
+  NativeScrollEvent,
   NativeSyntheticEvent,
-  NativeScrollEvent
+  StyleSheet
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Post } from "@unexpected/global";
 import isEqual from "lodash/isEqual";
+import Haptics from "react-native-haptic-feedback";
 import Animated, { TransitioningView } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { Post } from "@unexpected/global";
 import uuid from "uuid/v4";
-import Haptics from "react-native-haptic-feedback";
 
 import { Grid, Top } from "@components/Profile";
 import { FriendButton, NavBar } from "@components/universal";
+import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
-import { useDarkStatusBar } from "@hooks";
 
 const { useCode, block, call, greaterThan, lessOrEq, cond } = Animated;
 

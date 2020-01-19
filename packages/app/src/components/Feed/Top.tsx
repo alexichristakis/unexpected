@@ -6,7 +6,7 @@ import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 
 import { PullToRefresh } from "@components/universal";
-import { SCREEN_WIDTH, TextStyles, SB_HEIGHT } from "@lib/styles";
+import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 
 export interface FeedTopProps {
   latest?: Date;

@@ -2,9 +2,9 @@ import React, { ReactNode } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 
 import {
+  BaseButton,
   State,
-  TapGestureHandler,
-  BaseButton
+  TapGestureHandler
 } from "react-native-gesture-handler";
 import Animated, { Easing } from "react-native-reanimated";
 import { contains, delay, onGestureEvent, timing } from "react-native-redash";

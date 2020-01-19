@@ -1,11 +1,11 @@
-import { Service } from "@tsed/common";
 import {
-  Storage,
+  GetFilesOptions,
   GetSignedUrlConfig,
-  GetFilesOptions
+  Storage
 } from "@google-cloud/storage";
-import { Duplex } from "stream";
+import { Service } from "@tsed/common";
 import jimp from "jimp";
+import { Duplex } from "stream";
 
 /*
   bucket structure:
@@ -22,7 +22,7 @@ export class ImageService {
     projectId: "expect-photos",
     keyFilename: "google_cloud.json"
   });
-  private bucket = this.storage.bucket(<string>process.env.GOOGLE_BUCKET_NAME);
+  private bucket = this.storage.bucket(process.env.GOOGLE_BUCKET_NAME as string);
 
   async resize(input: Buffer, width: number, height: number) {
     const image = await jimp.read(input);

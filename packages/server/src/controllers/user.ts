@@ -1,19 +1,19 @@
 import {
-  Controller,
   BodyParams,
+  Controller,
   Get,
-  Put,
-  PathParams,
-  UseAuth,
   Inject,
   Patch,
-  QueryParams
+  PathParams,
+  Put,
+  QueryParams,
+  UseAuth
 } from "@tsed/common";
 import { User } from "@unexpected/global";
 
-import { UserService } from "../services/user";
-import { User as UserModel } from "../models/user";
 import { AuthMiddleware, Select } from "../middlewares/auth";
+import { User as UserModel } from "../models/user";
+import { UserService } from "../services/user";
 
 export type CameraEnabledReturn = ReturnType<
   UserController["getIsCameraEnabled"]

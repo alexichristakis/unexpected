@@ -5,9 +5,9 @@ import {
   Req,
   UseAuth
 } from "@tsed/common";
-import { Forbidden, Unauthorized } from "ts-httpexceptions";
-import jwt from "jsonwebtoken";
 import { User } from "@unexpected/global";
+import jwt from "jsonwebtoken";
+import { Forbidden, Unauthorized } from "ts-httpexceptions";
 
 @Middleware()
 export class AuthMiddleware implements IMiddleware {
@@ -18,7 +18,7 @@ export class AuthMiddleware implements IMiddleware {
     const { authorization } = request.headers;
 
     if (authorization) {
-      const publicKey = <string>process.env.AUTH_PUBLIC_KEY;
+      const publicKey = process.env.AUTH_PUBLIC_KEY as string;
       const token = authorization.split(" ")[1];
 
       try {

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import {
+  ActionSheetIOS,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  ActionSheetIOS
+  View
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";

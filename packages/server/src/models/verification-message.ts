@@ -1,5 +1,5 @@
 import { Default, Format, Required } from "@tsed/common";
-import { Model, ObjectID, Indexed } from "@tsed/mongoose";
+import { Indexed, Model, ObjectID } from "@tsed/mongoose";
 
 @Model()
 export class VerificationMessage {

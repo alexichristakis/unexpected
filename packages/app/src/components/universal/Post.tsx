@@ -1,13 +1,13 @@
-import React, { useState, useImperativeHandle, forwardRef } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import moment from "moment";
 import Animated from "react-native-reanimated";
 
-import { FeedPost } from "@unexpected/global";
-import { SCREEN_WIDTH, TextStyles, Colors } from "@lib/styles";
-import { formatName } from "@lib/utils";
 import { FEED_POST_WIDTH } from "@lib/constants";
+import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import { formatName } from "@lib/utils";
+import { FeedPost } from "@unexpected/global";
 
 export interface PostProps {
   viewable?: boolean;

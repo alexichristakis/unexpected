@@ -1,5 +1,5 @@
+import { ChatPostMessageArguments, WebClient } from "@slack/web-api";
 import { Service } from "@tsed/common";
-import { WebClient, ChatPostMessageArguments } from "@slack/web-api";
 import moment from "moment-timezone";
 
 import { UserNotificationRecord } from "@unexpected/global";

@@ -106,7 +106,7 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
       >
         <Animated.View>
           <PanGestureHandler
-            avgTouches
+            avgTouches={true}
             ref={panRef}
             minPointers={2}
             minDist={10}

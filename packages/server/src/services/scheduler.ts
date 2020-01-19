@@ -6,10 +6,10 @@ import uuid from "uuid/v4";
 
 import { User } from "@unexpected/global";
 
-import { UserService } from "./user";
-import { NotificationService } from "./notification";
-import { SlackLogService } from "./logger";
 import { AuthService } from "./auth";
+import { SlackLogService } from "./logger";
+import { NotificationService } from "./notification";
+import { UserService } from "./user";
 
 export enum AgendaJobs {
   GENERATE_NOTIFICATIONS = "GENERATE_NOTIFICATIONS",
@@ -138,7 +138,7 @@ export class SchedulerService {
   ): string[] => {
     const time = moment.tz(timezone);
 
-    let start = time.clone();
+    const start = time.clone();
     if (time.get("hour") < 10) {
       start.hour(10);
     } else {
@@ -155,7 +155,7 @@ export class SchedulerService {
 
     const startTime = +start;
 
-    let times: string[] = [];
+    const times: string[] = [];
     for (let i = 0; i < n; i++) {
       times.push(moment(randomNumber(endTime, startTime)).toISOString());
     }

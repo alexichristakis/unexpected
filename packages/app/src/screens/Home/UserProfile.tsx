@@ -1,21 +1,20 @@
 import React, { useCallback, useState } from "react";
 import {
-  StatusBar,
-  StyleSheet,
+  NativeScrollEvent,
   NativeSyntheticEvent,
-  NativeScrollEvent
+  StatusBar,
+  StyleSheet
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import isEqual from "lodash/isEqual";
+import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
-import Haptics from "react-native-haptic-feedback";
 
-import { Post } from "@unexpected/global";
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
 import { SB_HEIGHT } from "@lib/styles";
@@ -24,6 +23,7 @@ import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { Post } from "@unexpected/global";
 import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
@@ -89,7 +89,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser
+        isUser={true}
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}

@@ -1,18 +1,18 @@
 import {
-  Controller,
   BodyParams,
+  Controller,
+  Delete,
   Get,
-  Put,
-  PathParams,
-  UseAuth,
   Inject,
-  Delete
+  PathParams,
+  Put,
+  UseAuth
 } from "@tsed/common";
 
 import { Post } from "@unexpected/global";
 
-import { PostService } from "../services/post";
 import { AuthMiddleware, Select } from "../middlewares/auth";
+import { PostService } from "../services/post";
 
 @Controller("/post")
 @UseAuth(AuthMiddleware)

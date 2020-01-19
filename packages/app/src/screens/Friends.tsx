@@ -22,8 +22,8 @@ import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { User } from "@unexpected/global";
-import { StackParamList } from "../App";
 import { onScroll } from "react-native-redash";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState, props: FriendsProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -118,7 +118,7 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
   return (
     <Screen style={styles.container}>
       <NavBar
-        showBackButtonText
+        showBackButtonText={true}
         backButtonText={user.firstName}
         navigation={navigation}
       />

@@ -1,24 +1,39 @@
 import {
   Default,
   Format,
-  Required,
-  Schema,
+  Inject,
   Property,
-  Inject
+  Required,
+  Schema
 } from "@tsed/common";
 import {
-  Model,
-  ObjectID,
   Indexed,
-  Unique,
+  Model,
+  MongooseModel,
+  ObjectID,
   PostHook,
-  MongooseModel
+  Unique
 } from "@tsed/mongoose";
 
 import { SlackLogService } from "../services/logger";
 
 @Model()
 export class Post {
+
+  // this would be a more elegant solution
+  @PostHook("save")
+  static postSave(doc: Post) {
+    // const { userPhoneNumber, createdAt } = doc;
+
+    // const userModel = (new User()).getModelForClass(User);
+
+    // const user = this.User.findOne({ phoneNumber: userPhoneNumber });
+    const logger = new SlackLogService();
+    logger.sendMessage(
+      "new post",
+      `${doc.userPhoneNumber} "${doc.description}"`
+    );
+  }
   @ObjectID("id")
   _id: string;
 
@@ -39,19 +54,4 @@ export class Post {
   @Format("date-time")
   @Default(Date.now)
   createdAt: Date = new Date();
-
-  // this would be a more elegant solution
-  @PostHook("save")
-  static postSave(doc: Post) {
-    // const { userPhoneNumber, createdAt } = doc;
-
-    // const userModel = (new User()).getModelForClass(User);
-
-    // const user = this.User.findOne({ phoneNumber: userPhoneNumber });
-    const logger = new SlackLogService();
-    logger.sendMessage(
-      "new post",
-      `${doc.userPhoneNumber} "${doc.description}"`
-    );
-  }
 }

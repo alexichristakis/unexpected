@@ -1,9 +1,18 @@
-import { Default, Format, Required, Schema, Property } from "@tsed/common";
-import { Model, ObjectID, Indexed, Unique, PostHook } from "@tsed/mongoose";
+import { Default, Format, Property, Required, Schema } from "@tsed/common";
+import { Indexed, Model, ObjectID, PostHook, Unique } from "@tsed/mongoose";
 import { SlackLogService } from "../services/logger";
 
 @Model()
 export class User {
+
+  // @Required()
+  // notificationPreferences: NotificationPreferences;
+
+  @PostHook("save")
+  static postSave(doc: User) {
+    const logger = new SlackLogService();
+    logger.sendMessage("new user", `${doc.firstName} ${doc.lastName}`);
+  }
   @ObjectID("id")
   _id: string;
 
@@ -52,13 +61,4 @@ export class User {
   // requests sent by this user
   @Property()
   requestedFriends: string[];
-
-  // @Required()
-  // notificationPreferences: NotificationPreferences;
-
-  @PostHook("save")
-  static postSave(doc: User) {
-    const logger = new SlackLogService();
-    logger.sendMessage("new user", `${doc.firstName} ${doc.lastName}`);
-  }
 }

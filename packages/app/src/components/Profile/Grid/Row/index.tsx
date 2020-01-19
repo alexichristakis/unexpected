@@ -1,7 +1,7 @@
 import React from "react";
 
-import { Post } from "@unexpected/global";
 import { PostImage, TouchableScale } from "@components/universal";
+import { Post } from "@unexpected/global";
 
 import A from "./A";
 import B from "./B";

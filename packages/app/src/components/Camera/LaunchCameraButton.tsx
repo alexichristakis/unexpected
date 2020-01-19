@@ -9,10 +9,10 @@ import { connect } from "react-redux";
 
 import SVG from "@assets/svg/camera_button.svg";
 import { TouchableScale } from "@components/universal";
+import { NOTIFICATION_MINUTES } from "@lib/constants";
 import { Actions as AppActions } from "@redux/modules/app";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { NOTIFICATION_MINUTES } from "@lib/constants";
 import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({

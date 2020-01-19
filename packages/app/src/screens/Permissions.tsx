@@ -8,13 +8,13 @@ import { connect } from "react-redux";
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { SCREEN_HEIGHT, TextStyles } from "@lib/styles";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   Actions as PermissionsActions,
   Permissions as PermissionTypes
 } from "@redux/modules/permissions";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamList } from "App";
 
 const mapStateToProps = (state: RootState) => ({

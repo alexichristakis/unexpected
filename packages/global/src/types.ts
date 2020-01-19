@@ -1,4 +1,4 @@
-import { User as UserModel, Post as PostModel } from "@unexpected/server";
+import { Post as PostModel, User as UserModel } from "@unexpected/server";
 
 export type NewUser = {
   phoneNumber: string;

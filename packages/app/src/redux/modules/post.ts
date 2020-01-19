@@ -1,10 +1,10 @@
+import { FeedPost, Post } from "@unexpected/global";
 import immer from "immer";
 import { TakePictureResponse } from "react-native-camera/types";
 import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
-import { FeedPost, Post } from "@unexpected/global";
 
 import uuid from "uuid/v4";
 
@@ -108,6 +108,7 @@ export default (
 
     case ActionTypes.DELETE_POST_SUCCESS: {
       const { phoneNumber } = action.payload;
+
       return immer(state, draft => {
         draft.users[phoneNumber].stale = true;
         draft.feed.stale = true;

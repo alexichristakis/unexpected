@@ -1,13 +1,13 @@
-import { $log, Service, Inject } from "@tsed/common";
+import { $log, Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Document } from "mongoose";
+import { Post, User, UserNotificationRecord } from "@unexpected/global";
 import _ from "lodash";
 import moment from "moment";
-import { User, Post, UserNotificationRecord } from "@unexpected/global";
+import { Document } from "mongoose";
 
 import { NOTIFICATION_MINUTES } from "../lib/constants";
-import { CRUDService } from "./crud";
 import { User as UserModel } from "../models/user";
+import { CRUDService } from "./crud";
 import { NotificationService } from "./notification";
 
 @Service()
@@ -207,7 +207,7 @@ export class UserService extends CRUDService<UserModel, User> {
     phoneNumbers: string[],
     sort?: boolean,
     select?: string
-  ): Promise<(UserModel & Document)[]>;
+  ): Promise<Array<UserModel & Document>>;
   async getByPhoneNumber(
     phoneNumber: string | string[],
     sort?: boolean,

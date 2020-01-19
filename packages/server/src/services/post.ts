@@ -1,8 +1,8 @@
-import { Service, Inject } from "@tsed/common";
+import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import uniqBy from "lodash/uniqBy";
+import { FeedPost, Post } from "@unexpected/global";
 import keyBy from "lodash/keyBy";
-import { Post, FeedPost } from "@unexpected/global";
+import uniqBy from "lodash/uniqBy";
 
 import { Post as PostModel } from "../models/post";
 import { CRUDService } from "./crud";
@@ -51,7 +51,7 @@ export class PostService extends CRUDService<PostModel, Post> {
       ({ phoneNumber }) => phoneNumber
     );
 
-    let ret: FeedPost[] = [];
+    const ret: FeedPost[] = [];
     posts.forEach(
       ({ id, description, userPhoneNumber, createdAt, photoId }) => {
         ret.push({

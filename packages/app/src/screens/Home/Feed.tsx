@@ -15,13 +15,13 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
-import { User } from "@unexpected/global";
 import { Posts } from "@components/Feed";
 import { ZoomedImage, ZoomedImageType } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
+import { User } from "@unexpected/global";
 import { StackParamList } from "../../App";
 
 const {
@@ -131,6 +131,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const getPosts = () => {
       const sortedPosts = _.sortBy(feed.posts, o => -o.createdAt);
       const latest = sortedPosts.length ? sortedPosts[0].createdAt : undefined;
+
       return { sortedPosts, latest };
     };
 

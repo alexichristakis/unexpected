@@ -2,10 +2,10 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { User } from "@unexpected/global";
-import { Button, UserImage, PullToRefresh } from "@components/universal";
-import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import Gear from "@assets/svg/gear.svg";
+import { Button, PullToRefresh, UserImage } from "@components/universal";
+import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import { User } from "@unexpected/global";
 
 export interface ProfileTopProps {
   user: User;
@@ -114,7 +114,7 @@ export const Top: React.FC<ProfileTopProps> = ({
             {bio.length || !onPressAddBio ? (
               <Text style={styles.bioText}>{bio}</Text>
             ) : (
-              <Button white title="add a bio" onPress={onPressAddBio} />
+              <Button white={true} title="add a bio" onPress={onPressAddBio} />
             )}
           </View>
         </View>

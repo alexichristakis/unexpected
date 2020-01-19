@@ -68,5 +68,10 @@
     "tslint-react": "^4.1.0",
     "typescript": "^3.7.4",
     "utility-types": "^3.10.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "yarn lint"
+    }
   }
 }

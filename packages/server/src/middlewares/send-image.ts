@@ -1,4 +1,4 @@
-import { IMiddleware, Middleware, ResponseData, Res } from "@tsed/common";
+import { IMiddleware, Middleware, Res, ResponseData } from "@tsed/common";
 
 @Middleware()
 export class SendImageMiddleware implements IMiddleware {

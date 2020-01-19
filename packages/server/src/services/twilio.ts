@@ -2,12 +2,12 @@ import { Service } from "@tsed/common";
 import twilio from "twilio";
 
 const accountSid: string = process.env.PORT
-  ? <string>process.env.TWILIO_ACCOUNT_SID
-  : <string>process.env.TWILIO_DEV_ACCOUNT_SID;
+  ? process.env.TWILIO_ACCOUNT_SID as string
+  : process.env.TWILIO_DEV_ACCOUNT_SID as string;
 
 const token: string = process.env.PORT
-  ? <string>process.env.TWILIO_ACCOUNT_TOKEN
-  : <string>process.env.TWILIO_DEV_ACCOUNT_TOKEN;
+  ? process.env.TWILIO_ACCOUNT_TOKEN as string
+  : process.env.TWILIO_DEV_ACCOUNT_TOKEN as string;
 
 @Service()
 export class TwilioService {
