@@ -57,7 +57,9 @@ export const Grid: React.FC<GridProps> = ({
     if (friendStatus !== "friends") return [];
 
     const map = groupBy(posts, ({ createdAt }) =>
-      moment(createdAt).startOf("month")
+      moment(createdAt)
+        .startOf("month")
+        .toISOString()
     );
 
     return Object.keys(map)
