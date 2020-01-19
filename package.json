@@ -6,10 +6,16 @@
     "types-cloud": "cd packages/server && yarn tsc",
     "types-app": "cd packages/app && yarn check-types",
     "check-types": "yarn types-cloud && yarn types-app",
-    "check-updates": "ncu -n && ncu -n --packageFile packages/app/package.json && ncu -n --packageFile packages/server/package.json"
+    "check-updates": "ncu -n && ncu -n --packageFile packages/app/package.json && ncu -n --packageFile packages/server/package.json",
+    "lint": "tslint -c tslint.json 'packages/**/*.ts*' --exclude '**/node_modules/**/*' --fix"
   },
   "engines": {
     "node": "13.5.0"
+  },
+  "dependencies": {
+    "@unexpected/app": "./packages/app",
+    "@unexpected/server": "./packages/server",
+    "@unexpected/global": "./packages/global"
   },
   "devDependencies": {
     "@tsed/testing": "^5.36.0",

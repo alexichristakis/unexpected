@@ -131,7 +131,6 @@ function* appWatcher() {
 
     if (appStatus) {
       if (appStatus === "active") {
-        console.log("CHECK CAMERA");
         yield call(checkCameraStatus);
       }
 

@@ -1,7 +1,7 @@
 // @jest skip
+import { NavigationContext } from "@react-navigation/core";
 import React from "react";
 import { Provider } from "react-redux";
-import { NavigationContext } from "@react-navigation/core";
 
 import { Context } from "../src/App";
 

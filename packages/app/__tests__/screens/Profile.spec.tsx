@@ -1,8 +1,8 @@
-import "react-native";
-import React from "react";
 import { shallow, ShallowWrapper } from "enzyme";
+import React from "react";
+import "react-native";
 
-import { Top, Grid, GridProps, ProfileTopProps } from "@components/Profile";
+import { Grid, GridProps, ProfileTopProps, Top } from "@components/Profile";
 import createStore from "@redux/store";
 import { PostType } from "unexpected-cloud/models/post";
 

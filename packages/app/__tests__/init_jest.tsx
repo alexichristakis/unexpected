@@ -1,5 +1,5 @@
-import "react-native";
 import "jest-enzyme";
+import "react-native";
 
 import Enzyme from "enzyme";
 // @ts-ignore

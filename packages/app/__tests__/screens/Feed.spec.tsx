@@ -1,6 +1,6 @@
-import "react-native";
-import React from "react";
 import { shallow, ShallowWrapper } from "enzyme";
+import React from "react";
+import "react-native";
 
 import { Posts } from "@components/Feed";
 import createStore from "@redux/store";
