@@ -13,6 +13,8 @@ import { all, call, put, select, take, takeEvery } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
 import { NOTIFICATION_MINUTES } from "@lib/constants";
+import { NotificationPayload } from "@unexpected/global";
+import navigation from "../../navigation";
 import * as selectors from "../selectors";
 import { ActionsUnion, createAction } from "../utils";
 import { Actions as UserActions } from "./user";
@@ -159,33 +161,53 @@ const appEmitter = () =>
     };
   });
 
-function* notificationWatcher() {
-  const notificationChannel = yield call(notificationEmitter);
+export function* notificationWatcher() {
+  const permission = yield select(selectors.notificationPermission);
 
-  while (true) {
-    const { token, notification } = yield take(notificationChannel);
+  if (permission) {
+    const notificationChannel = yield call(notificationEmitter);
 
-    // new token received
-    if (token) {
-      yield put(
-        UserActions.updateUser({
-          deviceToken: token,
-          deviceOS: Platform.OS
-        })
+    while (true) {
+      const {
+        token,
+        notification
+      }: { token: string; notification: Notification } = yield take(
+        notificationChannel
       );
-    }
 
-    // notification
-    if (notification) {
-      const { data }: { data: any } = notification;
+      // new token received
+      if (token) {
+        yield put(
+          UserActions.updateUser({
+            deviceToken: token,
+            deviceOS: Platform.OS
+          })
+        );
+      }
 
-      // notification is to start the photo clock
-      if (data.photoTime) {
-        const { time } = data;
+      // notification
+      if (notification) {
+        const { payload }: { payload: NotificationPayload } = notification;
+        console.log(notification);
 
-        const expiry = moment(time).add(NOTIFICATION_MINUTES, "minutes");
+        // notification is to start the photo clock
+        if (payload.type === "photoTime") {
+          const { date } = payload;
 
-        yield put(Actions.setCameraTimer(expiry));
+          const expiry = moment(date).add(NOTIFICATION_MINUTES, "minutes");
+
+          yield put(Actions.setCameraTimer(expiry));
+        }
+
+        if (payload.type === "user") {
+          const { route } = payload;
+
+          navigation.navigate("PROFILE", { user: route });
+        }
+
+        // if (payload.type === "post") {
+        //   navigation.navigate("POST", { post})
+        // }
       }
     }
   }
@@ -221,32 +243,33 @@ const notificationEmitter = () =>
   });
 
 function* checkCameraStatus() {
-  const jwt = yield select(selectors.jwt);
+  console.log(
+    "INITIAL:",
+    Notifications.getInitialNotification().then(console.log)
+  );
 
-  if (jwt) {
-    // check if camera should be enabled
-    const phoneNumber = yield select(selectors.phoneNumber);
-
-    try {
-      const res = yield client.get(`/user/${phoneNumber}/camera`, {
-        headers: getHeaders({ jwt })
-      });
-
-      const {
-        data: { enabled, start }
-      } = res;
-
-      if (enabled) {
-        yield put(
-          Actions.setCameraTimer(
-            moment(start).add(NOTIFICATION_MINUTES, "minutes")
-          )
-        );
-      }
-    } catch (err) {
-      yield put(Actions.networkError());
-    }
-  }
+  // const jwt = yield select(selectors.jwt);
+  // if (jwt) {
+  //   // check if camera should be enabled
+  //   const phoneNumber = yield select(selectors.phoneNumber);
+  //   try {
+  //     const res = yield client.get(`/user/${phoneNumber}/camera`, {
+  //       headers: getHeaders({ jwt })
+  //     });
+  //     const {
+  //       data: { enabled, start }
+  //     } = res;
+  //     if (enabled) {
+  //       yield put(
+  //         Actions.setCameraTimer(
+  //           moment(start).add(NOTIFICATION_MINUTES, "minutes")
+  //         )
+  //       );
+  //     }
+  //   } catch (err) {
+  //     yield put(Actions.networkError());
+  //   }
+  // }
 }
 
 function* onStartup() {

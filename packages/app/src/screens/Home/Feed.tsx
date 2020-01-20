@@ -166,13 +166,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
       navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
     };
 
-    const handleOnGestureBegan = (image: ZoomedImageType) => {
-      setZoomedImage(image);
-    };
-
-    const handleOnGestureComplete = () => {
-      setZoomedImage(undefined);
-    };
+    const handleOnGestureComplete = () => setZoomedImage(undefined);
 
     const { sortedPosts, latest } = getPosts();
 
@@ -184,7 +178,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
           refreshing={refreshing}
           latest={latest}
           onScrollEndDrag={handleOnScrollEndDrag}
-          onGestureBegan={handleOnGestureBegan}
+          onGestureBegan={setZoomedImage}
           onGestureComplete={handleOnGestureComplete}
           onPressUser={handleOnPressUser}
           onPressShare={handleOnPressShare}

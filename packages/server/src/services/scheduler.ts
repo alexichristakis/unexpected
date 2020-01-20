@@ -51,10 +51,7 @@ export class SchedulerService {
         this.agenda.define(AgendaJobs.SEND_NOTIFICATION, async args => {
           const { to } = args.attrs.data;
           await Promise.all([
-            this.notificationService.notifyUserModelPhotoTime(
-              to,
-              "time to take & share a photo"
-            ),
+            this.notificationService.notifyPhotoTime(to),
             this.slackLogger.sendMessage(
               "notification sent",
               `${to.phoneNumber} -- ${to.firstName} ${to.lastName}`

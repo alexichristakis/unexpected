@@ -117,9 +117,10 @@ export class UserService extends CRUDService<UserModel, User> {
           { requestedFriends: _.uniq([...userFrom.requestedFriends, to]) }
         )
         .exec(),
-      this.notificationService.notifyUserModel(
+      this.notificationService.notifyWithNavigationToUser(
         userTo,
-        `${userFrom.firstName} ${userFrom.lastName} sent you a friend request.`
+        `${userFrom.firstName} ${userFrom.lastName} sent you a friend request.`,
+        userFrom
       )
     ]);
   }
@@ -169,9 +170,10 @@ export class UserService extends CRUDService<UserModel, User> {
           }
         )
         .exec(),
-      this.notificationService.notifyUserModel(
+      this.notificationService.notifyWithNavigationToUser(
         userTo,
-        `${userFrom.firstName} ${userFrom.lastName} accepted your friend request.`
+        `${userFrom.firstName} ${userFrom.lastName} accepted your friend request.`,
+        userFrom
       )
     ]);
   }

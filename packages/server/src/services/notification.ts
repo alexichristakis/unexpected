@@ -1,12 +1,9 @@
 import { Inject, Service } from "@tsed/common";
-import { MongooseModel } from "@tsed/mongoose";
 import { Notification, Provider } from "apn";
 import moment from "moment";
-import { Document } from "mongoose";
 
-import { User as UserModel } from "../models/user";
+import { NotificationPayload, User } from "@unexpected/global";
 import { SentryService } from "./sentry";
-import { UserService } from "./user";
 
 const settings = {
   fcm: {
@@ -18,7 +15,7 @@ const settings = {
       keyId: process.env.APNS_KEY_ID as string,
       teamId: process.env.APNS_TEAM_ID as string
     },
-    production: !!process.env.PORT ? true : false
+    production: !!process.env.PORT
   }
 };
 
@@ -33,7 +30,7 @@ export class NotificationService {
     deviceToken: string = "",
     deviceOS: string,
     body: string,
-    photoTime: boolean = false
+    data?: NotificationPayload
   ): Promise<string> {
     if (deviceOS == "Android") {
       // deal with android notification
@@ -42,10 +39,7 @@ export class NotificationService {
       const payload = {
         pushType: "alert",
         topic: "christakis.expect.photos",
-        payload: {
-          photoTime,
-          time: moment().toDate()
-        },
+        payload: data,
         alert: {
           body
         }
@@ -59,6 +53,10 @@ export class NotificationService {
             this.sentryService.captureException(failure);
           });
 
+          result.sent.forEach(sent => {
+            console.log(sent);
+          });
+
           return "";
         });
 
@@ -68,21 +66,28 @@ export class NotificationService {
     return "";
   }
 
-  async notifyUserModel(
-    user: UserModel & Partial<Document>,
-    body: string
-  ): Promise<string> {
+  async notify(user: User, body: string): Promise<string> {
     const { deviceOS, deviceToken } = user;
 
     return this.send(deviceToken, deviceOS, body);
   }
 
-  async notifyUserModelPhotoTime(
-    user: UserModel & Partial<Document>,
-    body: string
-  ) {
+  async notifyPhotoTime(user: User) {
     const { deviceOS, deviceToken } = user;
 
-    return this.send(deviceToken, deviceOS, body, true);
+    return this.send(deviceToken, deviceOS, "time to take & share a photo", {
+      type: "photoTime",
+      photoTime: true,
+      date: moment().toISOString()
+    });
+  }
+
+  async notifyWithNavigationToUser(user: User, body: string, route: User) {
+    const { deviceOS, deviceToken } = user;
+
+    return this.send(deviceToken, deviceOS, body, {
+      type: "user",
+      route
+    });
   }
 }

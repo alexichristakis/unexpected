@@ -30,9 +30,6 @@ export class UserController {
       ])
     ]);
 
-    return this.notificationService.notifyUserModelPhotoTime(
-      user,
-      "time to take & share a photo"
-    );
+    return this.notificationService.notifyPhotoTime(user);
   }
 }

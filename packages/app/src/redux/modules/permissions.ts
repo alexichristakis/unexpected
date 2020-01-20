@@ -11,12 +11,12 @@ import {
 } from "react-native-permissions";
 import { all, put, takeEvery, takeLatest } from "redux-saga/effects";
 
-import { REHYDRATE } from "redux-persist";
 import {
   ActionsUnion,
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
+import { notificationWatcher } from "./app";
 
 export interface PermissionsState {
   readonly loading: boolean;
@@ -89,20 +89,6 @@ export default (
   }
 };
 
-function* onStartup() {
-  try {
-    const {
-      status,
-      settings
-    }: NotificationsResponse = yield checkNotifications();
-    if (status === "granted") {
-      yield put(Actions.setNotifications({ status, settings }));
-    }
-  } catch (err) {
-    yield put(Actions.errorRequestingPermissions(err));
-  }
-}
-
 function* onRequestNotifications() {
   try {
     let {
@@ -140,7 +126,7 @@ function* onRequestPermission(
 
 export function* permissionSagas() {
   yield all([
-    yield takeLatest(REHYDRATE, onStartup),
+    yield takeLatest(ActionTypes.SET_NOTIFICATIONS, notificationWatcher),
     yield takeLatest(ActionTypes.REQUEST_NOTIFICATIONS, onRequestNotifications),
     yield takeEvery(ActionTypes.REQUEST_PERMISSION, onRequestPermission)
   ]);

@@ -16,3 +16,27 @@ export type UserNotificationRecord = {
 export type Post = Omit<PostModel, "_id"> & { id: string };
 
 export type FeedPost = Post & { user: User };
+
+export type UserNotificationPayload = {
+  type: "user";
+  route: User;
+};
+
+export type PostNotificationPayload = {
+  type: "post";
+  route: Post;
+};
+
+export type NotificationRoutePayload =
+  | UserNotificationPayload
+  | PostNotificationPayload;
+
+export type PhotoNotificationPayload = {
+  type: "photoTime";
+  photoTime: boolean;
+  date: string;
+};
+
+export type NotificationPayload =
+  | NotificationRoutePayload
+  | PhotoNotificationPayload;
