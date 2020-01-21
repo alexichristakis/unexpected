@@ -17,6 +17,12 @@ export type Post = Omit<PostModel, "_id"> & { id: string };
 
 export type FeedPost = Post & { user: User };
 
+export type Comment = {
+  phoneNumber: string;
+  createdAt: string;
+  body: string;
+};
+
 export type UserNotificationPayload = {
   type: "user";
   route: User;

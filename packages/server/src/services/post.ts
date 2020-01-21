@@ -7,6 +7,7 @@ import uniqBy from "lodash/uniqBy";
 import { Post as PostModel } from "../models/post";
 import { CRUDService } from "./crud";
 import { UserService } from "./user";
+import { SlackLogService } from "./logger";
 
 @Service()
 export class PostService extends CRUDService<PostModel, Post> {
@@ -16,10 +17,14 @@ export class PostService extends CRUDService<PostModel, Post> {
   @Inject(UserService)
   userService: UserService;
 
+  @Inject(SlackLogService)
+  logger: SlackLogService;
+
   createNewPost = async (post: Post) => {
     return Promise.all([
       this.create(post),
-      this.userService.updateValidNotifications(post)
+      this.userService.updateValidNotifications(post),
+      this.logger.sendMessage(post.userPhoneNumber, post.description)
     ]);
   };
 
@@ -53,13 +58,14 @@ export class PostService extends CRUDService<PostModel, Post> {
 
     const ret: FeedPost[] = [];
     posts.forEach(
-      ({ id, description, userPhoneNumber, createdAt, photoId }) => {
+      ({ id, description, userPhoneNumber, createdAt, photoId, comments }) => {
         ret.push({
           id,
           description,
           userPhoneNumber,
           createdAt,
           photoId,
+          comments,
           user: users[userPhoneNumber]
         });
       }

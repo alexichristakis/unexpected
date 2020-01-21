@@ -1,10 +1,10 @@
 import moment from "moment";
-import { PostType } from "unexpected-cloud/models/post";
+import { Post } from "@unexpected/global";
 import uuid from "uuid/v4";
 
 const NUM_POSTS = 40;
 
-const posts: PostType[] = [];
+const posts: Post[] = [];
 
 const generateTime = () => {
   const start = moment().subtract(2, "months");
@@ -22,6 +22,7 @@ const generateTime = () => {
 
 for (let i = 0; i < NUM_POSTS; i++) {
   posts.push({
+    comments: [],
     createdAt: generateTime(),
     userPhoneNumber: "2069409629",
     description: "test",

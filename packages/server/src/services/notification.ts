@@ -25,13 +25,14 @@ export class NotificationService {
   private sentryService: SentryService;
 
   private APNs = new Provider(settings.apns);
+  // private FCM = new Provider(settings.fcm);
 
   async send(
     deviceToken: string = "",
     deviceOS: string,
     body: string,
     data?: NotificationPayload
-  ): Promise<string> {
+  ) {
     if (deviceOS == "Android") {
       // deal with android notification
     } else {
@@ -47,26 +48,23 @@ export class NotificationService {
 
       const notification = new Notification(payload);
 
-      if (deviceToken.length)
-        return this.APNs.send(notification, deviceToken).then(result => {
-          result.failed.forEach(failure => {
-            this.sentryService.captureException(failure);
-          });
+      if (deviceToken.length) {
+        const results = await this.APNs.send(notification, deviceToken);
 
-          result.sent.forEach(sent => {
-            console.log(sent);
-          });
-
-          return "";
+        results.failed.forEach(failure => {
+          this.sentryService.captureException(failure);
         });
 
-      return "failure";
-    }
+        results.sent.forEach(sent => {
+          console.log(sent);
+        });
 
-    return "";
+        return Promise.resolve(results);
+      }
+    }
   }
 
-  async notify(user: User, body: string): Promise<string> {
+  async notify(user: User, body: string) {
     const { deviceOS, deviceToken } = user;
 
     return this.send(deviceToken, deviceOS, body);

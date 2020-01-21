@@ -4,15 +4,8 @@ import { SlackLogService } from "../services/logger";
 
 @Model()
 export class User {
-
   // @Required()
   // notificationPreferences: NotificationPreferences;
-
-  @PostHook("save")
-  static postSave(doc: User) {
-    const logger = new SlackLogService();
-    logger.sendMessage("new user", `${doc.firstName} ${doc.lastName}`);
-  }
   @ObjectID("id")
   _id: string;
 

@@ -24,16 +24,7 @@ import { ReduxPropsType, RootState } from "@redux/types";
 import { User } from "@unexpected/global";
 import { StackParamList } from "../../App";
 
-const {
-  Value,
-  block,
-  cond,
-  call,
-  and,
-  lessThan,
-  greaterOrEq,
-  useCode
-} = Animated;
+const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),

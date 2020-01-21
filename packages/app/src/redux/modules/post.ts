@@ -5,12 +5,11 @@ import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
-
+import { AxiosResponse } from "axios";
 import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
-import { AxiosResponse } from "axios";
-import Navigation from "../../navigation";
+import { navigate } from "../../navigation";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
@@ -186,7 +185,7 @@ function* onSendPost(
     yield all([
       yield put(Actions.sendPostSuccess(phoneNumber)),
       yield put(AppActions.expireCamera()),
-      yield Navigation.navigate("HOME")
+      yield navigate("HOME")
     ]);
   } catch (err) {
     yield put(Actions.onError(err));
@@ -285,6 +284,7 @@ export const Actions = {
     createAction(ActionTypes.FETCH_USERS_POSTS, { phoneNumber }),
   fetchUsersPostsSuccess: (phoneNumber: string, posts: Post[]) =>
     createAction(ActionTypes.FETCH_USERS_POSTS_SUCCESS, { phoneNumber, posts }),
+
   fetchFeed: (fromDate?: Date) =>
     createAction(ActionTypes.FETCH_FEED, { fromDate }),
   fetchFeedSuccess: (posts: FeedPost[]) =>

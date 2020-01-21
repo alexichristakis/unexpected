@@ -26,7 +26,7 @@ import { LaunchCameraButton } from "@components/Camera";
 import Connection from "@components/Connection";
 import { isIPhoneX, TextStyles } from "@lib/styles";
 import { useReduxState } from "./hooks";
-import Navigation from "./navigation";
+import { navigationRef } from "./navigation";
 
 /* screens */
 import Auth from "./screens/Auth";
@@ -253,7 +253,7 @@ const Router: React.FC = () => {
   const isAuthorized = useReduxState(selectors.isAuthorized);
 
   return (
-    <NavigationNativeContainer ref={Navigation.setTopLevelNavigator}>
+    <NavigationNativeContainer ref={navigationRef}>
       <Stack.Navigator screenOptions={{ animation: "fade" }}>
         {isAuthorized ? (
           <Stack.Screen

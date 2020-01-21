@@ -1,39 +1,10 @@
-import {
-  Default,
-  Format,
-  Inject,
-  Property,
-  Required,
-  Schema
-} from "@tsed/common";
-import {
-  Indexed,
-  Model,
-  MongooseModel,
-  ObjectID,
-  PostHook,
-  Unique
-} from "@tsed/mongoose";
+import { Default, Format, Property, Required } from "@tsed/common";
+import { Indexed, Model, ObjectID } from "@tsed/mongoose";
 
-import { SlackLogService } from "../services/logger";
+import { Comment } from "@unexpected/global";
 
 @Model()
 export class Post {
-
-  // this would be a more elegant solution
-  @PostHook("save")
-  static postSave(doc: Post) {
-    // const { userPhoneNumber, createdAt } = doc;
-
-    // const userModel = (new User()).getModelForClass(User);
-
-    // const user = this.User.findOne({ phoneNumber: userPhoneNumber });
-    const logger = new SlackLogService();
-    logger.sendMessage(
-      "new post",
-      `${doc.userPhoneNumber} "${doc.description}"`
-    );
-  }
   @ObjectID("id")
   _id: string;
 
@@ -47,6 +18,9 @@ export class Post {
 
   // @Property()
   // location: string;
+
+  @Property()
+  comments: Comment[];
 
   @Required()
   photoId: string;

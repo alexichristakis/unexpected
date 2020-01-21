@@ -9,11 +9,15 @@ import { NOTIFICATION_MINUTES } from "../lib/constants";
 import { User as UserModel } from "../models/user";
 import { CRUDService } from "./crud";
 import { NotificationService } from "./notification";
+import { SlackLogService } from "./logger";
 
 @Service()
 export class UserService extends CRUDService<UserModel, User> {
   @Inject(UserModel)
   model: MongooseModel<UserModel>;
+
+  @Inject(SlackLogService)
+  logger: SlackLogService;
 
   @Inject(NotificationService)
   notificationService: NotificationService;
@@ -23,7 +27,15 @@ export class UserService extends CRUDService<UserModel, User> {
 
     if (user) return user;
 
-    return this.create(newUser);
+    const [createdUser] = await Promise.all([
+      this.create(newUser),
+      this.logger.sendMessage(
+        "new user",
+        `${newUser.firstName} ${newUser.lastName}`
+      )
+    ]);
+
+    return createdUser;
   }
 
   async search(query: string) {

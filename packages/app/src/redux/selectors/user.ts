@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
-import { UserType } from "unexpected-cloud/models/user";
+import { User } from "@unexpected/global";
 import { RootState } from "../types";
 
 const s = (state: RootState) => state.user;
@@ -13,10 +13,9 @@ export const users = createSelector(s, state => state.users);
 
 export const phoneNumber = createSelector(s, state => state.phoneNumber);
 
-const phoneNumberFromProps = (_: RootState, props: { user: UserType }) =>
+const phoneNumberFromProps = (_: RootState, props: { user: User }) =>
   props.user.phoneNumber;
-const userEntityFromProps = (_: RootState, props: { user: UserType }) =>
-  props.user;
+const userEntityFromProps = (_: RootState, props: { user: User }) => props.user;
 export const user = createSelector(
   [users, phoneNumberFromProps, userEntityFromProps],
   (users, phoneNumber, fallback) =>
