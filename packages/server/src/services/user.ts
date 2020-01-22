@@ -8,8 +8,8 @@ import { Document } from "mongoose";
 import { NOTIFICATION_MINUTES } from "../lib/constants";
 import { User as UserModel } from "../models/user";
 import { CRUDService } from "./crud";
-import { NotificationService } from "./notification";
 import { SlackLogService } from "./logger";
+import { NotificationService } from "./notification";
 
 @Service()
 export class UserService extends CRUDService<UserModel, User> {

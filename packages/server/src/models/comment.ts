@@ -2,23 +2,20 @@ import { Default, Format, Property, Required } from "@tsed/common";
 import { Indexed, Model, ObjectID } from "@tsed/mongoose";
 
 @Model()
-export class Post {
+export class Comment {
   @ObjectID("id")
   _id: string;
+
+  @Property()
+  postId: string;
 
   @Indexed()
   @Required()
   @Format("/^+?[1-9]d{1,14}$/")
-  userPhoneNumber: string;
+  phoneNumber: string;
 
   @Property()
-  description: string;
-
-  // @Property()
-  // location: string;
-
-  @Required()
-  photoId: string;
+  body: string;
 
   @Format("date-time")
   @Default(Date.now)

@@ -9,8 +9,9 @@ import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { FeedPost } from "@unexpected/global";
 
+import Comments from "./Comments";
+
 export interface PostProps {
-  viewable?: boolean;
   entranceAnimatedValue?: Animated.Value<number>;
   index?: number;
   post: FeedPost;
@@ -27,7 +28,7 @@ export const Post: React.FC<PostProps> = React.memo(
     renderImage
   }) => {
     // const [visible, setVisible] = useState(false);
-    const { description, user, createdAt } = post;
+    const { description, user, createdAt, comments = [] } = post;
 
     // useImperativeHandle(ref, () => ({
     //   setVisible: () => setVisible(true),
@@ -58,10 +59,13 @@ export const Post: React.FC<PostProps> = React.memo(
         </View>
         {renderImage()}
         <Text style={styles.description}>{description}</Text>
+        <Comments comments={comments} />
       </Animated.View>
     );
   },
-  (prevProps, nextProps) => prevProps.viewable === nextProps.viewable
+  (prevProps, nextProps) =>
+    moment(prevProps.post.createdAt).fromNow() ===
+    moment(nextProps.post.createdAt).fromNow()
 );
 
 // export const Post = forwardRef<

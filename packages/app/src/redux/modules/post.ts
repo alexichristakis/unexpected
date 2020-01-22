@@ -1,11 +1,11 @@
-import { FeedPost, Post } from "@unexpected/global";
+import { Comment, FeedPost, Post } from "@unexpected/global";
+import { AxiosResponse } from "axios";
 import immer from "immer";
 import { TakePictureResponse } from "react-native-camera/types";
 import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
-import { AxiosResponse } from "axios";
 import uuid from "uuid/v4";
 
 import client, { getHeaders } from "@api";
@@ -38,6 +38,7 @@ export interface PostState {
   };
   feed: FeedState;
   loading: boolean;
+  commentLoading: { [postId: string]: boolean };
   error: string;
 }
 
@@ -50,6 +51,7 @@ const initialState: PostState = {
     stale: true
   },
   loading: false,
+  commentLoading: {},
   error: ""
 };
 
@@ -274,6 +276,10 @@ export enum ActionTypes {
   FETCH_FEED_SUCCESS = "post/FETCH_FEED_SUCCESS",
   SEND_POST = "post/SEND_POST",
   SEND_POST_SUCCESS = "post/SEND_POST_SUCCESS",
+  SEND_COMMENT = "post/SEND_COMMENT",
+  SEND_COMMENT_SUCCESS = "post/SEND_COMMENT_SUCCESS",
+  DELETE_COMMENT = "post/DELETE_COMMENT",
+  DELETE_COMMENT_SUCCESS = "post/DELETE_COMMENT_SUCCESS",
   DELETE_POST = "post/DELETE",
   DELETE_POST_SUCCESS = "post/DELETE_SUCCESS",
   ON_ERROR = "post/ERROR"
@@ -298,6 +304,16 @@ export const Actions = {
   deletePost: (id: string) => createAction(ActionTypes.DELETE_POST, { id }),
   deletePostSuccess: (phoneNumber: string) =>
     createAction(ActionTypes.DELETE_POST_SUCCESS, { phoneNumber }),
+
+  sendComment: (postId: string, comment: Comment) =>
+    createAction(ActionTypes.SEND_COMMENT, { postId, comment }),
+  sendCommentSuccess: (postId: string, comment: Comment) =>
+    createAction(ActionTypes.SEND_COMMENT_SUCCESS, { postId, comment }),
+
+  deleteComment: (postId: string, commentId: string) =>
+    createAction(ActionTypes.DELETE_COMMENT, { postId, commentId }),
+  deleteCommentSuccess: (postId: string, commentId: string) =>
+    createAction(ActionTypes.DELETE_COMMENT_SUCCESS, { postId, commentId }),
 
   onError: (error: string) => createAction(ActionTypes.ON_ERROR, { error })
 };

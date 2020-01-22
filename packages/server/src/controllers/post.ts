@@ -4,13 +4,13 @@ import {
   Delete,
   Get,
   Inject,
+  Patch,
   PathParams,
   Put,
-  UseAuth,
-  Patch
+  UseAuth
 } from "@tsed/common";
 
-import { Post, Comment } from "@unexpected/global";
+import { Comment, Post } from "@unexpected/global";
 
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { PostService } from "../services/post";
@@ -31,14 +31,6 @@ export class PostController {
       ...post,
       userPhoneNumber: phoneNumber
     });
-  }
-
-  @Patch("/:id/comment")
-  addComment(
-    @PathParams("id") id: string,
-    @BodyParams("comment") comment: Comment
-  ) {
-    // do some sort of authentication
   }
 
   @Get("/:phoneNumber")

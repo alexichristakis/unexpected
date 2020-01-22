@@ -1,5 +1,5 @@
-import * as React from "react";
 import { NavigationContainerRef } from "@react-navigation/core";
+import * as React from "react";
 
 import { StackParamList } from "./App";
 

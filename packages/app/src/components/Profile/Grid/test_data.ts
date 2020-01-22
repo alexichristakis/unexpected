@@ -1,5 +1,5 @@
-import moment from "moment";
 import { Post } from "@unexpected/global";
+import moment from "moment";
 import uuid from "uuid/v4";
 
 const NUM_POSTS = 40;

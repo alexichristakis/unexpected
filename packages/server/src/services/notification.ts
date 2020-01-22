@@ -2,7 +2,7 @@ import { Inject, Service } from "@tsed/common";
 import { Notification, Provider } from "apn";
 import moment from "moment";
 
-import { NotificationPayload, User } from "@unexpected/global";
+import { NotificationPayload, Post, User } from "@unexpected/global";
 import { SentryService } from "./sentry";
 
 const settings = {
@@ -64,13 +64,13 @@ export class NotificationService {
     }
   }
 
-  async notify(user: User, body: string) {
+  notify(user: User, body: string) {
     const { deviceOS, deviceToken } = user;
 
     return this.send(deviceToken, deviceOS, body);
   }
 
-  async notifyPhotoTime(user: User) {
+  notifyPhotoTime(user: User) {
     const { deviceOS, deviceToken } = user;
 
     return this.send(deviceToken, deviceOS, "time to take & share a photo", {
@@ -80,11 +80,20 @@ export class NotificationService {
     });
   }
 
-  async notifyWithNavigationToUser(user: User, body: string, route: User) {
+  notifyWithNavigationToUser(user: User, body: string, route: User) {
     const { deviceOS, deviceToken } = user;
 
     return this.send(deviceToken, deviceOS, body, {
       type: "user",
+      route
+    });
+  }
+
+  notifyWithNavigationToPost(user: User, body: string, route: Post) {
+    const { deviceOS, deviceToken } = user;
+
+    return this.send(deviceToken, deviceOS, body, {
+      type: "post",
       route
     });
   }

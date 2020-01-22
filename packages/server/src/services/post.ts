@@ -6,8 +6,8 @@ import uniqBy from "lodash/uniqBy";
 
 import { Post as PostModel } from "../models/post";
 import { CRUDService } from "./crud";
-import { UserService } from "./user";
 import { SlackLogService } from "./logger";
+import { UserService } from "./user";
 
 @Service()
 export class PostService extends CRUDService<PostModel, Post> {
@@ -58,14 +58,13 @@ export class PostService extends CRUDService<PostModel, Post> {
 
     const ret: FeedPost[] = [];
     posts.forEach(
-      ({ id, description, userPhoneNumber, createdAt, photoId, comments }) => {
+      ({ id, description, userPhoneNumber, createdAt, photoId }) => {
         ret.push({
           id,
           description,
           userPhoneNumber,
           createdAt,
           photoId,
-          comments,
           user: users[userPhoneNumber]
         });
       }

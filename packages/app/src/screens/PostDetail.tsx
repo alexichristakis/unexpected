@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
 import {
+  Comments,
   NavBar,
   PostImage,
   ZoomedImage,
@@ -89,7 +90,15 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
     outputRange: [-50, 0, 0]
   });
 
-  const { id, description, createdAt, userPhoneNumber, photoId, user } = post;
+  const {
+    id,
+    description,
+    createdAt,
+    userPhoneNumber,
+    photoId,
+    user,
+    comments = []
+  } = post;
 
   const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) =>
     setZoomedImage({
@@ -158,6 +167,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
         <View style={styles.footer}>
           <Text style={TextStyles.medium}>{description}</Text>
         </View>
+        <Comments comments={comments} />
       </Animated.ScrollView>
       {zoomedImage && <ZoomedImage {...zoomedImage} />}
     </Screen>

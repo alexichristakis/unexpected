@@ -1,4 +1,8 @@
-import { Post as PostModel, User as UserModel } from "@unexpected/server";
+import {
+  Post as PostModel,
+  User as UserModel,
+  Comment as CommentModel
+} from "@unexpected/server";
 
 export type NewUser = {
   phoneNumber: string;
@@ -17,11 +21,8 @@ export type Post = Omit<PostModel, "_id"> & { id: string };
 
 export type FeedPost = Post & { user: User };
 
-export type Comment = {
-  phoneNumber: string;
-  createdAt: string;
-  body: string;
-};
+export type Comment = Omit<CommentModel, "_id"> & { id: string };
+export type NewComment = Omit<Comment, "createdAt" | "id">;
 
 export type UserNotificationPayload = {
   type: "user";

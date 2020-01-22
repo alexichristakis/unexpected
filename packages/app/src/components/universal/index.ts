@@ -14,8 +14,7 @@ export * from "./NavBar";
 export * from "./ZoomHandler";
 export * from "./ZoomedImage";
 
-import FriendButton from "./FriendButton";
-import PostImage from "./PostImage";
-import UserImage from "./UserImage";
-
-export { UserImage, PostImage, FriendButton };
+export { default as Comments } from "./Comments";
+export { default as FriendButton } from "./FriendButton";
+export { default as PostImage } from "./PostImage";
+export { default as UserImage } from "./UserImage";
