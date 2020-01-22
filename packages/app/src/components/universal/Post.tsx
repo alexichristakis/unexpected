@@ -19,36 +19,23 @@ export interface PostProps {
   onPressName?: () => void;
 }
 
-export const Post: React.FC<PostProps> = React.memo(
-  ({
-    entranceAnimatedValue = 1,
-    index = 0,
-    post,
-    onPressName,
-    renderImage
-  }) => {
+export type PostRef = {
+  setVisible: () => void;
+  setNotVisible: () => void;
+};
+
+export const Post = React.memo(
+  forwardRef<PostRef, PostProps>(({ post, onPressName, renderImage }, ref) => {
     // const [visible, setVisible] = useState(false);
-    const { description, user, createdAt, comments = [] } = post;
+    const { description, user, createdAt, comments } = post;
 
-    // useImperativeHandle(ref, () => ({
-    //   setVisible: () => setVisible(true),
-    //   setNotVisible: () => setVisible(false)
-    // }));
-
-    const animatedContainer = {
-      transform: [
-        {
-          translateY: Animated.interpolate(entranceAnimatedValue, {
-            inputRange: [0, 1],
-            outputRange: [150 * (index + 1), 0]
-          })
-        }
-      ],
-      opacity: entranceAnimatedValue
-    };
+    useImperativeHandle(ref, () => ({
+      setVisible: () => console.log("visible"),
+      setNotVisible: () => console.log("not visible")
+    }));
 
     return (
-      <Animated.View style={[styles.container, animatedContainer]}>
+      <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={onPressName}>
             <Text style={[TextStyles.large, styles.name]}>
@@ -60,18 +47,13 @@ export const Post: React.FC<PostProps> = React.memo(
         {renderImage()}
         <Text style={styles.description}>{description}</Text>
         <Comments comments={comments} />
-      </Animated.View>
+      </View>
     );
-  },
+  }),
   (prevProps, nextProps) =>
     moment(prevProps.post.createdAt).fromNow() ===
     moment(nextProps.post.createdAt).fromNow()
 );
-
-// export const Post = forwardRef<
-//   { setVisible: () => void; setNotVisible: () => void },
-//   PostProps
-// >(_Post);
 
 const styles = StyleSheet.create({
   container: {

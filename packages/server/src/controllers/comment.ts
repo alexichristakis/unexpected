@@ -32,6 +32,6 @@ export class CommentController {
 
   @Get("/:postId")
   getCommentsForPost(@PathParams("postId") postId: string) {
-    return this.commentService.getCommentsForPost(postId);
+    return this.commentService.getByPostId(postId);
   }
 }

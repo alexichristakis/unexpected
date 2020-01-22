@@ -1,7 +1,7 @@
 import {
+  Comment as CommentModel,
   Post as PostModel,
-  User as UserModel,
-  Comment as CommentModel
+  User as UserModel
 } from "@unexpected/server";
 
 export type NewUser = {
@@ -19,7 +19,7 @@ export type UserNotificationRecord = {
 
 export type Post = Omit<PostModel, "_id"> & { id: string };
 
-export type FeedPost = Post & { user: User };
+export type FeedPost = Post & { user: User; comments: Comment[] };
 
 export type Comment = Omit<CommentModel, "_id"> & { id: string };
 export type NewComment = Omit<Comment, "createdAt" | "id">;

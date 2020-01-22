@@ -19,7 +19,8 @@ import {
   PostImage,
   ZoomedImageType,
   ZoomHandler,
-  ZoomHandlerGestureBeganPayload
+  ZoomHandlerGestureBeganPayload,
+  PostRef
 } from "@components/universal";
 import { FEED_POST_HEIGHT, FEED_POST_WIDTH } from "@lib/constants";
 import { SB_HEIGHT } from "@lib/styles";
@@ -59,23 +60,27 @@ export const Posts: React.FC<PostsProps> = React.memo(
   }) => {
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const [animatedValue] = useState(new Animated.Value(0));
-    const [viewableItems, setViewableItems] = useState<Array<number | null>>([]);
 
-    // const cellRefs = useRef<{ [id: string]: React.RefObject<typeof Post> }>({});
-    // const onViewableItemsChangedRef = useRef(
-    //   ({ changed }: { changed: ViewToken[] }) => {
-    //     // const refs = cellRefs.current;
-    //     // changed.forEach(change => {
-    //     //   const ref = refs[change.item.id];
-    //     //   if (!ref || !ref.current) return;
-    //     //   if (change.isViewable) {
-    //     //     ref.current.setVisible();
-    //     //   } else {
-    //     //     ref.current.setNotVisible();
-    //     //   }
-    //     // });
-    //   }
-    // );
+    const cellRefs = useRef<{ [id: string]: React.RefObject<PostRef | null> }>(
+      {}
+    );
+
+    const onViewableItemsChangedRef = useRef(
+      ({ changed }: { changed: ViewToken[] }) => {
+        const refs = cellRefs.current;
+        // console.log(refs);
+        changed.forEach(change => {
+          const ref = refs[change.item.id];
+          console.log("ref:", ref);
+          // if (!ref || !ref.current) return;
+          if (change.isViewable) {
+            ref.setVisible();
+          } else {
+            ref.setNotVisible();
+          }
+        });
+      }
+    );
 
     useEffect(() => {
       Animated.timing(animatedValue, {
@@ -91,7 +96,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
     const renderEmptyComponent = () => (
       <Button
-        white={true}
+        white
         title="share your first photo"
         style={{ marginHorizontal: 20 }}
         onPress={onPressShare}
@@ -136,7 +141,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
       return (
         <Post
-          // ref={cellRefs.current[item.id]}
+          ref={ref => (cellRefs.current[item.id] = ref)}
           index={index}
           post={item}
           renderImage={renderImage}
@@ -154,8 +159,8 @@ export const Posts: React.FC<PostsProps> = React.memo(
         scrollEnabled={scrollEnabled}
         showsVerticalScrollIndicator={false}
         windowSize={3}
-        // onViewableItemsChanged={onViewableItemsChangedRef.current}
-        // viewabilityConfig={VIEWABILITY_CONFIG}
+        onViewableItemsChanged={onViewableItemsChangedRef.current}
+        viewabilityConfig={VIEWABILITY_CONFIG}
         ListHeaderComponent={renderTop}
         ListHeaderComponentStyle={styles.headerContainer}
         ListEmptyComponent={renderEmptyComponent}

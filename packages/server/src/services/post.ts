@@ -3,11 +3,13 @@ import { MongooseModel } from "@tsed/mongoose";
 import { FeedPost, Post } from "@unexpected/global";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
+import groupBy from "lodash/groupBy";
 
 import { Post as PostModel } from "../models/post";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { UserService } from "./user";
+import { CommentService } from "./comment";
 
 @Service()
 export class PostService extends CRUDService<PostModel, Post> {
@@ -16,6 +18,9 @@ export class PostService extends CRUDService<PostModel, Post> {
 
   @Inject(UserService)
   userService: UserService;
+
+  @Inject(CommentService)
+  commentService: CommentService;
 
   @Inject(SlackLogService)
   logger: SlackLogService;
@@ -41,20 +46,30 @@ export class PostService extends CRUDService<PostModel, Post> {
 
     const { friends } = user;
 
+    // gets all friends posts
     const posts = await this.model
       .find({ userPhoneNumber: { $in: [...friends, phoneNumber] } })
       .sort({ createdAt: -1 })
       .exec();
 
+    // gets their ids
+    const postIds = posts.map(({ id }) => id);
+
+    // gets all unique user entities in the feed
     const usersToFetch = uniqBy(posts, post => post.userPhoneNumber).reduce(
       (prev, curr) => [...prev, curr.userPhoneNumber],
       [] as string[]
     );
 
-    const users = keyBy(
-      await this.userService.getByPhoneNumber(usersToFetch),
-      ({ phoneNumber }) => phoneNumber
-    );
+    // fetches users and comments
+    const [users, comments] = await Promise.all([
+      this.userService.getByPhoneNumber(usersToFetch),
+      this.commentService.getByPostIds(postIds)
+    ]);
+
+    // generates maps to load data into returned list
+    const userMap = keyBy(users, ({ phoneNumber }) => phoneNumber);
+    const commentMap = groupBy(comments, ({ postId }) => postId);
 
     const ret: FeedPost[] = [];
     posts.forEach(
@@ -65,7 +80,8 @@ export class PostService extends CRUDService<PostModel, Post> {
           userPhoneNumber,
           createdAt,
           photoId,
-          user: users[userPhoneNumber]
+          comments: commentMap[id],
+          user: userMap[userPhoneNumber]
         });
       }
     );

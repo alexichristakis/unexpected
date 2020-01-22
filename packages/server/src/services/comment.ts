@@ -18,9 +18,15 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
   @Inject(SlackLogService)
   logger: SlackLogService;
 
-  async getCommentsForPost(postId: string) {
+  async getByPostIds(postIds: string[]) {
+    const comments = await this.model.find({ postId: { $in: postIds } }).exec();
+
+    return comments;
+  }
+
+  async getByPostId(postId: string) {
     const comments = await this.model
-      .find({ postId: postId })
+      .find({ postId })
       .sort({ createdAt: -1 })
       .exec();
 
