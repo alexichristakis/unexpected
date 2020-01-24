@@ -72,7 +72,7 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
         key: uuid(),
         params: {
           prevRoute: "Friends",
-          user: toUser
+          phoneNumber: toUser.phoneNumber
         }
       });
     }

@@ -63,11 +63,16 @@ export const currentUsersPostsStale = createSelector(
 );
 
 export const currentUsersPosts = createSelector(
-  currentUsersPostsState,
-  postState => postState.posts || []
+  [currentUsersPostsState, posts],
+  (userPostState, posts) => {
+    const postIds = userPostState.posts;
+    return postIds.map(id => posts[id]);
+  }
 );
 
 export const feedState = (state: RootState) => s(state).feed;
+
+export const feedStale = createSelector([feedState], state => state.stale);
 
 export const feed = createSelector(
   [feedState, usersEntitySelector, posts, comments],
