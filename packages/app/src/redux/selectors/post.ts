@@ -22,13 +22,26 @@ export const errorSendingPost = (state: RootState) => s(state).error;
 const phoneNumberFromProps = (_: RootState, props: { phoneNumber: string }) =>
   props.phoneNumber;
 
+const postIdFromProps = (_: RootState, props: { postId: string }) =>
+  props.postId;
+
+export const post = createSelector(
+  [posts, comments, usersEntitySelector, postIdFromProps],
+  (posts, commentMap, users, id) => {
+    const post = posts[id];
+    return {
+      ...post,
+      comments: commentMap[id],
+      user: users[post.userPhoneNumber]
+    };
+  }
+);
+
 export const usersPosts = createSelector(
   [usersSelector, posts, userEntitySelector],
   (users, posts, user) => {
     const phoneNumber = user.phoneNumber;
     const postIds = users[phoneNumber].posts ?? [];
-
-    console.log(postIds, posts, user);
 
     return postIds.map(id => posts[id]);
   }

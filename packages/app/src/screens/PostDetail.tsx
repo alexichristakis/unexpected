@@ -36,8 +36,9 @@ import { StackParamList } from "../App";
 
 import MoreIcon from "@assets/svg/more.svg";
 
-const mapStateToProps = (state: RootState) => ({
-  phoneNumber: selectors.phoneNumber(state)
+const mapStateToProps = (state: RootState, props: PostProps) => ({
+  phoneNumber: selectors.phoneNumber(state),
+  post: selectors.post(state, props.route.params)
 });
 const mapDispatchToProps = {
   sendPost: PostActions.sendPost,
@@ -53,6 +54,7 @@ export interface PostProps {
 }
 
 const PostDetail: React.FC<PostProps & PostReduxProps> = ({
+  post,
   deletePost,
   phoneNumber,
   navigation,
@@ -62,7 +64,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
 
   const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
 
-  const { prevRoute, post } = route.params;
+  const { prevRoute } = route.params;
 
   useDarkStatusBar();
 
@@ -77,7 +79,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
         key: uuid(),
         params: {
           prevRoute: "Post",
-          user: post.user
+          phoneNumber: post.userPhoneNumber
         }
       });
     }
