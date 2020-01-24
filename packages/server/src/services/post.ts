@@ -1,15 +1,15 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import { FeedPost, Post } from "@unexpected/global";
+import groupBy from "lodash/groupBy";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
-import groupBy from "lodash/groupBy";
 
 import { Post as PostModel } from "../models/post";
+import { CommentService } from "./comment";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { UserService } from "./user";
-import { CommentService } from "./comment";
 
 @Service()
 export class PostService extends CRUDService<PostModel, Post> {

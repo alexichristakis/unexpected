@@ -13,7 +13,7 @@ import moment from "moment";
 import Animated from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
 import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import {
@@ -31,7 +31,7 @@ import { formatName } from "@lib/utils";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
 import { StackParamList } from "../App";
 
 import MoreIcon from "@assets/svg/more.svg";
@@ -45,10 +45,8 @@ const mapDispatchToProps = {
   takePhoto: ImageActions.takePhoto
 };
 
-export type PostReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type PostReduxProps = ConnectedProps<typeof connector>;
+
 export interface PostProps {
   navigation: NativeStackNavigationProp<StackParamList, "POST">;
   route: RouteProp<StackParamList, "POST">;
@@ -196,4 +194,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostDetail);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(PostDetail);

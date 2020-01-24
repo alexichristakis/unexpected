@@ -13,13 +13,12 @@ export const users = createSelector(s, state => state.users);
 
 export const phoneNumber = createSelector(s, state => state.phoneNumber);
 
-const phoneNumberFromProps = (_: RootState, props: { user: User }) =>
-  props.user.phoneNumber;
-const userEntityFromProps = (_: RootState, props: { user: User }) => props.user;
+const phoneNumberFromProps = (_: RootState, props: { phoneNumber: string }) =>
+  props.phoneNumber;
+
 export const user = createSelector(
-  [users, phoneNumberFromProps, userEntityFromProps],
-  (users, phoneNumber, fallback) =>
-    !!users[phoneNumber] ? users[phoneNumber] : fallback
+  [users, phoneNumberFromProps],
+  (users, phoneNumber) => users[phoneNumber]
 );
 
 export const currentUser = createSelector(

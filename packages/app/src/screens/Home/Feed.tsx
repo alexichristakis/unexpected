@@ -28,8 +28,8 @@ const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
-  feed: selectors.feedState(state),
-  refreshing: selectors.postLoading(state),
+  feed: selectors.feed(state),
+  refreshing: selectors.feedLoading(state),
   shouldLaunchPermissions: selectors.shouldLaunchPermissions(state)
 });
 const mapDispatchToProps = {
@@ -120,7 +120,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     };
 
     const getPosts = () => {
-      const sortedPosts = _.sortBy(feed.posts, o => -o.createdAt);
+      const sortedPosts = _.sortBy(feed, o => -o.createdAt);
       const latest = sortedPosts.length ? sortedPosts[0].createdAt : undefined;
 
       return { sortedPosts, latest };
@@ -148,13 +148,13 @@ export const Feed: React.FC<FeedProps> = React.memo(
         navigation.navigate({
           name: "PROFILE",
           key: uuid(),
-          params: { prevRoute: "Feed", user }
+          params: { prevRoute: "Feed", phoneNumber: user.phoneNumber }
         });
       }
     };
 
     const handleOnPressShare = () => {
-      navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
+      navigation.navigate("CAPTURE");
     };
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);

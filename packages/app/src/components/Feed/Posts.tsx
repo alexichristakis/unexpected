@@ -17,10 +17,10 @@ import {
   Button,
   Post,
   PostImage,
+  PostRef,
   ZoomedImageType,
   ZoomHandler,
-  ZoomHandlerGestureBeganPayload,
-  PostRef
+  ZoomHandlerGestureBeganPayload
 } from "@components/universal";
 import { FEED_POST_HEIGHT, FEED_POST_WIDTH } from "@lib/constants";
 import { SB_HEIGHT } from "@lib/styles";
@@ -96,7 +96,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
     const renderEmptyComponent = () => (
       <Button
-        white
+        white={true}
         title="share your first photo"
         style={{ marginHorizontal: 20 }}
         onPress={onPressShare}

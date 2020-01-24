@@ -36,8 +36,7 @@ export type CaptureReduxProps = ReduxPropsType<
 
 const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
   takePhoto,
-  navigation,
-  route
+  navigation
 }) => {
   const [camera, setCamera] = useState<Camera | null>(null);
   const [flashMode, setFlashMode] = useState<keyof FlashMode>("auto");
@@ -52,8 +51,7 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
         /* save to redux */
         takePhoto(data);
 
-        const { nextRoute } = route.params;
-        navigation.navigate(nextRoute);
+        navigation.navigate("SHARE");
       }
     }
   };
@@ -90,9 +88,9 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
     <Screen style={styles.container}>
       <View style={styles.background} />
       <Camera
+        ref={setCamera}
         flashMode={flashMode}
         direction={direction}
-        ref={setCamera}
         style={styles.camera}
       />
       <View style={styles.buttonContainer}>

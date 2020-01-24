@@ -89,7 +89,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser={true}
+        isUser
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}
@@ -104,7 +104,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       navigation.navigate({
         name: "POST",
         key: uuid(),
-        params: { prevRoute: user.firstName, post: { ...post, user } }
+        params: { prevRoute: user.firstName, postId: post.id }
       });
     };
 

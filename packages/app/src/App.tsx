@@ -62,12 +62,12 @@ export type StackParamList = {
   USER_PROFILE: undefined;
   AUTH: undefined;
   SHARE: BaseParams;
-  POST: BaseParams & { post: FeedPost };
-  PROFILE: BaseParams & { user: User };
+  POST: BaseParams & { postId: string };
+  PROFILE: BaseParams & { phoneNumber: string };
   FRIENDS: { user: User };
   SETTINGS: undefined;
   SIGN_UP: undefined;
-  CAPTURE: { nextRoute: keyof StackParamList };
+  CAPTURE: undefined;
   NEW_PROFILE_PICTURE: undefined;
   EDIT_BIO: undefined;
 };

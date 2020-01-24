@@ -27,10 +27,10 @@ import {
 
 export interface UserState {
   // readonly user: User;
-  readonly phoneNumber: string;
-  readonly users: { [phoneNumber: string]: User };
-  readonly loading: boolean;
-  readonly error: any;
+  phoneNumber: string;
+  users: { [phoneNumber: string]: User };
+  loading: boolean;
+  error: any;
 }
 
 const initialState: UserState = {
