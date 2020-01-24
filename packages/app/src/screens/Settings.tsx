@@ -113,7 +113,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
           key: uuid(),
           params: {
             prevRoute: user.firstName,
-            user: toUser
+            phoneNumber: toUser.phoneNumber
           }
         });
       }

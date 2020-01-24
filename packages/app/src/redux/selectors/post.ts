@@ -57,11 +57,6 @@ export const currentUsersPostsState = createSelector(
   (phoneNumber, users) => users[phoneNumber] || {}
 );
 
-export const currentUsersPostsStale = createSelector(
-  currentUsersPostsState,
-  postState => (postState.stale === undefined ? true : postState.stale)
-);
-
 export const currentUsersPosts = createSelector(
   [currentUsersPostsState, posts],
   (userPostState, posts) => {

@@ -1,6 +1,6 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { FeedPost, Post } from "@unexpected/global";
+import { Post } from "@unexpected/global";
 import groupBy from "lodash/groupBy";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
@@ -36,7 +36,9 @@ export class PostService extends CRUDService<PostModel, Post> {
   getUsersPosts = async (phoneNumber: string) => {
     const posts = await this.find({ userPhoneNumber: phoneNumber });
 
-    return posts;
+    const postMap = keyBy(posts, ({ id }) => id);
+
+    return postMap;
   };
 
   async getFeedForUser(phoneNumber: string) {
@@ -53,7 +55,7 @@ export class PostService extends CRUDService<PostModel, Post> {
       .exec();
 
     // gets their ids
-    const postIds = posts.map(({ id }) => id);
+    const postIds: string[] = posts.map(({ id }) => id);
 
     // gets all unique user entities in the feed
     const usersToFetch = uniqBy(posts, post => post.userPhoneNumber).reduce(
@@ -68,23 +70,16 @@ export class PostService extends CRUDService<PostModel, Post> {
     ]);
 
     // generates maps to load data into returned list
+    const postMap = keyBy(posts, ({ id }) => id);
     const userMap = keyBy(users, ({ phoneNumber }) => phoneNumber);
     const commentMap = groupBy(comments, ({ postId }) => postId);
 
-    const ret: FeedPost[] = [];
-    posts.forEach(
-      ({ id, description, userPhoneNumber, createdAt, photoId }) => {
-        ret.push({
-          id,
-          description,
-          userPhoneNumber,
-          createdAt,
-          photoId,
-          comments: commentMap[id],
-          user: userMap[userPhoneNumber]
-        });
-      }
-    );
+    const ret = {
+      postIds,
+      posts: postMap,
+      users: userMap,
+      comments: commentMap
+    };
 
     return ret;
   }

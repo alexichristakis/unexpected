@@ -30,7 +30,7 @@ const mapStateToProps = (state: RootState) => ({
   postsLoading: selectors.postLoading(state),
   user: selectors.currentUser(state),
   posts: selectors.currentUsersPosts(state),
-  stale: selectors.currentUsersPostsStale(state)
+  stale: selectors.feedStale(state)
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,
