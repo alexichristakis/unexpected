@@ -103,7 +103,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
   const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) =>
     setZoomedImage({
       id: photoId,
-      phoneNumber: phoneNumber,
+      phoneNumber,
       width: SCREEN_WIDTH,
       height: 1.2 * SCREEN_WIDTH,
       ...payload

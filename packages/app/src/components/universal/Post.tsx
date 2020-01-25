@@ -13,9 +13,9 @@ import { connect, ConnectedProps } from "react-redux";
 
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
+import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { Actions as PostActions } from "@redux/modules/post";
 
 import MoreIcon from "@assets/svg/more.svg";
 
@@ -101,7 +101,7 @@ const Post = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 40
+    marginBottom: 10
   },
   header: {
     flexDirection: "row",

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, KeyboardAvoidingView } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
@@ -49,12 +49,13 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
   };
 
   return (
-    <KeyboardAvoidingView enabled={focused} behavior={"position"}>
+    <KeyboardAvoidingView enabled={false} behavior={"position"}>
       <Animated.View style={styles.container}>
         {comments.map(comment => (
           <Comment key={comment.id} {...comment} />
         ))}
         <Composer
+          loading={loading}
           onBlur={handleOnBlur}
           onFocus={handleOnFocus}
           onSendMessage={handleOnSendMessage}

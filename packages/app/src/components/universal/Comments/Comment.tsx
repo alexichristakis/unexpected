@@ -3,12 +3,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
+import { TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
-import { TextStyles } from "@lib/styles";
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
   user: selectors.user(state, props)

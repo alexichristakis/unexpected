@@ -173,6 +173,8 @@ export default (
         if (comments) comments.push(comment);
         else draft.comments[comment.postId] = [comment];
 
+        draft.commentsLoading = false;
+
         return draft;
       });
     }
@@ -182,6 +184,8 @@ export default (
 
       return immer(state, draft => {
         _.remove(draft.comments[id], c => c.id === id);
+
+        draft.commentsLoading = false;
 
         return draft;
       });
@@ -193,6 +197,8 @@ export default (
       return immer(state, draft => {
         draft.error = error;
         draft.loading = false;
+        draft.commentsLoading = false;
+        draft.feed.loading = false;
 
         return draft;
       });
