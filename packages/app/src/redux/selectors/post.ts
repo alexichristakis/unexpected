@@ -33,7 +33,7 @@ export const post = createSelector(
     return {
       ...post,
       comments: commentMap[id],
-      user: users[post.userPhoneNumber]
+      user: users[post.phoneNumber]
     };
   }
 );

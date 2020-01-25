@@ -9,10 +9,8 @@ import {
 
 import _ from "lodash";
 import moment from "moment";
-import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
-import { FEED_POST_WIDTH } from "@lib/constants";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import * as selectors from "@redux/selectors";
@@ -116,9 +114,9 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   description: {
-    ...TextStyles.medium,
+    ...TextStyles.small,
     marginTop: 10,
-    paddingHorizontal: 20
+    paddingHorizontal: 10
   }
 });
 

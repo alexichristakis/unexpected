@@ -112,7 +112,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
     );
 
     const renderPost = ({ item, index }: ListRenderItemInfo<PostType>) => {
-      const { id, photoId, userPhoneNumber } = item;
+      const { id, photoId, phoneNumber } = item;
 
       const handleOnGestureBegan = (
         payload: ZoomHandlerGestureBeganPayload
@@ -123,7 +123,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
           width: FEED_POST_WIDTH,
           height: FEED_POST_HEIGHT,
           id: photoId,
-          phoneNumber: userPhoneNumber
+          phoneNumber
         });
       };
 
@@ -140,7 +140,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
           <PostImage
             width={FEED_POST_WIDTH}
             height={FEED_POST_HEIGHT}
-            phoneNumber={userPhoneNumber}
+            phoneNumber={phoneNumber}
             id={photoId}
           />
         </ZoomHandler>

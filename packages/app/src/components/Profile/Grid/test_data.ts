@@ -23,7 +23,7 @@ const generateTime = () => {
 for (let i = 0; i < NUM_POSTS; i++) {
   posts.push({
     createdAt: generateTime(),
-    userPhoneNumber: "2069409629",
+    phoneNumber: "2069409629",
     description: "test",
     id: uuid(),
     photoId: uuid()

@@ -37,7 +37,7 @@ import { StackParamList } from "../App";
 import MoreIcon from "@assets/svg/more.svg";
 
 const mapStateToProps = (state: RootState, props: PostProps) => ({
-  phoneNumber: selectors.phoneNumber(state),
+  currentUserPhoneNumber: selectors.phoneNumber(state),
   post: selectors.post(state, props.route.params)
 });
 const mapDispatchToProps = {
@@ -56,7 +56,7 @@ export interface PostProps {
 const PostDetail: React.FC<PostProps & PostReduxProps> = ({
   post,
   deletePost,
-  phoneNumber,
+  currentUserPhoneNumber,
   navigation,
   route
 }) => {
@@ -68,7 +68,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
 
   useDarkStatusBar();
 
-  const isUser = phoneNumber === post.userPhoneNumber;
+  const isUser = currentUserPhoneNumber === post.phoneNumber;
 
   const handleOnPressName = () => {
     if (isUser) {
@@ -79,7 +79,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
         key: uuid(),
         params: {
           prevRoute: "Post",
-          phoneNumber: post.userPhoneNumber
+          phoneNumber: post.phoneNumber
         }
       });
     }
@@ -94,7 +94,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
     id,
     description,
     createdAt,
-    userPhoneNumber,
+    phoneNumber,
     photoId,
     user,
     comments = []
@@ -103,7 +103,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
   const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) =>
     setZoomedImage({
       id: photoId,
-      phoneNumber: userPhoneNumber,
+      phoneNumber: phoneNumber,
       width: SCREEN_WIDTH,
       height: 1.2 * SCREEN_WIDTH,
       ...payload
@@ -158,7 +158,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
           onGestureBegan={handleOnGestureBegan}
         >
           <PostImage
-            phoneNumber={userPhoneNumber}
+            phoneNumber={phoneNumber}
             id={photoId}
             width={SCREEN_WIDTH}
             height={SCREEN_WIDTH * 1.2}

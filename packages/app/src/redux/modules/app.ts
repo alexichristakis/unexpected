@@ -188,7 +188,6 @@ export function* notificationWatcher() {
       // notification
       if (notification) {
         const { payload }: { payload: NotificationPayload } = notification;
-        console.log(notification);
 
         // notification is to start the photo clock
         if (payload.type === "photoTime") {
@@ -243,11 +242,6 @@ const notificationEmitter = () =>
   });
 
 function* checkCameraStatus() {
-  console.log(
-    "INITIAL:",
-    Notifications.getInitialNotification().then(console.log)
-  );
-
   // const jwt = yield select(selectors.jwt);
   // if (jwt) {
   //   // check if camera should be enabled

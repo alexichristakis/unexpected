@@ -308,10 +308,7 @@ function* onFetchFeed(
     if (data) {
       const { postIds, posts, users, comments } = data;
 
-      const postsByUser = _.groupBy(
-        posts,
-        ({ userPhoneNumber }) => userPhoneNumber
-      );
+      const postsByUser = _.groupBy(posts, ({ phoneNumber }) => phoneNumber);
 
       const userMap = Object.keys(users).reduce((acc, curr) => {
         acc[curr] = {

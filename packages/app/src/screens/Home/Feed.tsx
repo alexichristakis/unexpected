@@ -21,7 +21,7 @@ import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { User } from "@unexpected/global";
+
 import { StackParamList } from "../../App";
 
 const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
