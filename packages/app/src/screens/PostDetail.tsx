@@ -167,7 +167,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
         <View style={styles.footer}>
           <Text style={TextStyles.medium}>{description}</Text>
         </View>
-        <Comments comments={comments} />
+        <Comments postId={post.id} comments={comments} />
       </Animated.ScrollView>
       {zoomedImage && <ZoomedImage {...zoomedImage} />}
     </Screen>

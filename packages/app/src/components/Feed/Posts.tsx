@@ -49,7 +49,7 @@ export interface PostsProps {
   refreshing: boolean;
   onGestureBegan: (image: ZoomedImageType) => void;
   onGestureComplete: () => void;
-  onPressUser: (user: User) => void;
+  onPressUser: (phoneNumber: string) => void;
   onPressShare: () => void;
   onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 }
@@ -149,6 +149,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
       return (
         <Post
           ref={ref => (cellRefs.current[id] = ref)}
+          onPressName={onPressUser}
           postId={id}
           renderImage={renderImage}
         />

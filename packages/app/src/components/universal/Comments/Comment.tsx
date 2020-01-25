@@ -8,6 +8,7 @@ import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
+import { TextStyles } from "@lib/styles";
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
   user: selectors.user(state, props)
@@ -28,16 +29,25 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
   return (
     <View style={styles.container}>
       <TouchableOpacity>
-        <Text>{formatName(user)}:</Text>
+        <Text style={styles.name}>{formatName(user)}:</Text>
       </TouchableOpacity>
-      <Text>{body}</Text>
+      <Text style={styles.body}>{body}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row"
+    flexDirection: "row",
+    marginBottom: 2
+  },
+  name: {
+    ...TextStyles.small,
+    fontWeight: "600",
+    marginRight: 3
+  },
+  body: {
+    ...TextStyles.small
   }
 });
 const connector = connect(mapStateToProps, mapDispatchToProps);

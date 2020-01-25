@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, KeyboardAvoidingView } from "react-native";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
@@ -34,22 +34,44 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
   comments = [],
   sendComment
 }) => {
+  const [focused, setFocused] = useState(false);
+
+  const handleOnFocus = () => {
+    setFocused(true);
+  };
+
+  const handleOnBlur = () => {
+    setFocused(false);
+  };
+
   const handleOnSendMessage = (body: string) => {
     sendComment({ body, phoneNumber, postId });
   };
 
   return (
-    <Animated.View style={styles.container}>
-      {comments.map(comment => (
-        <Comment key={comment.id} {...comment} />
-      ))}
-      <Composer onSendMessage={handleOnSendMessage} />
-    </Animated.View>
+    <KeyboardAvoidingView enabled={focused} behavior={"position"}>
+      <Animated.View style={styles.container}>
+        {comments.map(comment => (
+          <Comment key={comment.id} {...comment} />
+        ))}
+        <Composer
+          onBlur={handleOnBlur}
+          onFocus={handleOnFocus}
+          onSendMessage={handleOnSendMessage}
+        />
+      </Animated.View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { width: "100%", alignSelf: "stretch" }
+  container: {
+    marginTop: 5,
+    backgroundColor: "white",
+    paddingHorizontal: 10,
+    width: "100%",
+    alignSelf: "stretch"
+  }
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

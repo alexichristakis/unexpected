@@ -27,6 +27,7 @@ import { StackParamList } from "../../App";
 const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
+  stale: selectors.feedStale(state),
   phoneNumber: selectors.phoneNumber(state),
   refreshing: selectors.feedLoading(state),
   shouldLaunchPermissions: selectors.shouldLaunchPermissions(state)
@@ -46,6 +47,7 @@ export interface FeedProps extends FeedReduxProps {
 
 export const Feed: React.FC<FeedProps> = React.memo(
   ({
+    stale,
     navigation,
     phoneNumber,
     fetchFeed,
@@ -63,7 +65,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
       if (shouldLaunchPermissions) {
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }
-    }, []);
+    }, [stale]);
 
     useFocusEffect(
       useCallback(() => {
@@ -132,14 +134,14 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const handleOnPressUser = (user: User) => {
-      if (phoneNumber === user.phoneNumber) {
+    const handleOnPressUser = (userPhoneNumber: string) => {
+      if (phoneNumber === userPhoneNumber) {
         navigation.navigate("USER_PROFILE");
       } else {
         navigation.navigate({
           name: "PROFILE",
           key: uuid(),
-          params: { prevRoute: "Feed", phoneNumber: user.phoneNumber }
+          params: { prevRoute: "Feed", phoneNumber: userPhoneNumber }
         });
       }
     };
