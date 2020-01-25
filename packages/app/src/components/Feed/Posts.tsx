@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FlatList,
   ListRenderItemInfo,
@@ -9,9 +9,11 @@ import {
   ViewToken
 } from "react-native";
 
-import { FeedPost, User } from "@unexpected/global";
-import Animated, { Easing } from "react-native-reanimated";
+import { Post as PostType, User } from "@unexpected/global";
+import _ from "lodash";
+import Animated from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
+import { connect, ConnectedProps } from "react-redux";
 
 import {
   Button,
@@ -24,6 +26,8 @@ import {
 } from "@components/universal";
 import { FEED_POST_HEIGHT, FEED_POST_WIDTH } from "@lib/constants";
 import { SB_HEIGHT } from "@lib/styles";
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
 
 import { Top } from "./Top";
 
@@ -34,19 +38,27 @@ const VIEWABILITY_CONFIG = {
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
+const mapStateToProps = (state: RootState) => ({
+  posts: selectors.feed(state)
+});
+
+const mapDispatchToProps = {};
+
 export interface PostsProps {
   scrollY: Animated.Value<number>;
+  refreshing: boolean;
   onGestureBegan: (image: ZoomedImageType) => void;
   onGestureComplete: () => void;
   onPressUser: (user: User) => void;
   onPressShare: () => void;
   onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
-  latest?: Date;
-  refreshing: boolean;
-  posts: FeedPost[];
 }
 
-export const Posts: React.FC<PostsProps> = React.memo(
+export type PostConnectedProps = ConnectedProps<typeof connector>;
+
+export type PostRefMap = { [id: string]: PostRef | null };
+
+const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
   ({
     scrollY,
     refreshing,
@@ -55,40 +67,36 @@ export const Posts: React.FC<PostsProps> = React.memo(
     onGestureBegan,
     onGestureComplete,
     onPressUser,
-    onPressShare,
-    latest
+    onPressShare
   }) => {
     const [scrollEnabled, setScrollEnabled] = useState(true);
-    const [animatedValue] = useState(new Animated.Value(0));
 
-    const cellRefs = useRef<{ [id: string]: React.RefObject<PostRef | null> }>(
-      {}
-    );
+    const sortPosts = () => {
+      const sortedPosts = _.sortBy(posts, ({ createdAt }) => -createdAt);
+      const latest = sortedPosts.length ? sortedPosts[0].createdAt : undefined;
+
+      return { sortedPosts, latest };
+    };
+
+    const cellRefs = useRef<PostRefMap>({});
 
     const onViewableItemsChangedRef = useRef(
       ({ changed }: { changed: ViewToken[] }) => {
         const refs = cellRefs.current;
-        // console.log(refs);
+
         changed.forEach(change => {
           const ref = refs[change.item.id];
-          console.log("ref:", ref);
-          // if (!ref || !ref.current) return;
+
           if (change.isViewable) {
-            ref.setVisible();
+            ref?.setVisible();
           } else {
-            ref.setNotVisible();
+            ref?.setNotVisible();
           }
         });
       }
     );
 
-    useEffect(() => {
-      Animated.timing(animatedValue, {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.quad
-      }).start();
-    }, [posts.length]);
+    const { sortedPosts, latest } = sortPosts();
 
     const renderTop = () => (
       <Top latest={latest} refreshing={refreshing} scrollY={scrollY} />
@@ -103,10 +111,9 @@ export const Posts: React.FC<PostsProps> = React.memo(
       />
     );
 
-    const renderPost = ({ item, index }: ListRenderItemInfo<FeedPost>) => {
-      const { photoId, userPhoneNumber } = item;
+    const renderPost = ({ item, index }: ListRenderItemInfo<PostType>) => {
+      const { id, photoId, userPhoneNumber } = item;
 
-      const handleOnPressName = () => onPressUser(item.user);
       const handleOnGestureBegan = (
         payload: ZoomHandlerGestureBeganPayload
       ) => {
@@ -141,12 +148,9 @@ export const Posts: React.FC<PostsProps> = React.memo(
 
       return (
         <Post
-          ref={ref => (cellRefs.current[item.id] = ref)}
-          index={index}
-          post={item}
+          ref={ref => (cellRefs.current[id] = ref)}
+          postId={id}
           renderImage={renderImage}
-          entranceAnimatedValue={animatedValue}
-          onPressName={handleOnPressName}
         />
       );
     };
@@ -154,7 +158,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
     return (
       <AnimatedFlatList
         style={styles.container}
-        data={posts}
+        data={sortedPosts}
         renderItem={renderPost}
         scrollEnabled={scrollEnabled}
         showsVerticalScrollIndicator={false}
@@ -171,9 +175,7 @@ export const Posts: React.FC<PostsProps> = React.memo(
       />
     );
   },
-  (prevProps, nextProps) =>
-    prevProps.posts.length === nextProps.posts.length &&
-    prevProps.refreshing === nextProps.refreshing
+  (prevProps, nextProps) => prevProps.refreshing === nextProps.refreshing
 );
 
 const styles = StyleSheet.create({
@@ -190,3 +192,6 @@ const styles = StyleSheet.create({
     alignSelf: "stretch"
   }
 });
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(Posts);

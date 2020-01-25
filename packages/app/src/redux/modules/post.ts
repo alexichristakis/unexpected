@@ -1,13 +1,13 @@
-import { Comment, FeedPost, Post, User } from "@unexpected/global";
+import { Comment, NewComment, Post, User } from "@unexpected/global";
 import immer from "immer";
 import _ from "lodash";
+import moment from "moment";
 import { TakePictureResponse } from "react-native-camera/types";
 import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import uuid from "uuid/v4";
-import moment from "moment";
 
 import client, { getHeaders } from "@api";
 import * as NavigationService from "../../navigation";
@@ -53,6 +53,7 @@ export interface PostState {
     loading: boolean;
   };
   loading: boolean;
+  commentsLoading: boolean;
   loadingPosts: { [phoneNumber: string]: boolean };
   error: string;
 }
@@ -68,6 +69,7 @@ const initialState: PostState = {
     loading: false
   },
   loading: false,
+  commentsLoading: false,
   loadingPosts: {},
   error: ""
 };
@@ -81,6 +83,17 @@ export default (
       return immer(state, draft => {
         draft.feed.loading = true;
         draft.error = "";
+
+        return draft;
+      });
+    }
+
+    case ActionTypes.FETCH_COMMENTS:
+    case ActionTypes.SEND_COMMENT:
+    case ActionTypes.DELETE_COMMENT: {
+      return immer(state, draft => {
+        draft.commentsLoading = true;
+
         return draft;
       });
     }
@@ -110,6 +123,7 @@ export default (
         draft.feed.stale = true;
 
         draft.error = "";
+
         return draft;
       });
     }
@@ -135,6 +149,7 @@ export default (
         };
 
         draft.posts = _.merge(draft.posts, posts);
+
         return draft;
       });
     }
@@ -153,7 +168,10 @@ export default (
       const { comment } = action.payload;
 
       return immer(state, draft => {
-        draft.comments[comment.postId].push(comment);
+        const comments = draft.comments[comment.postId];
+
+        if (comments) comments.push(comment);
+        else draft.comments[comment.postId] = [comment];
 
         return draft;
       });
@@ -463,7 +481,7 @@ export const Actions = {
   deletePostSuccess: (phoneNumber: string) =>
     createAction(ActionTypes.DELETE_POST_SUCCESS, { phoneNumber }),
 
-  sendComment: (comment: Comment) =>
+  sendComment: (comment: NewComment) =>
     createAction(ActionTypes.SEND_COMMENT, { comment }),
   sendCommentSuccess: (comment: Comment) =>
     createAction(ActionTypes.SEND_COMMENT_SUCCESS, { comment }),

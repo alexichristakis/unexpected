@@ -28,7 +28,6 @@ const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
-  feed: selectors.feed(state),
   refreshing: selectors.feedLoading(state),
   shouldLaunchPermissions: selectors.shouldLaunchPermissions(state)
 });
@@ -49,7 +48,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
   ({
     navigation,
     phoneNumber,
-    feed,
     fetchFeed,
     refreshing,
     shouldLaunchPermissions
@@ -119,13 +117,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const getPosts = () => {
-      const sortedPosts = _.sortBy(feed, o => -o.createdAt);
-      const latest = sortedPosts.length ? sortedPosts[0].createdAt : undefined;
-
-      return { sortedPosts, latest };
-    };
-
     const handleOnScrollEndDrag = (
       event: NativeSyntheticEvent<NativeScrollEvent>
     ) => {
@@ -159,15 +150,11 @@ export const Feed: React.FC<FeedProps> = React.memo(
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);
 
-    const { sortedPosts, latest } = getPosts();
-
     return (
       <Screen style={styles.container}>
         <Posts
-          posts={sortedPosts}
           scrollY={scrollY}
           refreshing={refreshing}
-          latest={latest}
           onScrollEndDrag={handleOnScrollEndDrag}
           onGestureBegan={setZoomedImage}
           onGestureComplete={handleOnGestureComplete}

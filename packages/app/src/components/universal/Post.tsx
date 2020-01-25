@@ -1,20 +1,21 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import _ from "lodash";
 import moment from "moment";
 import Animated from "react-native-reanimated";
+import { connect, ConnectedProps } from "react-redux";
 
 import { FEED_POST_WIDTH } from "@lib/constants";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
-import { FeedPost } from "@unexpected/global";
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
 
 import Comments from "./Comments";
 
 export interface PostProps {
-  entranceAnimatedValue?: Animated.Value<number>;
-  index?: number;
-  post: FeedPost;
+  postId: string;
   renderImage: () => JSX.Element;
   onPressName?: () => void;
 }
@@ -24,35 +25,41 @@ export type PostRef = {
   setNotVisible: () => void;
 };
 
-export const Post = React.memo(
-  forwardRef<PostRef, PostProps>(({ post, onPressName, renderImage }, ref) => {
-    // const [visible, setVisible] = useState(false);
-    const { description, user, createdAt, comments } = post;
+export type PostConnectedProps = ConnectedProps<typeof connector>;
 
-    useImperativeHandle(ref, () => ({
-      setVisible: () => console.log("visible"),
-      setNotVisible: () => console.log("not visible")
-    }));
+const mapStateToProps = (state: RootState, props: PostProps) => ({
+  post: selectors.post(state, props)
+});
+const mapDispatchToProps = {};
 
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={onPressName}>
-            <Text style={[TextStyles.large, styles.name]}>
-              {formatName(user)}
-            </Text>
-          </TouchableOpacity>
-          <Text style={TextStyles.small}>{moment(createdAt).fromNow()}</Text>
+const Post = React.memo(
+  React.forwardRef<PostRef, PostConnectedProps & PostProps>(
+    ({ post, onPressName, renderImage }, ref) => {
+      const { description, user, createdAt, comments } = post;
+
+      useImperativeHandle(ref, () => ({
+        setVisible: () => console.log("visible"),
+        setNotVisible: () => console.log("not visible")
+      }));
+
+      return (
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={onPressName}>
+              <Text style={[TextStyles.large, styles.name]}>
+                {formatName(user)}
+              </Text>
+            </TouchableOpacity>
+            <Text style={TextStyles.small}>{moment(createdAt).fromNow()}</Text>
+          </View>
+          {renderImage()}
+          <Text style={styles.description}>{description}</Text>
+          <Comments postId={post.id} comments={comments} />
         </View>
-        {renderImage()}
-        <Text style={styles.description}>{description}</Text>
-        <Comments comments={comments} />
-      </View>
-    );
-  }),
-  (prevProps, nextProps) =>
-    moment(prevProps.post.createdAt).fromNow() ===
-    moment(nextProps.post.createdAt).fromNow()
+      );
+    }
+  ),
+  (prevProps, nextProps) => _.isEqual(prevProps.post, nextProps.post)
 );
 
 const styles = StyleSheet.create({
@@ -74,3 +81,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   }
 });
+
+const connector = connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true
+});
+export default connector(Post);
