@@ -29,12 +29,12 @@ export class PostService extends CRUDService<PostModel, Post> {
     return Promise.all([
       this.create(post),
       this.userService.updateValidNotifications(post),
-      this.logger.sendMessage(post.userPhoneNumber, post.description)
+      this.logger.sendMessage(post.phoneNumber, post.description)
     ]);
   };
 
   getUsersPosts = async (phoneNumber: string) => {
-    const posts = await this.find({ userPhoneNumber: phoneNumber });
+    const posts = await this.find({ phoneNumber });
 
     const postMap = keyBy(posts, ({ id }) => id);
 
@@ -50,24 +50,23 @@ export class PostService extends CRUDService<PostModel, Post> {
 
     // gets all friends posts
     const posts = await this.model
-      .find({ userPhoneNumber: { $in: [...friends, phoneNumber] } })
+      .find({ phoneNumber: { $in: [...friends, phoneNumber] } })
       .sort({ createdAt: -1 })
       .exec();
 
     // gets their ids
     const postIds: string[] = posts.map(({ id }) => id);
 
+    const comments = await this.commentService.getByPostIds(postIds);
+
     // gets all unique user entities in the feed
-    const usersToFetch = uniqBy(posts, post => post.userPhoneNumber).reduce(
-      (prev, curr) => [...prev, curr.userPhoneNumber],
-      [] as string[]
-    );
+    const usersToFetch = uniqBy(
+      [...posts, ...comments],
+      post => post.phoneNumber
+    ).map(({ phoneNumber }) => phoneNumber);
 
     // fetches users and comments
-    const [users, comments] = await Promise.all([
-      this.userService.getByPhoneNumber(usersToFetch),
-      this.commentService.getByPostIds(postIds)
-    ]);
+    const users = await this.userService.getByPhoneNumber(usersToFetch);
 
     // generates maps to load data into returned list
     const postMap = keyBy(posts, ({ id }) => id);

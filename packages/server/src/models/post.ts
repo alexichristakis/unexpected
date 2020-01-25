@@ -9,7 +9,7 @@ export class Post {
   @Indexed()
   @Required()
   @Format("/^+?[1-9]d{1,14}$/")
-  userPhoneNumber: string;
+  phoneNumber: string;
 
   @Property()
   description: string;

@@ -54,12 +54,10 @@ export class UserService extends CRUDService<UserModel, User> {
   }
 
   async updateValidNotifications(post: Post) {
-    const { createdAt, userPhoneNumber } = post;
+    const { createdAt, phoneNumber } = post;
 
     const time = moment(createdAt);
-    const user = await this.findOne({ phoneNumber: userPhoneNumber }, [
-      "notifications"
-    ]);
+    const user = await this.findOne({ phoneNumber }, ["notifications"]);
 
     if (!user) return;
 
@@ -73,7 +71,7 @@ export class UserService extends CRUDService<UserModel, User> {
     );
 
     return this.updateOne(
-      { phoneNumber: userPhoneNumber },
+      { phoneNumber },
       { notifications: updatedNotifications }
     );
   }

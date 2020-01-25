@@ -29,7 +29,7 @@ export class PostController {
   ) {
     return this.postService.createNewPost({
       ...post,
-      userPhoneNumber: phoneNumber
+      phoneNumber
     });
   }
 
