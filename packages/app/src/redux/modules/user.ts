@@ -17,7 +17,7 @@ import {
 import client, { getHeaders } from "@api";
 import { User } from "@unexpected/global";
 
-import Navigation from "../../navigation";
+import { navigate } from "../../navigation";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
@@ -27,10 +27,10 @@ import {
 
 export interface UserState {
   // readonly user: User;
-  readonly phoneNumber: string;
-  readonly users: { [phoneNumber: string]: User };
-  readonly loading: boolean;
-  readonly error: any;
+  phoneNumber: string;
+  users: { [phoneNumber: string]: User };
+  loading: boolean;
+  error: any;
 }
 
 const initialState: UserState = {
@@ -233,7 +233,7 @@ function* onCreateUser(
   if (phoneNumber === "0000000000") {
     yield all([
       yield put(Actions.createUserSuccess(newUser)),
-      yield Navigation.navigate("AUTHENTICATED")
+      yield navigate("AUTHENTICATED")
     ]);
   } else
     try {
@@ -249,7 +249,7 @@ function* onCreateUser(
 
       yield all([
         yield put(Actions.createUserSuccess(createdUser)),
-        yield Navigation.navigate("AUTHENTICATED")
+        yield navigate("AUTHENTICATED")
       ]);
     } catch (err) {
       yield put(Actions.onError(err));

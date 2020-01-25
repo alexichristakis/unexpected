@@ -66,7 +66,7 @@ export const Discover: React.FC<DiscoverProps &
         key: uuid(),
         params: {
           prevRoute: "Search",
-          user: toUser
+          phoneNumber: toUser.phoneNumber
         }
       });
     }

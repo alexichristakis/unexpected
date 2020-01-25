@@ -52,7 +52,7 @@ export const Row: React.FC<RowProps> = ({ type, posts, onPressPost }) => {
       <PostImage
         width={size}
         height={size}
-        phoneNumber={post.userPhoneNumber}
+        phoneNumber={post.phoneNumber}
         id={post.photoId}
       />
     </TouchableScale>

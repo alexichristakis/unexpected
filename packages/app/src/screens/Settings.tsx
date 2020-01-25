@@ -16,12 +16,7 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
-import {
-  Button,
-  FriendButton,
-  ItemSeparator,
-  UserRow
-} from "@components/universal";
+import { Button, ItemSeparator, UserRow } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { TextSizes, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
@@ -38,8 +33,6 @@ const mapStateToProps = (state: RootState) => ({
   users: selectors.users(state)
 });
 const mapDispatchToProps = {
-  acceptRequest: UserActions.acceptRequest,
-  denyRequest: UserActions.denyRequest,
   fetchUsers: UserActions.fetchUsers,
   logout: AuthActions.logout
 };
@@ -53,16 +46,7 @@ export interface SettingsProps extends SettingsReduxProps {
 }
 
 const Settings: React.FC<SettingsProps> = React.memo(
-  ({
-    navigation,
-    user,
-    users,
-    fetchUsers,
-    acceptRequest,
-    denyRequest,
-    phoneNumber,
-    logout
-  }) => {
+  ({ navigation, user, users, fetchUsers, phoneNumber, logout }) => {
     useLightStatusBar();
 
     useFocusEffect(
@@ -113,7 +97,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
           key: uuid(),
           params: {
             prevRoute: user.firstName,
-            user: toUser
+            phoneNumber: toUser.phoneNumber
           }
         });
       }

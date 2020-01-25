@@ -57,8 +57,7 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
       }
     }, [enabled, timeOfExpiry]);
 
-    const handleOnPress = () =>
-      navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
+    const handleOnPress = () => navigation.navigate("CAPTURE");
 
     const getFill = () =>
       100 -

@@ -5,7 +5,7 @@ import { persistStore, REHYDRATE } from "redux-persist";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";
-import Navigation from "../../navigation";
+import { navigate } from "../../navigation";
 import {
   ActionsUnion,
   createAction,
@@ -114,7 +114,7 @@ function* onVerifyCodeRequest(
   if (phoneNumber === "0000000000" && code === "000000") {
     yield all([
       yield put(Actions.setJWT("DEV_TOKEN")),
-      yield Navigation.navigate("SIGN_UP")
+      yield navigate("SIGN_UP")
     ]);
   } else
     try {
@@ -137,13 +137,13 @@ function* onVerifyCodeRequest(
                 BATCH
               )
             ),
-            yield Navigation.navigate("AUTHENTICATED")
+            yield navigate("AUTHENTICATED")
           ]);
         } else {
           // user entity doesn't exist in DB: new user
           yield all([
             yield put(Actions.setJWT(data.token)),
-            yield Navigation.navigate("SIGN_UP")
+            yield navigate("SIGN_UP")
           ]);
         }
       }

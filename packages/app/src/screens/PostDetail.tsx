@@ -13,10 +13,11 @@ import moment from "moment";
 import Animated from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
 import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import {
+  Comments,
   NavBar,
   PostImage,
   ZoomedImage,
@@ -30,13 +31,14 @@ import { formatName } from "@lib/utils";
 import { Actions as ImageActions } from "@redux/modules/image";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
 import { StackParamList } from "../App";
 
 import MoreIcon from "@assets/svg/more.svg";
 
-const mapStateToProps = (state: RootState) => ({
-  phoneNumber: selectors.phoneNumber(state)
+const mapStateToProps = (state: RootState, props: PostProps) => ({
+  currentUserPhoneNumber: selectors.phoneNumber(state),
+  post: selectors.post(state, props.route.params)
 });
 const mapDispatchToProps = {
   sendPost: PostActions.sendPost,
@@ -44,18 +46,17 @@ const mapDispatchToProps = {
   takePhoto: ImageActions.takePhoto
 };
 
-export type PostReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type PostReduxProps = ConnectedProps<typeof connector>;
+
 export interface PostProps {
   navigation: NativeStackNavigationProp<StackParamList, "POST">;
   route: RouteProp<StackParamList, "POST">;
 }
 
 const PostDetail: React.FC<PostProps & PostReduxProps> = ({
+  post,
   deletePost,
-  phoneNumber,
+  currentUserPhoneNumber,
   navigation,
   route
 }) => {
@@ -63,11 +64,11 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
 
   const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
 
-  const { prevRoute, post } = route.params;
+  const { prevRoute } = route.params;
 
   useDarkStatusBar();
 
-  const isUser = phoneNumber === post.userPhoneNumber;
+  const isUser = currentUserPhoneNumber === post.phoneNumber;
 
   const handleOnPressName = () => {
     if (isUser) {
@@ -78,7 +79,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
         key: uuid(),
         params: {
           prevRoute: "Post",
-          user: post.user
+          phoneNumber: post.phoneNumber
         }
       });
     }
@@ -89,12 +90,20 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
     outputRange: [-50, 0, 0]
   });
 
-  const { id, description, createdAt, userPhoneNumber, photoId, user } = post;
+  const {
+    id,
+    description,
+    createdAt,
+    phoneNumber,
+    photoId,
+    user,
+    comments = []
+  } = post;
 
   const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) =>
     setZoomedImage({
       id: photoId,
-      phoneNumber: userPhoneNumber,
+      phoneNumber,
       width: SCREEN_WIDTH,
       height: 1.2 * SCREEN_WIDTH,
       ...payload
@@ -149,7 +158,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
           onGestureBegan={handleOnGestureBegan}
         >
           <PostImage
-            phoneNumber={userPhoneNumber}
+            phoneNumber={phoneNumber}
             id={photoId}
             width={SCREEN_WIDTH}
             height={SCREEN_WIDTH * 1.2}
@@ -158,6 +167,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
         <View style={styles.footer}>
           <Text style={TextStyles.medium}>{description}</Text>
         </View>
+        <Comments postId={post.id} comments={comments} />
       </Animated.ScrollView>
       {zoomedImage && <ZoomedImage {...zoomedImage} />}
     </Screen>
@@ -186,4 +196,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostDetail);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(PostDetail);

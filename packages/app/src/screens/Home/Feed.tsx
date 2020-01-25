@@ -21,24 +21,15 @@ import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { User } from "@unexpected/global";
+
 import { StackParamList } from "../../App";
 
-const {
-  Value,
-  block,
-  cond,
-  call,
-  and,
-  lessThan,
-  greaterOrEq,
-  useCode
-} = Animated;
+const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
+  stale: selectors.feedStale(state),
   phoneNumber: selectors.phoneNumber(state),
-  feed: selectors.feedState(state),
-  refreshing: selectors.postLoading(state),
+  refreshing: selectors.feedLoading(state),
   shouldLaunchPermissions: selectors.shouldLaunchPermissions(state)
 });
 const mapDispatchToProps = {
@@ -56,9 +47,9 @@ export interface FeedProps extends FeedReduxProps {
 
 export const Feed: React.FC<FeedProps> = React.memo(
   ({
+    stale,
     navigation,
     phoneNumber,
-    feed,
     fetchFeed,
     refreshing,
     shouldLaunchPermissions
@@ -74,7 +65,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
       if (shouldLaunchPermissions) {
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }
-    }, []);
+    }, [stale]);
 
     useFocusEffect(
       useCallback(() => {
@@ -128,13 +119,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const getPosts = () => {
-      const sortedPosts = _.sortBy(feed.posts, o => -o.createdAt);
-      const latest = sortedPosts.length ? sortedPosts[0].createdAt : undefined;
-
-      return { sortedPosts, latest };
-    };
-
     const handleOnScrollEndDrag = (
       event: NativeSyntheticEvent<NativeScrollEvent>
     ) => {
@@ -150,33 +134,29 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const handleOnPressUser = (user: User) => {
-      if (phoneNumber === user.phoneNumber) {
+    const handleOnPressUser = (userPhoneNumber: string) => {
+      if (phoneNumber === userPhoneNumber) {
         navigation.navigate("USER_PROFILE");
       } else {
         navigation.navigate({
           name: "PROFILE",
           key: uuid(),
-          params: { prevRoute: "Feed", user }
+          params: { prevRoute: "Feed", phoneNumber: userPhoneNumber }
         });
       }
     };
 
     const handleOnPressShare = () => {
-      navigation.navigate("CAPTURE", { nextRoute: "SHARE" });
+      navigation.navigate("CAPTURE");
     };
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);
 
-    const { sortedPosts, latest } = getPosts();
-
     return (
       <Screen style={styles.container}>
         <Posts
-          posts={sortedPosts}
           scrollY={scrollY}
           refreshing={refreshing}
-          latest={latest}
           onScrollEndDrag={handleOnScrollEndDrag}
           onGestureBegan={setZoomedImage}
           onGestureComplete={handleOnGestureComplete}

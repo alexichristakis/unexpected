@@ -8,12 +8,16 @@ import { Document } from "mongoose";
 import { NOTIFICATION_MINUTES } from "../lib/constants";
 import { User as UserModel } from "../models/user";
 import { CRUDService } from "./crud";
+import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
 
 @Service()
 export class UserService extends CRUDService<UserModel, User> {
   @Inject(UserModel)
   model: MongooseModel<UserModel>;
+
+  @Inject(SlackLogService)
+  logger: SlackLogService;
 
   @Inject(NotificationService)
   notificationService: NotificationService;
@@ -23,7 +27,15 @@ export class UserService extends CRUDService<UserModel, User> {
 
     if (user) return user;
 
-    return this.create(newUser);
+    const [createdUser] = await Promise.all([
+      this.create(newUser),
+      this.logger.sendMessage(
+        "new user",
+        `${newUser.firstName} ${newUser.lastName}`
+      )
+    ]);
+
+    return createdUser;
   }
 
   async search(query: string) {
@@ -42,12 +54,10 @@ export class UserService extends CRUDService<UserModel, User> {
   }
 
   async updateValidNotifications(post: Post) {
-    const { createdAt, userPhoneNumber } = post;
+    const { createdAt, phoneNumber } = post;
 
     const time = moment(createdAt);
-    const user = await this.findOne({ phoneNumber: userPhoneNumber }, [
-      "notifications"
-    ]);
+    const user = await this.findOne({ phoneNumber }, ["notifications"]);
 
     if (!user) return;
 
@@ -61,7 +71,7 @@ export class UserService extends CRUDService<UserModel, User> {
     );
 
     return this.updateOne(
-      { phoneNumber: userPhoneNumber },
+      { phoneNumber },
       { notifications: updatedNotifications }
     );
   }

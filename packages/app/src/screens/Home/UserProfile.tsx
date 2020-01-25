@@ -30,7 +30,7 @@ const mapStateToProps = (state: RootState) => ({
   postsLoading: selectors.postLoading(state),
   user: selectors.currentUser(state),
   posts: selectors.currentUsersPosts(state),
-  stale: selectors.currentUsersPostsStale(state)
+  stale: selectors.feedStale(state)
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,
@@ -104,7 +104,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       navigation.navigate({
         name: "POST",
         key: uuid(),
-        params: { prevRoute: user.firstName, post: { ...post, user } }
+        params: { prevRoute: user.firstName, postId: post.id }
       });
     };
 

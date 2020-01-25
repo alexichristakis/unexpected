@@ -4,12 +4,13 @@ import {
   Delete,
   Get,
   Inject,
+  Patch,
   PathParams,
   Put,
   UseAuth
 } from "@tsed/common";
 
-import { Post } from "@unexpected/global";
+import { Comment, Post } from "@unexpected/global";
 
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { PostService } from "../services/post";
@@ -28,7 +29,7 @@ export class PostController {
   ) {
     return this.postService.createNewPost({
       ...post,
-      userPhoneNumber: phoneNumber
+      phoneNumber
     });
   }
 

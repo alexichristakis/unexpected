@@ -12,7 +12,7 @@ import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
 import Animated, { TransitioningView } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import { Grid, Top } from "@components/Profile";
@@ -30,18 +30,16 @@ const { useCode, block, call, greaterThan, lessOrEq, cond } = Animated;
 const mapStateToProps = (state: RootState, props: ProfileProps) => ({
   phoneNumber: selectors.phoneNumber(state),
   postsLoading: selectors.postLoading(state),
-  user: selectors.user(state, props.route.params, props.route.params.user),
-  posts: selectors.usersPosts(state, props.route.params.user)
+  user: selectors.user(state, props.route.params),
+  posts: selectors.usersPosts(state, props.route.params)
 });
 const mapDispatchToProps = {
   fetchUsersPosts: PostActions.fetchUsersPosts,
   fetchUser: UserActions.fetchUser
 };
 
-export type ProfileReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type ProfileReduxProps = ConnectedProps<typeof connector>;
+
 export interface ProfileProps {
   navigation: NativeStackNavigationProp<StackParamList, "PROFILE">;
   route: RouteProp<StackParamList, "PROFILE">;
@@ -74,9 +72,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     useDarkStatusBar();
 
     useEffect(() => {
-      const {
-        user: { phoneNumber }
-      } = route.params;
+      const { phoneNumber } = route.params;
 
       fetchUser(phoneNumber);
 
@@ -131,7 +127,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       navigation.navigate({
         name: "POST",
         key: uuid(),
-        params: { prevRoute: user.firstName, post: { ...post, user } }
+        params: { prevRoute: user.firstName, postId: post.id }
       });
     };
 
@@ -152,6 +148,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
         if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
       }
     };
+
+    console.log("POSTS:", releasedPosts);
 
     return (
       <Screen style={styles.container}>
@@ -197,4 +195,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(Profile);
