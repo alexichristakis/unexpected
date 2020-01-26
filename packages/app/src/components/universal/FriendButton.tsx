@@ -12,7 +12,7 @@ import {
   Transitioning,
   TransitioningView
 } from "react-native-reanimated";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 /* some svgs */
 import PendingFriendSVG from "@assets/svg/arrow_button.svg";
@@ -23,7 +23,7 @@ import AddFriendSVG from "@assets/svg/plus_button.svg";
 import { TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
 
 const ICON_SIZE = 35;
 
@@ -33,38 +33,40 @@ export interface FriendButtonProps {
 }
 
 const mapStateToProps = (state: RootState) => ({
+  friendRequests: selectors.friendRequestNumbers(state),
+  requestedFriends: selectors.requestedFriendNumbers(state),
   currentUser: selectors.currentUser(state),
   error: selectors.userError(state)
 });
 const mapDispatchToProps = {
-  sendFriendRequest: UserActions.friendUser,
-  cancelFriendRequest: UserActions.cancelRequest,
   deleteFriend: UserActions.deleteFriend,
+  sendFriendRequest: UserActions.friendUser,
   acceptRequest: UserActions.acceptRequest,
-  denyRequest: UserActions.denyRequest
+  denyRequest: UserActions.denyRequest,
+  cancelRequest: UserActions.cancelRequest
 };
 
-export type FriendButtonReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type FriendButtonConnectedProps = ConnectedProps<typeof connector>;
 
-const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
+const FriendButton: React.FC<FriendButtonProps &
+  FriendButtonConnectedProps> = ({
+  friendRequests,
+  requestedFriends,
   showLabel,
   error,
   user,
   currentUser,
   sendFriendRequest,
-  cancelFriendRequest,
+  denyRequest,
+  cancelRequest,
   deleteFriend,
-  acceptRequest,
-  denyRequest
+  acceptRequest
 }) => {
   const [loading, setLoading] = useState(false);
   const ref = React.createRef<TransitioningView>();
 
   const getState = () => {
-    const { friends, requestedFriends, friendRequests } = currentUser;
+    const { friends } = currentUser;
 
     if (friends.includes(user.phoneNumber)) {
       return "friends";
@@ -104,11 +106,11 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   const action = (state: ReturnType<typeof getState>) => {
     switch (state) {
       case "friends":
-        return () => deleteFriend(user);
+        return () => deleteFriend(user.phoneNumber);
       case "requested":
-        return () => cancelFriendRequest(user);
+        return () => cancelRequest(user.phoneNumber);
       case "none":
-        return () => sendFriendRequest(user);
+        return () => sendFriendRequest(user.phoneNumber);
       default:
         return () => {};
     }
@@ -153,12 +155,14 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
           >{`${user.firstName} sent you a request`}</Text>
         ) : null}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={onPressWrapper(() => acceptRequest(user))}>
+          <TouchableOpacity
+            onPress={onPressWrapper(() => acceptRequest(user.phoneNumber))}
+          >
             <CheckSVG width={ICON_SIZE} height={ICON_SIZE} />
           </TouchableOpacity>
           <TouchableOpacity
             style={{ marginLeft: 10 }}
-            onPress={onPressWrapper(() => denyRequest(user))}
+            onPress={onPressWrapper(() => denyRequest(user.phoneNumber))}
           >
             <DenySVG width={ICON_SIZE} height={ICON_SIZE} />
           </TouchableOpacity>
@@ -211,4 +215,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FriendButton);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(FriendButton);

@@ -8,9 +8,9 @@ import ImageResizer, {
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import uuid from "uuid/v4";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import client, { getHeaders } from "@api";
-import * as NavigationService from "../../navigation";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
@@ -19,6 +19,7 @@ import {
 } from "../utils";
 import { Actions as AppActions } from "./app";
 import { Actions as UserActions } from "./user";
+import { StackParamList } from "../../App";
 
 type FeedEndpointReturn = {
   postIds: string[];
@@ -88,6 +89,7 @@ export default (
       });
     }
 
+    case ActionTypes.FETCH_POST:
     case ActionTypes.FETCH_COMMENTS:
     case ActionTypes.SEND_COMMENT:
     case ActionTypes.DELETE_COMMENT: {
@@ -112,6 +114,19 @@ export default (
         draft.users = _.merge(draft.users, users);
         draft.comments = _.merge(draft.comments, comments);
         draft.posts = _.merge(draft.posts, posts);
+      });
+    }
+
+    case ActionTypes.FETCH_POST_SUCCESS: {
+      const { post, comments } = action.payload;
+
+      return immer(state, draft => {
+        draft.commentsLoading = false;
+
+        draft.comments[post.id] = comments;
+        draft.posts[post.id] = post;
+
+        return draft;
       });
     }
 
@@ -212,7 +227,7 @@ export default (
 function* onSendPost(
   action: ExtractActionFromActionCreator<typeof Actions.sendPost>
 ) {
-  const { description } = action.payload;
+  const { description, navigation } = action.payload;
 
   try {
     const jwt = yield select(selectors.jwt);
@@ -261,9 +276,10 @@ function* onSendPost(
 
     yield all([
       yield put(Actions.sendPostSuccess(phoneNumber)),
-      yield put(AppActions.expireCamera()),
-      yield NavigationService.navigate("HOME")
+      yield put(AppActions.expireCamera())
     ]);
+
+    navigation.navigate("HOME");
   } catch (err) {
     yield put(Actions.onError(err));
   }
@@ -318,7 +334,7 @@ function* onFetchFeed(
 
       const userMap = Object.keys(users).reduce((acc, curr) => {
         acc[curr] = {
-          posts: postsByUser[curr].map(({ id }) => id),
+          posts: postsByUser[curr]?.map(({ id }) => id),
           lastFetched: moment().toISOString()
         };
 
@@ -327,12 +343,34 @@ function* onFetchFeed(
 
       const userValues = Object.values(users);
       yield all([
-        yield put(Actions.fetchFeedSuccess(postIds, posts, userMap, comments)),
-        yield put(UserActions.loadUsers(userValues))
+        yield put(UserActions.loadUsers(userValues)),
+        yield put(Actions.fetchFeedSuccess(postIds, posts, userMap, comments))
       ]);
     }
 
     // yield put(Actions.fetchFeedSuccess(posts));
+  } catch (err) {
+    yield put(Actions.onError(err.message));
+  }
+}
+
+function* onFetchPost(
+  action: ExtractActionFromActionCreator<typeof Actions.fetchPost>
+) {
+  const { id } = action.payload;
+
+  try {
+    const jwt = yield select(selectors.jwt);
+
+    const res = yield client.get(`post/${id}`, {
+      headers: getHeaders({ jwt })
+    });
+
+    const { data } = res;
+
+    const { post, comments } = data;
+
+    yield put(Actions.fetchPostSuccess(post, comments));
   } catch (err) {
     yield put(Actions.onError(err.message));
   }
@@ -422,6 +460,7 @@ export function* postSagas() {
     yield takeLatest(ActionTypes.DELETE_POST, onDeletePost),
     yield takeLatest(ActionTypes.FETCH_USERS_POSTS, onFetchUsersPosts),
     yield takeLatest(ActionTypes.FETCH_FEED, onFetchFeed),
+    yield takeLatest(ActionTypes.FETCH_POST, onFetchPost),
     yield takeLatest(ActionTypes.FETCH_COMMENTS, onFetchComments),
     yield takeLatest(ActionTypes.SEND_COMMENT, onSendComment),
     yield takeLatest(ActionTypes.DELETE_COMMENT, onDeleteComment)
@@ -433,6 +472,8 @@ export enum ActionTypes {
   FETCH_USERS_POSTS_SUCCESS = "post/FETCH_USERS_POSTS_SUCCESS",
   FETCH_FEED = "post/FETCH_FEED",
   FETCH_FEED_SUCCESS = "post/FETCH_FEED_SUCCESS",
+  FETCH_POST = "post/FETCH_POST",
+  FETCH_POST_SUCCESS = "post/FETCH_POST_SUCCESS",
   SEND_POST = "post/SEND_POST",
   SEND_POST_SUCCESS = "post/SEND_POST_SUCCESS",
   SEND_COMMENT = "post/SEND_COMMENT",
@@ -475,8 +516,14 @@ export const Actions = {
       comments
     }),
 
-  sendPost: (description: string) =>
-    createAction(ActionTypes.SEND_POST, { description }),
+  fetchPost: (id: string) => createAction(ActionTypes.FETCH_POST, { id }),
+  fetchPostSuccess: (post: Post, comments: Comment[]) =>
+    createAction(ActionTypes.FETCH_POST_SUCCESS, { post, comments }),
+
+  sendPost: (
+    description: string,
+    navigation: NativeStackNavigationProp<StackParamList>
+  ) => createAction(ActionTypes.SEND_POST, { description, navigation }),
   sendPostSuccess: (phoneNumber: string) =>
     createAction(ActionTypes.SEND_POST_SUCCESS, { phoneNumber }),
 

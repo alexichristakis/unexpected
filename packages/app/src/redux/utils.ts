@@ -21,10 +21,14 @@ export type ActionsUnion<A extends ActionCreatorsMapObject> = ReturnType<
   A[keyof A]
 >;
 
-export type ExtractActionFromActionCreator<AC> = AC extends () => infer A
+export type ExtractActionFromActionCreator<AC> = AC extends (
+  ...args: any[]
+) => infer A
   ? A
   : AC extends (payload: any) => infer A
   ? A
   : AC extends (payload: any, error: any) => infer A
   ? A
   : never;
+
+// export type ExtractActionFromActionCreator<AC> = AC extends (...args: any) => infer A ? A

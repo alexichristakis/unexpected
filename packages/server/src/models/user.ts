@@ -46,12 +46,4 @@ export class User {
   // mutual
   @Property()
   friends: string[];
-
-  // people who have requested this user
-  @Property()
-  friendRequests: string[];
-
-  // requests sent by this user
-  @Property()
-  requestedFriends: string[];
 }

@@ -41,7 +41,16 @@ export class PostService extends CRUDService<PostModel, Post> {
     return postMap;
   };
 
-  async getFeedForUser(phoneNumber: string) {
+  getPost = async (id: string) => {
+    const [post, comments] = await Promise.all([
+      this.getId(id),
+      this.commentService.getByPostId(id)
+    ]);
+
+    return { post, comments };
+  };
+
+  getFeedForUser = async (phoneNumber: string) => {
     const user = await this.userService.findOne({ phoneNumber }, ["friends"]);
 
     if (!user) return [];
@@ -81,5 +90,5 @@ export class PostService extends CRUDService<PostModel, Post> {
     };
 
     return ret;
-  }
+  };
 }

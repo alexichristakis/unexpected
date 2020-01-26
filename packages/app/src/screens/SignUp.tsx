@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Button, Input } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
@@ -17,20 +18,22 @@ import { isIPhoneX, TextStyles } from "@lib/styles";
 import { Actions, UserState as UserStateType } from "@redux/modules/user";
 import { RootState as RootStateType } from "@redux/types";
 
+import { StackParamList } from "../App";
+
 export interface SignUpReduxProps {
   createUser: typeof Actions.createUser;
 }
 export interface SignUpOwnProps {
-  //
+  navigation: NativeStackNavigationProp<StackParamList>;
 }
 export type SignUpProps = SignUpReduxProps & SignUpOwnProps & UserStateType;
 const initialFormValues = { firstName: "", lastName: "" };
-const SignUp: React.FC<SignUpProps> = ({ createUser, loading }) => {
+const SignUp: React.FC<SignUpProps> = ({ createUser, loading, navigation }) => {
   useDarkStatusBar();
 
   const handleSubmit = (values: typeof initialFormValues) => {
     const { firstName, lastName } = values;
-    createUser({ firstName, lastName });
+    createUser(firstName, lastName, navigation);
   };
 
   const validate = (values: typeof initialFormValues) => {
