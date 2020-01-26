@@ -20,8 +20,8 @@ import uuid from "uuid/v4";
 import { Input, ItemSeparator, UserRow } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT, TextSizes, TextStyles } from "@lib/styles";
-import * as selectors from "@redux/selectors";
 import { Actions as UserActions } from "@redux/modules/user";
+import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { User } from "@unexpected/global";
 

@@ -1,3 +1,4 @@
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Formik } from "formik";
 import React from "react";
 import {
@@ -10,7 +11,6 @@ import {
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Button, Input } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";

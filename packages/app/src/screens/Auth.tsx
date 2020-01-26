@@ -1,4 +1,5 @@
 import { useFocusEffect } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Formik } from "formik";
 import React, { useCallback } from "react";
 import {
@@ -12,11 +13,10 @@ import {
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
-import { useLightStatusBar, useDarkStatusBar } from "@hooks";
+import { useDarkStatusBar, useLightStatusBar } from "@hooks";
 import { TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState as RootStateType } from "@redux/types";

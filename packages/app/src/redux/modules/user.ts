@@ -1,12 +1,12 @@
 import { Platform } from "react-native";
 
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { FriendRequest, User } from "@unexpected/global";
 import { AxiosResponse } from "axios";
 import immer from "immer";
 import _ from "lodash";
 import moment from "moment-timezone";
 import { REHYDRATE } from "redux-persist";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   all,
   call,
@@ -18,13 +18,13 @@ import {
 
 import client, { getHeaders } from "@api";
 
+import { StackParamList } from "../../App";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
-import { StackParamList } from "../../App";
 
 export interface UserState {
   phoneNumber: string;
@@ -110,6 +110,7 @@ export default (
         draft.users[to].friends.push(from);
 
         draft.loading = false;
+
         return draft;
       });
     }
@@ -127,6 +128,7 @@ export default (
         );
 
         draft.loading = false;
+
         return draft;
       });
     }

@@ -1,14 +1,14 @@
 import {
   BodyParams,
   Controller,
+  Delete,
   Get,
   Inject,
   Patch,
   PathParams,
   Put,
   QueryParams,
-  UseAuth,
-  Delete
+  UseAuth
 } from "@tsed/common";
 import { User } from "@unexpected/global";
 

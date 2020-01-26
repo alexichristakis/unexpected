@@ -1,3 +1,4 @@
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Comment, NewComment, Post, User } from "@unexpected/global";
 import immer from "immer";
 import _ from "lodash";
@@ -8,9 +9,9 @@ import ImageResizer, {
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import uuid from "uuid/v4";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import client, { getHeaders } from "@api";
+import { StackParamList } from "../../App";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
@@ -19,7 +20,6 @@ import {
 } from "../utils";
 import { Actions as AppActions } from "./app";
 import { Actions as UserActions } from "./user";
-import { StackParamList } from "../../App";
 
 type FeedEndpointReturn = {
   postIds: string[];

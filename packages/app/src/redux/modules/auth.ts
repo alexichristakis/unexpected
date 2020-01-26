@@ -1,18 +1,18 @@
 import AsyncStorage from "@react-native-community/async-storage";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AxiosError, AxiosResponse } from "axios";
 import { BATCH, batchActions } from "redux-batched-actions";
 import { persistStore, REHYDRATE } from "redux-persist";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import client from "@api";
+import { StackParamList } from "../../App";
 import {
   ActionsUnion,
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
 import { Actions as UserActions } from "./user";
-import { StackParamList } from "../../App";
 
 export interface AuthState {
   loading: boolean;
