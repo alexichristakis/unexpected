@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 
+import { FriendRequest, User } from "@unexpected/global";
 import { AxiosResponse } from "axios";
 import immer from "immer";
 import _ from "lodash";
@@ -13,7 +14,6 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { User, FriendRequest } from "@unexpected/global";
 
 import client, { getHeaders } from "@api";
 
@@ -130,6 +130,27 @@ export default (
 
         draft.loading = false;
         draft.stale = true;
+
+        return draft;
+      });
+    }
+
+    case ActionTypes.CANCEL_REQUEST_SUCCESS: {
+      const { id } = action.payload;
+
+      return immer(state, draft => {
+        draft.requestedFriends = draft.requestedFriends.filter(
+          r => r.id !== id
+        );
+        return draft;
+      });
+    }
+
+    case ActionTypes.DENY_REQUEST_SUCCESS: {
+      const { id } = action.payload;
+
+      return immer(state, draft => {
+        draft.friendRequests = draft.friendRequests.filter(r => r.id !== id);
 
         return draft;
       });
@@ -366,6 +387,62 @@ function* onDeleteFriend(
   }
 }
 
+function* onDenyRequest(
+  action: ExtractActionFromActionCreator<typeof Actions.denyRequest>
+) {
+  const { phoneNumber: from } = action.payload;
+
+  const friendRequests: FriendRequest[] = yield select(
+    selectors.friendRequests
+  );
+  const phoneNumber = yield select(selectors.phoneNumber);
+  const jwt = yield select(selectors.jwt);
+
+  try {
+    const id = friendRequests.find(r => r.from === from)?.id;
+
+    if (id) {
+      const res = yield client.patch(
+        `/${from}/deny/${phoneNumber}`,
+        {},
+        { headers: getHeaders({ jwt }) }
+      );
+
+      yield put(Actions.denyRequestSuccess(id));
+    }
+  } catch (err) {
+    yield put(Actions.onError(err.message));
+  }
+}
+
+function* onCancelRequest(
+  action: ExtractActionFromActionCreator<typeof Actions.cancelRequest>
+) {
+  const { phoneNumber: to } = action.payload;
+
+  const requestedFriends: FriendRequest[] = yield select(
+    selectors.requestedFriends
+  );
+  const jwt = yield select(selectors.jwt);
+  const phoneNumber = yield select(selectors.phoneNumber);
+
+  try {
+    const id = requestedFriends.find(r => r.to === to)?.id;
+
+    if (id) {
+      const res = yield client.patch(
+        `/${phoneNumber}/deny/${to}`,
+        {},
+        { headers: getHeaders({ jwt }) }
+      );
+
+      yield put(Actions.cancelRequestSuccess(id));
+    }
+  } catch (err) {
+    yield put(Actions.onError(err.message));
+  }
+}
+
 function* onStartup() {
   const jwt = yield select(selectors.jwt);
   const user = yield select(selectors.currentUser);
@@ -387,7 +464,9 @@ export function* userSagas() {
     yield takeLatest(ActionTypes.UPDATE_USER, onUpdateUser),
     yield takeEvery(ActionTypes.FRIEND_USER, onFriendUser),
     yield takeEvery(ActionTypes.DELETE_FRIEND, onDeleteFriend),
-    yield takeEvery(ActionTypes.ACCEPT_REQUEST, onAcceptRequest)
+    yield takeEvery(ActionTypes.ACCEPT_REQUEST, onAcceptRequest),
+    yield takeEvery(ActionTypes.DENY_REQUEST, onDenyRequest),
+    yield takeEvery(ActionTypes.CANCEL_REQUEST, onCancelRequest)
   ]);
 }
 
@@ -450,42 +529,15 @@ export const Actions = {
   acceptRequestSuccess: (phoneNumber: string, to: string) =>
     createAction(ActionTypes.ACCEPT_REQUEST_SUCCESS, { phoneNumber, to }),
 
-  // cancelRequest: (phoneNumber: string) =>
-  //   createAction(ActionTypes.CANCEL_REQUEST, { phoneNumber }),
-  // cancelRequestSuccess: (phoneNumber: string) =>
-  //   createAction(ActionTypes.CANCEL_REQUEST_SUCCESS, { phoneNumber }),
-  // denyRequest: (phoneNumber: string) =>
-  //   createAction(ActionTypes.DENY_REQUEST, { phoneNumber }),
-  // denyRequestSuccess: (phoneNumber: string) =>
-  //   createAction(ActionTypes.DENY_REQUEST_SUCCESS, { phoneNumber }),
-  // deleteFriend: (phoneNumber: string) =>
-  //   createAction(ActionTypes.DELETE_FRIEND, { phoneNumber }),
-  // deleteFriendSuccess: (phoneNumber: string) =>
-  //   createAction(ActionTypes.DELETE_FRIEND_SUCCESS, { phoneNumber }),
+  cancelRequest: (phoneNumber: string) =>
+    createAction(ActionTypes.CANCEL_REQUEST, { phoneNumber }),
+  cancelRequestSuccess: (id: string) =>
+    createAction(ActionTypes.CANCEL_REQUEST_SUCCESS, { id }),
 
-  /*
-
-  friendUser: (user: { phoneNumber: string }) =>
-    createAction(ActionTypes.FRIEND_USER, { user }),
-  friendSuccess: (from: string, to: string) =>
-    createAction(ActionTypes.FRIEND_USER_SUCCESS, { from, to }),
-  acceptRequest: (user: { phoneNumber: string }) =>
-    createAction(ActionTypes.ACCEPT_REQUEST, { user }),
-  acceptRequestSuccess: (from: string, to: string) =>
-    createAction(ActionTypes.ACCEPT_REQUEST_SUCCESS, { from, to }),
-  cancelRequest: (user: { phoneNumber: string }) =>
-    createAction(ActionTypes.CANCEL_REQUEST, { user }),
-  cancelRequestSuccess: (from: string, to: string) =>
-    createAction(ActionTypes.CANCEL_REQUEST_SUCCESS, { from, to }),
-  denyRequest: (user: { phoneNumber: string }) =>
-    createAction(ActionTypes.DENY_REQUEST, { user }),
-  denyRequestSuccess: (from: string, to: string) =>
-    createAction(ActionTypes.DENY_REQUEST_SUCCESS, { from, to }),
-  deleteFriend: (user: { phoneNumber: string }) =>
-    createAction(ActionTypes.DELETE_FRIEND, { user }),
-  deleteFriendSuccess: (from: string, to: string) =>
-    createAction(ActionTypes.DELETE_FRIEND_SUCCESS, { from, to }),
-    */
+  denyRequest: (phoneNumber: string) =>
+    createAction(ActionTypes.DENY_REQUEST, { phoneNumber }),
+  denyRequestSuccess: (id: string) =>
+    createAction(ActionTypes.DENY_REQUEST_SUCCESS, { id }),
 
   onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err })
 };

@@ -5,8 +5,8 @@ import { FriendRequest } from "@unexpected/global";
 import { FriendRequest as FriendRequestModel } from "../models/friend-request";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
-import { UserService } from "./user";
 import { NotificationService } from "./notification";
+import { UserService } from "./user";
 
 @Service()
 export class FriendService extends CRUDService<

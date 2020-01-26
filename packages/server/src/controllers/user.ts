@@ -11,11 +11,11 @@ import {
 } from "@tsed/common";
 import { User } from "@unexpected/global";
 
+import { PhoneNumberContext } from "twilio/lib/rest/lookups/v1/phoneNumber";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { User as UserModel } from "../models/user";
-import { UserService } from "../services/user";
 import { FriendService } from "../services/friend";
-import { PhoneNumberContext } from "twilio/lib/rest/lookups/v1/phoneNumber";
+import { UserService } from "../services/user";
 
 export type CameraEnabledReturn = ReturnType<
   UserController["getIsCameraEnabled"]

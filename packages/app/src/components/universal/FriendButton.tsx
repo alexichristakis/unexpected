@@ -41,7 +41,9 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   deleteFriend: UserActions.deleteFriend,
   sendFriendRequest: UserActions.friendUser,
-  acceptRequest: UserActions.acceptRequest
+  acceptRequest: UserActions.acceptRequest,
+  denyRequest: UserActions.denyRequest,
+  cancelRequest: UserActions.cancelRequest
 };
 
 export type FriendButtonReduxProps = ReduxPropsType<
@@ -57,10 +59,10 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   user,
   currentUser,
   sendFriendRequest,
-  cancelFriendRequest,
+  denyRequest,
+  cancelRequest,
   deleteFriend,
-  acceptRequest,
-  denyRequest
+  acceptRequest
 }) => {
   const [loading, setLoading] = useState(false);
   const ref = React.createRef<TransitioningView>();
@@ -108,7 +110,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
       case "friends":
         return () => deleteFriend(user.phoneNumber);
       case "requested":
-        return () => cancelFriendRequest(user);
+        return () => cancelRequest(user.phoneNumber);
       case "none":
         return () => sendFriendRequest(user.phoneNumber);
       default:
@@ -162,7 +164,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
           </TouchableOpacity>
           <TouchableOpacity
             style={{ marginLeft: 10 }}
-            onPress={onPressWrapper(() => denyRequest(user))}
+            onPress={onPressWrapper(() => denyRequest(user.phoneNumber))}
           >
             <DenySVG width={ICON_SIZE} height={ICON_SIZE} />
           </TouchableOpacity>
