@@ -97,39 +97,35 @@ export default (
     }
 
     case ActionTypes.ACCEPT_REQUEST_SUCCESS: {
-      const { phoneNumber, to } = action.payload;
+      const { from, to } = action.payload;
 
       return immer(state, draft => {
         draft.requestedFriends = _.remove(
           draft.friendRequests,
-          request => request.from === to
+          request => request.from === from
         );
 
-        draft.users[phoneNumber].friends.push(to);
-        draft.users[to].friends.push(phoneNumber);
+        draft.users[from].friends.push(to);
+        draft.users[to].friends.push(from);
 
         draft.loading = false;
-        draft.stale = true;
-
         return draft;
       });
     }
 
     case ActionTypes.DELETE_FRIEND_SUCCESS: {
-      const { phoneNumber, to } = action.payload;
+      const { from, to } = action.payload;
 
       return immer(state, draft => {
-        draft.users[phoneNumber].friends = draft.users[
-          phoneNumber
-        ].friends.filter(user => user !== to);
+        draft.users[from].friends = draft.users[from].friends.filter(
+          user => user !== to
+        );
 
         draft.users[to].friends = draft.users[to].friends.filter(
-          user => user !== phoneNumber
+          user => user !== from
         );
 
         draft.loading = false;
-        draft.stale = true;
-
         return draft;
       });
     }
@@ -525,13 +521,13 @@ export const Actions = {
 
   deleteFriend: (phoneNumber: string) =>
     createAction(ActionTypes.DELETE_FRIEND, { phoneNumber }),
-  deleteFriendSuccess: (phoneNumber: string, to: string) =>
-    createAction(ActionTypes.DELETE_FRIEND_SUCCESS, { phoneNumber, to }),
+  deleteFriendSuccess: (from: string, to: string) =>
+    createAction(ActionTypes.DELETE_FRIEND_SUCCESS, { from, to }),
 
   acceptRequest: (phoneNumber: string) =>
     createAction(ActionTypes.ACCEPT_REQUEST, { phoneNumber }),
-  acceptRequestSuccess: (phoneNumber: string, to: string) =>
-    createAction(ActionTypes.ACCEPT_REQUEST_SUCCESS, { phoneNumber, to }),
+  acceptRequestSuccess: (from: string, to: string) =>
+    createAction(ActionTypes.ACCEPT_REQUEST_SUCCESS, { from, to }),
 
   cancelRequest: (phoneNumber: string) =>
     createAction(ActionTypes.CANCEL_REQUEST, { phoneNumber }),

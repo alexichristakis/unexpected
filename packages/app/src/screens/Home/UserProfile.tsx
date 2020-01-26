@@ -28,6 +28,7 @@ import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   postsLoading: selectors.postLoading(state),
+  friendRequests: selectors.friendRequestNumbers(state),
   user: selectors.currentUser(state),
   posts: selectors.currentUsersPosts(state),
   stale: selectors.feedStale(state)
@@ -52,6 +53,7 @@ export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 export const UserProfile: React.FC<UserProfileProps> = React.memo(
   ({
     navigation,
+    friendRequests,
     fetchUser,
     fetchUsersRequests,
     fetchUsersPosts,
@@ -65,6 +67,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     useFocusEffect(
       useCallback(() => {
         StatusBar.setHidden(false);
+
         fetchUser();
         fetchUsersRequests();
 
@@ -93,13 +96,14 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     const renderTop = () => (
       <Top
         isUser={true}
+        friendRequests={friendRequests}
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}
         onPressAddBio={goToEditBio}
         onPressFriends={goToFriends}
         onPressImage={goToNewProfilePicture}
-        onPressName={goToSettings}
+        onPressSettings={goToSettings}
       />
     );
 
@@ -123,6 +127,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       if (y < -100) {
         Haptics.trigger("impactMedium");
         fetchUser();
+        fetchUsersRequests();
         fetchUsersPosts();
       }
     };
