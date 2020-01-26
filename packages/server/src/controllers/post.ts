@@ -45,6 +45,11 @@ export class PostController {
     return feed;
   }
 
+  @Get("/:id")
+  async getPost(@PathParams("id") id: string) {
+    return this.postService.getPost(id);
+  }
+
   @Delete("/:id")
   async deletePost(@PathParams("id") id: string) {
     return this.postService.delete(id);

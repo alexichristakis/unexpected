@@ -88,6 +88,7 @@ export default (
       });
     }
 
+    case ActionTypes.FETCH_POST:
     case ActionTypes.FETCH_COMMENTS:
     case ActionTypes.SEND_COMMENT:
     case ActionTypes.DELETE_COMMENT: {
@@ -112,6 +113,19 @@ export default (
         draft.users = _.merge(draft.users, users);
         draft.comments = _.merge(draft.comments, comments);
         draft.posts = _.merge(draft.posts, posts);
+      });
+    }
+
+    case ActionTypes.FETCH_POST_SUCCESS: {
+      const { post, comments } = action.payload;
+
+      return immer(state, draft => {
+        draft.commentsLoading = false;
+
+        draft.comments[post.id] = comments;
+        draft.posts[post.id] = post;
+
+        return draft;
       });
     }
 
@@ -338,6 +352,28 @@ function* onFetchFeed(
   }
 }
 
+function* onFetchPost(
+  action: ExtractActionFromActionCreator<typeof Actions.fetchPost>
+) {
+  const { id } = action.payload;
+
+  try {
+    const jwt = yield select(selectors.jwt);
+
+    const res = yield client.get(`post/${id}`, {
+      headers: getHeaders({ jwt })
+    });
+
+    const { data } = res;
+
+    const { post, comments } = data;
+
+    yield put(Actions.fetchPostSuccess(post, comments));
+  } catch (err) {
+    yield put(Actions.onError(err.message));
+  }
+}
+
 function* onDeletePost(
   action: ExtractActionFromActionCreator<typeof Actions.deletePost>
 ) {
@@ -422,6 +458,7 @@ export function* postSagas() {
     yield takeLatest(ActionTypes.DELETE_POST, onDeletePost),
     yield takeLatest(ActionTypes.FETCH_USERS_POSTS, onFetchUsersPosts),
     yield takeLatest(ActionTypes.FETCH_FEED, onFetchFeed),
+    yield takeLatest(ActionTypes.FETCH_POST, onFetchPost),
     yield takeLatest(ActionTypes.FETCH_COMMENTS, onFetchComments),
     yield takeLatest(ActionTypes.SEND_COMMENT, onSendComment),
     yield takeLatest(ActionTypes.DELETE_COMMENT, onDeleteComment)
@@ -433,6 +470,8 @@ export enum ActionTypes {
   FETCH_USERS_POSTS_SUCCESS = "post/FETCH_USERS_POSTS_SUCCESS",
   FETCH_FEED = "post/FETCH_FEED",
   FETCH_FEED_SUCCESS = "post/FETCH_FEED_SUCCESS",
+  FETCH_POST = "post/FETCH_POST",
+  FETCH_POST_SUCCESS = "post/FETCH_POST_SUCCESS",
   SEND_POST = "post/SEND_POST",
   SEND_POST_SUCCESS = "post/SEND_POST_SUCCESS",
   SEND_COMMENT = "post/SEND_COMMENT",
@@ -474,6 +513,10 @@ export const Actions = {
       users,
       comments
     }),
+
+  fetchPost: (id: string) => createAction(ActionTypes.FETCH_POST, { id }),
+  fetchPostSuccess: (post: Post, comments: Comment[]) =>
+    createAction(ActionTypes.FETCH_POST_SUCCESS, { post, comments }),
 
   sendPost: (description: string) =>
     createAction(ActionTypes.SEND_POST, { description }),

@@ -28,12 +28,13 @@ const postIdFromProps = (_: RootState, props: { postId: string }) =>
 export const post = createSelector(
   [posts, comments, usersEntitySelector, postIdFromProps],
   (posts, commentMap, users, id) => {
-    const post = posts[id];
+    const post = posts[id] ?? {};
 
     return {
+      id, // in case post is undefined
       ...post,
-      comments: commentMap[id],
-      user: users[post.phoneNumber]
+      comments: commentMap[id] ?? [],
+      user: users[post.phoneNumber] ?? {}
     };
   }
 );

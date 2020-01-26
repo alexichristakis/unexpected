@@ -12,7 +12,7 @@ import {
   Transitioning,
   TransitioningView
 } from "react-native-reanimated";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 /* some svgs */
 import PendingFriendSVG from "@assets/svg/arrow_button.svg";
@@ -23,7 +23,7 @@ import AddFriendSVG from "@assets/svg/plus_button.svg";
 import { TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
 
 const ICON_SIZE = 35;
 
@@ -33,8 +33,8 @@ export interface FriendButtonProps {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  friendRequests: selectors.friendRequests(state),
-  requestedFriends: selectors.requestedFriends(state),
+  friendRequests: selectors.friendRequestNumbers(state),
+  requestedFriends: selectors.requestedFriendNumbers(state),
   currentUser: selectors.currentUser(state),
   error: selectors.userError(state)
 });
@@ -46,12 +46,10 @@ const mapDispatchToProps = {
   cancelRequest: UserActions.cancelRequest
 };
 
-export type FriendButtonReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type FriendButtonConnectedProps = ConnectedProps<typeof connector>;
 
-const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
+const FriendButton: React.FC<FriendButtonProps &
+  FriendButtonConnectedProps> = ({
   friendRequests,
   requestedFriends,
   showLabel,
@@ -217,4 +215,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FriendButton);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(FriendButton);

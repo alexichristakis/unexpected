@@ -28,12 +28,14 @@ import { User } from "@unexpected/global";
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
-  friendRequests: selectors.friendRequests(state),
+  stale: selectors.userStale(state),
+  friendRequests: selectors.friendRequestNumbers(state),
   phoneNumber: selectors.phoneNumber(state),
   user: selectors.currentUser(state),
   users: selectors.users(state)
 });
 const mapDispatchToProps = {
+  fetchRequests: UserActions.fetchUsersRequests,
   fetchUsers: UserActions.fetchUsers,
   logout: AuthActions.logout
 };
@@ -51,7 +53,9 @@ const Settings: React.FC<SettingsProps> = React.memo(
     navigation,
     user,
     users,
+    stale,
     fetchUsers,
+    fetchRequests,
     friendRequests,
     phoneNumber,
     logout
@@ -60,10 +64,11 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     useFocusEffect(
       useCallback(() => {
+        fetchRequests();
         fetchUsers(friendRequests, ["firstName", "lastName"]);
 
         return () => {};
-      }, [])
+      }, [stale])
     );
 
     const getContacts = () => {
@@ -169,7 +174,8 @@ const Settings: React.FC<SettingsProps> = React.memo(
         <Button title="dismiss" onPress={navigation.goBack} />
       </Screen>
     );
-  }
+  },
+  (prevProps, nextProps) => prevProps.stale === nextProps.stale
 );
 
 const styles = StyleSheet.create({

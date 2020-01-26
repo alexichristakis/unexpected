@@ -7,7 +7,8 @@ import {
   PathParams,
   Put,
   QueryParams,
-  UseAuth
+  UseAuth,
+  Delete
 } from "@tsed/common";
 import { User } from "@unexpected/global";
 
@@ -109,6 +110,11 @@ export class UserController {
     }
   }
 
+  @Delete("/request/:id")
+  async deleteRequest(@PathParams("id") id: string) {
+    return this.friendService.delete(id);
+  }
+
   @Patch("/:from/accept/:phoneNumber")
   @UseAuth(AuthMiddleware, {
     select: Select.phoneFromPath
@@ -119,32 +125,6 @@ export class UserController {
   ) {
     if (phoneNumber !== from) {
       return this.friendService.acceptFriendRequest(from, phoneNumber);
-    }
-  }
-
-  @Patch("/:from/cancel/:phoneNumber")
-  @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath
-  })
-  async cancelFriendRequest(
-    @PathParams("from") from: string,
-    @PathParams("phoneNumber") phoneNumber: string
-  ) {
-    if (phoneNumber !== from) {
-      return this.friendService.deleteFriendRequest(from, phoneNumber);
-    }
-  }
-
-  @Patch("/:from/deny/:phoneNumber")
-  @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath
-  })
-  async denyFriendRequest(
-    @PathParams("from") from: string,
-    @PathParams("phoneNumber") phoneNumber: string
-  ) {
-    if (phoneNumber !== from) {
-      return this.friendService.deleteFriendRequest(from, phoneNumber);
     }
   }
 

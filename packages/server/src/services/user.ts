@@ -119,7 +119,7 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: to },
           {
-            friends: _.remove(userTo.friends, from)
+            friends: userTo.friends.filter(user => user !== from)
           }
         )
         .exec(),
@@ -127,7 +127,7 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: from },
           {
-            friends: _.remove(userFrom.friends, to)
+            friends: userFrom.friends.filter(user => user !== to)
           }
         )
         .exec()
@@ -135,7 +135,6 @@ export class UserService extends CRUDService<UserModel, User> {
   }
 
   async friend(from: string, to: string) {
-    console.log("FRIEND");
     const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
 
     const res = await Promise.all([
@@ -161,8 +160,6 @@ export class UserService extends CRUDService<UserModel, User> {
         userFrom
       )
     ]);
-
-    console.log("RES:", res);
   }
 
   async getUserFriends(phoneNumber: string) {

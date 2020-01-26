@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   ActionSheetIOS,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   View
 } from "react-native";
 
-import { RouteProp } from "@react-navigation/core";
+import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import moment from "moment";
 import Animated from "react-native-reanimated";
@@ -40,8 +40,9 @@ const mapStateToProps = (state: RootState, props: PostProps) => ({
   currentUserPhoneNumber: selectors.phoneNumber(state),
   post: selectors.post(state, props.route.params)
 });
+
 const mapDispatchToProps = {
-  sendPost: PostActions.sendPost,
+  fetchPost: PostActions.fetchPost,
   deletePost: PostActions.deletePost,
   takePhoto: ImageActions.takePhoto
 };
@@ -55,18 +56,24 @@ export interface PostProps {
 
 const PostDetail: React.FC<PostProps & PostReduxProps> = ({
   post,
+  fetchPost,
   deletePost,
   currentUserPhoneNumber,
   navigation,
   route
 }) => {
   const [scrollY] = useState(new Animated.Value(0));
-
   const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
 
-  const { prevRoute } = route.params;
+  const { prevRoute, postId } = route.params;
 
   useDarkStatusBar();
+
+  useFocusEffect(() =>
+    useCallback(() => {
+      fetchPost(postId);
+    }, [])
+  );
 
   const isUser = currentUserPhoneNumber === post.phoneNumber;
 

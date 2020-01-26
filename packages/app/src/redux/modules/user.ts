@@ -119,13 +119,12 @@ export default (
       const { phoneNumber, to } = action.payload;
 
       return immer(state, draft => {
-        draft.users[phoneNumber].friends = _.remove(
-          draft.users[phoneNumber].friends,
-          to
-        );
-        draft.users[to].friends = _.remove(
-          draft.users[to].friends,
+        draft.users[phoneNumber].friends = draft.users[
           phoneNumber
+        ].friends.filter(user => user !== to);
+
+        draft.users[to].friends = draft.users[to].friends.filter(
+          user => user !== phoneNumber
         );
 
         draft.loading = false;
@@ -139,9 +138,11 @@ export default (
       const { id } = action.payload;
 
       return immer(state, draft => {
-        draft.requestedFriends = draft.requestedFriends.filter(
-          r => r.id !== id
+        draft.requestedFriends = _.uniqBy(
+          draft.requestedFriends.filter(r => r.id !== id),
+          ({ to }) => to
         );
+
         return draft;
       });
     }
@@ -150,7 +151,10 @@ export default (
       const { id } = action.payload;
 
       return immer(state, draft => {
-        draft.friendRequests = draft.friendRequests.filter(r => r.id !== id);
+        draft.friendRequests = _.uniqBy(
+          draft.friendRequests.filter(r => r.id !== id),
+          ({ from }) => from
+        );
 
         return draft;
       });
@@ -369,6 +373,7 @@ function* onDeleteFriend(
 ) {
   const { phoneNumber: to } = action.payload;
 
+  console.log("on delete friend");
   try {
     const phoneNumber = yield select(selectors.phoneNumber);
     const jwt = yield select(selectors.jwt);
@@ -395,18 +400,15 @@ function* onDenyRequest(
   const friendRequests: FriendRequest[] = yield select(
     selectors.friendRequests
   );
-  const phoneNumber = yield select(selectors.phoneNumber);
   const jwt = yield select(selectors.jwt);
 
   try {
     const id = friendRequests.find(r => r.from === from)?.id;
 
     if (id) {
-      const res = yield client.patch(
-        `/${from}/deny/${phoneNumber}`,
-        {},
-        { headers: getHeaders({ jwt }) }
-      );
+      const res = yield client.delete(`user/request/${id}`, {
+        headers: getHeaders({ jwt })
+      });
 
       yield put(Actions.denyRequestSuccess(id));
     }
@@ -420,21 +422,23 @@ function* onCancelRequest(
 ) {
   const { phoneNumber: to } = action.payload;
 
+  console.log("to:", to);
+
   const requestedFriends: FriendRequest[] = yield select(
     selectors.requestedFriends
   );
+
   const jwt = yield select(selectors.jwt);
-  const phoneNumber = yield select(selectors.phoneNumber);
 
   try {
     const id = requestedFriends.find(r => r.to === to)?.id;
 
+    console.log("id:", id);
+
     if (id) {
-      const res = yield client.patch(
-        `/${phoneNumber}/deny/${to}`,
-        {},
-        { headers: getHeaders({ jwt }) }
-      );
+      const res = yield client.delete(`user/request/${id}`, {
+        headers: getHeaders({ jwt })
+      });
 
       yield put(Actions.cancelRequestSuccess(id));
     }

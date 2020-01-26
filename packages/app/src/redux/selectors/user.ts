@@ -5,12 +5,20 @@ import { RootState } from "../types";
 
 const s = (state: RootState) => state.user;
 
-export const friendRequests = createSelector(s, state =>
-  state.friendRequests.map(({ from }) => from)
+export const friendRequests = createSelector(s, state => state.friendRequests);
+
+export const friendRequestNumbers = createSelector(friendRequests, requests =>
+  requests.map(({ from }) => from)
 );
 
-export const requestedFriends = createSelector(s, state =>
-  state.requestedFriends.map(({ to }) => to)
+export const requestedFriends = createSelector(
+  s,
+  state => state.requestedFriends
+);
+
+export const requestedFriendNumbers = createSelector(
+  requestedFriends,
+  requests => requests.map(({ to }) => to)
 );
 
 export const userError = createSelector(s, state => state.error);
@@ -33,6 +41,8 @@ export const currentUser = createSelector(
   [users, phoneNumber],
   (users, phoneNumber) => users[phoneNumber]
 );
+
+export const userStale = createSelector(s, state => state.stale);
 
 export const deviceToken = createSelector(
   currentUser,
