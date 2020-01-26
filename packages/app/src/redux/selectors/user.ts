@@ -5,6 +5,14 @@ import { RootState } from "../types";
 
 const s = (state: RootState) => state.user;
 
+export const friendRequests = createSelector(s, state =>
+  state.friendRequests.map(({ from }) => from)
+);
+
+export const requestedFriends = createSelector(s, state =>
+  state.requestedFriends.map(({ to }) => to)
+);
+
 export const userError = createSelector(s, state => state.error);
 
 export const userLoading = createSelector(s, state => state.loading);

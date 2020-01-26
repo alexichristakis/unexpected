@@ -1,8 +1,13 @@
 import {
   Comment as CommentModel,
   Post as PostModel,
-  User as UserModel
+  User as UserModel,
+  FriendRequest as FriendRequestModel
 } from "@unexpected/server";
+
+export type FriendRequest = Omit<FriendRequestModel, "_id" | "createdAt"> & {
+  id: string;
+};
 
 export type NewUser = {
   phoneNumber: string;

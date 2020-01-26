@@ -46,7 +46,7 @@ const Post = React.memo(
     ({ post, phoneNumber, onPressName, renderImage, deletePost }, ref) => {
       const { id, description, user, createdAt, comments } = post;
 
-      const isUser = user.phoneNumber === phoneNumber;
+      const isUser = user?.phoneNumber === phoneNumber;
 
       useImperativeHandle(ref, () => ({
         setVisible: () => console.log("visible"),

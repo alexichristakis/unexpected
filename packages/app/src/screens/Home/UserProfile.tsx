@@ -35,6 +35,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   logout: AuthActions.logout,
   fetchUser: UserActions.fetchUser,
+  fetchUsersRequests: UserActions.fetchUsersRequests,
   fetchUsersPosts: PostActions.fetchUsersPosts
 };
 
@@ -52,6 +53,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
   ({
     navigation,
     fetchUser,
+    fetchUsersRequests,
     fetchUsersPosts,
     stale,
     posts,
@@ -64,6 +66,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       useCallback(() => {
         StatusBar.setHidden(false);
         fetchUser();
+        fetchUsersRequests();
 
         if (stale) fetchUsersPosts();
 

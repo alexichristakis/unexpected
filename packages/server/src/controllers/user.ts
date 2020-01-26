@@ -14,6 +14,8 @@ import { User } from "@unexpected/global";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { User as UserModel } from "../models/user";
 import { UserService } from "../services/user";
+import { FriendService } from "../services/friend";
+import { PhoneNumberContext } from "twilio/lib/rest/lookups/v1/phoneNumber";
 
 export type CameraEnabledReturn = ReturnType<
   UserController["getIsCameraEnabled"]
@@ -24,6 +26,9 @@ export type CameraEnabledReturn = ReturnType<
 export class UserController {
   @Inject(UserService)
   private userService: UserService;
+
+  @Inject(FriendService)
+  private friendService: FriendService;
 
   @Get("/search/:query")
   async search(@PathParams("query") query: string) {
@@ -81,6 +86,16 @@ export class UserController {
     return this.userService.getByPhoneNumber(phoneNumber);
   }
 
+  @Get("/:phoneNumber/requests")
+  async getRequests(@PathParams("phoneNumber") phoneNumber: string) {
+    const [friendRequests, requestedFriends] = await Promise.all([
+      this.friendService.getFriendRequests(phoneNumber),
+      this.friendService.getRequestedFriends(phoneNumber)
+    ]);
+
+    return { friendRequests, requestedFriends };
+  }
+
   @Patch("/:phoneNumber/friend/:to")
   @UseAuth(AuthMiddleware, {
     select: Select.phoneFromPath
@@ -90,46 +105,46 @@ export class UserController {
     @PathParams("to") to: string
   ) {
     if (phoneNumber !== to) {
-      return this.userService.friend(phoneNumber, to);
+      return this.friendService.sendFriendRequest(phoneNumber, to);
     }
   }
 
-  @Patch("/:phoneNumber/accept/:to")
+  @Patch("/:from/accept/:phoneNumber")
   @UseAuth(AuthMiddleware, {
     select: Select.phoneFromPath
   })
   async acceptFriendRequest(
-    @PathParams("phoneNumber") phoneNumber: string,
-    @PathParams("to") to: string
+    @PathParams("from") from: string,
+    @PathParams("phoneNumber") phoneNumber: string
   ) {
-    if (phoneNumber !== to) {
-      return this.userService.acceptFriendRequest(phoneNumber, to);
+    if (phoneNumber !== from) {
+      return this.friendService.acceptFriendRequest(from, phoneNumber);
     }
   }
 
-  @Patch("/:phoneNumber/cancel/:to")
+  @Patch("/:from/cancel/:phoneNumber")
   @UseAuth(AuthMiddleware, {
     select: Select.phoneFromPath
   })
   async cancelFriendRequest(
-    @PathParams("phoneNumber") phoneNumber: string,
-    @PathParams("to") to: string
+    @PathParams("from") from: string,
+    @PathParams("phoneNumber") phoneNumber: string
   ) {
-    if (phoneNumber !== to) {
-      return this.userService.denyFriendRequest(phoneNumber, to);
+    if (phoneNumber !== from) {
+      return this.friendService.deleteFriendRequest(from, phoneNumber);
     }
   }
 
-  @Patch("/:phoneNumber/deny/:to")
+  @Patch("/:from/deny/:phoneNumber")
   @UseAuth(AuthMiddleware, {
     select: Select.phoneFromPath
   })
   async denyFriendRequest(
-    @PathParams("phoneNumber") phoneNumber: string,
-    @PathParams("to") to: string
+    @PathParams("from") from: string,
+    @PathParams("phoneNumber") phoneNumber: string
   ) {
-    if (phoneNumber !== to) {
-      return this.userService.denyFriendRequest(to, phoneNumber);
+    if (phoneNumber !== from) {
+      return this.friendService.deleteFriendRequest(from, phoneNumber);
     }
   }
 

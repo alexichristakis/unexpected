@@ -42,7 +42,7 @@ export const usersPosts = createSelector(
   [usersSelector, posts, userEntitySelector],
   (users, posts, user) => {
     const phoneNumber = user.phoneNumber;
-    const postIds = users[phoneNumber].posts ?? [];
+    const postIds = users[phoneNumber]?.posts ?? [];
 
     return postIds.map(id => posts[id]);
   }
@@ -61,7 +61,7 @@ export const currentUsersPostsState = createSelector(
 export const currentUsersPosts = createSelector(
   [currentUsersPostsState, posts],
   (userPostState, posts) => {
-    const postIds = userPostState.posts;
+    const postIds = userPostState.posts ?? [];
 
     return postIds.map(id => posts[id]);
   }

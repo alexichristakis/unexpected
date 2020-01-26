@@ -33,15 +33,15 @@ export interface FriendButtonProps {
 }
 
 const mapStateToProps = (state: RootState) => ({
+  friendRequests: selectors.friendRequests(state),
+  requestedFriends: selectors.requestedFriends(state),
   currentUser: selectors.currentUser(state),
   error: selectors.userError(state)
 });
 const mapDispatchToProps = {
-  sendFriendRequest: UserActions.friendUser,
-  cancelFriendRequest: UserActions.cancelRequest,
   deleteFriend: UserActions.deleteFriend,
-  acceptRequest: UserActions.acceptRequest,
-  denyRequest: UserActions.denyRequest
+  sendFriendRequest: UserActions.friendUser,
+  acceptRequest: UserActions.acceptRequest
 };
 
 export type FriendButtonReduxProps = ReduxPropsType<
@@ -50,6 +50,8 @@ export type FriendButtonReduxProps = ReduxPropsType<
 >;
 
 const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
+  friendRequests,
+  requestedFriends,
   showLabel,
   error,
   user,
@@ -64,7 +66,7 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   const ref = React.createRef<TransitioningView>();
 
   const getState = () => {
-    const { friends, requestedFriends, friendRequests } = currentUser;
+    const { friends } = currentUser;
 
     if (friends.includes(user.phoneNumber)) {
       return "friends";
@@ -104,11 +106,11 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
   const action = (state: ReturnType<typeof getState>) => {
     switch (state) {
       case "friends":
-        return () => deleteFriend(user);
+        return () => deleteFriend(user.phoneNumber);
       case "requested":
         return () => cancelFriendRequest(user);
       case "none":
-        return () => sendFriendRequest(user);
+        return () => sendFriendRequest(user.phoneNumber);
       default:
         return () => {};
     }
@@ -153,7 +155,9 @@ const FriendButton: React.FC<FriendButtonProps & FriendButtonReduxProps> = ({
           >{`${user.firstName} sent you a request`}</Text>
         ) : null}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={onPressWrapper(() => acceptRequest(user))}>
+          <TouchableOpacity
+            onPress={onPressWrapper(() => acceptRequest(user.phoneNumber))}
+          >
             <CheckSVG width={ICON_SIZE} height={ICON_SIZE} />
           </TouchableOpacity>
           <TouchableOpacity

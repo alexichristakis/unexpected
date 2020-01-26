@@ -28,6 +28,7 @@ import { User } from "@unexpected/global";
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
+  friendRequests: selectors.friendRequests(state),
   phoneNumber: selectors.phoneNumber(state),
   user: selectors.currentUser(state),
   users: selectors.users(state)
@@ -46,12 +47,20 @@ export interface SettingsProps extends SettingsReduxProps {
 }
 
 const Settings: React.FC<SettingsProps> = React.memo(
-  ({ navigation, user, users, fetchUsers, phoneNumber, logout }) => {
+  ({
+    navigation,
+    user,
+    users,
+    fetchUsers,
+    friendRequests,
+    phoneNumber,
+    logout
+  }) => {
     useLightStatusBar();
 
     useFocusEffect(
       useCallback(() => {
-        fetchUsers(user.friendRequests, ["firstName", "lastName"]);
+        fetchUsers(friendRequests, ["firstName", "lastName"]);
 
         return () => {};
       }, [])
@@ -80,12 +89,6 @@ const Settings: React.FC<SettingsProps> = React.memo(
         title: "share unexpected",
         message: "https://expect.photos"
       });
-    };
-
-    const getUsers = () => {
-      return _.filter(users, o =>
-        _.includes(user.friendRequests, o.phoneNumber)
-      );
     };
 
     const handleOnPressUser = (toUser: User) => {
@@ -149,14 +152,16 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const renderSeparatorComponent = () => <ItemSeparator />;
 
-    const friendRequests = getUsers();
+    const data = friendRequests
+      .filter(user => !!users[user])
+      .map(user => users[user]);
 
     return (
       <Screen style={styles.container}>
         <Text style={[TextStyles.large, styles.header]}>settings:</Text>
         <FlatList
           renderItem={renderUserRow}
-          data={friendRequests}
+          data={data}
           ItemSeparatorComponent={renderSeparatorComponent}
           ListHeaderComponent={renderListHeader(friendRequests.length)}
           ListFooterComponent={renderListFooter(friendRequests.length)}

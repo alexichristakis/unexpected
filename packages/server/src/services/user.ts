@@ -111,30 +111,6 @@ export class UserService extends CRUDService<UserModel, User> {
     $log.info(res);
   }
 
-  async friend(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
-
-    await Promise.all([
-      this.model
-        .updateOne(
-          { phoneNumber: to },
-          { friendRequests: _.uniq([...userTo.friendRequests, from]) }
-        )
-        .exec(),
-      this.model
-        .updateOne(
-          { phoneNumber: from },
-          { requestedFriends: _.uniq([...userFrom.requestedFriends, to]) }
-        )
-        .exec(),
-      this.notificationService.notifyWithNavigationToUser(
-        userTo,
-        `${userFrom.firstName} ${userFrom.lastName} sent you a friend request.`,
-        userFrom
-      )
-    ]);
-  }
-
   async unfriend(from: string, to: string) {
     const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
 
@@ -158,15 +134,15 @@ export class UserService extends CRUDService<UserModel, User> {
     ]);
   }
 
-  async acceptFriendRequest(from: string, to: string) {
+  async friend(from: string, to: string) {
+    console.log("FRIEND");
     const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
 
-    await Promise.all([
+    const res = await Promise.all([
       this.model
         .updateOne(
           { phoneNumber: from },
           {
-            friendRequests: _.remove(userFrom.friendRequests, to),
             friends: _.uniq([...userFrom.friends, to])
           }
         )
@@ -175,7 +151,6 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: to },
           {
-            requestedFriends: _.remove(userTo.requestedFriends, from),
             friends: _.uniq([...userTo.friends, from])
           }
         )
@@ -186,25 +161,8 @@ export class UserService extends CRUDService<UserModel, User> {
         userFrom
       )
     ]);
-  }
 
-  async denyFriendRequest(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
-
-    await Promise.all([
-      this.model
-        .updateOne(
-          { phoneNumber: to },
-          { friendRequests: _.remove(userTo.friendRequests, from) }
-        )
-        .exec(),
-      this.model
-        .updateOne(
-          { phoneNumber: from },
-          { requestedFriends: _.remove(userFrom.requestedFriends, to) }
-        )
-        .exec()
-    ]);
+    console.log("RES:", res);
   }
 
   async getUserFriends(phoneNumber: string) {

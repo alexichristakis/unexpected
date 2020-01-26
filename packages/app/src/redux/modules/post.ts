@@ -318,7 +318,7 @@ function* onFetchFeed(
 
       const userMap = Object.keys(users).reduce((acc, curr) => {
         acc[curr] = {
-          posts: postsByUser[curr].map(({ id }) => id),
+          posts: postsByUser[curr]?.map(({ id }) => id),
           lastFetched: moment().toISOString()
         };
 
@@ -327,8 +327,8 @@ function* onFetchFeed(
 
       const userValues = Object.values(users);
       yield all([
-        yield put(Actions.fetchFeedSuccess(postIds, posts, userMap, comments)),
-        yield put(UserActions.loadUsers(userValues))
+        yield put(UserActions.loadUsers(userValues)),
+        yield put(Actions.fetchFeedSuccess(postIds, posts, userMap, comments))
       ]);
     }
 
