@@ -12,13 +12,15 @@ import {
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
-import { useLightStatusBar } from "@hooks";
+import { useLightStatusBar, useDarkStatusBar } from "@hooks";
 import { TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
+import { StackParamList } from "../App";
 
 const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
   ...auth,
@@ -34,10 +36,13 @@ export type AuthReduxProps = ReduxPropsType<
   typeof mapStateToProps,
   typeof mapDispatchToProps
 >;
-export interface AuthOwnProps {}
+export interface AuthOwnProps {
+  navigation: NativeStackNavigationProp<StackParamList>;
+}
 
 const initialFormValues = { phoneNumber: "", code: "" };
 const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
+  navigation,
   loading,
   reset,
   isAwaitingCode,
@@ -45,7 +50,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
   requestAuth,
   checkCode
 }) => {
-  useLightStatusBar();
+  useDarkStatusBar();
 
   useFocusEffect(
     useCallback(() => {
@@ -57,7 +62,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 
   const handleSubmit = (values: typeof initialFormValues) => {
     if (isAwaitingCode) {
-      checkCode(values.phoneNumber, values.code);
+      checkCode(values.phoneNumber, values.code, navigation);
     } else {
       requestAuth(values.phoneNumber);
     }

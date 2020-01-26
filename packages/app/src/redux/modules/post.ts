@@ -8,9 +8,9 @@ import ImageResizer, {
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import uuid from "uuid/v4";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import client, { getHeaders } from "@api";
-import * as NavigationService from "../../navigation";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
@@ -19,6 +19,7 @@ import {
 } from "../utils";
 import { Actions as AppActions } from "./app";
 import { Actions as UserActions } from "./user";
+import { StackParamList } from "../../App";
 
 type FeedEndpointReturn = {
   postIds: string[];
@@ -226,7 +227,7 @@ export default (
 function* onSendPost(
   action: ExtractActionFromActionCreator<typeof Actions.sendPost>
 ) {
-  const { description } = action.payload;
+  const { description, navigation } = action.payload;
 
   try {
     const jwt = yield select(selectors.jwt);
@@ -275,9 +276,10 @@ function* onSendPost(
 
     yield all([
       yield put(Actions.sendPostSuccess(phoneNumber)),
-      yield put(AppActions.expireCamera()),
-      yield NavigationService.navigate("HOME")
+      yield put(AppActions.expireCamera())
     ]);
+
+    navigation.navigate("HOME");
   } catch (err) {
     yield put(Actions.onError(err));
   }
@@ -518,8 +520,10 @@ export const Actions = {
   fetchPostSuccess: (post: Post, comments: Comment[]) =>
     createAction(ActionTypes.FETCH_POST_SUCCESS, { post, comments }),
 
-  sendPost: (description: string) =>
-    createAction(ActionTypes.SEND_POST, { description }),
+  sendPost: (
+    description: string,
+    navigation: NativeStackNavigationProp<StackParamList>
+  ) => createAction(ActionTypes.SEND_POST, { description, navigation }),
   sendPostSuccess: (phoneNumber: string) =>
     createAction(ActionTypes.SEND_POST_SUCCESS, { phoneNumber }),
 

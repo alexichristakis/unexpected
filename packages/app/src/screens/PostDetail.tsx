@@ -69,9 +69,11 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
 
   useDarkStatusBar();
 
-  useFocusEffect(() =>
+  useFocusEffect(
     useCallback(() => {
       fetchPost(postId);
+
+      return () => {};
     }, [])
   );
 

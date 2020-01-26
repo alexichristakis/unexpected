@@ -6,6 +6,7 @@ import immer from "immer";
 import _ from "lodash";
 import moment from "moment-timezone";
 import { REHYDRATE } from "redux-persist";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   all,
   call,
@@ -17,13 +18,13 @@ import {
 
 import client, { getHeaders } from "@api";
 
-import { navigate } from "../../navigation";
 import * as selectors from "../selectors";
 import {
   ActionsUnion,
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
+import { StackParamList } from "../../App";
 
 export interface UserState {
   phoneNumber: string;
@@ -232,10 +233,11 @@ function* onCreateUser(
   const jwt = yield select(selectors.jwt);
   const phoneNumber = yield select(selectors.authPhoneNumber);
 
-  const { name } = action.payload;
+  const { firstName, lastName, navigation } = action.payload;
 
   const newUser: User = {
-    ...name,
+    firstName,
+    lastName,
     phoneNumber,
     notifications: [],
     friends: [],
@@ -245,11 +247,9 @@ function* onCreateUser(
   };
 
   if (phoneNumber === "0000000000") {
-    yield all([
-      yield put(Actions.createUserSuccess(newUser)),
-      yield navigate("AUTHENTICATED")
-    ]);
-  } else
+    yield put(Actions.createUserSuccess(newUser));
+    navigation.navigate("AUTHENTICATED");
+  } else {
     try {
       const res: AxiosResponse<User> = yield client.put(
         "/user",
@@ -261,13 +261,12 @@ function* onCreateUser(
 
       const { data: createdUser } = res;
 
-      yield all([
-        yield put(Actions.createUserSuccess(createdUser)),
-        yield navigate("AUTHENTICATED")
-      ]);
+      yield put(Actions.createUserSuccess(createdUser));
+      navigation.navigate("AUTHENTICATED");
     } catch (err) {
       yield put(Actions.onError(err));
     }
+  }
 }
 
 function* onUpdateUser(
@@ -369,7 +368,6 @@ function* onDeleteFriend(
 ) {
   const { phoneNumber: to } = action.payload;
 
-  console.log("on delete friend");
   try {
     const phoneNumber = yield select(selectors.phoneNumber);
     const jwt = yield select(selectors.jwt);
@@ -418,8 +416,6 @@ function* onCancelRequest(
 ) {
   const { phoneNumber: to } = action.payload;
 
-  console.log("to:", to);
-
   const requestedFriends: FriendRequest[] = yield select(
     selectors.requestedFriends
   );
@@ -428,8 +424,6 @@ function* onCancelRequest(
 
   try {
     const id = requestedFriends.find(r => r.to === to)?.id;
-
-    console.log("id:", id);
 
     if (id) {
       const res = yield client.delete(`user/request/${id}`, {
@@ -506,10 +500,19 @@ export const Actions = {
       friendRequests,
       requestedFriends
     }),
-  createUser: (name: { firstName: string; lastName: string }) =>
-    createAction(ActionTypes.CREATE_NEW_USER, { name }),
+  createUser: (
+    firstName: string,
+    lastName: string,
+    navigation: NativeStackNavigationProp<StackParamList>
+  ) =>
+    createAction(ActionTypes.CREATE_NEW_USER, {
+      firstName,
+      lastName,
+      navigation
+    }),
   createUserSuccess: (user: User) =>
     createAction(ActionTypes.CREATE_USER_SUCCESS, { user }),
+
   loadUsers: (users: User[]) => createAction(ActionTypes.LOAD_USERS, { users }),
   updateUser: (user: Partial<User>) =>
     createAction(ActionTypes.UPDATE_USER, { user }),

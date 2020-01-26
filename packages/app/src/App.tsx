@@ -26,7 +26,7 @@ import { LaunchCameraButton } from "@components/Camera";
 import Connection from "@components/Connection";
 import { isIPhoneX, TextStyles } from "@lib/styles";
 import { useReduxState } from "./hooks";
-import { navigationRef } from "./navigation";
+import { setNavigatorRef } from "./navigation";
 
 /* screens */
 import Auth from "./screens/Auth";
@@ -133,7 +133,7 @@ const renderTabBar = (tabBarProps: BottomTabBarProps) => (
 );
 
 const AuthenticatedRoot = () => (
-  <Stack.Navigator screenOptions={{ presentation: "modal" }}>
+  <Stack.Navigator screenOptions={{ stackPresentation: "modal" }}>
     <Stack.Screen name="HOME" options={{ headerShown: false }}>
       {rootStackScreenProps => {
         // dont keep this
@@ -249,12 +249,11 @@ const UnathenticatedRoot = () => (
 );
 
 const Router: React.FC = () => {
-  // get authorized state, dont re-render root component when this changes.
   const isAuthorized = useReduxState(selectors.isAuthorized);
 
   return (
-    <NavigationNativeContainer ref={navigationRef}>
-      <Stack.Navigator screenOptions={{ animation: "fade" }}>
+    <NavigationNativeContainer ref={setNavigatorRef}>
+      <Stack.Navigator screenOptions={{ stackAnimation: "fade" }}>
         {isAuthorized ? (
           <Stack.Screen
             name="AUTHENTICATED"
