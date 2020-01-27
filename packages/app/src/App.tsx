@@ -12,7 +12,7 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp
 } from "@react-navigation/native-stack";
-import { FeedPost, User } from "@unexpected/global";
+import { User } from "@unexpected/global";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
@@ -29,20 +29,22 @@ import { useReduxState } from "./hooks";
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
-import Auth from "./screens/Auth";
-import Capture from "./screens/Capture";
-import EditBio from "./screens/EditBio";
-import Friends from "./screens/Friends";
-import Discover from "./screens/Home/Discover";
-import Feed from "./screens/Home/Feed";
-import UserProfile from "./screens/Home/UserProfile";
-import NewProfilePicture from "./screens/NewProfilePicture";
-import Permissions from "./screens/Permissions";
-import PostDetail from "./screens/PostDetail";
-import Profile from "./screens/Profile";
-import Settings from "./screens/Settings";
-import Share from "./screens/Share";
-import SignUp from "./screens/SignUp";
+import {
+  Auth,
+  Capture,
+  EditProfile,
+  Friends,
+  Discover,
+  Feed,
+  UserProfile,
+  NewProfilePicture,
+  Permissions,
+  PostDetail,
+  Profile,
+  Settings,
+  Share,
+  SignUp
+} from "./screens";
 
 import DiscoverIcon from "./assets/svg/discover.svg";
 import FeedIcon from "./assets/svg/feed.svg";
@@ -69,7 +71,7 @@ export type StackParamList = {
   SIGN_UP: undefined;
   CAPTURE: undefined;
   NEW_PROFILE_PICTURE: undefined;
-  EDIT_BIO: undefined;
+  EDIT_PROFILE: undefined;
 };
 
 export type TabParamList = {
@@ -229,7 +231,7 @@ const AuthenticatedRoot = () => (
     </Stack.Screen>
     <Stack.Screen name="SETTINGS" component={Settings} />
     <Stack.Screen name="PERMISSIONS" component={Permissions} />
-    <Stack.Screen name="EDIT_BIO" component={EditBio} />
+    <Stack.Screen name="EDIT_PROFILE" component={EditProfile} />
   </Stack.Navigator>
 );
 

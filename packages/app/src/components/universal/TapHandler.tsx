@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { View, StyleProp, StyleSheet, ViewStyle } from "react-native";
 
 import { BaseButton } from "react-native-gesture-handler";
 import Animated, { Easing } from "react-native-reanimated";
@@ -43,7 +43,8 @@ export default ({
     <Animated.View style={[style, animatedStyle]}>{children}</Animated.View>
   );
 
-  if (disabled) return content;
+  if (disabled)
+    return <View style={[containerStyle, styles.container]}>{content}</View>;
 
   return (
     <BaseButton
