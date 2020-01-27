@@ -5,9 +5,9 @@ import { Comment } from "@unexpected/global";
 import { Comment as CommentModel } from "../models/Comment";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
-import { UserService } from "./user";
 import { NotificationService } from "./notification";
 import { PostService } from "./post";
+import { UserService } from "./user";
 
 @Service()
 export class CommentService extends CRUDService<CommentModel, Comment> {
