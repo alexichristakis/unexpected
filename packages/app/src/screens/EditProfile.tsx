@@ -23,7 +23,7 @@ import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../App";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, isIPhoneX } from "@lib/styles";
 import { Formik } from "formik";
 
 const mapStateToProps = (state: RootState, props: EditProfileProps) => ({
@@ -108,7 +108,7 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
               onPress={handleSubmit}
             />
             <KeyboardAvoidingView
-              keyboardVerticalOffset={80}
+              keyboardVerticalOffset={isIPhoneX ? 80 : 20}
               style={styles.keyboardAvoiding}
               behavior="padding"
             >
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   keyboardAvoiding: {
-    bottom: 100,
+    bottom: isIPhoneX ? 40 : 20,
     left: 20,
     right: 20,
 

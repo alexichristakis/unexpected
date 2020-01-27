@@ -18,7 +18,7 @@ import uuid from "uuid/v4";
 
 import { Button, ItemSeparator, UserRow } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { TextSizes, TextStyles } from "@lib/styles";
+import { TextSizes, TextStyles, isIPhoneX } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingBottom: 50,
+    paddingBottom: isIPhoneX ? 40 : 20,
     backgroundColor: "white"
   },
   listHeaderContainer: {
