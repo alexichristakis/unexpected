@@ -169,14 +169,14 @@ export class UserService extends CRUDService<UserModel, User> {
     return this.getByPhoneNumber(friends);
   }
 
-  async getByPhoneNumber(phoneNumber: string): Promise<UserModel & Document>;
+  async getByPhoneNumber(phoneNumber?: string): Promise<UserModel & Document>;
   async getByPhoneNumber(
     phoneNumbers: string[],
     sort?: boolean,
     select?: string
   ): Promise<Array<UserModel & Document>>;
   async getByPhoneNumber(
-    phoneNumber: string | string[],
+    phoneNumber?: string | string[],
     sort?: boolean,
     select?: string
   ) {

@@ -22,7 +22,7 @@ export class CommentController {
 
   @Put()
   comment(@BodyParams("comment") comment: Comment) {
-    return this.commentService.create(comment);
+    return this.commentService.createNewComment(comment);
   }
 
   @Delete("/:id")

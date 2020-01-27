@@ -46,7 +46,7 @@ export class SchedulerService {
 
     await new Promise(resolve => {
       this.agenda.once("ready", async () => {
-        await this.agenda.purge();
+        // await this.agenda.purge();
 
         this.agenda.define(AgendaJobs.SEND_NOTIFICATION, async args => {
           const { to } = args.attrs.data;

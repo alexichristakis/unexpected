@@ -6,17 +6,42 @@ import { Comment as CommentModel } from "../models/Comment";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { UserService } from "./user";
+import { NotificationService } from "./notification";
+import { PostService } from "./post";
 
 @Service()
 export class CommentService extends CRUDService<CommentModel, Comment> {
   @Inject(CommentModel)
   model: MongooseModel<CommentModel>;
 
-  @Inject(UserService)
-  userService: UserService;
+  @Inject(PostService)
+  private postService: PostService;
 
-  @Inject(SlackLogService)
-  logger: SlackLogService;
+  @Inject(UserService)
+  private userService: UserService;
+
+  @Inject(NotificationService)
+  private notificationService: NotificationService;
+
+  async createNewComment(comment: Comment) {
+    const [fromUser, post] = await Promise.all([
+      this.userService.getByPhoneNumber(comment.phoneNumber),
+      this.postService.getId(comment.postId)
+    ]);
+
+    if (!fromUser || !post) return;
+
+    const user = await this.userService.getByPhoneNumber(post?.phoneNumber);
+
+    return Promise.all([
+      this.create(comment),
+      this.notificationService.notifyWithNavigationToPost(
+        user,
+        `${fromUser.firstName} commented on your post`,
+        { ...post, id: comment.postId }
+      )
+    ]);
+  }
 
   async getByPostIds(postIds: string[]) {
     const comments = await this.model.find({ postId: { $in: postIds } }).exec();

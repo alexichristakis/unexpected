@@ -201,7 +201,8 @@ export function* notificationWatcher() {
         if (payload.type === "user") {
           const { route } = payload;
 
-          navigate("PROFILE", { user: route });
+          // not working for now
+          // navigate("PROFILE", { user: route });
         }
 
         // if (payload.type === "post") {

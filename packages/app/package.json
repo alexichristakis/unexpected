@@ -6,7 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios --simulator 'iPhone 11'",
     "start": "react-native start",
-    "deploy": "appcenter codepush release-react -a alexi/unexpected -t '0.0.2'",
+    "deploy": "appcenter codepush release-react -a alexi/unexpected -t '0.0.4' -d 'Production'",
     "deploy-production": "appcenter codepush release-react -a alexi/unexpected -t '0.0.2' -d Production",
     "check-types": "tsc -p . --noEmit --skipLibCheck",
     "test": "jest",
