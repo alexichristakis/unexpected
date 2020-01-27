@@ -28,13 +28,15 @@ import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   postsLoading: selectors.postLoading(state),
+  friendRequests: selectors.friendRequestNumbers(state),
   user: selectors.currentUser(state),
   posts: selectors.currentUsersPosts(state),
-  stale: selectors.currentUsersPostsStale(state)
+  stale: selectors.feedStale(state)
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,
   fetchUser: UserActions.fetchUser,
+  fetchUsersRequests: UserActions.fetchUsersRequests,
   fetchUsersPosts: PostActions.fetchUsersPosts
 };
 
@@ -51,7 +53,9 @@ export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 export const UserProfile: React.FC<UserProfileProps> = React.memo(
   ({
     navigation,
+    friendRequests,
     fetchUser,
+    fetchUsersRequests,
     fetchUsersPosts,
     stale,
     posts,
@@ -63,7 +67,9 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     useFocusEffect(
       useCallback(() => {
         StatusBar.setHidden(false);
+
         fetchUser();
+        fetchUsersRequests();
 
         if (stale) fetchUsersPosts();
 
@@ -90,13 +96,14 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     const renderTop = () => (
       <Top
         isUser={true}
+        friendRequests={friendRequests}
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}
         onPressAddBio={goToEditBio}
         onPressFriends={goToFriends}
         onPressImage={goToNewProfilePicture}
-        onPressName={goToSettings}
+        onPressSettings={goToSettings}
       />
     );
 
@@ -104,7 +111,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       navigation.navigate({
         name: "POST",
         key: uuid(),
-        params: { prevRoute: user.firstName, post: { ...post, user } }
+        params: { prevRoute: user.firstName, postId: post.id }
       });
     };
 
@@ -120,6 +127,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       if (y < -100) {
         Haptics.trigger("impactMedium");
         fetchUser();
+        fetchUsersRequests();
         fetchUsersPosts();
       }
     };

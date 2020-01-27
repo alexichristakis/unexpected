@@ -43,7 +43,7 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
     useEffect(() => {});
 
     const handleSubmit = (values: typeof initialFormValues) => {
-      sendPost(values.description);
+      sendPost(values.description, navigation);
     };
 
     return (

@@ -16,10 +16,10 @@ import sagas from "./sagas";
 
 const persistConfig = {
   key: "root",
-  // blacklist: ["post", "image"],
+  // blacklist: ["post", "user", "auth"],
   storage: AsyncStorage,
-  migrate: createMigrate(migrations, { debug: __DEV__ }),
-  version: 0
+  migrate: createMigrate(migrations as any, { debug: __DEV__ }),
+  version: 1
 };
 
 export default () => {

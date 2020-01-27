@@ -10,11 +10,12 @@ import { User } from "@unexpected/global";
 export interface ProfileTopProps {
   user: User;
   isUser?: boolean; // is currently signed in user
+  friendRequests?: string[];
   numPosts: number;
   scrollY: Animated.Value<number>;
   onPressFriends: () => void;
   onPressImage?: () => void;
-  onPressName?: () => void;
+  onPressSettings?: () => void;
   onPressAddBio?: () => void;
 }
 
@@ -23,19 +24,13 @@ export const Top: React.FC<ProfileTopProps> = ({
   isUser,
   numPosts,
   scrollY,
+  friendRequests,
   onPressAddBio,
   onPressFriends,
   onPressImage,
-  onPressName
+  onPressSettings
 }) => {
-  const {
-    phoneNumber,
-    firstName,
-    lastName,
-    friends = [],
-    friendRequests = [],
-    bio = ""
-  } = user;
+  const { phoneNumber, firstName, lastName, friends = [], bio = "" } = user;
 
   const animatedStyle = {
     transform: [
@@ -49,11 +44,11 @@ export const Top: React.FC<ProfileTopProps> = ({
   };
 
   const renderNotificationIndicator = () => {
-    if (!isUser || !friendRequests.length) return null;
+    if (!isUser || !friendRequests?.length) return null;
 
     return (
       <TouchableOpacity
-        onPress={onPressName}
+        onPress={onPressSettings}
         style={styles.notificationIndicator}
       >
         <Text
@@ -69,7 +64,7 @@ export const Top: React.FC<ProfileTopProps> = ({
   const renderHeaderButton = () => {
     if (isUser)
       return (
-        <TouchableOpacity disabled={!onPressName} onPress={onPressName}>
+        <TouchableOpacity disabled={!onPressSettings} onPress={onPressSettings}>
           <Gear fill={Colors.nearBlack} width={30} height={30} />
         </TouchableOpacity>
       );

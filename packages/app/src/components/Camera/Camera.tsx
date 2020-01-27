@@ -30,11 +30,11 @@ export interface CameraState {
 }
 
 class Camera extends React.Component<CameraProps, CameraState> {
-
   state = {
     focus: { x: 0.5, y: 0.5 },
     layout: { width: 0, height: 0 }
   };
+
   private camera = React.createRef<RNCamera>();
 
   takePhoto = async () => {

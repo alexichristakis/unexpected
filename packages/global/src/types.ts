@@ -1,4 +1,13 @@
-import { Post as PostModel, User as UserModel } from "@unexpected/server";
+import {
+  Comment as CommentModel,
+  FriendRequest as FriendRequestModel,
+  Post as PostModel,
+  User as UserModel
+} from "@unexpected/server";
+
+export type FriendRequest = Omit<FriendRequestModel, "_id" | "createdAt"> & {
+  id: string;
+};
 
 export type NewUser = {
   phoneNumber: string;
@@ -15,7 +24,10 @@ export type UserNotificationRecord = {
 
 export type Post = Omit<PostModel, "_id"> & { id: string };
 
-export type FeedPost = Post & { user: User };
+export type FeedPost = Post & { user: User; comments: Comment[] };
+
+export type Comment = Omit<CommentModel, "_id"> & { id: string };
+export type NewComment = Omit<Comment, "createdAt" | "id">;
 
 export type UserNotificationPayload = {
   type: "user";

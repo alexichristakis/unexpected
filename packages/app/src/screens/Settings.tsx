@@ -16,12 +16,7 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
-import {
-  Button,
-  FriendButton,
-  ItemSeparator,
-  UserRow
-} from "@components/universal";
+import { Button, ItemSeparator, UserRow } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { TextSizes, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
@@ -33,13 +28,14 @@ import { User } from "@unexpected/global";
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
+  stale: selectors.userStale(state),
+  friendRequests: selectors.friendRequestNumbers(state),
   phoneNumber: selectors.phoneNumber(state),
   user: selectors.currentUser(state),
   users: selectors.users(state)
 });
 const mapDispatchToProps = {
-  acceptRequest: UserActions.acceptRequest,
-  denyRequest: UserActions.denyRequest,
+  fetchRequests: UserActions.fetchUsersRequests,
   fetchUsers: UserActions.fetchUsers,
   logout: AuthActions.logout
 };
@@ -57,9 +53,10 @@ const Settings: React.FC<SettingsProps> = React.memo(
     navigation,
     user,
     users,
+    stale,
     fetchUsers,
-    acceptRequest,
-    denyRequest,
+    fetchRequests,
+    friendRequests,
     phoneNumber,
     logout
   }) => {
@@ -67,10 +64,11 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     useFocusEffect(
       useCallback(() => {
-        fetchUsers(user.friendRequests, ["firstName", "lastName"]);
+        fetchRequests();
+        fetchUsers(friendRequests, ["firstName", "lastName"]);
 
         return () => {};
-      }, [])
+      }, [stale])
     );
 
     const getContacts = () => {
@@ -98,12 +96,6 @@ const Settings: React.FC<SettingsProps> = React.memo(
       });
     };
 
-    const getUsers = () => {
-      return _.filter(users, o =>
-        _.includes(user.friendRequests, o.phoneNumber)
-      );
-    };
-
     const handleOnPressUser = (toUser: User) => {
       if (phoneNumber === toUser.phoneNumber) {
         navigation.navigate("USER_PROFILE");
@@ -113,7 +105,7 @@ const Settings: React.FC<SettingsProps> = React.memo(
           key: uuid(),
           params: {
             prevRoute: user.firstName,
-            user: toUser
+            phoneNumber: toUser.phoneNumber
           }
         });
       }
@@ -165,14 +157,16 @@ const Settings: React.FC<SettingsProps> = React.memo(
 
     const renderSeparatorComponent = () => <ItemSeparator />;
 
-    const friendRequests = getUsers();
+    const data = friendRequests
+      .filter(user => !!users[user])
+      .map(user => users[user]);
 
     return (
       <Screen style={styles.container}>
         <Text style={[TextStyles.large, styles.header]}>settings:</Text>
         <FlatList
           renderItem={renderUserRow}
-          data={friendRequests}
+          data={data}
           ItemSeparatorComponent={renderSeparatorComponent}
           ListHeaderComponent={renderListHeader(friendRequests.length)}
           ListFooterComponent={renderListFooter(friendRequests.length)}
@@ -180,7 +174,8 @@ const Settings: React.FC<SettingsProps> = React.memo(
         <Button title="dismiss" onPress={navigation.goBack} />
       </Screen>
     );
-  }
+  },
+  (prevProps, nextProps) => prevProps.stale === nextProps.stale
 );
 
 const styles = StyleSheet.create({

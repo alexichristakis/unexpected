@@ -6,7 +6,17 @@ import { bInterpolate, useValues } from "react-native-redash";
 
 import { TextStyles } from "@lib/styles";
 
-const { useCode, greaterOrEq, set, onChange, call, eq, block, cond } = Animated;
+const {
+  useCode,
+  lessOrEq,
+  greaterOrEq,
+  set,
+  onChange,
+  call,
+  eq,
+  block,
+  cond
+} = Animated;
 
 export interface PullToRefreshProps {
   scrollY: Animated.Value<number>;
@@ -19,7 +29,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({ scrollY }) => {
     () =>
       block([
         cond(
-          greaterOrEq(scrollY, -100),
+          lessOrEq(scrollY, -100),
           set(readyToRefresh, 1),
           set(readyToRefresh, 0)
         ),

@@ -8,12 +8,16 @@ import { Document } from "mongoose";
 import { NOTIFICATION_MINUTES } from "../lib/constants";
 import { User as UserModel } from "../models/user";
 import { CRUDService } from "./crud";
+import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
 
 @Service()
 export class UserService extends CRUDService<UserModel, User> {
   @Inject(UserModel)
   model: MongooseModel<UserModel>;
+
+  @Inject(SlackLogService)
+  logger: SlackLogService;
 
   @Inject(NotificationService)
   notificationService: NotificationService;
@@ -23,7 +27,15 @@ export class UserService extends CRUDService<UserModel, User> {
 
     if (user) return user;
 
-    return this.create(newUser);
+    const [createdUser] = await Promise.all([
+      this.create(newUser),
+      this.logger.sendMessage(
+        "new user",
+        `${newUser.firstName} ${newUser.lastName}`
+      )
+    ]);
+
+    return createdUser;
   }
 
   async search(query: string) {
@@ -42,12 +54,10 @@ export class UserService extends CRUDService<UserModel, User> {
   }
 
   async updateValidNotifications(post: Post) {
-    const { createdAt, userPhoneNumber } = post;
+    const { createdAt, phoneNumber } = post;
 
     const time = moment(createdAt);
-    const user = await this.findOne({ phoneNumber: userPhoneNumber }, [
-      "notifications"
-    ]);
+    const user = await this.findOne({ phoneNumber }, ["notifications"]);
 
     if (!user) return;
 
@@ -61,7 +71,7 @@ export class UserService extends CRUDService<UserModel, User> {
     );
 
     return this.updateOne(
-      { phoneNumber: userPhoneNumber },
+      { phoneNumber },
       { notifications: updatedNotifications }
     );
   }
@@ -101,30 +111,6 @@ export class UserService extends CRUDService<UserModel, User> {
     $log.info(res);
   }
 
-  async friend(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
-
-    await Promise.all([
-      this.model
-        .updateOne(
-          { phoneNumber: to },
-          { friendRequests: _.uniq([...userTo.friendRequests, from]) }
-        )
-        .exec(),
-      this.model
-        .updateOne(
-          { phoneNumber: from },
-          { requestedFriends: _.uniq([...userFrom.requestedFriends, to]) }
-        )
-        .exec(),
-      this.notificationService.notifyWithNavigationToUser(
-        userTo,
-        `${userFrom.firstName} ${userFrom.lastName} sent you a friend request.`,
-        userFrom
-      )
-    ]);
-  }
-
   async unfriend(from: string, to: string) {
     const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
 
@@ -133,7 +119,7 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: to },
           {
-            friends: _.remove(userTo.friends, from)
+            friends: userTo.friends.filter(user => user !== from)
           }
         )
         .exec(),
@@ -141,22 +127,21 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: from },
           {
-            friends: _.remove(userFrom.friends, to)
+            friends: userFrom.friends.filter(user => user !== to)
           }
         )
         .exec()
     ]);
   }
 
-  async acceptFriendRequest(from: string, to: string) {
+  async friend(from: string, to: string) {
     const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
 
-    await Promise.all([
+    const res = await Promise.all([
       this.model
         .updateOne(
           { phoneNumber: from },
           {
-            friendRequests: _.remove(userFrom.friendRequests, to),
             friends: _.uniq([...userFrom.friends, to])
           }
         )
@@ -165,7 +150,6 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: to },
           {
-            requestedFriends: _.remove(userTo.requestedFriends, from),
             friends: _.uniq([...userTo.friends, from])
           }
         )
@@ -178,25 +162,6 @@ export class UserService extends CRUDService<UserModel, User> {
     ]);
   }
 
-  async denyFriendRequest(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
-
-    await Promise.all([
-      this.model
-        .updateOne(
-          { phoneNumber: to },
-          { friendRequests: _.remove(userTo.friendRequests, from) }
-        )
-        .exec(),
-      this.model
-        .updateOne(
-          { phoneNumber: from },
-          { requestedFriends: _.remove(userFrom.requestedFriends, to) }
-        )
-        .exec()
-    ]);
-  }
-
   async getUserFriends(phoneNumber: string) {
     const user = await this.getByPhoneNumber(phoneNumber);
     const { friends } = user;
@@ -204,14 +169,14 @@ export class UserService extends CRUDService<UserModel, User> {
     return this.getByPhoneNumber(friends);
   }
 
-  async getByPhoneNumber(phoneNumber: string): Promise<UserModel & Document>;
+  async getByPhoneNumber(phoneNumber?: string): Promise<UserModel & Document>;
   async getByPhoneNumber(
     phoneNumbers: string[],
     sort?: boolean,
     select?: string
   ): Promise<Array<UserModel & Document>>;
   async getByPhoneNumber(
-    phoneNumber: string | string[],
+    phoneNumber?: string | string[],
     sort?: boolean,
     select?: string
   ) {

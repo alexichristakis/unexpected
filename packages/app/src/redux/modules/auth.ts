@@ -1,11 +1,12 @@
 import AsyncStorage from "@react-native-community/async-storage";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AxiosError, AxiosResponse } from "axios";
 import { BATCH, batchActions } from "redux-batched-actions";
 import { persistStore, REHYDRATE } from "redux-persist";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 
 import client from "@api";
-import Navigation from "../../navigation";
+import { StackParamList } from "../../App";
 import {
   ActionsUnion,
   createAction,
@@ -14,11 +15,11 @@ import {
 import { Actions as UserActions } from "./user";
 
 export interface AuthState {
-  readonly loading: boolean;
-  readonly phoneNumber: string;
-  readonly isAwaitingCode: boolean;
-  readonly authError: string;
-  readonly jwt: string | null;
+  loading: boolean;
+  phoneNumber: string;
+  isAwaitingCode: boolean;
+  authError: string;
+  jwt: string | null;
 }
 
 const initialState: AuthState = {
@@ -95,7 +96,7 @@ function* onLoginRequest(
 
   if (phoneNumber === "0000000000") {
     yield put(Actions.successTextingCode());
-  } else
+  } else {
     try {
       const res = yield client.post(`/verify/${phoneNumber}`);
       if (res.data) {
@@ -104,19 +105,18 @@ function* onLoginRequest(
     } catch (err) {
       yield put(Actions.errorRequestingAuth(err.message));
     }
+  }
 }
 
 function* onVerifyCodeRequest(
   action: ExtractActionFromActionCreator<typeof Actions.checkCode>
 ) {
-  const { phoneNumber, code } = action.payload;
+  const { phoneNumber, code, navigation } = action.payload;
 
   if (phoneNumber === "0000000000" && code === "000000") {
-    yield all([
-      yield put(Actions.setJWT("DEV_TOKEN")),
-      yield Navigation.navigate("SIGN_UP")
-    ]);
-  } else
+    yield put(Actions.setJWT("DEV_TOKEN"));
+    navigation.navigate("SIGN_UP");
+  } else {
     try {
       const res = yield client.post(`/verify/${phoneNumber}/${code}`);
 
@@ -127,29 +127,26 @@ function* onVerifyCodeRequest(
 
       if (data.token) {
         if (data.user) {
-          yield all([
-            yield put(
-              batchActions(
-                [
-                  UserActions.createUserSuccess(data.user),
-                  Actions.setJWT(data.token)
-                ],
-                BATCH
-              )
-            ),
-            yield Navigation.navigate("AUTHENTICATED")
-          ]);
+          yield put(
+            batchActions(
+              [
+                UserActions.createUserSuccess(data.user),
+                Actions.setJWT(data.token)
+              ],
+              BATCH
+            )
+          );
+          navigation.navigate("HOME");
         } else {
           // user entity doesn't exist in DB: new user
-          yield all([
-            yield put(Actions.setJWT(data.token)),
-            yield Navigation.navigate("SIGN_UP")
-          ]);
+          yield put(Actions.setJWT(data.token));
+          navigation.navigate("SIGN_UP");
         }
       }
     } catch (err) {
       yield put(Actions.errorRequestingAuth(err.message));
     }
+  }
 }
 
 function* onLogout() {
@@ -177,12 +174,24 @@ export enum ActionTypes {
 export const Actions = {
   requestAuth: (phoneNumber: string) =>
     createAction(ActionTypes.REQUEST_AUTH, { phoneNumber }),
-  checkCode: (phoneNumber: string, code: string) =>
-    createAction(ActionTypes.CHECK_CODE, { phoneNumber, code }),
+
+  checkCode: (
+    phoneNumber: string,
+    code: string,
+    navigation: NativeStackNavigationProp<StackParamList>
+  ) =>
+    createAction(ActionTypes.CHECK_CODE, {
+      phoneNumber,
+      code,
+      navigation
+    }),
+
   errorRequestingAuth: (err: string) =>
     createAction(ActionTypes.ERROR_REQUESTING_AUTH, { err }),
+
   successTextingCode: () => createAction(ActionTypes.TEXT_CODE_SUCCESS),
   setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt),
+
   reset: () => createAction(ActionTypes.RESET),
   logout: () => createAction(ActionTypes.LOGOUT)
 };

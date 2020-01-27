@@ -1,90 +1,126 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActionSheetIOS,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
 
+import _ from "lodash";
 import moment from "moment";
-import Animated from "react-native-reanimated";
+import { connect, ConnectedProps } from "react-redux";
 
-import { FEED_POST_WIDTH } from "@lib/constants";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
-import { FeedPost } from "@unexpected/global";
+import { Actions as PostActions } from "@redux/modules/post";
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
+
+import MoreIcon from "@assets/svg/more.svg";
+
+import Comments from "./Comments";
 
 export interface PostProps {
-  viewable?: boolean;
-  entranceAnimatedValue?: Animated.Value<number>;
-  index?: number;
-  post: FeedPost;
+  postId: string;
   renderImage: () => JSX.Element;
-  onPressName?: () => void;
+  onPressName: (phoneNumber: string) => void;
 }
 
-export const Post: React.FC<PostProps> = React.memo(
-  ({
-    entranceAnimatedValue = 1,
-    index = 0,
-    post,
-    onPressName,
-    renderImage
-  }) => {
-    // const [visible, setVisible] = useState(false);
-    const { description, user, createdAt } = post;
+export type PostRef = {
+  setVisible: () => void;
+  setNotVisible: () => void;
+};
 
-    // useImperativeHandle(ref, () => ({
-    //   setVisible: () => setVisible(true),
-    //   setNotVisible: () => setVisible(false)
-    // }));
+export type PostConnectedProps = ConnectedProps<typeof connector>;
 
-    const animatedContainer = {
-      transform: [
-        {
-          translateY: Animated.interpolate(entranceAnimatedValue, {
-            inputRange: [0, 1],
-            outputRange: [150 * (index + 1), 0]
-          })
-        }
-      ],
-      opacity: entranceAnimatedValue
-    };
+const mapStateToProps = (state: RootState, props: PostProps) => ({
+  phoneNumber: selectors.phoneNumber(state),
+  post: selectors.post(state, props)
+});
 
-    return (
-      <Animated.View style={[styles.container, animatedContainer]}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={onPressName}>
-            <Text style={[TextStyles.large, styles.name]}>
-              {formatName(user)}
-            </Text>
-          </TouchableOpacity>
-          <Text style={TextStyles.small}>{moment(createdAt).fromNow()}</Text>
+const mapDispatchToProps = { deletePost: PostActions.deletePost };
+
+const Post = React.memo(
+  React.forwardRef<PostRef, PostConnectedProps & PostProps>(
+    ({ post, phoneNumber, onPressName, renderImage, deletePost }, ref) => {
+      const { id, description, user, createdAt, comments } = post;
+
+      const isUser = user?.phoneNumber === phoneNumber;
+
+      useImperativeHandle(ref, () => ({
+        setVisible: () => console.log("visible"),
+        setNotVisible: () => console.log("not visible")
+      }));
+
+      const handleOnPressName = () => {
+        onPressName(user.phoneNumber);
+      };
+
+      const handleOnPressMoreIcon = () => {
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            options: ["delete post", "cancel"],
+            destructiveButtonIndex: 0,
+            cancelButtonIndex: 1
+          },
+          index => {
+            if (!index) {
+              deletePost(id);
+            }
+          }
+        );
+      };
+
+      return (
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <View>
+              <TouchableOpacity onPress={handleOnPressName}>
+                <Text style={TextStyles.large}>{formatName(user)}</Text>
+              </TouchableOpacity>
+              <Text style={TextStyles.medium}>
+                {moment(createdAt).fromNow()}
+              </Text>
+            </View>
+            {isUser && (
+              <TouchableOpacity onPress={handleOnPressMoreIcon}>
+                <MoreIcon width={20} height={20} />
+              </TouchableOpacity>
+            )}
+          </View>
+          {renderImage()}
+          <Text style={styles.description}>{description}</Text>
+          <Comments postId={post.id} comments={comments} />
         </View>
-        {renderImage()}
-        <Text style={styles.description}>{description}</Text>
-      </Animated.View>
-    );
-  },
-  (prevProps, nextProps) => prevProps.viewable === nextProps.viewable
+      );
+    }
+  ),
+  (prevProps, nextProps) => _.isEqual(prevProps.post, nextProps.post)
 );
-
-// export const Post = forwardRef<
-//   { setVisible: () => void; setNotVisible: () => void },
-//   PostProps
-// >(_Post);
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 40
+    marginBottom: 10
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    marginBottom: 10
   },
   name: {
     marginBottom: 10
   },
   description: {
-    ...TextStyles.medium,
+    ...TextStyles.small,
     marginTop: 10,
-    paddingHorizontal: 20
+    paddingHorizontal: 10
   }
 });
+
+const connector = connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true
+});
+export default connector(Post);

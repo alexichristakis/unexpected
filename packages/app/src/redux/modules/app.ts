@@ -14,7 +14,7 @@ import { all, call, put, select, take, takeEvery } from "redux-saga/effects";
 import client, { getHeaders } from "@api";
 import { NOTIFICATION_MINUTES } from "@lib/constants";
 import { NotificationPayload } from "@unexpected/global";
-import navigation from "../../navigation";
+import { navigate } from "../../navigation";
 import * as selectors from "../selectors";
 import { ActionsUnion, createAction } from "../utils";
 import { Actions as UserActions } from "./user";
@@ -188,7 +188,6 @@ export function* notificationWatcher() {
       // notification
       if (notification) {
         const { payload }: { payload: NotificationPayload } = notification;
-        console.log(notification);
 
         // notification is to start the photo clock
         if (payload.type === "photoTime") {
@@ -202,7 +201,8 @@ export function* notificationWatcher() {
         if (payload.type === "user") {
           const { route } = payload;
 
-          navigation.navigate("PROFILE", { user: route });
+          // not working for now
+          // navigate("PROFILE", { user: route });
         }
 
         // if (payload.type === "post") {
@@ -243,11 +243,6 @@ const notificationEmitter = () =>
   });
 
 function* checkCameraStatus() {
-  console.log(
-    "INITIAL:",
-    Notifications.getInitialNotification().then(console.log)
-  );
-
   // const jwt = yield select(selectors.jwt);
   // if (jwt) {
   //   // check if camera should be enabled
