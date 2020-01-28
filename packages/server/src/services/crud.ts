@@ -3,7 +3,7 @@ import { MongooseModel } from "@tsed/mongoose";
 
 // type Test = Pick<UserModel, ['firstName', 'deviceToken']>
 
-type Selector<T> = Array<Partial<keyof T>>;
+type Selector<T> = Partial<keyof T>[];
 
 // type MakePick<Type, Keys extends (keyof Type)[]> = { [Key in Keys]: Type[Key] };
 
