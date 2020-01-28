@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 import Camera, { CameraRef, Shutter } from "@components/Camera";
 import { Button, Input, PendingPostImage } from "@components/universal";
@@ -24,11 +24,8 @@ const mapDispatchToProps = {
   uploadPhoto: ImageActions.uploadProfilePhoto
 };
 
-export type NewProfilePictureReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
-export interface NewProfilePictureProps extends NewProfilePictureReduxProps {
+export type NewProfileConnectedProps = ConnectedProps<typeof connector>;
+export interface NewProfilePictureProps extends NewProfileConnectedProps {
   navigation: NativeStackNavigationProp<StackParamList>;
 }
 
@@ -124,4 +121,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewProfilePicture);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default NewProfilePicture;

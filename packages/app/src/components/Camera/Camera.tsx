@@ -2,7 +2,6 @@ import React, {
   forwardRef,
   useState,
   useImperativeHandle,
-  useEffect,
   useRef
 } from "react";
 import {
@@ -52,14 +51,19 @@ const Camera = React.memo(
       const camera = useRef<RNCamera>();
 
       useImperativeHandle(ref, () => ({
-        takePhoto
-      }));
+        takePhoto: async () => {
+          if (camera.current) {
+            const options: TakePictureOptions = {
+              quality: 0.5,
+              base64: false
+            };
 
-      const cameraStyle: ViewStyle = { ...style };
-      if (size && round) {
-        cameraStyle.width = size;
-        cameraStyle.height = size;
-      }
+            return camera.current.takePictureAsync(options);
+          }
+
+          return null;
+        }
+      }));
 
       const handleOnPress = ({ nativeEvent }: GestureResponderEvent) => {
         const { locationX, locationY } = nativeEvent;
@@ -73,26 +77,17 @@ const Camera = React.memo(
         });
       };
 
-      const takePhoto = async () => {
-        if (camera.current) {
-          const options: TakePictureOptions = {
-            quality: 0.5,
-            base64: false
-          };
-
-          const data = await camera.current.takePictureAsync(options);
-
-          return data;
-        }
-
-        return null;
-      };
-
       const handleOnLayout = ({ nativeEvent }: LayoutChangeEvent) => {
         const { layout } = nativeEvent;
 
         setLayout(layout);
       };
+
+      const cameraStyle: ViewStyle = { ...style };
+      if (size && round) {
+        cameraStyle.width = size;
+        cameraStyle.height = size;
+      }
 
       return (
         <View
@@ -116,15 +111,15 @@ const Camera = React.memo(
               captureAudio={false}
             />
           </TouchableWithoutFeedback>
-          {/* {__DEV__ && (
-      <View
-        style={[
-          styles.camera,
-          cameraStyle,
-          { backgroundColor: "red", position: "absolute" }
-        ]}
-      />
-    )} */}
+          {__DEV__ && (
+            <View
+              style={[
+                styles.camera,
+                cameraStyle,
+                { backgroundColor: "red", position: "absolute" }
+              ]}
+            />
+          )}
         </View>
       );
     }
@@ -134,7 +129,6 @@ const Camera = React.memo(
 const styles = StyleSheet.create({
   camera: {
     backgroundColor: "black"
-    // flex: 1
   }
 });
 
