@@ -85,16 +85,18 @@ export class UserService extends CRUDService<UserModel, User> {
 
     const currentTime = moment();
 
+    const payload = { enabled: false, start: "" };
     notifications.forEach(notification => {
       const start = moment(notification);
       const end = start.clone().add(NOTIFICATION_MINUTES, "minutes");
 
       if (currentTime.isBetween(start, end, undefined, "[]")) {
-        return { enabled: true, start: start.toISOString() };
+        payload.enabled = true;
+        payload.start = start.toISOString();
       }
     });
 
-    return { enabled: false };
+    return payload;
   }
 
   async setNotificationTimes(times: UserNotificationRecord[]) {
