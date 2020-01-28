@@ -44,29 +44,27 @@ export const Button: React.FC<ButtonProps> = ({
         )
       }}
     >
-      {loading ? (
-        <ActivityIndicator />
-      ) : (
-        <>
-          {icon}
-          <Animated.Text
-            style={[
-              TextStyles.small,
-              {
-                marginLeft: icon ? 5 : 0,
-                textTransform: "uppercase",
-                color: bInterpolateColor(
-                  value,
-                  Colors.nearBlack,
-                  Colors.background
-                )
-              }
-            ]}
-          >
-            {title}
-          </Animated.Text>
-        </>
-      )}
+      <>
+        {icon}
+        <Animated.Text
+          style={[
+            TextStyles.small,
+            {
+              marginLeft: icon ? 5 : 0,
+              textTransform: "uppercase",
+              opacity: loading ? 0 : 1,
+              color: bInterpolateColor(
+                value,
+                Colors.nearBlack,
+                Colors.background
+              )
+            }
+          ]}
+        >
+          {title}
+        </Animated.Text>
+        {loading && <ActivityIndicator style={styles.activityIndicator} />}
+      </>
     </TapHandler>
   );
 };
@@ -82,5 +80,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 4,
     paddingHorizontal: 10
+  },
+  activityIndicator: {
+    position: "absolute"
   }
 });

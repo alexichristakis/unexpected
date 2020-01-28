@@ -22,7 +22,11 @@ const PROD = !!process.env.PORT;
   },
   mongoose: {
     url: PROD ? process.env.MONGODB_URI : "mongodb://127.0.0.1:27017/db1",
-    connectionOptions: {}
+    connectionOptions: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true
+    }
   }
   // multer: {
   //   //

@@ -125,7 +125,7 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
       <FlatList
         style={styles.list}
         renderItem={renderUserRow}
-        contentContainerStyle={{ paddingHorizontal: 20 }}
+        // contentContainerStyle={{ paddingHorizontal: 20 }}
         ListHeaderComponent={renderTop}
         ListEmptyComponent={renderEmptyComponent}
         ItemSeparatorComponent={renderSeparatorComponent}
@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
   },
   header: {
     ...TextStyles.title,
+    marginHorizontal: 20,
     paddingTop: 5,
     alignSelf: "stretch"
   },

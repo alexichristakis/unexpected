@@ -1,7 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 
-import { TextStyles } from "@lib/styles";
+import { TextStyles, Colors } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { User } from "@unexpected/global";
 
@@ -20,13 +20,19 @@ export const UserRow: React.FC<UserRowProps> = ({ user, onPress }) => {
   };
 
   return (
-    <TouchableOpacity onPress={handleOnPress} style={styles.container}>
-      <UserImage phoneNumber={user.phoneNumber} size={40} />
-      <Text style={styles.name}>{formatName(user)}</Text>
-      <View style={styles.buttonContainer}>
-        <FriendButton user={user} />
-      </View>
-    </TouchableOpacity>
+    <TouchableHighlight
+      underlayColor={Colors.lightGray}
+      onPress={handleOnPress}
+      style={styles.container}
+    >
+      <>
+        <UserImage phoneNumber={user.phoneNumber} size={40} />
+        <Text style={styles.name}>{formatName(user)}</Text>
+        <View style={styles.buttonContainer}>
+          <FriendButton user={user} />
+        </View>
+      </>
+    </TouchableHighlight>
   );
 };
 
@@ -35,7 +41,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "stretch",
     alignItems: "center",
-    marginTop: 10
+    paddingHorizontal: 20,
+    paddingVertical: 10
   },
   buttonContainer: {
     flex: 1,

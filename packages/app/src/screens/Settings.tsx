@@ -18,7 +18,7 @@ import uuid from "uuid/v4";
 
 import { Button, ItemSeparator, UserRow } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { TextSizes, TextStyles } from "@lib/styles";
+import { TextSizes, TextStyles, isIPhoneX } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
@@ -81,8 +81,8 @@ const Settings: React.FC<SettingsProps> = React.memo(
       navigation.navigate("NEW_PROFILE_PICTURE");
     };
 
-    const navigateToEditBio = () => {
-      navigation.navigate("EDIT_BIO");
+    const navigateToEditProfile = () => {
+      navigation.navigate("EDIT_PROFILE");
     };
 
     const navigateToPermissions = () => {
@@ -132,9 +132,9 @@ const Settings: React.FC<SettingsProps> = React.memo(
           onPress={navigateToNewProfilePicture}
         />
         <Button
-          title="edit bio"
+          title="edit profile"
           style={styles.button}
-          onPress={navigateToEditBio}
+          onPress={navigateToEditProfile}
         />
         <Button
           title="permissions"
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingBottom: 50,
+    paddingBottom: isIPhoneX ? 40 : 20,
     backgroundColor: "white"
   },
   listHeaderContainer: {

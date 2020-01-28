@@ -39,7 +39,13 @@ class Camera extends React.Component<CameraProps, CameraState> {
 
   takePhoto = async () => {
     if (this.camera.current) {
-      const options: TakePictureOptions = { quality: 0.5, base64: false };
+      const mirrorImage = this.props.direction === "front";
+
+      const options: TakePictureOptions = {
+        mirrorImage: false,
+        quality: 0.5,
+        base64: false
+      };
       const data = await this.camera.current.takePictureAsync(options);
 
       return data;
