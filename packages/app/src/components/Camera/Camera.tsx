@@ -77,11 +77,8 @@ const Camera = React.memo(
         });
       };
 
-      const handleOnLayout = ({ nativeEvent }: LayoutChangeEvent) => {
-        const { layout } = nativeEvent;
-
-        setLayout(layout);
-      };
+      const handleOnLayout = ({ nativeEvent }: LayoutChangeEvent) =>
+        setLayout(nativeEvent.layout);
 
       const cameraStyle: ViewStyle = { ...style };
       if (size && round) {

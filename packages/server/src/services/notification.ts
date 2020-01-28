@@ -1,4 +1,4 @@
-import { Inject, Service } from "@tsed/common";
+import { Inject, Service, $log } from "@tsed/common";
 import { Notification, Provider } from "apn";
 import moment from "moment";
 
@@ -33,7 +33,7 @@ export class NotificationService {
     body: string,
     data?: NotificationPayload
   ) {
-    if (deviceOS == "Android") {
+    if (deviceOS === "Android") {
       // deal with android notification
     } else {
       // deal with ios notification
@@ -56,7 +56,7 @@ export class NotificationService {
         });
 
         results.sent.forEach(sent => {
-          console.log(sent);
+          $log.info(sent);
         });
 
         return Promise.resolve(results);

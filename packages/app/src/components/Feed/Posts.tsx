@@ -72,10 +72,12 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
     const [scrollEnabled, setScrollEnabled] = useState(true);
 
     const sortPosts = () => {
-      const sortedPosts = _.sortBy(posts, ({ createdAt }) => -createdAt);
-      const latest = sortedPosts.length ? sortedPosts[0].createdAt : undefined;
+      const sorted = _.sortBy(posts, ({ createdAt }) => -createdAt);
 
-      return { sortedPosts, latest };
+      return {
+        sortedPosts: sorted,
+        latest: sorted.length ? sorted[0].createdAt : undefined
+      };
     };
 
     const cellRefs = useRef<PostRefMap>({});

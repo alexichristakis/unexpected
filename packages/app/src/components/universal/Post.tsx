@@ -49,8 +49,8 @@ const Post = React.memo(
       const isUser = user?.phoneNumber === phoneNumber;
 
       useImperativeHandle(ref, () => ({
-        setVisible: () => console.log("visible"),
-        setNotVisible: () => console.log("not visible")
+        setVisible: () => {},
+        setNotVisible: () => {}
       }));
 
       const handleOnPressName = () => {
