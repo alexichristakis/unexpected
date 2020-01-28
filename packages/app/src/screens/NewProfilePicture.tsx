@@ -119,10 +119,6 @@ const styles = StyleSheet.create({
     // justifyContent: "space-around"
   },
   center: {},
-  camera: {
-    width: 200,
-    height: 200
-  },
   header: {
     marginBottom: 40
   }

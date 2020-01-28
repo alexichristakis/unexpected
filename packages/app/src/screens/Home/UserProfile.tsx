@@ -89,8 +89,8 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       navigation.navigate("FRIENDS", { user });
     };
 
-    const goToEditBio = () => {
-      navigation.navigate("EDIT_BIO");
+    const goToEditProfile = () => {
+      navigation.navigate("EDIT_PROFILE");
     };
 
     const renderTop = () => (
@@ -100,7 +100,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}
-        onPressAddBio={goToEditBio}
+        onPressAddBio={goToEditProfile}
         onPressFriends={goToFriends}
         onPressImage={goToNewProfilePicture}
         onPressSettings={goToSettings}

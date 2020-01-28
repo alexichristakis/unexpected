@@ -181,20 +181,22 @@ const Settings: React.FC<SettingsProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    // padding: 20,
     paddingBottom: isIPhoneX ? 40 : 20,
     backgroundColor: "white"
   },
   listHeaderContainer: {
+    paddingHorizontal: 20,
     width: "100%"
   },
   header: {
-    marginBottom: 20
+    padding: 20
   },
   button: {
     marginBottom: 20
   },
   buttonContainer: {
+    paddingHorizontal: 20
     // marginTop: 20
   }
 });
