@@ -171,7 +171,11 @@ const Settings: React.FC<SettingsProps> = React.memo(
           ListHeaderComponent={renderListHeader(friendRequests.length)}
           ListFooterComponent={renderListFooter(friendRequests.length)}
         />
-        <Button title="dismiss" onPress={navigation.goBack} />
+        <Button
+          title="dismiss"
+          style={styles.button}
+          onPress={navigation.goBack}
+        />
       </Screen>
     );
   },
@@ -182,7 +186,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // padding: 20,
-    paddingBottom: isIPhoneX ? 40 : 20,
+    paddingBottom: isIPhoneX ? 20 : 0,
     backgroundColor: "white"
   },
   listHeaderContainer: {
@@ -193,10 +197,11 @@ const styles = StyleSheet.create({
     padding: 20
   },
   button: {
-    marginBottom: 20
+    marginBottom: 20,
+    marginHorizontal: 20
   },
   buttonContainer: {
-    paddingHorizontal: 20
+    // paddingHorizontal: 20
     // marginTop: 20
   }
 });
