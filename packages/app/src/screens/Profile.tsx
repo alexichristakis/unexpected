@@ -5,7 +5,7 @@ import {
   StyleSheet
 } from "react-native";
 
-import { RouteProp, useFocusEffect } from "@react-navigation/core";
+import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Post } from "@unexpected/global";
 import isEqual from "lodash/isEqual";
@@ -22,7 +22,7 @@ import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
 import { StackParamList } from "../App";
 
 const { useCode, block, call, greaterThan, lessOrEq, cond } = Animated;
@@ -149,8 +149,6 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       }
     };
 
-    console.log("POSTS:", releasedPosts);
-
     return (
       <Screen style={styles.container}>
         <NavBar
@@ -179,7 +177,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
   },
   (prevProps, nextProps) =>
     isEqual(prevProps.user, nextProps.user) &&
-    prevProps.posts.length === nextProps.posts.length &&
+    prevProps.posts?.length === nextProps.posts?.length &&
     prevProps.postsLoading === nextProps.postsLoading
 );
 

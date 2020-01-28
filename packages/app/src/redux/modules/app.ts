@@ -201,13 +201,18 @@ export function* notificationWatcher() {
         if (payload.type === "user") {
           const { route } = payload;
 
-          // not working for now
-          // navigate("PROFILE", { user: route });
+          yield put(UserActions.fetchUsersRequests());
+          navigate("PROFILE", {
+            prevRoute: "Feed",
+            phoneNumber: route.phoneNumber
+          });
         }
 
-        // if (payload.type === "post") {
-        //   navigation.navigate("POST", { post})
-        // }
+        if (payload.type === "post") {
+          const { route } = payload;
+
+          navigate("POST", { prevRoute: "Feed", postId: route.id });
+        }
       }
     }
   }
@@ -243,28 +248,28 @@ const notificationEmitter = () =>
   });
 
 function* checkCameraStatus() {
-  // const jwt = yield select(selectors.jwt);
-  // if (jwt) {
-  //   // check if camera should be enabled
-  //   const phoneNumber = yield select(selectors.phoneNumber);
-  //   try {
-  //     const res = yield client.get(`/user/${phoneNumber}/camera`, {
-  //       headers: getHeaders({ jwt })
-  //     });
-  //     const {
-  //       data: { enabled, start }
-  //     } = res;
-  //     if (enabled) {
-  //       yield put(
-  //         Actions.setCameraTimer(
-  //           moment(start).add(NOTIFICATION_MINUTES, "minutes")
-  //         )
-  //       );
-  //     }
-  //   } catch (err) {
-  //     yield put(Actions.networkError());
-  //   }
-  // }
+  const jwt = yield select(selectors.jwt);
+  if (jwt) {
+    // check if camera should be enabled
+    const phoneNumber = yield select(selectors.phoneNumber);
+    try {
+      const res = yield client.get(`/user/${phoneNumber}/camera`, {
+        headers: getHeaders({ jwt })
+      });
+      const {
+        data: { enabled, start }
+      } = res;
+      if (enabled) {
+        yield put(
+          Actions.setCameraTimer(
+            moment(start).add(NOTIFICATION_MINUTES, "minutes")
+          )
+        );
+      }
+    } catch (err) {
+      yield put(Actions.networkError());
+    }
+  }
 }
 
 function* onStartup() {

@@ -33,6 +33,7 @@ export interface UserState {
   users: { [phoneNumber: string]: User };
   stale: boolean;
   loading: boolean;
+  loadingRequests: boolean;
   error: any;
 }
 
@@ -43,6 +44,7 @@ const initialState: UserState = {
   users: {},
   stale: false,
   loading: false,
+  loadingRequests: false,
   error: null
 };
 
@@ -54,11 +56,18 @@ export default (
     case ActionTypes.FETCH_USER:
     case ActionTypes.FETCH_USERS:
     case ActionTypes.UPDATE_USER:
-    case ActionTypes.FETCH_USERS_REQUESTS:
     case ActionTypes.ACCEPT_REQUEST:
     case ActionTypes.FRIEND_USER:
     case ActionTypes.CREATE_NEW_USER: {
       return { ...state, loading: true, error: null };
+    }
+
+    case ActionTypes.FETCH_USERS_REQUESTS: {
+      return {
+        ...state,
+        loadingRequests: true,
+        error: null
+      };
     }
 
     case ActionTypes.CREATE_USER_SUCCESS: {
@@ -88,7 +97,7 @@ export default (
       const { requestedFriends, friendRequests } = action.payload;
 
       return immer(state, draft => {
-        draft.loading = false;
+        draft.loadingRequests = false;
 
         draft.friendRequests = friendRequests;
         draft.requestedFriends = requestedFriends;

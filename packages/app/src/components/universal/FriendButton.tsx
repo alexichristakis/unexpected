@@ -35,6 +35,7 @@ export interface FriendButtonProps {
 const mapStateToProps = (state: RootState) => ({
   friendRequests: selectors.friendRequestNumbers(state),
   requestedFriends: selectors.requestedFriendNumbers(state),
+  refreshing: selectors.userRequestsLoading(state),
   currentUser: selectors.currentUser(state),
   error: selectors.userError(state)
 });
@@ -50,6 +51,7 @@ export type FriendButtonConnectedProps = ConnectedProps<typeof connector>;
 
 const FriendButton: React.FC<FriendButtonProps &
   FriendButtonConnectedProps> = ({
+  refreshing,
   friendRequests,
   requestedFriends,
   showLabel,
@@ -62,7 +64,7 @@ const FriendButton: React.FC<FriendButtonProps &
   deleteFriend,
   acceptRequest
 }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(refreshing);
   const ref = React.createRef<TransitioningView>();
 
   const getState = () => {

@@ -12,7 +12,7 @@ export function setNavigatorRef(instance: NavigationContainerRef) {
 }
 
 export function navigate<RouteName extends keyof StackParamList>(
-  route: keyof StackParamList,
+  route: RouteName,
   params?: StackParamList[RouteName]
 ) {
   instanceRef?.navigate(route, params);

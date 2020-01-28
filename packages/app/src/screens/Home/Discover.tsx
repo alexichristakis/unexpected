@@ -91,7 +91,7 @@ export const Discover: React.FC<DiscoverProps &
     };
 
     const renderEmptyComponent = () => (
-      <View style={{ paddingTop: 20 }}>
+      <View style={{ padding: 20 }}>
         <Text style={TextStyles.medium}>No results</Text>
       </View>
     );
@@ -102,7 +102,7 @@ export const Discover: React.FC<DiscoverProps &
       <Screen style={styles.container}>
         <Input
           size={TextSizes.title}
-          style={{ width: "100%" }}
+          style={{ width: "100%", paddingHorizontal: 20 }}
           returnKeyType={"search"}
           label="enter a name or phone number"
           placeholder="search"
@@ -127,7 +127,7 @@ export const Discover: React.FC<DiscoverProps &
 const styles = StyleSheet.create({
   container: {
     paddingTop: SB_HEIGHT(),
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     alignItems: "center"
   },
   list: { height: "100%", width: "100%" }
