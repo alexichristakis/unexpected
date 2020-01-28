@@ -65,7 +65,7 @@ export const Top: React.FC<ProfileTopProps> = ({
     if (isUser)
       return (
         <TouchableOpacity disabled={!onPressSettings} onPress={onPressSettings}>
-          <Gear fill={Colors.nearBlack} width={30} height={30} />
+          <Gear fill={Colors.nearBlack} width={25} height={25} />
         </TouchableOpacity>
       );
   };

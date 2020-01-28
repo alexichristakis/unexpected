@@ -259,6 +259,7 @@ function* checkCameraStatus() {
       const {
         data: { enabled, start }
       } = res;
+
       if (enabled) {
         yield put(
           Actions.setCameraTimer(

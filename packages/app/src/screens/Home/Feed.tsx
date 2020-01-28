@@ -23,6 +23,7 @@ import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
 import { StackParamList } from "../../App";
+import { hideStatusBarOnScroll } from "@hooks";
 
 const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
 
@@ -54,10 +55,10 @@ export const Feed: React.FC<FeedProps> = React.memo(
     refreshing,
     shouldLaunchPermissions
   }) => {
-    const [statusBarVisible, setStatusBarVisible] = useState(true);
-    const [statusBarAnimatedValue] = useState(new Value(0));
     const [scrollY] = useState(new Value(0));
     const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
+
+    const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
 
     useEffect(() => {
       fetchFeed();
@@ -66,58 +67,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }
     }, [stale]);
-
-    useFocusEffect(
-      useCallback(() => {
-        if (statusBarVisible) {
-          StatusBar.setHidden(false);
-        } else {
-          StatusBar.setHidden(true);
-        }
-
-        return () => {};
-      }, [statusBarVisible])
-    );
-
-    useCode(
-      () =>
-        block([
-          cond(
-            greaterOrEq(scrollY, 40),
-            call([], ([]) => hideStatusBar()),
-            call([], ([]) => showStatusBar())
-          )
-        ]),
-      [statusBarVisible]
-    );
-
-    const animatedStatusBarStyle = {
-      transform: [{ translateY: statusBarAnimatedValue }]
-    };
-
-    const showStatusBar = () => {
-      if (!statusBarVisible) {
-        setStatusBarVisible(true);
-        StatusBar.setHidden(false, "slide");
-        Animated.timing(statusBarAnimatedValue, {
-          toValue: 0,
-          duration: 150,
-          easing: Easing.ease
-        }).start();
-      }
-    };
-
-    const hideStatusBar = () => {
-      if (statusBarVisible) {
-        setStatusBarVisible(false);
-        StatusBar.setHidden(true, "slide");
-        Animated.timing(statusBarAnimatedValue, {
-          toValue: -SB_HEIGHT(),
-          duration: 150,
-          easing: Easing.ease
-        }).start();
-      }
-    };
 
     const handleOnScrollEndDrag = (
       event: NativeSyntheticEvent<NativeScrollEvent>
