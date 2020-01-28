@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { SCREEN_HEIGHT, TextStyles } from "@lib/styles";
+import { SCREEN_HEIGHT, TextStyles, isIPhoneX } from "@lib/styles";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   Actions as PermissionsActions,
@@ -72,7 +72,7 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
               onPress={() => request(PermissionTypes.CAMERA)}
             />
           </View>
-          <Text style={[TextStyles.medium, styles.header]}>
+          {/* <Text style={[TextStyles.medium, styles.header]}>
             the following are useful but not required:
           </Text>
           <View style={styles.row}>
@@ -94,7 +94,7 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
               title="location"
               onPress={() => request(PermissionTypes.LOCATION)}
             />
-          </View>
+          </View> */}
         </View>
         <Button title="dismiss" onPress={() => navigation.goBack()} />
       </Screen>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingBottom: 70,
+    paddingBottom: isIPhoneX ? 50 : 20,
     justifyContent: "space-between"
     // alignItems: "center"
   },
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   button: {
-    flex: 1
+    flex: 1.5
   },
   row: {
     flexDirection: "row",
