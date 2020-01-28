@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
-import Camera, { Shutter } from "@components/Camera";
+import Camera, { CameraRef, Shutter } from "@components/Camera";
 import { Button, Input, PendingPostImage } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
@@ -34,7 +34,7 @@ export interface NewProfilePictureProps extends NewProfilePictureReduxProps {
 
 const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
   ({ image, takePhoto, clearPhoto, uploadPhoto, uploading, navigation }) => {
-    const [camera, setCamera] = useState<Camera | null>(null);
+    const [camera, setCamera] = useState<CameraRef | null>(null);
 
     useLightStatusBar();
     useEffect(() => {
