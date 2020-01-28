@@ -9,7 +9,8 @@ import { connect } from "react-redux";
 import Camera, {
   FlipCameraButton,
   Shutter,
-  ToggleFlashModeButton
+  ToggleFlashModeButton,
+  CameraRef
 } from "@components/Camera";
 import { useLightStatusBar } from "@hooks";
 import { Actions as ImageActions } from "@redux/modules/image";
@@ -38,7 +39,7 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
   takePhoto,
   navigation
 }) => {
-  const [camera, setCamera] = useState<Camera | null>(null);
+  const [camera, setCamera] = useState<CameraRef | null>(null);
   const [flashMode, setFlashMode] = useState<keyof FlashMode>("auto");
   const [direction, setDirection] = useState<keyof CameraType>("back");
 
