@@ -68,8 +68,8 @@ const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
           />
         ) : (
           <Camera
+            direction="front"
             round={true}
-            direction={"front"}
             style={styles.photo}
             size={SCREEN_WIDTH - 40}
             ref={setCamera}
