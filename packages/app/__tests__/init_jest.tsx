@@ -8,7 +8,8 @@ import Adapter from "enzyme-adapter-react-16";
 /**
  * Set up DOM in node.js environment for Enzyme to mount to
  */
-const { JSDOM } = require("jsdom");
+// @ts-ignore
+import { JSDOM } from "jsdom";
 
 const jsdom = new JSDOM("<!doctype html><html><body></body></html>");
 const { window } = jsdom;

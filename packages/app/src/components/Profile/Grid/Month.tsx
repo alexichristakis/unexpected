@@ -32,7 +32,7 @@ export interface MonthProps {
 
 export const Month: React.FC<MonthProps> = React.memo(
   ({ month, posts, showHeader, onPressPost }) => {
-    const generateRows = (posts: Post[]) => {
+    const generateRows = () => {
       const rows: RowType[] = [];
 
       for (let index = 0; index < posts.length; ) {
@@ -116,8 +116,6 @@ export const Month: React.FC<MonthProps> = React.memo(
     const momentsString = () =>
       `${posts.length} ${posts.length === 1 ? "moment" : "moments"}`;
 
-    const rows = generateRows(posts);
-
     return (
       <View style={styles.container}>
         {showHeader && (
@@ -126,7 +124,7 @@ export const Month: React.FC<MonthProps> = React.memo(
             <Text style={TextStyles.medium}>{momentsString()}</Text>
           </View>
         )}
-        {rows.map(({ id, type, posts }) => (
+        {generateRows().map(({ id, type, posts }) => (
           <Row key={id} onPressPost={onPressPost} type={type} posts={posts} />
         ))}
       </View>
