@@ -1,5 +1,6 @@
 import Camera from "./Camera";
 
+export * from "./Camera";
 export default Camera;
 
 export * from "./Shutter";

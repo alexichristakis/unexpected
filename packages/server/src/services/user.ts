@@ -85,17 +85,18 @@ export class UserService extends CRUDService<UserModel, User> {
 
     const currentTime = moment();
 
-    // check to see if the current time is between what's given
-    for (let i = 0; i < notifications.length; i++) {
-      const start = moment(notifications[i]);
+    const payload = { enabled: false, start: "" };
+    notifications.forEach(notification => {
+      const start = moment(notification);
       const end = start.clone().add(NOTIFICATION_MINUTES, "minutes");
 
       if (currentTime.isBetween(start, end, undefined, "[]")) {
-        return { enabled: true, start: start.toISOString() };
+        payload.enabled = true;
+        payload.start = start.toISOString();
       }
-    }
+    });
 
-    return { enabled: false };
+    return payload;
   }
 
   async setNotificationTimes(times: UserNotificationRecord[]) {
@@ -174,7 +175,7 @@ export class UserService extends CRUDService<UserModel, User> {
     phoneNumbers: string[],
     sort?: boolean,
     select?: string
-  ): Promise<Array<UserModel & Document>>;
+  ): Promise<(UserModel & Document)[]>;
   async getByPhoneNumber(
     phoneNumber?: string | string[],
     sort?: boolean,

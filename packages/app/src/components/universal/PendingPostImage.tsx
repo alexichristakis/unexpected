@@ -36,13 +36,9 @@ export const PendingPostImage: React.FC<PendingPostImageProps> = ({
     imageStyle.height = size;
   }
 
+  const handleOnLoad = () => setLoading(false);
+
   if (uri)
-    return (
-      <Image
-        onLoad={() => setLoading(false)}
-        style={imageStyle}
-        source={{ uri }}
-      />
-    );
+    return <Image onLoad={handleOnLoad} style={imageStyle} source={{ uri }} />;
   else return <View style={[imageStyle, { backgroundColor: "gray" }]} />;
 };

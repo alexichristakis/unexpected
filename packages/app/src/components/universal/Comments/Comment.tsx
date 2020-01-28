@@ -1,38 +1,53 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
+import { useNavigation } from "@react-navigation/core";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
-import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
 
+import { StackParamList } from "../../../App";
+
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
+  phoneNumber: selectors.phoneNumber(state),
   user: selectors.user(state, props)
 });
 
-const mapDispatchToProps = {
-  sendComment: PostActions.sendComment
-};
+const mapDispatchToProps = {};
 
 interface CommentProps extends CommentType {}
 
 export type CommentsConnectedProps = ConnectedProps<typeof connector>;
 
 const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
+  phoneNumber,
   user,
   body
 }) => {
+  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+
+  const handleOnPress = () => {
+    if (phoneNumber === user.phoneNumber) {
+      navigation.navigate("USER_PROFILE");
+    } else {
+      navigation.navigate("PROFILE", {
+        prevRoute: "Post",
+        phoneNumber: user.phoneNumber
+      });
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity>
-        <Text style={styles.name}>{formatName(user)}:</Text>
-      </TouchableOpacity>
-      <Text style={styles.body}>{body}</Text>
-    </View>
+    <TouchableOpacity onPress={handleOnPress} style={styles.container}>
+      <Text style={styles.body}>
+        <Text style={styles.name}>{formatName(user)}: </Text>
+        {body}
+      </Text>
+    </TouchableOpacity>
   );
 };
 
@@ -50,5 +65,6 @@ const styles = StyleSheet.create({
     ...TextStyles.small
   }
 });
+
 const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(Comment);

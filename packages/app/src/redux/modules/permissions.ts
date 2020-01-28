@@ -36,11 +36,11 @@ const initialState: PermissionsState = {
   error: ""
 };
 
-interface PermissionType {
+export type PermissionType = {
   key: string;
   ios: Permission;
   android: Permission;
-}
+};
 export const Permissions = {
   CAMERA: {
     key: "camera",

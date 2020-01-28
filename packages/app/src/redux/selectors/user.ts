@@ -25,6 +25,11 @@ export const userError = createSelector(s, state => state.error);
 
 export const userLoading = createSelector(s, state => state.loading);
 
+export const userRequestsLoading = createSelector(
+  s,
+  state => state.loadingRequests
+);
+
 export const users = createSelector(s, state => state.users);
 
 export const phoneNumber = createSelector(s, state => state.phoneNumber);

@@ -10,11 +10,12 @@ import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
-import Animated from "react-native-reanimated";
+import Animated, { Easing } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
+import { hideStatusBarOnScroll, useDarkStatusBar } from "@hooks";
 import { Top } from "@components/Profile";
 import { Grid } from "@components/Profile/Grid";
 import { SB_HEIGHT } from "@lib/styles";
@@ -25,6 +26,8 @@ import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { Post } from "@unexpected/global";
 import { StackParamList } from "../../App";
+
+const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
   postsLoading: selectors.postLoading(state),
@@ -64,10 +67,10 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
 
+    const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
+
     useFocusEffect(
       useCallback(() => {
-        StatusBar.setHidden(false);
-
         fetchUser();
         fetchUsersRequests();
 
@@ -89,8 +92,8 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       navigation.navigate("FRIENDS", { user });
     };
 
-    const goToEditBio = () => {
-      navigation.navigate("EDIT_BIO");
+    const goToEditProfile = () => {
+      navigation.navigate("EDIT_PROFILE");
     };
 
     const renderTop = () => (
@@ -100,7 +103,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
         user={user}
         numPosts={posts.length}
         scrollY={scrollY}
-        onPressAddBio={goToEditBio}
+        onPressAddBio={goToEditProfile}
         onPressFriends={goToFriends}
         onPressImage={goToNewProfilePicture}
         onPressSettings={goToSettings}
@@ -143,6 +146,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           ListHeaderComponent={renderTop}
           posts={posts}
         />
+        <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
       </Screen>
     );
   },
@@ -153,13 +157,22 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: SB_HEIGHT(),
+    // paddingTop: SB_HEIGHT(),
     alignItems: "center"
   },
   headerContainer: {
     zIndex: 1,
+    paddingTop: SB_HEIGHT(),
     alignItems: "center",
     alignSelf: "stretch"
+  },
+  statusBar: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    height: SB_HEIGHT(),
+    backgroundColor: "white"
   }
 });
 

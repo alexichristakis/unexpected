@@ -3,14 +3,15 @@ import { StatusBar, StyleSheet, Text, View } from "react-native";
 
 import { useIsFocused } from "@react-navigation/core";
 import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { SCREEN_HEIGHT, TextStyles } from "@lib/styles";
+import { SCREEN_HEIGHT, TextStyles, isIPhoneX } from "@lib/styles";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   Actions as PermissionsActions,
+  PermissionType,
   Permissions as PermissionTypes
 } from "@redux/modules/permissions";
 import * as selectors from "@redux/selectors";
@@ -25,14 +26,11 @@ const mapDispatchToProps = {
   request: PermissionsActions.requestPermission
 };
 
-export type PermissionsReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type PermissionsConnectedProps = ConnectedProps<typeof connector>;
 export interface PermissionsOwnProps {
   navigation: NativeStackNavigationProp<StackParamList, "PERMISSIONS">;
 }
-export type PermissionsProps = PermissionsOwnProps & PermissionsReduxProps;
+export type PermissionsProps = PermissionsOwnProps & PermissionsConnectedProps;
 
 const Permissions: React.FC<PermissionsProps> = React.memo(
   ({
@@ -45,6 +43,8 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
     contacts
   }) => {
     useLightStatusBar();
+
+    const handlePressRequest = (key: PermissionType) => () => request(key);
 
     return (
       <Screen style={styles.container}>
@@ -69,10 +69,10 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
             <Button
               style={styles.button}
               title="camera"
-              onPress={() => request(PermissionTypes.CAMERA)}
+              onPress={handlePressRequest(PermissionTypes.CAMERA)}
             />
           </View>
-          <Text style={[TextStyles.medium, styles.header]}>
+          {/* <Text style={[TextStyles.medium, styles.header]}>
             the following are useful but not required:
           </Text>
           <View style={styles.row}>
@@ -94,9 +94,9 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
               title="location"
               onPress={() => request(PermissionTypes.LOCATION)}
             />
-          </View>
+          </View> */}
         </View>
-        <Button title="dismiss" onPress={() => navigation.goBack()} />
+        <Button title="dismiss" onPress={navigation.goBack} />
       </Screen>
     );
   }
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingBottom: 70,
+    paddingBottom: isIPhoneX ? 50 : 20,
     justifyContent: "space-between"
     // alignItems: "center"
   },
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   button: {
-    flex: 1
+    flex: 1.5
   },
   row: {
     flexDirection: "row",
@@ -131,4 +131,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Permissions);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(Permissions);

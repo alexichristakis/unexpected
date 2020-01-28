@@ -4,7 +4,8 @@ import {
   ListRenderItemInfo,
   StyleSheet,
   Text,
-  View
+  View,
+  ScrollViewProps
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
@@ -115,6 +116,15 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
 
   const renderSeparatorComponent = () => <ItemSeparator />;
 
+  const renderScrollComponent = (props: ScrollViewProps) => (
+    <Animated.ScrollView
+      {...props}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+      onScroll={onScroll({ y: scrollY })}
+    />
+  );
+
   return (
     <Screen style={styles.container}>
       <NavBar
@@ -130,14 +140,7 @@ const Friends: React.FC<FriendsProps & FriendsReduxProps> = ({
         ListEmptyComponent={renderEmptyComponent}
         ItemSeparatorComponent={renderSeparatorComponent}
         data={getUsers()}
-        renderScrollComponent={props => (
-          <Animated.ScrollView
-            {...props}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
-            onScroll={onScroll({ y: scrollY })}
-          />
-        )}
+        renderScrollComponent={renderScrollComponent}
       />
     </Screen>
   );

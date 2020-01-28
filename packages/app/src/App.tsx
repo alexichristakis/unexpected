@@ -146,8 +146,12 @@ const AuthenticatedRoot = () => (
         return (
           <Tabs.Navigator
             tabBarOptions={{
-              tabStyle: { paddingTop: isIPhoneX ? 15 : 0 },
-              style: { backgroundColor: "white", borderTopWidth: 0 },
+              style: {
+                maxHeight: 70,
+                paddingTop: isIPhoneX ? 10 : 0,
+                backgroundColor: "white",
+                borderTopWidth: 0
+              },
               showLabel: false,
               activeTintColor: "#231F20",
               inactiveTintColor: "#9C9C9C"
@@ -158,7 +162,7 @@ const AuthenticatedRoot = () => (
               name="FEED"
               options={{
                 tabBarIcon: ({ color }) => (
-                  <FeedIcon width={25} height={25} fill={color} />
+                  <FeedIcon width={20} height={20} fill={color} />
                 )
               }}
             >
@@ -170,7 +174,7 @@ const AuthenticatedRoot = () => (
               name="USER_PROFILE"
               options={{
                 tabBarIcon: ({ color }) => (
-                  <ProfileIcon width={45} height={45} fill={color} />
+                  <ProfileIcon width={30} height={30} fill={color} />
                 )
               }}
             >
@@ -186,7 +190,7 @@ const AuthenticatedRoot = () => (
               name="DISCOVER"
               options={{
                 tabBarIcon: ({ color }) => (
-                  <DiscoverIcon width={30} height={30} fill={color} />
+                  <DiscoverIcon width={20} height={20} fill={color} />
                 )
               }}
             >

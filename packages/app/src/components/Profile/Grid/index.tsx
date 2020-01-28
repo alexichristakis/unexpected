@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Text,
   View,
-  ViewStyle
+  ViewStyle,
+  ScrollViewProps
 } from "react-native";
 
 import { Post, User } from "@unexpected/global";
@@ -129,6 +130,15 @@ export const Grid: React.FC<GridProps> = ({
     </Transition.Together>
   );
 
+  const renderScrollComponent = (props: ScrollViewProps) => (
+    <Animated.ScrollView
+      {...props}
+      scrollEventThrottle={16}
+      showsVerticalScrollIndicator={false}
+      onScroll={onScroll({ y: scrollY })}
+    />
+  );
+
   return (
     <Transitioning.View
       style={styles.list}
@@ -145,14 +155,7 @@ export const Grid: React.FC<GridProps> = ({
         renderItem={renderMonth}
         data={months as any}
         onScrollEndDrag={onScrollEndDrag}
-        renderScrollComponent={props => (
-          <Animated.ScrollView
-            {...props}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
-            onScroll={onScroll({ y: scrollY })}
-          />
-        )}
+        renderScrollComponent={renderScrollComponent}
       />
     </Transitioning.View>
   );

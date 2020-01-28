@@ -1,4 +1,9 @@
-import React from "react";
+import React, {
+  forwardRef,
+  useState,
+  useImperativeHandle,
+  useRef
+} from "react";
 import {
   GestureResponderEvent,
   LayoutChangeEvent,
@@ -12,7 +17,8 @@ import {
   CameraType,
   FlashMode,
   RNCamera,
-  TakePictureOptions
+  TakePictureOptions,
+  TakePictureResponse
 } from "react-native-camera";
 
 export interface CameraProps {
@@ -25,104 +31,101 @@ export interface CameraProps {
 }
 
 export interface CameraState {
-  focus: { x: number; y: number };
+  focus: { x: number; y: number; autoExposure: boolean };
   layout: { width: number; height: number };
 }
 
-class Camera extends React.Component<CameraProps, CameraState> {
-  state = {
-    focus: { x: 0.5, y: 0.5 },
-    layout: { width: 0, height: 0 }
-  };
+export type CameraRef = {
+  takePhoto: () => Promise<TakePictureResponse | null>;
+};
 
-  private camera = React.createRef<RNCamera>();
+const Camera = React.memo(
+  forwardRef<CameraRef, CameraProps>(
+    ({ style, flashMode = "auto", direction = "back", round, size }, ref) => {
+      const [focus, setFocus] = useState({
+        x: 0.5,
+        y: 0.5,
+        autoExposure: true
+      });
+      const [layout, setLayout] = useState({ width: 0, height: 0 });
+      const camera = useRef<RNCamera>();
 
-  takePhoto = async () => {
-    if (this.camera.current) {
-      const mirrorImage = this.props.direction === "front";
+      useImperativeHandle(ref, () => ({
+        takePhoto: async () => {
+          if (camera.current) {
+            const options: TakePictureOptions = {
+              quality: 0.5,
+              base64: false
+            };
 
-      const options: TakePictureOptions = {
-        mirrorImage: false,
-        quality: 0.5,
-        base64: false
+            return camera.current.takePictureAsync(options);
+          }
+
+          return null;
+        }
+      }));
+
+      const handleOnPress = ({ nativeEvent }: GestureResponderEvent) => {
+        const { locationX, locationY } = nativeEvent;
+
+        const { width, height } = layout;
+
+        setFocus({
+          x: locationX / width,
+          y: locationY / height,
+          autoExposure: true
+        });
       };
-      const data = await this.camera.current.takePictureAsync(options);
 
-      return data;
+      const handleOnLayout = ({ nativeEvent }: LayoutChangeEvent) =>
+        setLayout(nativeEvent.layout);
+
+      const cameraStyle: ViewStyle = { ...style };
+      if (size && round) {
+        cameraStyle.width = size;
+        cameraStyle.height = size;
+      }
+
+      return (
+        <View
+          style={[
+            {
+              overflow: "hidden",
+              borderRadius: round && !!size ? size / 2 : 0
+            },
+            style
+          ]}
+        >
+          <TouchableWithoutFeedback onPress={handleOnPress}>
+            <RNCamera
+              ref={camera as any}
+              onLayout={handleOnLayout}
+              flashMode={flashMode}
+              autoFocus="on"
+              autoFocusPointOfInterest={focus}
+              style={[styles.camera, cameraStyle]}
+              type={direction}
+              captureAudio={false}
+            />
+          </TouchableWithoutFeedback>
+          {__DEV__ && (
+            <View
+              style={[
+                styles.camera,
+                cameraStyle,
+                { backgroundColor: "red", position: "absolute" }
+              ]}
+            />
+          )}
+        </View>
+      );
     }
-
-    return null;
-  };
-
-  handleCameraLayout = ({ nativeEvent }: LayoutChangeEvent) => {
-    const { layout } = nativeEvent;
-
-    this.setState({ layout });
-  };
-
-  handleOnPress = ({ nativeEvent }: GestureResponderEvent) => {
-    const { locationX, locationY } = nativeEvent;
-
-    const {
-      layout: { width, height }
-    } = this.state;
-
-    this.setState({ focus: { x: locationX / width, y: locationY / height } });
-  };
-
-  render() {
-    const { focus } = this.state;
-    const {
-      style,
-      flashMode = "auto",
-      direction = "back",
-      round,
-      size
-    } = this.props;
-
-    const cameraStyle: ViewStyle = { ...style };
-    if (size && round) {
-      cameraStyle.width = size;
-      cameraStyle.height = size;
-    }
-
-    return (
-      <View
-        style={[
-          { overflow: "hidden", borderRadius: round && !!size ? size / 2 : 0 },
-          style
-        ]}
-      >
-        <TouchableWithoutFeedback onPress={this.handleOnPress}>
-          <RNCamera
-            ref={this.camera}
-            onLayout={this.handleCameraLayout}
-            flashMode={flashMode}
-            autoFocus="on"
-            autoFocusPointOfInterest={focus}
-            style={[styles.camera, cameraStyle]}
-            type={direction}
-            captureAudio={false}
-          />
-        </TouchableWithoutFeedback>
-        {__DEV__ && (
-          <View
-            style={[
-              styles.camera,
-              cameraStyle,
-              { backgroundColor: "red", position: "absolute" }
-            ]}
-          />
-        )}
-      </View>
-    );
-  }
-}
+  )
+);
 
 const styles = StyleSheet.create({
   camera: {
     backgroundColor: "black"
-    // flex: 1
   }
 });
 

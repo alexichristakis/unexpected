@@ -3,9 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
-import Camera, { Shutter } from "@components/Camera";
+import Camera, { CameraRef, Shutter } from "@components/Camera";
 import { Button, Input, PendingPostImage } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
@@ -24,17 +24,14 @@ const mapDispatchToProps = {
   uploadPhoto: ImageActions.uploadProfilePhoto
 };
 
-export type NewProfilePictureReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
-export interface NewProfilePictureProps extends NewProfilePictureReduxProps {
+export type NewProfileConnectedProps = ConnectedProps<typeof connector>;
+export interface NewProfilePictureProps extends NewProfileConnectedProps {
   navigation: NativeStackNavigationProp<StackParamList>;
 }
 
 const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
   ({ image, takePhoto, clearPhoto, uploadPhoto, uploading, navigation }) => {
-    const [camera, setCamera] = useState<Camera | null>(null);
+    const [camera, setCamera] = useState<CameraRef | null>(null);
 
     useLightStatusBar();
     useEffect(() => {
@@ -119,13 +116,10 @@ const styles = StyleSheet.create({
     // justifyContent: "space-around"
   },
   center: {},
-  camera: {
-    width: 200,
-    height: 200
-  },
   header: {
     marginBottom: 40
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewProfilePicture);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default NewProfilePicture;

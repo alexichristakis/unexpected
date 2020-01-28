@@ -8,9 +8,9 @@ interface TapHandlerProps {
   value: Animated.Value<number>;
   disabled?: boolean;
   onPress: () => void;
-  style: StyleProp<ViewStyle>;
-  containerStyle: StyleProp<ViewStyle>;
-  animatedStyle: StyleProp<Animated.AnimateStyle<ViewStyle>>;
+  style?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+  animatedStyle?: StyleProp<Animated.AnimateStyle<ViewStyle>>;
   children: ReactNode;
 }
 
@@ -59,8 +59,8 @@ export default ({
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: "stretch",
-    justifyContent: "center",
-    alignItems: "center"
+    alignSelf: "stretch"
+    // justifyContent: "center"
+    // alignItems: "center"
   }
 });

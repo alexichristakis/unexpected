@@ -478,56 +478,67 @@
     p-queue "^2.4.2"
     p-retry "^4.0.0"
 
-"@tsed/common@5.40.0", "@tsed/common@^5.40.0":
-  version "5.40.0"
-  resolved "https://registry.yarnpkg.com/@tsed/common/-/common-5.40.0.tgz#3083cbde41ddb7c3c21b4d33e921ab422e7408b9"
-  integrity sha512-qjqLqOXCve527CaNllfOlTkduVqcGCofgU1a101Iv/rILqo/ItqRl5pR/iNoOIqkPmYX7hhrPPomBPFJGjsa5A==
+"@tsed/common@5.40.1", "@tsed/common@^5.40.1":
+  version "5.40.1"
+  resolved "https://registry.yarnpkg.com/@tsed/common/-/common-5.40.1.tgz#53e69629515ca914a6e06bbb9a8c81f7a761b1eb"
+  integrity sha512-rujPsuX5QNPkhVbTGHSu6e7E+CqlUsYg73K9hjz0SYJz4QwQ0bpDiGRTMyPU7N2ywzTJYB/ET78qfOV7Hb0wLw==
   dependencies:
-    "@tsed/core" "5.40.0"
-    "@tsed/di" "5.40.0"
+    "@tsed/core" "5.40.1"
+    "@tsed/di" "5.40.1"
     "@types/json-schema" "^7.0.3"
     globby "10.0.1"
     json-schema "^0.2.3"
     normalize-path "3.0.0"
     rxjs "^6.5.2"
     ts-httpexceptions "4.1.0"
-    ts-log-debug "^5.1.1"
+    ts-log-debug "^5.2.0"
     tslib "1.10.0"
     uuid "3.3.3"
 
-"@tsed/core@5.40.0", "@tsed/core@^5.40.0":
-  version "5.40.0"
-  resolved "https://registry.yarnpkg.com/@tsed/core/-/core-5.40.0.tgz#b87ffa93936fa6b756821cc3af4519792ca6d37b"
-  integrity sha512-gslUFRoC7GbCPFcNAo4cqg4OujvLzTVZjyk7Bv/Z6cYpig2b2vOyVqY96rsRQEq8z0q1B/MqOMz4he62ryYhcQ==
+"@tsed/core@5.40.1", "@tsed/core@^5.40.1":
+  version "5.40.1"
+  resolved "https://registry.yarnpkg.com/@tsed/core/-/core-5.40.1.tgz#5a7575bc3d4d4dbccd0dfc4e4c43331f9a194408"
+  integrity sha512-YryyZl3BJzVNXstNX+lTisvOX00VqEC83MVSzGdxudS0FmShPME6eKREb21qC/z95N+4lkboCx2hVXbuQ/S0Jg==
   dependencies:
     reflect-metadata "^0.1.13"
     source-map-support "0.5.16"
     tslib "1.10.0"
 
-"@tsed/di@5.40.0", "@tsed/di@^5.40.0":
-  version "5.40.0"
-  resolved "https://registry.yarnpkg.com/@tsed/di/-/di-5.40.0.tgz#fed22cfbceac80c9b67eeb65a32b521a0abe2018"
-  integrity sha512-TTbO6fTaBPao3+OnlFbO3c8vXPR8iSepxTDz9OuwNoY98xKOFR32zVzeeZslyGMt71tEP++dFKMD1rPwmWIpTw==
+"@tsed/di@5.40.1", "@tsed/di@^5.40.1":
+  version "5.40.1"
+  resolved "https://registry.yarnpkg.com/@tsed/di/-/di-5.40.1.tgz#23195b44fcb1498b6bd7f499bc3a9e0825d01fe0"
+  integrity sha512-7UIR5j9s6NTgExFsTs6InUYVZl/JrfAfWoNn1vLdY3GDcxcm7wZe3SNH+iuhtbMTCpX8wedeXZ9uiL292e4rUw==
   dependencies:
-    "@tsed/core" "5.40.0"
+    "@tsed/core" "5.40.1"
     tslib "1.10.0"
 
-"@tsed/mongoose@^5.40.0":
-  version "5.40.0"
-  resolved "https://registry.yarnpkg.com/@tsed/mongoose/-/mongoose-5.40.0.tgz#ccf4aa347a43ad1b09706f12cf812e615663e9d1"
-  integrity sha512-qvjlKuKsKVUEZf9c+7l/H+UP4aYnFQlKTWnvY5K99BQKfcNPYDbLyF3t/xL8TolYevz3TioUfOHzcOGrRXqMsA==
+"@tsed/logger@5.2.1":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@tsed/logger/-/logger-5.2.1.tgz#14d0d9586e1c75b4a84baf7d0e665d85045282c9"
+  integrity sha512-1L4pc/h68km32VUVtn5Ntx6LF7dgTrdnKLA+kPy/QLPvuqA+gnTsuBOC0uBlg8IqjE2Ubz7eVq8+d2SP5ggVeg==
   dependencies:
-    "@tsed/common" "5.40.0"
-    "@tsed/core" "5.40.0"
+    colors "^1.3.3"
+    date-format "^2.0.0"
+    semver "^5.6.0"
+    streamroller "^1.0.3"
     tslib "1.10.0"
 
-"@tsed/multipartfiles@^5.40.0":
-  version "5.40.0"
-  resolved "https://registry.yarnpkg.com/@tsed/multipartfiles/-/multipartfiles-5.40.0.tgz#e8ef0cdf2736a66ddddb93044b5e0b8a837576ae"
-  integrity sha512-8xQlpn3fAlUTnBJ6Il+Y+Ull0qn3PzxW2W8vrKaxAKBZJGYSmHiZo9PLWTQ5TYwqbUS1H55ITUGw/iQaQimoKQ==
+"@tsed/mongoose@^5.40.1":
+  version "5.40.1"
+  resolved "https://registry.yarnpkg.com/@tsed/mongoose/-/mongoose-5.40.1.tgz#b3a2191200f96187692cb3fbe7d5c75bfd286303"
+  integrity sha512-LiYMxh22AgaBHIYPqc1VCoYd/XgHANUUdSDFK0rO5awB8KJDefMMqEqVxV7TUNGocMk+gDbXAfMIadblPvS8kA==
   dependencies:
-    "@tsed/common" "5.40.0"
-    "@tsed/core" "5.40.0"
+    "@tsed/common" "5.40.1"
+    "@tsed/core" "5.40.1"
+    tslib "1.10.0"
+
+"@tsed/multipartfiles@^5.40.1":
+  version "5.40.1"
+  resolved "https://registry.yarnpkg.com/@tsed/multipartfiles/-/multipartfiles-5.40.1.tgz#b590533b81cf553e77266ac49e7fc958d7e9c0c5"
+  integrity sha512-r/w8FZC8eZtCl3+bh6slUwii7dUc2LJjU3o1R8m9gmgAmO2VW5izqTtZltNbGHmw2qiJj8hqL9Ow0AXmSduILA==
+  dependencies:
+    "@tsed/common" "5.40.1"
+    "@tsed/core" "5.40.1"
     multer "1.4.2"
     tslib "1.10.0"
 
@@ -2541,10 +2552,10 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
-mongoose@^5.8.9:
-  version "5.8.9"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.8.9.tgz#616ae9df4cd7f41f7d2d77d037ad94784485bd74"
-  integrity sha512-gRazoLTQ0yuv4bk2z+nZEarKCyJ7WilFBkgrRqpOczUZUhk3i/FCe0rp8Mjc87dGXaHx54j8AjPJ0UKqJDXWMA==
+mongoose@^5.8.10:
+  version "5.8.10"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.8.10.tgz#c06c6a7e171c8b0706bf85da7f98e478fa6f9822"
+  integrity sha512-3sRiZhtMIB4egqxWbry23C+xX87kQ0aTvPtMXxWXCBGfCRkXMJl/CLiftYcle/JPy09Lv5u+ZCBpIJUgwDMtxw==
   dependencies:
     bson "~1.1.1"
     kareem "2.3.1"
@@ -3745,16 +3756,12 @@ ts-httpexceptions@4.1.0:
   dependencies:
     tslib "^1.9.3"
 
-ts-log-debug@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/ts-log-debug/-/ts-log-debug-5.1.1.tgz#ccd909b6e227ac4ca49108f031b7ee5d87cbe1f5"
-  integrity sha512-kpDkz26MGaQ682xjlRNTK+VjLF3bfOZ9Bvre20yZSQSr4E63JL/BsSPICflutx5LADQ9gdvcFKXmZczqhy4nPQ==
+ts-log-debug@^5.2.0:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/ts-log-debug/-/ts-log-debug-5.2.1.tgz#749379459f58573992c1f71955dde518aba2535a"
+  integrity sha512-JHDH86immnia3xKlonDhPn3Ltaed/W66qg3Qg10D6K6Ne4Nss0uT9GJwJUlelg4XjcnuLqQ0lDJiok51yIoPsQ==
   dependencies:
-    colors "^1.3.3"
-    date-format "^2.0.0"
-    semver "^5.6.0"
-    streamroller "^1.0.3"
-    tslib "^1.9.3"
+    "@tsed/logger" "5.2.1"
 
 ts-node@^8.6.2:
   version "8.6.2"

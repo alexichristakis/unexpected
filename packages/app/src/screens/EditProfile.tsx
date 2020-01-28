@@ -66,6 +66,7 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
   };
 
   const initialFormValues = { firstName, lastName, bio };
+
   return (
     <Screen style={styles.container}>
       <Formik initialValues={initialFormValues} onSubmit={handleOnPressSubmit}>

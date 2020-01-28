@@ -14,9 +14,6 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
   @Inject(CommentModel)
   model: MongooseModel<CommentModel>;
 
-  @Inject(PostService)
-  private postService: PostService;
-
   @Inject(UserService)
   private userService: UserService;
 
@@ -24,23 +21,7 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
   private notificationService: NotificationService;
 
   async createNewComment(comment: Comment) {
-    const [fromUser, post] = await Promise.all([
-      this.userService.getByPhoneNumber(comment.phoneNumber),
-      this.postService.getId(comment.postId)
-    ]);
-
-    if (!fromUser || !post) return;
-
-    const user = await this.userService.getByPhoneNumber(post?.phoneNumber);
-
-    return Promise.all([
-      this.create(comment),
-      this.notificationService.notifyWithNavigationToPost(
-        user,
-        `${fromUser.firstName} commented on your post`,
-        { ...post, id: comment.postId }
-      )
-    ]);
+    return this.create(comment);
   }
 
   async getByPostIds(postIds: string[]) {

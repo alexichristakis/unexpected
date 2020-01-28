@@ -47,8 +47,10 @@ export interface RowProps extends Omit<RowType, "id"> {
 }
 
 export const Row: React.FC<RowProps> = ({ type, posts, onPressPost }) => {
+  const handleOnPressPost = (post: Post) => () => onPressPost(post);
+
   const renderPost = (post: Post, size: number) => (
-    <TouchableScale key={post.photoId} onPress={() => onPressPost(post)}>
+    <TouchableScale key={post.photoId} onPress={handleOnPressPost(post)}>
       <PostImage
         width={size}
         height={size}
