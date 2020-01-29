@@ -33,10 +33,12 @@ import * as selectors from "@redux/selectors";
 import { Month, Months } from "./Month";
 
 const mapStateToProps = (state: RootState, props: GridProps) => ({
+  isUser: !props.phoneNumber,
   loading: selectors.postLoading(state),
   user: selectors.user(state, props),
   posts: selectors.usersPosts(state, props)
 });
+
 const mapDispatchToProps = {};
 
 export type GridConnectedProps = ConnectedProps<typeof connector>;
@@ -53,6 +55,7 @@ export interface GridProps {
 
 export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
   ({
+    isUser,
     friendStatus = "friends",
     loading,
     onPressPost,
@@ -169,7 +172,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
           ListHeaderComponent={renderHeader}
           ItemSeparatorComponent={renderSeparatorComponent}
           ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={styles.contentContainer}
+          contentContainerStyle={!isUser ? styles.contentContainer : {}}
           renderItem={renderMonth}
           data={generateMonths(releasedPosts) as any}
           onScrollEndDrag={onScrollEndDrag}
