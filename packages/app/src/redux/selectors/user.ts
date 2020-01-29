@@ -34,12 +34,15 @@ export const users = createSelector(s, state => state.users);
 
 export const phoneNumber = createSelector(s, state => state.phoneNumber);
 
-const phoneNumberFromProps = (_: RootState, props: { phoneNumber: string }) =>
+const phoneNumberFromProps = (_: RootState, props: { phoneNumber?: string }) =>
   props.phoneNumber;
 
 export const user = createSelector(
-  [users, phoneNumberFromProps],
-  (users, phoneNumber) => users[phoneNumber]
+  [users, phoneNumber, phoneNumberFromProps],
+  (users, userPhoneNumber, phoneNumber) => {
+    if (phoneNumber) return users[phoneNumber];
+    else return users[userPhoneNumber];
+  }
 );
 
 export const currentUser = createSelector(

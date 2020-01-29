@@ -14,6 +14,7 @@ import Animated, { TransitioningView } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
+import { useValues } from "react-native-redash";
 
 import { Grid, Top } from "@components/Profile";
 import { FriendButton, NavBar } from "@components/universal";
@@ -25,13 +26,11 @@ import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { StackParamList } from "../App";
 
-const { useCode, block, call, greaterThan, lessOrEq, cond } = Animated;
+const { useCode, debug, block, call, greaterThan, lessOrEq, cond } = Animated;
 
 const mapStateToProps = (state: RootState, props: ProfileProps) => ({
   phoneNumber: selectors.phoneNumber(state),
-  postsLoading: selectors.postLoading(state),
-  user: selectors.user(state, props.route.params),
-  posts: selectors.usersPosts(state, props.route.params)
+  user: selectors.user(state, props.route.params)
 });
 const mapDispatchToProps = {
   fetchUsersPosts: PostActions.fetchUsersPosts,
@@ -46,22 +45,11 @@ export interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
-  ({
-    postsLoading,
-    navigation,
-    fetchUsersPosts,
-    fetchUser,
-    posts,
-    user,
-    phoneNumber,
-    route
-  }) => {
+  ({ navigation, fetchUsersPosts, fetchUser, user, phoneNumber, route }) => {
     const [showTitle, setShowTitle] = useState(false);
-    const [releasedPosts, setReleasedPosts] = useState(posts);
-    const [scrollY] = useState(new Animated.Value(0));
+    const [scrollY] = useValues([0], []);
 
     const navBarTransitionRef = React.createRef<TransitioningView>();
-    const gridTransitionRef = React.createRef<TransitioningView>();
 
     const getFriendStatusState = () => {
       if (!user || !user.friends) return "unknown";
@@ -80,23 +68,18 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
     }, [getFriendStatusState()]);
 
-    useLayoutEffect(() => {
-      gridTransitionRef.current?.animateNextTransition();
-      setReleasedPosts(posts);
-    }, [posts.length]);
-
     useCode(
       () =>
         block([
           cond(
-            greaterThan(scrollY, 100),
+            greaterThan(scrollY, 60),
             call([], ([]) => {
               navBarTransitionRef.current?.animateNextTransition();
               setShowTitle(true);
             })
           ),
           cond(
-            lessOrEq(scrollY, 100),
+            lessOrEq(scrollY, 60),
             call([], ([]) => {
               navBarTransitionRef.current?.animateNextTransition();
               setShowTitle(false);
@@ -116,8 +99,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        user={user}
-        numPosts={posts.length}
+        phoneNumber={route.params.phoneNumber}
         scrollY={scrollY}
         onPressFriends={goToFriends}
       />
@@ -161,24 +143,18 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           rightButton={<FriendButton showLabel={!showTitle} user={user} />}
         />
         <Grid
-          user={user}
-          transitionRef={gridTransitionRef}
-          loading={postsLoading}
+          phoneNumber={route.params.phoneNumber}
           onPressPost={handleOnPressPost}
           scrollY={scrollY}
           friendStatus={getFriendStatusState()}
           onScrollEndDrag={handleOnScrollEndDrag}
-          ListHeaderComponentStyle={styles.headerContainer}
-          ListHeaderComponent={renderTop}
-          posts={releasedPosts}
+          headerContainerStyle={styles.headerContainer}
+          renderHeader={renderTop}
         />
       </Screen>
     );
   },
-  (prevProps, nextProps) =>
-    isEqual(prevProps.user, nextProps.user) &&
-    prevProps.posts?.length === nextProps.posts?.length &&
-    prevProps.postsLoading === nextProps.postsLoading
+  (prevProps, nextProps) => isEqual(prevProps.user, nextProps.user)
 );
 
 const styles = StyleSheet.create({

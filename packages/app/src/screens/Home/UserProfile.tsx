@@ -12,28 +12,22 @@ import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
 import Animated, { Easing } from "react-native-reanimated";
 import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
-import { hideStatusBarOnScroll, useDarkStatusBar } from "@hooks";
-import { Top } from "@components/Profile";
-import { Grid } from "@components/Profile/Grid";
+import { hideStatusBarOnScroll } from "@hooks";
+import { Top, Grid } from "@components/Profile";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
 import { Post } from "@unexpected/global";
 import { StackParamList } from "../../App";
 
-const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
-
 const mapStateToProps = (state: RootState) => ({
-  postsLoading: selectors.postLoading(state),
-  friendRequests: selectors.friendRequestNumbers(state),
   user: selectors.currentUser(state),
-  posts: selectors.currentUsersPosts(state),
   stale: selectors.feedStale(state)
 });
 const mapDispatchToProps = {
@@ -43,26 +37,21 @@ const mapDispatchToProps = {
   fetchUsersPosts: PostActions.fetchUsersPosts
 };
 
-export type UserProfileReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type UserProfileReduxProps = ConnectedProps<typeof connector>;
+
 export interface UserProfileOwnProps {
   navigation: NativeStackNavigationProp<StackParamList, "USER_PROFILE">;
   route: RouteProp<StackParamList, "USER_PROFILE">;
 }
-export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 
+export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 export const UserProfile: React.FC<UserProfileProps> = React.memo(
   ({
     navigation,
-    friendRequests,
     fetchUser,
     fetchUsersRequests,
     fetchUsersPosts,
     stale,
-    posts,
-    postsLoading,
     user
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
@@ -98,10 +87,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const renderTop = () => (
       <Top
-        isUser={true}
-        friendRequests={friendRequests}
-        user={user}
-        numPosts={posts.length}
+        phoneNumber={user.phoneNumber}
         scrollY={scrollY}
         onPressAddBio={goToEditProfile}
         onPressFriends={goToFriends}
@@ -138,13 +124,11 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     return (
       <Screen style={styles.container}>
         <Grid
-          loading={postsLoading}
           onPressPost={handleOnPressPost}
           scrollY={scrollY}
           onScrollEndDrag={handleOnScrollEndDrag}
-          ListHeaderComponentStyle={styles.headerContainer}
-          ListHeaderComponent={renderTop}
-          posts={posts}
+          headerContainerStyle={styles.headerContainer}
+          renderHeader={renderTop}
         />
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
       </Screen>
@@ -176,4 +160,5 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(UserProfile);

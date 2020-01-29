@@ -1,17 +1,31 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated from "react-native-reanimated";
+import { connect, ConnectedProps } from "react-redux";
 
 import Gear from "@assets/svg/gear.svg";
 import { Button, PullToRefresh, UserImage } from "@components/universal";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import { User } from "@unexpected/global";
+import { RootState } from "@redux/types";
+import * as selectors from "@redux/selectors";
+
+const mapStateToProps = (state: RootState, props: ProfileTopProps) => {
+  const isUser = selectors.phoneNumber(state) === props.phoneNumber;
+
+  return {
+    isUser,
+    user: selectors.user(state, props),
+    numPosts: selectors.usersPostsLength(state, props),
+    friendRequests: isUser ? selectors.friendRequestNumbers(state) : null
+  };
+};
+
+const mapDispatchToProps = {};
+
+export type ProfileTopConnectedProps = ConnectedProps<typeof connector>;
 
 export interface ProfileTopProps {
-  user: User;
-  isUser?: boolean; // is currently signed in user
-  friendRequests?: string[];
-  numPosts: number;
+  phoneNumber: string;
   scrollY: Animated.Value<number>;
   onPressFriends: () => void;
   onPressImage?: () => void;
@@ -19,7 +33,7 @@ export interface ProfileTopProps {
   onPressAddBio?: () => void;
 }
 
-export const Top: React.FC<ProfileTopProps> = ({
+export const Top: React.FC<ProfileTopProps & ProfileTopConnectedProps> = ({
   user,
   isUser,
   numPosts,
@@ -179,3 +193,6 @@ const styles = StyleSheet.create({
     alignItems: "center"
   }
 });
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(Top);

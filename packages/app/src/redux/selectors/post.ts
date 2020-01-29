@@ -49,6 +49,15 @@ export const usersPosts = createSelector(
   }
 );
 
+export const usersPostsLength = createSelector(
+  [usersSelector, userEntitySelector],
+  (users, { phoneNumber }) => {
+    const postIds = users[phoneNumber]?.posts ?? [];
+
+    return postIds.length;
+  }
+);
+
 export const usersPostState = createSelector(
   [usersSelector, phoneNumberFromProps],
   (users, phoneNumber) => users[phoneNumber] || {}

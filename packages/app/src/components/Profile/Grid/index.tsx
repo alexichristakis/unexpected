@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import {
   FlatList,
   ListRenderItemInfo,
@@ -19,147 +19,167 @@ import Animated, {
   Transitioning,
   TransitioningView
 } from "react-native-reanimated";
+import { onScroll } from "react-native-redash";
+import { ConnectedProps, connect } from "react-redux";
 
 import LockSVG from "@assets/svg/lock.svg";
 import { Colors, TextStyles } from "@lib/styles";
 
 import { formatName } from "@lib/utils";
-import { onScroll } from "react-native-redash";
-import { Month, Months } from "./Month";
+import { RootState } from "@redux/types";
+import * as selectors from "@redux/selectors";
+
 // import testPosts from "./test_data";
+import { Month, Months } from "./Month";
+
+const mapStateToProps = (state: RootState, props: GridProps) => ({
+  loading: selectors.postLoading(state),
+  user: selectors.user(state, props),
+  posts: selectors.usersPosts(state, props)
+});
+const mapDispatchToProps = {};
+
+export type GridConnectedProps = ConnectedProps<typeof connector>;
 
 export interface GridProps {
-  transitionRef?: React.Ref<TransitioningView>;
   scrollY?: Animated.Value<number>;
-  user?: User;
   friendStatus?: "friends" | "notFriends" | "unknown";
-  loading: boolean;
+  phoneNumber?: string;
   onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
   onPressPost: (item: Post) => void;
-  ListHeaderComponentStyle?: ViewStyle;
-  ListHeaderComponent?: React.ComponentType<any>;
-  posts: Post[];
+  headerContainerStyle?: ViewStyle;
+  renderHeader?: React.ComponentType<any>;
 }
 
-export const Grid: React.FC<GridProps> = ({
-  friendStatus = "friends",
-  transitionRef,
-  loading,
-  onPressPost,
-  ListHeaderComponentStyle,
-  ListHeaderComponent,
-  onScrollEndDrag,
-  scrollY,
-  user,
-  posts
-}) => {
-  // returns object mapping month (0, 1, 2, ...) to array of posts
-  const generateMonths = (posts: Post[]) => {
-    if (friendStatus !== "friends") return [];
+export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
+  ({
+    friendStatus = "friends",
+    loading,
+    onPressPost,
+    headerContainerStyle,
+    renderHeader,
+    onScrollEndDrag,
+    scrollY,
+    user,
+    posts
+  }) => {
+    const [releasedPosts, setReleasedPosts] = useState<Post[]>(posts);
+    const gridTransitionRef = useRef<TransitioningView>();
 
-    const map = groupBy(posts, ({ createdAt }) =>
-      moment(createdAt).startOf("month")
+    useLayoutEffect(() => {
+      gridTransitionRef.current?.animateNextTransition();
+      setReleasedPosts(posts);
+    }, [loading, posts.length, gridTransitionRef]);
+
+    // returns object mapping month (0, 1, 2, ...) to array of posts
+    const generateMonths = (posts: Post[]) => {
+      if (friendStatus !== "friends") return [];
+
+      const map = groupBy(posts, ({ createdAt }) =>
+        moment(createdAt).startOf("month")
+      );
+
+      return Object.keys(map)
+        .sort((a, b) => moment(b).diff(moment(a)))
+        .map(month => ({
+          id: month,
+          month: Months[moment(month, "ddd MMM DD YYYY").get("month")],
+          posts: map[month].sort((a, b) =>
+            moment(b.createdAt).diff(moment(a.createdAt))
+          )
+        }));
+    };
+
+    const renderMonth = ({
+      item,
+      index
+    }: ListRenderItemInfo<{
+      id: string;
+      month: Months;
+      posts: Post[];
+    }>) => (
+      <Month
+        showHeader={index > 0}
+        key={item.id}
+        onPressPost={onPressPost}
+        {...item}
+      />
     );
 
-    return Object.keys(map)
-      .sort((a, b) => moment(b).diff(moment(a)))
-      .map(month => ({
-        id: month,
-        month: Months[moment(month, "ddd MMM DD YYYY").get("month")],
-        posts: map[month].sort((a, b) =>
-          moment(b.createdAt).diff(moment(a.createdAt))
-        )
-      }));
-  };
+    const renderSeparatorComponent = () => <View style={styles.separator} />;
 
-  const months = generateMonths(posts);
+    const renderEmptyComponent = () => {
+      if (friendStatus === "notFriends" && user)
+        return (
+          <View style={styles.emptyStateContainer}>
+            <LockSVG width={100} height={100} />
+            <Text
+              style={[TextStyles.large, { marginTop: 20, marginBottom: 10 }]}
+            >
+              This user is private.
+            </Text>
+            <Text
+              style={TextStyles.medium}
+            >{`Friend ${user.firstName} to see their posts.`}</Text>
+          </View>
+        );
 
-  const renderMonth = ({
-    item,
-    index
-  }: ListRenderItemInfo<{
-    id: string;
-    month: Months;
-    posts: Post[];
-  }>) => (
-    <Month
-      showHeader={index > 0}
-      key={item.id}
-      onPressPost={onPressPost}
-      {...item}
-    />
-  );
+      if (loading)
+        return (
+          <View style={styles.emptyStateContainer}>
+            <Text style={TextStyles.large}>Loading posts...</Text>
+          </View>
+        );
 
-  const renderSeparatorComponent = () => <View style={styles.separator} />;
-
-  const renderEmptyComponent = () => {
-    if (friendStatus === "notFriends" && user)
       return (
         <View style={styles.emptyStateContainer}>
-          <LockSVG width={100} height={100} />
-          <Text style={[TextStyles.large, { marginTop: 20, marginBottom: 10 }]}>
-            This user is private.
-          </Text>
-          <Text
-            style={TextStyles.medium}
-          >{`Friend ${user.firstName} to see their posts.`}</Text>
+          <Text style={TextStyles.medium}>{`${formatName(
+            user
+          )} doesn't have any moments yet`}</Text>
         </View>
       );
+    };
 
-    if (loading)
-      return (
-        <View style={styles.emptyStateContainer}>
-          <Text style={TextStyles.large}>Loading posts...</Text>
-        </View>
-      );
+    const transition = (
+      <Transition.Together>
+        <Transition.In type="fade" />
+        <Transition.Out type="fade" />
+        <Transition.Change interpolation="easeInOut" />
+      </Transition.Together>
+    );
+
+    const renderScrollComponent = (props: ScrollViewProps) => (
+      <Animated.ScrollView
+        {...props}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll({ y: scrollY })}
+      />
+    );
 
     return (
-      <View style={styles.emptyStateContainer}>
-        <Text style={TextStyles.medium}>{`${formatName(
-          user
-        )} doesn't have any moments yet`}</Text>
-      </View>
-    );
-  };
-
-  const transition = (
-    <Transition.Together>
-      <Transition.In type="fade" />
-      <Transition.Out type="fade" />
-      <Transition.Change interpolation="easeInOut" />
-    </Transition.Together>
-  );
-
-  const renderScrollComponent = (props: ScrollViewProps) => (
-    <Animated.ScrollView
-      {...props}
-      scrollEventThrottle={16}
-      showsVerticalScrollIndicator={false}
-      onScroll={onScroll({ y: scrollY })}
-    />
-  );
-
-  return (
-    <Transitioning.View
-      style={styles.list}
-      ref={transitionRef}
-      transition={transition}
-    >
-      <FlatList
+      <Transitioning.View
         style={styles.list}
-        ListHeaderComponentStyle={ListHeaderComponentStyle}
-        ListHeaderComponent={ListHeaderComponent}
-        ItemSeparatorComponent={renderSeparatorComponent}
-        ListEmptyComponent={renderEmptyComponent}
-        contentContainerStyle={styles.contentContainer}
-        renderItem={renderMonth}
-        data={months as any}
-        onScrollEndDrag={onScrollEndDrag}
-        renderScrollComponent={renderScrollComponent}
-      />
-    </Transitioning.View>
-  );
-};
+        ref={gridTransitionRef as any}
+        transition={transition}
+      >
+        <FlatList
+          style={styles.list}
+          ListHeaderComponentStyle={headerContainerStyle}
+          ListHeaderComponent={renderHeader}
+          ItemSeparatorComponent={renderSeparatorComponent}
+          ListEmptyComponent={renderEmptyComponent}
+          contentContainerStyle={styles.contentContainer}
+          renderItem={renderMonth}
+          data={generateMonths(releasedPosts) as any}
+          onScrollEndDrag={onScrollEndDrag}
+          renderScrollComponent={renderScrollComponent}
+        />
+      </Transitioning.View>
+    );
+  },
+  (prevProps, nextProps) => prevProps.loading === nextProps.loading
+);
 
 const styles = StyleSheet.create({
   list: {
@@ -180,3 +200,6 @@ const styles = StyleSheet.create({
     alignItems: "center"
   }
 });
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(Grid);

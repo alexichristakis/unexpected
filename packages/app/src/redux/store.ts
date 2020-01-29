@@ -16,7 +16,7 @@ import sagas from "./sagas";
 
 const persistConfig = {
   key: "root",
-  // blacklist: ["post", "user", "auth"],
+  blacklist: ["post"],
   storage: AsyncStorage,
   migrate: createMigrate(migrations as any, { debug: __DEV__ }),
   version: 1

@@ -61,12 +61,12 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
 
     useEffect(() => {
-      fetchFeed();
+      // fetchFeed();
 
       if (shouldLaunchPermissions) {
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }
-    }, [stale]);
+    }, []);
 
     const handleOnScrollEndDrag = (
       event: NativeSyntheticEvent<NativeScrollEvent>
