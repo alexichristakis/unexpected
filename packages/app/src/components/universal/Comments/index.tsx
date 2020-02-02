@@ -82,37 +82,36 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
     </Transition.Together>
   );
 
-  if (comments.length)
-    return (
-      <Transitioning.View
-        style={styles.container}
-        ref={transitionRef}
-        transition={transition}
-      >
-        <KeyboardAvoidingView enabled={false} behavior={"padding"}>
-          {comments.length > 1 && !detail && (
-            <TouchableOpacity onPress={handleOnPressSeeMore}>
-              <Text style={styles.preview}>{`${comments.length -
-                1} more comments`}</Text>
-            </TouchableOpacity>
-          )}
-          {comments.length > 0 && !detail && (
-            <Comment {...comments[comments.length - 1]} />
-          )}
-          {detail &&
-            comments.map(comment => <Comment key={comment.id} {...comment} />)}
-          {visible && (
-            <Composer
-              loading={loading}
-              onBlur={handleOnBlur}
-              onFocus={handleOnFocus}
-              onSendMessage={handleOnSendMessage}
-            />
-          )}
-        </KeyboardAvoidingView>
-      </Transitioning.View>
-    );
-  return null;
+  // if (comments.length)
+  return (
+    <Transitioning.View
+      style={styles.container}
+      ref={transitionRef}
+      transition={transition}
+    >
+      <KeyboardAvoidingView enabled={false} behavior={"padding"}>
+        {comments.length > 1 && !detail && (
+          <TouchableOpacity onPress={handleOnPressSeeMore}>
+            <Text style={styles.preview}>{`${comments.length -
+              1} more comments`}</Text>
+          </TouchableOpacity>
+        )}
+        {comments.length > 0 && !detail && (
+          <Comment {...comments[comments.length - 1]} />
+        )}
+        {detail &&
+          comments.map(comment => <Comment key={comment.id} {...comment} />)}
+
+        <Composer
+          loading={loading}
+          onBlur={handleOnBlur}
+          onFocus={handleOnFocus}
+          onSendMessage={handleOnSendMessage}
+        />
+      </KeyboardAvoidingView>
+    </Transitioning.View>
+  );
+  // return null;
 };
 
 const styles = StyleSheet.create({

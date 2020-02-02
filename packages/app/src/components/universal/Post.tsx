@@ -102,7 +102,9 @@ const Post = React.memo(
             )}
           </View>
           {renderImage()}
-          <Text style={styles.description}>{description}</Text>
+          {description.length ? (
+            <Text style={styles.description}>{description}</Text>
+          ) : null}
           <Comments
             detail={false}
             visible={visible}
