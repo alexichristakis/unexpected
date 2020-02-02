@@ -41,7 +41,7 @@ export function hideStatusBarOnScroll(scrollY: Animated.Value<number>) {
     () =>
       block([
         cond(
-          greaterOrEq(scrollY, 40),
+          greaterOrEq(scrollY, SB_HEIGHT() / 2),
           call([], hideStatusBar),
           call([], showStatusBar)
         )

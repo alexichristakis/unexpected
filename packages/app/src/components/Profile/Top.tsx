@@ -8,6 +8,7 @@ import { Button, PullToRefresh, UserImage } from "@components/universal";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { RootState } from "@redux/types";
 import * as selectors from "@redux/selectors";
+import { HORIZONTAL_GUTTER } from "@lib/constants";
 
 const mapStateToProps = (state: RootState, props: ProfileTopProps) => {
   const isUser = selectors.phoneNumber(state) === props.phoneNumber;
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: "stretch",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingTop: 5,
     paddingBottom: 20
   },
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
   },
   bio: {
     flex: 1,
-    marginLeft: 20
+    marginLeft: HORIZONTAL_GUTTER
   },
   notificationIndicator: {
     marginLeft: 10,

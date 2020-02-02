@@ -160,6 +160,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
 
     return (
       <AnimatedFlatList
+        removeClippedSubviews={true}
         style={styles.container}
         data={sortedPosts}
         renderItem={renderPost}

@@ -10,8 +10,9 @@ import {
 import _ from "lodash";
 import moment from "moment";
 import { connect, ConnectedProps } from "react-redux";
+import { TransitioningView } from "react-native-reanimated";
 
-import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
@@ -44,13 +45,24 @@ const mapDispatchToProps = { deletePost: PostActions.deletePost };
 const Post = React.memo(
   React.forwardRef<PostRef, PostConnectedProps & PostProps>(
     ({ post, phoneNumber, onPressName, renderImage, deletePost }, ref) => {
+      const commentsTransitionRef = React.createRef<TransitioningView>();
+      const [visible, setVisible] = useState(false);
+
       const { id, description, user, createdAt, comments } = post;
 
       const isUser = user?.phoneNumber === phoneNumber;
 
       useImperativeHandle(ref, () => ({
-        setVisible: () => {},
-        setNotVisible: () => {}
+        setVisible: () => {
+          setTimeout(() => {
+            commentsTransitionRef.current?.animateNextTransition();
+            setVisible(true);
+          }, 500);
+        },
+        setNotVisible: () => {
+          commentsTransitionRef.current?.animateNextTransition();
+          setVisible(false);
+        }
       }));
 
       const handleOnPressName = () => {
@@ -91,7 +103,13 @@ const Post = React.memo(
           </View>
           {renderImage()}
           <Text style={styles.description}>{description}</Text>
-          <Comments postId={post.id} comments={comments} />
+          <Comments
+            detail={false}
+            visible={visible}
+            transitionRef={commentsTransitionRef}
+            postId={post.id}
+            comments={comments}
+          />
         </View>
       );
     }
@@ -107,7 +125,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     marginBottom: 10
   },
   name: {

@@ -168,6 +168,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
       >
         <FlatList
           style={styles.list}
+          removeClippedSubviews={true}
           ListHeaderComponentStyle={headerContainerStyle}
           ListHeaderComponent={renderHeader}
           ItemSeparatorComponent={renderSeparatorComponent}

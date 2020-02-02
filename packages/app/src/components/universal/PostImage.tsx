@@ -82,8 +82,6 @@ export const _PostImage: React.FC<PostImageProps &
   }
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(_PostImage);
-
 const styles = StyleSheet.create({
   image: {
     resizeMode: "cover",
@@ -95,3 +93,5 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   }
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(_PostImage);

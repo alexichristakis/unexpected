@@ -55,8 +55,8 @@ export const Feed: React.FC<FeedProps> = React.memo(
     refreshing,
     shouldLaunchPermissions
   }) => {
-    const [scrollY] = useState(new Value(0));
     const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
+    const [scrollY] = useState(new Value(0));
 
     const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
 

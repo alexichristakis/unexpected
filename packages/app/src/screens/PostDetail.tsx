@@ -174,9 +174,14 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
           />
         </ZoomHandler>
         <View style={styles.footer}>
-          <Text style={TextStyles.medium}>{description}</Text>
+          <Text style={TextStyles.small}>{description}</Text>
         </View>
-        <Comments postId={post.id} comments={comments} />
+        <Comments
+          detail={true}
+          visible={true}
+          postId={post.id}
+          comments={comments}
+        />
       </Animated.ScrollView>
       {zoomedImage && <ZoomedImage {...zoomedImage} />}
     </Screen>
@@ -194,11 +199,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 5,
     marginBottom: 10,
-    paddingHorizontal: 20
+    paddingHorizontal: 15
   },
   footer: {
     marginTop: 5,
-    paddingHorizontal: 20
+    paddingHorizontal: 10
   },
   scrollContentContainer: {
     paddingBottom: 50
