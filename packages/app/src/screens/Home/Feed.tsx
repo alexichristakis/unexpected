@@ -1,11 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   StatusBar,
-  StyleSheet
+  StyleSheet,
+  FlatList
 } from "react-native";
 
+import { useScrollToTop } from "@react-navigation/native";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
@@ -57,8 +59,12 @@ export const Feed: React.FC<FeedProps> = React.memo(
   }) => {
     const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
     const [scrollY] = useState(new Value(0));
+    const scrollRef = useRef<FlatList>(null);
 
     const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
+
+    // @ts-ignore
+    useScrollToTop(scrollRef);
 
     useEffect(() => {
       // fetchFeed();
@@ -104,6 +110,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     return (
       <Screen style={styles.container}>
         <Posts
+          scrollRef={scrollRef}
           scrollY={scrollY}
           refreshing={refreshing}
           onScrollEndDrag={handleOnScrollEndDrag}

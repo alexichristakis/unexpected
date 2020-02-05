@@ -7,8 +7,7 @@ import {
   StyleSheet,
   Text,
   View,
-  ViewStyle,
-  ScrollViewProps
+  ViewStyle
 } from "react-native";
 
 import { Post, User } from "@unexpected/global";
@@ -32,6 +31,8 @@ import * as selectors from "@redux/selectors";
 // import testPosts from "./test_data";
 import { Month, Months } from "./Month";
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 const mapStateToProps = (state: RootState, props: GridProps) => ({
   isUser: !props.phoneNumber,
   loading: selectors.postLoading(state),
@@ -44,6 +45,7 @@ const mapDispatchToProps = {};
 export type GridConnectedProps = ConnectedProps<typeof connector>;
 
 export interface GridProps {
+  scrollRef?: React.Ref<FlatList>;
   scrollY?: Animated.Value<number>;
   friendStatus?: "friends" | "notFriends" | "unknown";
   phoneNumber?: string;
@@ -55,6 +57,8 @@ export interface GridProps {
 
 export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
   ({
+    scrollRef,
+    scrollY,
     isUser,
     friendStatus = "friends",
     loading,
@@ -62,7 +66,6 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
     headerContainerStyle,
     renderHeader,
     onScrollEndDrag,
-    scrollY,
     user,
     posts
   }) => {
@@ -151,24 +154,19 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
       </Transition.Together>
     );
 
-    const renderScrollComponent = (props: ScrollViewProps) => (
-      <Animated.ScrollView
-        {...props}
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        onScroll={onScroll({ y: scrollY })}
-      />
-    );
-
     return (
       <Transitioning.View
         style={styles.list}
         ref={gridTransitionRef as any}
         transition={transition}
       >
-        <FlatList
+        <AnimatedFlatList
+          ref={scrollRef}
           style={styles.list}
           removeClippedSubviews={true}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          onScroll={onScroll({ y: scrollY })}
           ListHeaderComponentStyle={headerContainerStyle}
           ListHeaderComponent={renderHeader}
           ItemSeparatorComponent={renderSeparatorComponent}
@@ -177,7 +175,6 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
           renderItem={renderMonth}
           data={generateMonths(releasedPosts) as any}
           onScrollEndDrag={onScrollEndDrag}
-          renderScrollComponent={renderScrollComponent}
         />
       </Transitioning.View>
     );
