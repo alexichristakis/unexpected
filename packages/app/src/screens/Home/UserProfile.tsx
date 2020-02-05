@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   StatusBar,
-  StyleSheet
+  StyleSheet,
+  FlatList
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
@@ -25,6 +26,7 @@ import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Post } from "@unexpected/global";
 import { StackParamList } from "../../App";
+import { useScrollToTop } from "@react-navigation/native";
 
 const mapStateToProps = (state: RootState) => ({
   user: selectors.currentUser(state),
@@ -55,8 +57,12 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     user
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
+    const scrollRef = useRef<FlatList>(null);
 
     const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
+
+    // @ts-ignore
+    useScrollToTop(scrollRef);
 
     useFocusEffect(
       useCallback(() => {
@@ -124,8 +130,9 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     return (
       <Screen style={styles.container}>
         <Grid
-          onPressPost={handleOnPressPost}
+          scrollRef={scrollRef}
           scrollY={scrollY}
+          onPressPost={handleOnPressPost}
           onScrollEndDrag={handleOnScrollEndDrag}
           headerContainerStyle={styles.headerContainer}
           renderHeader={renderTop}

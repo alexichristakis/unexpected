@@ -7,7 +7,7 @@ import {
   createBottomTabNavigator
 } from "@react-navigation/bottom-tabs";
 import { ParamListBase } from "@react-navigation/core";
-import { NavigationNativeContainer } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp
@@ -258,7 +258,7 @@ const Router: React.FC = () => {
   const isAuthorized = useReduxState(selectors.isAuthorized);
 
   return (
-    <NavigationNativeContainer ref={setNavigatorRef}>
+    <NavigationContainer ref={setNavigatorRef}>
       <Stack.Navigator screenOptions={{ stackAnimation: "fade" }}>
         {isAuthorized ? (
           <Stack.Screen
@@ -274,7 +274,7 @@ const Router: React.FC = () => {
           />
         )}
       </Stack.Navigator>
-    </NavigationNativeContainer>
+    </NavigationContainer>
   );
 };
 

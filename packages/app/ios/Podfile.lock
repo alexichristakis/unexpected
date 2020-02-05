@@ -198,23 +198,23 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
   - React-jsinspector (0.61.5)
-  - react-native-camera (3.15.1):
+  - react-native-camera (3.17.0):
     - React
-    - react-native-camera/RCT (= 3.15.1)
-    - react-native-camera/RN (= 3.15.1)
-  - react-native-camera/RCT (3.15.1):
+    - react-native-camera/RCT (= 3.17.0)
+    - react-native-camera/RN (= 3.17.0)
+  - react-native-camera/RCT (3.17.0):
     - React
-  - react-native-camera/RN (3.15.1):
+  - react-native-camera/RN (3.17.0):
     - React
-  - react-native-contacts (5.0.6):
+  - react-native-contacts (5.0.7):
     - React
   - react-native-image-resizer (1.1.0):
     - React
-  - react-native-netinfo (5.3.2):
+  - react-native-netinfo (5.3.3):
     - React
-  - react-native-notifications (3.1.0):
+  - react-native-notifications (3.1.1):
     - React
-  - react-native-safe-area-context (0.6.2):
+  - react-native-safe-area-context (0.6.4):
     - React
   - React-RCTActionSheet (0.61.5):
     - React-Core/RCTActionSheetHeaders (= 0.61.5)
@@ -255,19 +255,19 @@ PODS:
     - React
   - RNCMaskedView (0.1.6):
     - React
-  - RNFS (2.16.2):
+  - RNFS (2.16.4):
     - React
-  - RNGestureHandler (1.5.3):
+  - RNGestureHandler (1.5.6):
     - React
   - RNPermissions (2.0.9):
     - React
-  - RNReactNativeHapticFeedback (1.8.2):
+  - RNReactNativeHapticFeedback (1.9.0):
     - React
   - RNReanimated (1.7.0):
     - React
-  - RNScreens (2.0.0-alpha.29):
+  - RNScreens (2.0.0-beta.2):
     - React
-  - RNSVG (9.13.6):
+  - RNSVG (11.0.1):
     - React
   - SSZipArchive (2.2.2)
   - Yoga (1.14.0)
@@ -444,12 +444,12 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
-  react-native-camera: 1ba3e7f2375a6b44ae09ce9be70268e0b225bc10
-  react-native-contacts: 9c89131a1f63af0618d54af5ca1cd88b06d41a05
+  react-native-camera: c549d50495c989688ef1819dab49441c7dc7c17d
+  react-native-contacts: a30bebe23ddeda7c34bf97cfa5f952201efc5329
   react-native-image-resizer: 1ffe71ec5f2596c3a24d42548c03bfbfb06fe810
-  react-native-netinfo: 817823a90f13ced48413875c0820df04c3aae28d
-  react-native-notifications: 208904de966fa1f636e66023dd796438fa778c5b
-  react-native-safe-area-context: 25260c5d0b9c53fd7aa88e569e2edae72af1f6a3
+  react-native-netinfo: 8884d510fe67349940b4399c01db3e3591c922aa
+  react-native-notifications: acf37b8cbeb5b05f274b25ffe6289119b65961c2
+  react-native-safe-area-context: 52342d2d80ea8faadd0ffa76d83b6051f20c5329
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -462,13 +462,13 @@ SPEC CHECKSUMS:
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RNCAsyncStorage: 44395cb9c7c1523104c2b499eb426ef7aff82bca
   RNCMaskedView: a88953beefbd347a29072d9eba90e42945fe291e
-  RNFS: 0d4191b1052bef9ce70deff00a5b4169c62bbd9b
-  RNGestureHandler: 02905abe54e1f6e59c081a10b4bd689721e17aa6
+  RNFS: 90d1a32d3bc8f75cc7fc3dd2f67506049664346b
+  RNGestureHandler: 911d3b110a7a233a34c4f800e7188a84b75319c6
   RNPermissions: 2f74237e97b08beda01e914301e12524ddddf5b8
-  RNReactNativeHapticFeedback: e11a4da0ce174e9f88b03cbaf5d76d94633cdee2
+  RNReactNativeHapticFeedback: 2566b468cc8d0e7bb2f84b23adc0f4614594d071
   RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
-  RNScreens: b20bdb598fe95ac37aada88a5e92f36622549e49
-  RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
+  RNScreens: 5e4758109c6d35f9a009ce72af873df907548020
+  RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 

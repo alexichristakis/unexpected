@@ -6,7 +6,8 @@ import {
   NativeSyntheticEvent,
   StyleSheet,
   View,
-  ViewToken
+  ViewToken,
+  ScrollView
 } from "react-native";
 
 import { Post as PostType, User } from "@unexpected/global";
@@ -46,6 +47,7 @@ const mapDispatchToProps = {};
 
 export interface PostsProps {
   scrollY: Animated.Value<number>;
+  scrollRef: React.Ref<FlatList>;
   refreshing: boolean;
   onGestureBegan: (image: ZoomedImageType) => void;
   onGestureComplete: () => void;
@@ -61,6 +63,7 @@ export type PostRefMap = { [id: string]: PostRef | null };
 const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
   ({
     scrollY,
+    scrollRef,
     refreshing,
     posts,
     onScrollEndDrag,
@@ -160,6 +163,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
 
     return (
       <AnimatedFlatList
+        ref={scrollRef}
         removeClippedSubviews={true}
         style={styles.container}
         data={sortedPosts}
