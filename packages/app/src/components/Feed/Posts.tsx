@@ -5,12 +5,11 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleSheet,
-  View,
   ViewToken,
   ScrollView
 } from "react-native";
 
-import { Post as PostType, User } from "@unexpected/global";
+import { Post as PostType } from "@unexpected/global";
 import _ from "lodash";
 import Animated from "react-native-reanimated";
 import { onScroll } from "react-native-redash";

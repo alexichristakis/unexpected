@@ -122,4 +122,4 @@ const styles = StyleSheet.create({
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
-export default NewProfilePicture;
+export default connector(NewProfilePicture);

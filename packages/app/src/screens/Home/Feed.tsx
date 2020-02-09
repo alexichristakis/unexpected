@@ -19,13 +19,13 @@ import uuid from "uuid/v4";
 
 import { Posts } from "@components/Feed";
 import { ZoomedImage, ZoomedImageType } from "@components/universal";
+import { hideStatusBarOnScroll } from "@hooks";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
 import { StackParamList } from "../../App";
-import { hideStatusBarOnScroll } from "@hooks";
 
 const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
 
@@ -101,9 +101,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const handleOnPressShare = () => {
-      navigation.navigate("CAPTURE");
-    };
+    const handleOnPressShare = () => navigation.navigate("CAPTURE");
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);
 

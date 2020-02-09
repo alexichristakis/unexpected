@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
+import { useScrollToTop } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
@@ -26,7 +27,6 @@ import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Post } from "@unexpected/global";
 import { StackParamList } from "../../App";
-import { useScrollToTop } from "@react-navigation/native";
 
 const mapStateToProps = (state: RootState) => ({
   user: selectors.currentUser(state),
