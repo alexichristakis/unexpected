@@ -63,12 +63,13 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
       enabled={true}
       pointerEvents="box-none"
       behavior="height"
-      keyboardVerticalOffset={15}
+      // keyboardVerticalOffset={15}
     >
       <Animated.View style={[{ opacity }, styles.container]}>
         <TextInput
           style={styles.input}
           onFocus={onFocus}
+          placeholderTextColor={Colors.gray}
           placeholder="add a comment"
           value={message}
           onChangeText={setMessage}

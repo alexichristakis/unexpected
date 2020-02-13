@@ -36,6 +36,8 @@ const {
   interpolate,
   useCode,
   cond,
+  debug,
+  abs,
   eq,
   not,
   call,
@@ -78,6 +80,8 @@ export const ModalList = React.memo(
     ({ title, style, children, offsetY = new Animated.Value(0) }, ref) => {
       const [clock] = useState(new Clock());
 
+      console.log("render modal list");
+
       const [isOpen, setIsOpen] = useState(false);
       const [lastSnap, setLastSnap] = useState(SCREEN_HEIGHT);
 
@@ -96,7 +100,9 @@ export const ModalList = React.memo(
       const [goDown] = useState<Animated.Value<0 | 1>>(new Value(0));
 
       const open = () => goUp.setValue(1);
-      const openFully = () => goUpFully.setValue(1);
+      const openFully = () => {
+        goUpFully.setValue(1);
+      };
       const close = () => goDown.setValue(1);
       useImperativeHandle(ref, () => ({
         open,
@@ -156,6 +162,7 @@ export const ModalList = React.memo(
       useCode(
         () =>
           block([
+            debug("offset", offset),
             set(offsetY, translateY),
             cond(
               eq(translateY, SNAP_OPEN),
@@ -188,11 +195,13 @@ export const ModalList = React.memo(
                   config
                 })
               ),
-              cond(
-                bin(isOpen),
-                call([], () => setIsOpen(true))
-              ),
-              cond(not(clockRunning(clock)), [set(goUpFully, 0)])
+              cond(not(clockRunning(clock)), [
+                set(goUpFully, 0),
+                cond(
+                  not(bin(isOpen)),
+                  call([], () => setIsOpen(true))
+                )
+              ])
             ]),
             cond(goDown, [
               set(

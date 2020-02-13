@@ -17,10 +17,20 @@ import { SCREEN_HEIGHT } from "@lib/constants";
 
 import Comment from "./Comment";
 import FloatingComposer from "./FloatingComposer";
-import { useValues } from "react-native-redash";
+import { useValues, useDiff } from "react-native-redash";
 import { Keyboard } from "react-native";
 
-const { useCode, cond, block, call, greaterThan } = Animated;
+const {
+  useCode,
+  cond,
+  and,
+  block,
+  call,
+  greaterThan,
+  diff,
+  lessThan,
+  greaterOrEq
+} = Animated;
 
 const mapStateToProps = (state: RootState, props: CommentsModalProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -55,7 +65,8 @@ export const CommentsModal: React.FC<CommentsModalProps &
       []
     );
 
-    const handleOnFocus = () => modalRef.current?.openFully();
+    const handleOnFocus = () =>
+      setTimeout(() => modalRef.current?.openFully(), 50);
 
     const renderComment = (item: CommentType, index: number) => (
       <Comment key={`user-${index}`} {...item} />
