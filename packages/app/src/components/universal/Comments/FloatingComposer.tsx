@@ -34,16 +34,17 @@ const config = {
 export interface FloatingComposerProps {
   offsetY: Animated.Value<number>;
   loading: boolean;
+  onFocus: () => void;
   onSendMessage: (message: string) => void;
 }
 
 const FloatingComposer: React.FC<FloatingComposerProps> = ({
   offsetY,
   loading,
+  onFocus,
   onSendMessage
 }) => {
   const [message, setMessage] = useState("");
-  const [clock] = useState(new Clock());
 
   const opacity = interpolate(offsetY, {
     inputRange: [SCREEN_HEIGHT / 2, SCREEN_HEIGHT],
@@ -62,10 +63,12 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
       enabled={true}
       pointerEvents="box-none"
       behavior="height"
+      keyboardVerticalOffset={15}
     >
       <Animated.View style={[{ opacity }, styles.container]}>
         <TextInput
           style={styles.input}
+          onFocus={onFocus}
           placeholder="add a comment"
           value={message}
           onChangeText={setMessage}

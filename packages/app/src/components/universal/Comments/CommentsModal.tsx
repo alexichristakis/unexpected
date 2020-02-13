@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import Animated, { greaterOrEq } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 import {
   ModalList,
@@ -20,7 +20,7 @@ import FloatingComposer from "./FloatingComposer";
 import { useValues } from "react-native-redash";
 import { Keyboard } from "react-native";
 
-const { useCode, cond, block, call, lessOrEq } = Animated;
+const { useCode, cond, block, call, greaterThan } = Animated;
 
 const mapStateToProps = (state: RootState, props: CommentsModalProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -36,7 +36,7 @@ export type CommentsModalConnectedProps = ConnectedProps<typeof connector>;
 
 export interface CommentsModalProps {
   postId: string;
-  modalRef: React.Ref<ModalListRef>;
+  modalRef: React.MutableRefObject<ModalListRef>;
 }
 
 export const CommentsModal: React.FC<CommentsModalProps &
@@ -48,12 +48,14 @@ export const CommentsModal: React.FC<CommentsModalProps &
       () =>
         block([
           cond(
-            greaterOrEq(offsetY, SCREEN_HEIGHT / 2),
+            greaterThan(offsetY, SCREEN_HEIGHT / 2),
             call([], Keyboard.dismiss)
           )
         ]),
       []
     );
+
+    const handleOnFocus = () => modalRef.current?.openFully();
 
     const renderComment = (item: CommentType, index: number) => (
       <Comment key={`user-${index}`} {...item} />
@@ -74,6 +76,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
           {data.map(renderComment)}
         </ModalList>
         <FloatingComposer
+          onFocus={handleOnFocus}
           offsetY={offsetY}
           loading={loading}
           onSendMessage={handleOnSendMessage}

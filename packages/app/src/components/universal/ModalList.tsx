@@ -69,6 +69,7 @@ export interface ModalListProps {
 
 export type ModalListRef = {
   open: () => void;
+  openFully: () => void;
   close: () => void;
 };
 
@@ -90,13 +91,16 @@ export const ModalList = React.memo(
       );
       const [gestureState] = useValues([UNDETERMINED], []);
 
+      const [goUpFully] = useState<Animated.Value<0 | 1>>(new Value(0));
       const [goUp] = useState<Animated.Value<0 | 1>>(new Value(0));
       const [goDown] = useState<Animated.Value<0 | 1>>(new Value(0));
 
       const open = () => goUp.setValue(1);
+      const openFully = () => goUpFully.setValue(1);
       const close = () => goDown.setValue(1);
       useImperativeHandle(ref, () => ({
         open,
+        openFully,
         close
       }));
 
@@ -173,6 +177,22 @@ export const ModalList = React.memo(
               ),
               call([], () => setIsOpen(true)),
               cond(not(clockRunning(clock)), [set(goUp, 0)])
+            ]),
+            cond(goUpFully, [
+              set(
+                offset,
+                spring({
+                  clock,
+                  from: offset,
+                  to: SB_HEIGHT(),
+                  config
+                })
+              ),
+              cond(
+                bin(isOpen),
+                call([], () => setIsOpen(true))
+              ),
+              cond(not(clockRunning(clock)), [set(goUpFully, 0)])
             ]),
             cond(goDown, [
               set(
