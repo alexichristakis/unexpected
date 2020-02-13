@@ -1,14 +1,20 @@
 import { createSelector } from "reselect";
 
-import { User } from "@unexpected/global";
 import { RootState } from "../types";
 
 const s = (state: RootState) => state.user;
 
-export const friendRequests = createSelector(s, state => state.friendRequests);
+// export const friendRequests = createSelector(s, state => state.friendRequests);
+export const users = createSelector(s, state => state.users);
 
-export const friendRequestNumbers = createSelector(friendRequests, requests =>
-  requests.map(({ from }) => from)
+export const friendRequestNumbers = createSelector(s, state =>
+  state.friendRequests.map(({ from }) => from)
+);
+
+export const friendRequests = createSelector(
+  [friendRequestNumbers, users],
+  (requests, users) =>
+    requests.filter(request => users[request]).map(request => users[request])
 );
 
 export const requestedFriends = createSelector(
@@ -30,8 +36,6 @@ export const userRequestsLoading = createSelector(
   state => state.loadingRequests
 );
 
-export const users = createSelector(s, state => state.users);
-
 export const phoneNumber = createSelector(s, state => state.phoneNumber);
 
 const phoneNumberFromProps = (_: RootState, props: { phoneNumber?: string }) =>
@@ -43,6 +47,12 @@ export const user = createSelector(
     if (phoneNumber) return users[phoneNumber];
     else return users[userPhoneNumber];
   }
+);
+
+export const friends = createSelector([user, users], (user, users) =>
+  user.friends
+    .filter(phoneNumber => users[phoneNumber])
+    .map(phoneNumber => users[phoneNumber])
 );
 
 export const currentUser = createSelector(

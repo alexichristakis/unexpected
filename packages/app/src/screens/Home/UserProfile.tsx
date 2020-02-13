@@ -4,7 +4,12 @@ import {
   NativeSyntheticEvent,
   StatusBar,
   StyleSheet,
-  FlatList
+  FlatList,
+  View,
+  Text,
+  ScrollView,
+  ListRenderItem,
+  ListRenderItemInfo
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
@@ -12,25 +17,38 @@ import { useScrollToTop } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated, { Easing, useCode } from "react-native-reanimated";
+import { useValues } from "react-native-redash";
 import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import { hideStatusBarOnScroll } from "@hooks";
-import { Top, Grid } from "@components/Profile";
-import { SB_HEIGHT } from "@lib/styles";
+import { FriendRequests, UserModal, Top, Grid } from "@components/Profile";
+import {
+  ModalList,
+  UserRow,
+  ModalListRef,
+  ItemSeparator
+} from "@components/universal";
+import { SB_HEIGHT, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { Post } from "@unexpected/global";
+import { Friends } from "components/Profile";
+import { Post, User } from "@unexpected/global";
+
 import { StackParamList } from "../../App";
 
-const mapStateToProps = (state: RootState) => ({
+const { block, debug } = Animated;
+
+const mapStateToProps = (state: RootState, props: UserProfileOwnProps) => ({
   user: selectors.currentUser(state),
-  stale: selectors.feedStale(state)
+  stale: selectors.feedStale(state),
+  friends: selectors.friends(state, props),
+  friendRequests: selectors.friendRequests(state)
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,
@@ -53,11 +71,18 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     fetchUser,
     fetchUsersRequests,
     fetchUsersPosts,
+    friendRequests,
+    friends,
     stale,
     user
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
+    const [modalType, setModalType] = useState<"friends" | "requests">(
+      "friends"
+    );
+
     const scrollRef = useRef<FlatList>(null);
+    const modalRef = useRef<ModalListRef>(null);
 
     const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
 
@@ -75,20 +100,22 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       }, [stale])
     );
 
-    const goToNewProfilePicture = () => {
+    const goToNewProfilePicture = () =>
       navigation.navigate("NEW_PROFILE_PICTURE");
+
+    const goToSettings = () => navigation.navigate("SETTINGS");
+
+    // const goToFriends = () => navigation.navigate("FRIENDS", { user });
+    const openFriends = () => {
+      modalRef.current?.open();
+      setModalType("friends");
     };
 
-    const goToSettings = () => {
-      navigation.navigate("SETTINGS");
-    };
+    const goToEditProfile = () => navigation.navigate("EDIT_PROFILE");
 
-    const goToFriends = () => {
-      navigation.navigate("FRIENDS", { user });
-    };
-
-    const goToEditProfile = () => {
-      navigation.navigate("EDIT_PROFILE");
+    const openRequests = () => {
+      modalRef.current?.open();
+      setModalType("requests");
     };
 
     const renderTop = () => (
@@ -96,11 +123,27 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
         phoneNumber={user.phoneNumber}
         scrollY={scrollY}
         onPressAddBio={goToEditProfile}
-        onPressFriends={goToFriends}
+        onPressFriends={openFriends}
         onPressImage={goToNewProfilePicture}
+        onPressFriendRequests={openRequests}
         onPressSettings={goToSettings}
       />
     );
+
+    const handleOnPressUser = (toUser: User) => {
+      if (user.phoneNumber === toUser.phoneNumber) {
+        navigation.navigate("USER_PROFILE");
+      } else {
+        navigation.navigate({
+          name: "PROFILE",
+          key: uuid(),
+          params: {
+            prevRoute: user.firstName,
+            phoneNumber: toUser.phoneNumber
+          }
+        });
+      }
+    };
 
     const handleOnPressPost = (post: Post) => {
       navigation.navigate({
@@ -138,6 +181,12 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           renderHeader={renderTop}
         />
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
+        <UserModal
+          modalRef={modalRef}
+          type={modalType}
+          data={modalType === "friends" ? friends : friendRequests}
+          onPressUser={handleOnPressUser}
+        />
       </Screen>
     );
   },

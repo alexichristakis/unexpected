@@ -31,6 +31,7 @@ export interface ProfileTopProps {
   onPressFriends: () => void;
   onPressImage?: () => void;
   onPressSettings?: () => void;
+  onPressFriendRequests?: () => void;
   onPressAddBio?: () => void;
 }
 
@@ -40,6 +41,7 @@ export const Top: React.FC<ProfileTopProps & ProfileTopConnectedProps> = ({
   numPosts,
   scrollY,
   friendRequests,
+  onPressFriendRequests,
   onPressAddBio,
   onPressFriends,
   onPressImage,
@@ -63,7 +65,7 @@ export const Top: React.FC<ProfileTopProps & ProfileTopConnectedProps> = ({
 
     return (
       <TouchableOpacity
-        onPress={onPressSettings}
+        onPress={onPressFriendRequests}
         style={styles.notificationIndicator}
       >
         <Text

@@ -13,6 +13,7 @@ export * from "./FriendButton";
 export * from "./NavBar";
 export * from "./ZoomHandler";
 export * from "./ZoomedImage";
+export * from "./ModalList";
 
 export { default as Post } from "./Post";
 export { default as Comments } from "./Comments";
