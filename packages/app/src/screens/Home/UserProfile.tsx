@@ -24,30 +24,23 @@ import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import { hideStatusBarOnScroll } from "@hooks";
-import { FriendRequests, UserModal, Top, Grid } from "@components/Profile";
-import {
-  ModalList,
-  UserRow,
-  ModalListRef,
-  ItemSeparator
-} from "@components/universal";
-import { SB_HEIGHT, TextStyles } from "@lib/styles";
+import { UserModal, Top, Grid } from "@components/Profile";
+import { ModalListRef } from "@components/universal";
+import { SB_HEIGHT } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { Friends } from "components/Profile";
 import { Post, User } from "@unexpected/global";
 
 import { StackParamList } from "../../App";
 
-const { block, debug } = Animated;
-
 const mapStateToProps = (state: RootState, props: UserProfileOwnProps) => ({
   user: selectors.currentUser(state),
   stale: selectors.feedStale(state),
-  friends: selectors.friends(state, props),
+  // @ts-ignore
+  friends: selectors.friends(state),
   friendRequests: selectors.friendRequests(state)
 });
 const mapDispatchToProps = {

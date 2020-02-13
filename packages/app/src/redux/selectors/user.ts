@@ -39,7 +39,7 @@ export const userRequestsLoading = createSelector(
 export const phoneNumber = createSelector(s, state => state.phoneNumber);
 
 const phoneNumberFromProps = (_: RootState, props: { phoneNumber?: string }) =>
-  props.phoneNumber;
+  props?.phoneNumber;
 
 export const user = createSelector(
   [users, phoneNumber, phoneNumberFromProps],
