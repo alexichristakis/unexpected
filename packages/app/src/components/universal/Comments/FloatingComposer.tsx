@@ -45,50 +45,6 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
   const [message, setMessage] = useState("");
   const [clock] = useState(new Clock());
 
-  const [keyboardHeight, translateY] = useValues([0, 0], []);
-
-  const handleKeyboardDidShow = (e: KeyboardEvent) => {
-    const {
-      endCoordinates: { height }
-    } = e;
-    console.log("new value", height);
-    keyboardHeight.setValue(height);
-  };
-  const handleKeyboardDidHide = (e: KeyboardEvent) => {
-    keyboardHeight.setValue(0);
-  };
-
-  useEffect(() => {
-    const listeners = [
-      Keyboard.addListener("keyboardDidShow", handleKeyboardDidShow),
-      Keyboard.addListener("keyboardDidHide", handleKeyboardDidHide)
-    ];
-
-    return () => {
-      listeners.map(l => l.remove());
-    };
-  }, []);
-
-  useCode(
-    () =>
-      block([
-        debug("translateY", keyboardHeight),
-        cond(
-          keyboardHeight,
-          set(
-            translateY,
-            spring({
-              clock,
-              from: translateY,
-              to: multiply(-1, keyboardHeight),
-              config
-            })
-          )
-        )
-      ]),
-    []
-  );
-
   const opacity = interpolate(offsetY, {
     inputRange: [SCREEN_HEIGHT / 2, SCREEN_HEIGHT],
     outputRange: [1, 0],
@@ -103,7 +59,7 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
   return (
     <KeyboardAvoidingView
       style={StyleSheet.absoluteFill}
-      enabled
+      enabled={true}
       pointerEvents="box-none"
       behavior="height"
     >
