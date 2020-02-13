@@ -36,7 +36,7 @@ export type CommentsModalConnectedProps = ConnectedProps<typeof connector>;
 
 export interface CommentsModalProps {
   postId: string;
-  modalRef: React.MutableRefObject<ModalListRef>;
+  modalRef: React.RefObject<ModalListRef>;
 }
 
 export const CommentsModal: React.FC<CommentsModalProps &
