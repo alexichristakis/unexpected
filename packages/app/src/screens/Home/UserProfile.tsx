@@ -98,7 +98,6 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const goToSettings = () => navigation.navigate("SETTINGS");
 
-    // const goToFriends = () => navigation.navigate("FRIENDS", { user });
     const openFriends = () => {
       modalRef.current?.open();
       setModalType("friends");
@@ -190,7 +189,6 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    // paddingTop: SB_HEIGHT(),
     alignItems: "center"
   },
   headerContainer: {

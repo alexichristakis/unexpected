@@ -48,6 +48,7 @@ export interface PostsProps {
   scrollY: Animated.Value<number>;
   scrollRef: React.Ref<FlatList>;
   refreshing: boolean;
+  onPressMoreComments: (postId: string) => void;
   onGestureBegan: (image: ZoomedImageType) => void;
   onGestureComplete: () => void;
   onPressUser: (phoneNumber: string) => void;
@@ -65,6 +66,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
     scrollRef,
     refreshing,
     posts,
+    onPressMoreComments,
     onScrollEndDrag,
     onGestureBegan,
     onGestureComplete,
@@ -153,6 +155,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
       return (
         <Post
           ref={ref => (cellRefs.current[id] = ref)}
+          onPressMoreComments={onPressMoreComments}
           onPressName={onPressUser}
           postId={id}
           renderImage={renderImage}

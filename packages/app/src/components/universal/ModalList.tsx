@@ -232,7 +232,7 @@ export const ModalList = React.memo(
                     scrollEventThrottle={16}
                     onScrollBeginDrag={onScroll({ y: lastScrollY })}
                     onScroll={onScroll({ y: scrollY })}
-                    contentContainerStyle={{ paddingBottom: 110 }}
+                    contentContainerStyle={[{ paddingBottom: 110 }, style]}
                   >
                     {children}
                   </Animated.ScrollView>

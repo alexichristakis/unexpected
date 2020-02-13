@@ -40,6 +40,7 @@ export interface CommentsProps {
   comments: CommentType[];
   detail: boolean;
   visible: boolean;
+  onPressMore: (postId: string) => void;
   transitionRef?: React.Ref<TransitioningView>;
 }
 
@@ -49,6 +50,7 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
   transitionRef,
   detail,
   visible,
+  onPressMore,
   loading,
   postId,
   phoneNumber,
@@ -57,10 +59,7 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
 }) => {
   const [focused, setFocused] = useState(false);
 
-  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
-
-  const handleOnPressSeeMore = () =>
-    navigation.navigate("POST", { prevRoute: "Feed", postId });
+  const handleOnPressMore = () => onPressMore(postId);
 
   const handleOnFocus = () => {
     setFocused(true);
@@ -91,7 +90,7 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
     >
       <KeyboardAvoidingView enabled={false} behavior={"padding"}>
         {comments.length > 1 && !detail && (
-          <TouchableOpacity onPress={handleOnPressSeeMore}>
+          <TouchableOpacity onPress={handleOnPressMore}>
             <Text style={styles.preview}>{`${comments.length -
               1} more comments`}</Text>
           </TouchableOpacity>
@@ -131,3 +130,5 @@ const styles = StyleSheet.create({
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(Comments);
+
+export { default as CommentsModal } from "./CommentsModal";

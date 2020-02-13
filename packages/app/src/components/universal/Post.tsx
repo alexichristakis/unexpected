@@ -24,6 +24,7 @@ import Comments from "./Comments";
 
 export interface PostProps {
   postId: string;
+  onPressMoreComments: (postId: string) => void;
   renderImage: () => JSX.Element;
   onPressName: (phoneNumber: string) => void;
 }
@@ -44,7 +45,17 @@ const mapDispatchToProps = { deletePost: PostActions.deletePost };
 
 const Post = React.memo(
   React.forwardRef<PostRef, PostConnectedProps & PostProps>(
-    ({ post, phoneNumber, onPressName, renderImage, deletePost }, ref) => {
+    (
+      {
+        post,
+        phoneNumber,
+        onPressName,
+        onPressMoreComments,
+        renderImage,
+        deletePost
+      },
+      ref
+    ) => {
       const commentsTransitionRef = React.createRef<TransitioningView>();
       const [visible, setVisible] = useState(false);
 
@@ -106,6 +117,7 @@ const Post = React.memo(
             <Text style={styles.description}>{description}</Text>
           ) : null}
           <Comments
+            onPressMore={onPressMoreComments}
             detail={false}
             visible={visible}
             transitionRef={commentsTransitionRef}

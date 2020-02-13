@@ -10,8 +10,8 @@ import {
 const s = (state: RootState) => state.post || {};
 const usersSelector = createSelector(s, state => state.users);
 
-const posts = (state: RootState) => s(state).posts;
-const comments = (state: RootState) => s(state).comments;
+const _posts = (state: RootState) => s(state).posts;
+const _comments = (state: RootState) => s(state).comments;
 
 export const commentsLoading = (state: RootState) => s(state).commentsLoading;
 export const postLoading = (state: RootState) => s(state).loading;
@@ -25,8 +25,13 @@ const phoneNumberFromProps = (_: RootState, props: { phoneNumber: string }) =>
 const postIdFromProps = (_: RootState, props: { postId: string }) =>
   props.postId;
 
+export const commentsForPost = createSelector(
+  [_comments, postIdFromProps],
+  (commentMap, postId) => commentMap[postId] || []
+);
+
 export const post = createSelector(
-  [posts, comments, usersEntitySelector, postIdFromProps],
+  [_posts, _comments, usersEntitySelector, postIdFromProps],
   (posts, commentMap, users, id) => {
     const post = posts[id] ?? {};
 
@@ -40,7 +45,7 @@ export const post = createSelector(
 );
 
 export const usersPosts = createSelector(
-  [usersSelector, posts, userEntitySelector],
+  [usersSelector, _posts, userEntitySelector],
   (users, posts, user) => {
     const phoneNumber = user.phoneNumber;
     const postIds = users[phoneNumber]?.posts ?? [];
@@ -69,7 +74,7 @@ export const currentUsersPostsState = createSelector(
 );
 
 export const currentUsersPosts = createSelector(
-  [currentUsersPostsState, posts],
+  [currentUsersPostsState, _posts],
   (userPostState, posts) => {
     const postIds = userPostState.posts ?? [];
 
@@ -81,8 +86,11 @@ export const feedState = (state: RootState) => s(state).feed;
 
 export const feedStale = createSelector([feedState], state => state.stale);
 
-export const feed = createSelector([feedState, posts], (feedState, postMap) => {
-  const postIds = feedState.posts;
+export const feed = createSelector(
+  [feedState, _posts],
+  (feedState, postMap) => {
+    const postIds = feedState.posts;
 
-  return postIds.map(id => postMap[id]);
-});
+    return postIds.map(id => postMap[id]);
+  }
+);
