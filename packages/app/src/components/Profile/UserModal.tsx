@@ -18,10 +18,10 @@ export interface UserModalProps {
 export const UserModal: React.FC<UserModalProps> = React.memo(
   ({ type = "friends", data, onPressUser, modalRef }) => {
     const renderUserRow = (item: User, index: number) => (
-      <>
-        {index ? <ItemSeparator key={`separator-${index}`} /> : null}
-        <UserRow key={`user-${index}`} user={item} onPress={onPressUser} />
-      </>
+      <React.Fragment key={`user-${index}`}>
+        {index ? <ItemSeparator /> : null}
+        <UserRow user={item} onPress={onPressUser} />
+      </React.Fragment>
     );
 
     return (
