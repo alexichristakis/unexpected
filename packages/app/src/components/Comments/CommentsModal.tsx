@@ -73,13 +73,12 @@ export const CommentsModal: React.FC<CommentsModalProps &
       }).start(() => scrollRef.current?.getNode().scrollToEnd());
     };
 
-    const onKeyboardWillHide = () => {
+    const onKeyboardWillHide = () =>
       Animated.timing(keyboardHeight, {
         toValue: 0,
         duration: 100,
         easing: Easing.ease
       }).start();
-    };
 
     useEffect(() => {
       const listeners = [

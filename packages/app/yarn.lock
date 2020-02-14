@@ -942,18 +942,18 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-5.5.0.tgz#7f1d2e301b8a1294da44fb44d7b3fd6ea4d40c8a"
   integrity sha512-9fdOk1dxR3Bt+T4OuQxhf7EjyfbI6qVbPcNfTvVjGgRrx798ixAbBcCC+k5wp3LloVChVicXkyblu+wXEGiCWw==
 
-"@react-navigation/bottom-tabs@^5.0.3":
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.0.3.tgz#0375683e261279912b095734f1eed10027b2ff37"
-  integrity sha512-/rGlulcpvoJeAE5j/9HWTQzmu2UxxT5eoTh+kGnTAYjPwPordLgwP36NeX2Jvhv5tIvTtlzhF7bCDquBBgiN6g==
+"@react-navigation/bottom-tabs@^5.0.4":
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.0.4.tgz#837cdc4533153f1f246014cc9dd66a0d1b09d437"
+  integrity sha512-7YZ1ZUIXBO/Adftvk4ZXGjEpJ43Ucznjc7PoOypZrhb971NpZpUQzk81MvDMy0fUGFNm6C9SoNQzqJjA1g9lzQ==
   dependencies:
     color "^3.1.2"
     react-native-iphone-x-helper "^1.2.1"
 
-"@react-navigation/core@^5.1.2":
-  version "5.1.2"
-  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.1.2.tgz#1947449cb2f565cde8511ab953bb7170516c3e0f"
-  integrity sha512-0nQ46DTMzj5UjqUcc6g996qMQ2vSRSNgxd9LPlACVYHQRbwG2HHUq//NhfVf06dNpBHkQ0HYUITDHo+tifemjA==
+"@react-navigation/core@^5.1.3":
+  version "5.1.3"
+  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.1.3.tgz#f8593058b414e4acc3051526f79e6a8a30c63354"
+  integrity sha512-SyVWVJ0lYFSxlKUID0OfUygWNlncOSQTAKMQJxjEvQ2mmS/xsAPzqau30OpslLa6U2Uyl+hq5rAej7b72rU42A==
   dependencies:
     "@react-navigation/routers" "^5.0.1"
     escape-string-regexp "^2.0.0"
@@ -962,17 +962,17 @@
     shortid "^2.2.15"
     use-subscription "^1.3.0"
 
-"@react-navigation/native-stack@^5.0.3":
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-5.0.3.tgz#fa3457667f74f1ff9fbbc761c85e914a9fd842e4"
-  integrity sha512-UAQR5WiQ464TcyHdE/YIZ2m6ko9CJ1cBh2Wn9WAejhbsrFWXPKYAPV2eSQZ9RYrSO1B4ri7x/qHi4I2kxW+LJw==
+"@react-navigation/native-stack@^5.0.4":
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-5.0.4.tgz#1bf82c529390e7203d65635fc68164b2cbc4093f"
+  integrity sha512-i+5o0v582ZxTDrEDJcud5XI4BmzR+RAYAt592dnFgduO0lwIjch+IY5t+8PGg8n9FEN7dj+ivj1V5kx8ZggFQg==
 
-"@react-navigation/native@^5.0.3":
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.0.3.tgz#6a16f50c41f62e27dafcff20848222c018a6b033"
-  integrity sha512-caJVWRkpTY6zFkpZvQE1Dg0gTu+a09XnleKaDEV9TOK8AxkBhp+X4GvCP/7sV9Ke8Cw8mvcnh9R1UCKIO4fTCQ==
+"@react-navigation/native@^5.0.4":
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.0.4.tgz#003612c708f502ba4ac62d700cbc85b636fce29e"
+  integrity sha512-qmv3soJr03kCTuiUtl5oxT6gWm9o6VnCYiq6tg1Df6+qpMoo+A3MMCtXBs3kKwuNMxAQ5IQ0y11wRPxnnnnKYA==
   dependencies:
-    "@react-navigation/core" "^5.1.2"
+    "@react-navigation/core" "^5.1.3"
 
 "@react-navigation/routers@^5.0.1":
   version "5.0.1"
@@ -3389,12 +3389,6 @@ growly@^1.3.0:
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
-"hammerjs@https://github.com/naver/hammer.js.git":
-  version "2.0.17-snapshot"
-  resolved "https://github.com/naver/hammer.js.git#54bc698b25edd6e1b76ca975ebaced5ce0467d51"
-  dependencies:
-    "@types/hammerjs" "^2.0.36"
-
 has-flag@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
@@ -5592,10 +5586,10 @@ react-is@^16.12.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-i
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-native-camera@^3.17.0:
-  version "3.17.0"
-  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-3.17.0.tgz#41b12b74ac9e806e86a6efb2a19319b40323f196"
-  integrity sha512-Gd9E5XHrEScYPsugO4sYBYw+RnFg+M1kbjvsCE3B/pk+4Fk01tNY14RYoghYsimWWsQVgYNqOOJG5f1fQ3BUeg==
+react-native-camera@^3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-3.18.0.tgz#aa046a86ea8a691f25fd579b8abcbda1503e13fa"
+  integrity sha512-rLjLKJDEnI0E0nN7ZfK3GKEP37cYURh6QV2DCI1BRs9FWcETwDcgVYtQSfFEibWcGazPtsAqVDTg5LUYMFPjCA==
   dependencies:
     prop-types "^15.6.2"
 
@@ -5632,13 +5626,12 @@ react-native-fs@^2.16.4:
     base-64 "^0.1.0"
     utf8 "^3.0.0"
 
-react-native-gesture-handler@^1.5.6:
-  version "1.5.6"
-  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.5.6.tgz#5d90145f624e3707db2930f43ab41579683e2375"
-  integrity sha512-z2jLUkRiRc0PBAC9UcXYkqy3VUzBG0cYQAGMsDHsd90JgrzudHAFRJV9fvFm18wNauFTNnJievjZ0C3rI2ydhw==
+react-native-gesture-handler@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.6.0.tgz#e9a4e1d0c7ac21eb0d6b6ec013e73f9c0c33a629"
+  integrity sha512-KulGCWKTxa6xBpPP4LWEPmmLqBqOe2jbtdlILOVF/dR4EgImiaBVrKdOHeRMyMzJOYAWxs5uDZsyA8hgSsm+lw==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
-    hammerjs "https://github.com/naver/hammer.js.git"
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.4"
     prop-types "^15.7.2"
@@ -5688,10 +5681,10 @@ react-native-safe-area-context@^0.7.3:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-0.7.3.tgz#ad6bd4abbabe195332c53810e4ce5851eb21aa2a"
   integrity sha512-9Uqu1vlXPi+2cKW/CW6OnHxA76mWC4kF3wvlqzq4DY8hn37AeiXtLFs2WkxH4yXQRrnJdP6ivc65Lz+MqwRZAA==
 
-react-native-screens@^2.0.0-beta.2:
-  version "2.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-beta.2.tgz#317e844e02134b42aa0e3551da925c511cc58d64"
-  integrity sha512-N+k4S/Wr+YGjzuGF49fB4VjIG6Fcaj4md3uxTsyeshEILGptPWAlgb5hAgn6C9xOj1x/rrAoXwZmrPNxPw6CSg==
+react-native-screens@^2.0.0-beta.4:
+  version "2.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-beta.4.tgz#650e61d238a92b8a173e695124365f7181767870"
+  integrity sha512-wrbhTSNVcgdNcdby3h4CzrYKAA3bf/86UR2vEUIcp8gydzVxi2FQiopBavIrcwFJ9PvwXrERB5rF0VYUkzHpIw==
   dependencies:
     debounce "^1.2.0"
 
