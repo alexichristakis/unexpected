@@ -27,6 +27,8 @@ const {
   block,
   greaterThan,
   onChange,
+  and,
+  not,
   cond
 } = Animated;
 
@@ -97,7 +99,6 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
       enabled={true}
       pointerEvents="box-none"
       behavior="height"
-      // keyboardVerticalOffset={15}
     >
       <Animated.View style={[{ opacity }, styles.container]}>
         <TextInput
@@ -106,6 +107,8 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
           onFocus={onFocus}
           placeholderTextColor={Colors.gray}
           placeholder="add a comment"
+          returnKeyType="send"
+          onSubmitEditing={handleOnPressSend}
           value={message}
           onChangeText={setMessage}
         />
@@ -114,7 +117,7 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
           onPress={handleOnPressSend}
         >
           {loading ? (
-            <ActivityIndicator style={{ height: 30, marginRight: 5 }} />
+            <ActivityIndicator style={styles.activityIndicator} />
           ) : (
             <Animated.View style={{ transform: [{ scale: sendButtonScale }] }}>
               <SendIcon width={30} height={30} />
@@ -143,6 +146,10 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     ...TextStyles.medium
+  },
+  activityIndicator: {
+    height: 30,
+    marginRight: 5
   }
 });
 
