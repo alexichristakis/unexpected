@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
   StyleProp,
+  ScrollView,
   ViewStyle
 } from "react-native";
 import {
@@ -61,6 +62,7 @@ const config = {
 };
 
 export interface ModalListProps {
+  scrollRef?: React.RefObject<Animated.ScrollView>;
   children: React.ReactNode;
   title: string;
   style?: StyleProp<ViewStyle>;
@@ -79,14 +81,17 @@ const CLOSED = SCREEN_HEIGHT;
 
 export const ModalList = React.memo(
   React.forwardRef<ModalListRef, ModalListProps>(
-    ({ title, style, children, offsetY = new Animated.Value(0) }, ref) => {
+    (
+      { title, style, children, offsetY = new Animated.Value(0), scrollRef },
+      ref
+    ) => {
       const [clock] = useState(new Clock());
 
       const [isOpen, setIsOpen] = useState(false);
       const [lastSnap, setLastSnap] = useState(SCREEN_HEIGHT);
 
       const masterDrawerRef = useRef<TapGestureHandler>(null);
-      const scrollRef = useRef<NativeViewGestureHandler>(null);
+      const scrollHandlerRef = useRef<NativeViewGestureHandler>(null);
       const panRef = useRef<PanGestureHandler>(null);
 
       const [dragY, velocityY, scrollY, lastScrollY, offset] = useValues(
@@ -234,7 +239,7 @@ export const ModalList = React.memo(
               ref={panRef}
               maxPointers={1}
               minDist={10}
-              simultaneousHandlers={[scrollRef, masterDrawerRef]}
+              simultaneousHandlers={[scrollHandlerRef, masterDrawerRef]}
               {...panHandler}
             >
               <Animated.View
@@ -250,11 +255,12 @@ export const ModalList = React.memo(
                   style={[styles.headerDivider, { opacity: dividerOpacity }]}
                 />
                 <NativeViewGestureHandler
-                  ref={scrollRef}
+                  ref={scrollHandlerRef}
                   waitFor={masterDrawerRef}
                   simultaneousHandlers={panRef}
                 >
                   <Animated.ScrollView
+                    ref={scrollRef}
                     bounces={false}
                     scrollEventThrottle={16}
                     onScrollBeginDrag={onScroll({ y: lastScrollY })}

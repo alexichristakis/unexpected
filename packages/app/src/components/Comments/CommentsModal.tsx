@@ -1,7 +1,7 @@
-import React, { useState, useRef } from "react";
-import { Keyboard, TextInput } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { Keyboard, KeyboardEvent, ScrollView, TextInput } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
-import Animated from "react-native-reanimated";
+import Animated, { Easing } from "react-native-reanimated";
 import { useValues, useDiff } from "react-native-redash";
 
 import { ModalList, ModalListRef } from "@components/universal";
@@ -57,8 +57,47 @@ export const CommentsModal: React.FC<CommentsModalProps &
     loading,
     sendComment
   }) => {
-    const [offsetY] = useValues([SCREEN_HEIGHT], []);
+    const [offsetY, keyboardHeight] = useValues([SCREEN_HEIGHT, 0], []);
     const [offsetDiffY] = useState(useDiff(offsetY, []));
+
+    const scrollRef = useRef<Animated.ScrollView>(null);
+
+    const onKeyboardWillShow = (event: KeyboardEvent) => {
+      const {
+        endCoordinates: { height }
+      } = event;
+
+      console.log("keyboard will show");
+
+      Animated.timing(keyboardHeight, {
+        toValue: height,
+        duration: 100,
+        easing: Easing.ease
+      }).start(() => scrollRef.current?.getNode().scrollToEnd());
+    };
+
+    const onKeyboardWillHide = (event: KeyboardEvent) => {
+      const {
+        endCoordinates: { height }
+      } = event;
+
+      Animated.timing(keyboardHeight, {
+        toValue: 0,
+        duration: 100,
+        easing: Easing.ease
+      }).start();
+    };
+
+    useEffect(() => {
+      const listeners = [
+        Keyboard.addListener("keyboardWillShow", onKeyboardWillShow),
+        Keyboard.addListener("keyboardWillHide", onKeyboardWillHide)
+      ];
+
+      return () => {
+        listeners.forEach(listener => listener.remove());
+      };
+    }, []);
 
     useCode(
       () =>
@@ -91,10 +130,12 @@ export const CommentsModal: React.FC<CommentsModalProps &
         <ModalList
           title="Comments"
           ref={modalRef}
+          scrollRef={scrollRef}
           offsetY={offsetY}
           style={{ paddingHorizontal: 5 }}
         >
           {data.map(renderComment)}
+          <Animated.View style={{ height: keyboardHeight }} />
         </ModalList>
         <FloatingComposer
           textInputRef={textInputRef}

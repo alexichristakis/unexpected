@@ -14,8 +14,10 @@ import { UserImage } from "@components/universal";
 
 import { StackParamList } from "../../App";
 
+type Navigation = NativeStackNavigationProp<StackParamList>;
+
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
-  phoneNumber: selectors.phoneNumber(state),
+  userPhoneNumber: selectors.phoneNumber(state),
   user: selectors.user(state, props)
 });
 
@@ -25,38 +27,36 @@ interface CommentProps extends CommentType {}
 
 export type CommentsConnectedProps = ConnectedProps<typeof connector>;
 
-const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
-  phoneNumber,
-  createdAt,
-  user,
-  body
-}) => {
-  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
+  ({ userPhoneNumber, phoneNumber, createdAt, user, body }) => {
+    const navigation = useNavigation<Navigation>();
 
-  const handleOnPress = () => {
-    if (phoneNumber === user.phoneNumber) {
-      navigation.navigate("USER_PROFILE");
-    } else {
-      navigation.navigate("PROFILE", {
-        prevRoute: "Post",
-        phoneNumber: user.phoneNumber
-      });
-    }
-  };
+    const handleOnPress = () => {
+      if (userPhoneNumber === user.phoneNumber) {
+        navigation.navigate("USER_PROFILE");
+      } else {
+        navigation.navigate("PROFILE", {
+          prevRoute: "Post",
+          phoneNumber: user.phoneNumber
+        });
+      }
+    };
 
-  return (
-    <TouchableOpacity onPress={handleOnPress} style={styles.container}>
-      <UserImage size={30} phoneNumber={user.phoneNumber} />
-      <View style={styles.textContainer}>
-        <Text style={styles.body}>
-          <Text style={styles.name}>{formatName(user)}: </Text>
-          {body}
-        </Text>
-        <Text style={styles.createdAt}>{moment(createdAt).fromNow()}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
+    return (
+      <TouchableOpacity onPress={handleOnPress} style={styles.container}>
+        <UserImage size={30} phoneNumber={phoneNumber} />
+        <View style={styles.textContainer}>
+          <Text style={styles.body}>
+            <Text style={styles.name}>{formatName(user)}: </Text>
+            {body}
+          </Text>
+          <Text style={styles.createdAt}>{moment(createdAt).fromNow()}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  },
+  (prevProps, nextProps) => prevProps.id === nextProps.id
+);
 
 const styles = StyleSheet.create({
   container: {
