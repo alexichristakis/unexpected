@@ -33,12 +33,14 @@ const config = {
 
 export interface FloatingComposerProps {
   offsetY: Animated.Value<number>;
+  textInputRef: React.RefObject<TextInput>;
   loading: boolean;
   onFocus: () => void;
   onSendMessage: (message: string) => void;
 }
 
 const FloatingComposer: React.FC<FloatingComposerProps> = ({
+  textInputRef,
   offsetY,
   loading,
   onFocus,
@@ -67,6 +69,7 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
     >
       <Animated.View style={[{ opacity }, styles.container]}>
         <TextInput
+          ref={textInputRef}
           style={styles.input}
           onFocus={onFocus}
           placeholderTextColor={Colors.gray}

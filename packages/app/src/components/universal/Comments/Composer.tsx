@@ -6,7 +6,6 @@ import { TextSizes, TextStyles, Colors } from "@lib/styles";
 import { Input } from "../Input";
 
 export interface ComposerProps {
-  loading: boolean;
   onPress: () => void;
 }
 

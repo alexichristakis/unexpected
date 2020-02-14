@@ -20,7 +20,7 @@ import { RootState } from "@redux/types";
 
 import MoreIcon from "@assets/svg/more.svg";
 
-import Comments from "./Comments";
+import { Comments } from "./Comments";
 
 export interface PostProps {
   postId: string;
@@ -133,13 +133,13 @@ const Post = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 10
+    marginBottom: 30
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     marginBottom: 10
   },
   name: {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   description: {
     ...TextStyles.small,
     marginTop: 10,
-    paddingHorizontal: 10
+    paddingHorizontal: 5
   }
 });
 

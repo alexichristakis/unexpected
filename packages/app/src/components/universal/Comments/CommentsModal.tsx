@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { Keyboard, TextInput } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
 import Animated from "react-native-reanimated";
+import { useValues, useDiff } from "react-native-redash";
 
 import {
   ModalList,
@@ -17,11 +19,10 @@ import { SCREEN_HEIGHT } from "@lib/constants";
 
 import Comment from "./Comment";
 import FloatingComposer from "./FloatingComposer";
-import { useValues, useDiff } from "react-native-redash";
-import { Keyboard } from "react-native";
 
 const {
   useCode,
+  debug,
   cond,
   and,
   block,
@@ -46,19 +47,33 @@ export type CommentsModalConnectedProps = ConnectedProps<typeof connector>;
 
 export interface CommentsModalProps {
   postId: string;
+  textInputRef: React.RefObject<TextInput>;
   modalRef: React.RefObject<ModalListRef>;
 }
 
 export const CommentsModal: React.FC<CommentsModalProps &
   CommentsModalConnectedProps> = React.memo(
-  ({ data, modalRef, phoneNumber, postId, loading, sendComment }) => {
+  ({
+    data,
+    modalRef,
+    textInputRef,
+    phoneNumber,
+    postId,
+    loading,
+    sendComment
+  }) => {
     const [offsetY] = useValues([SCREEN_HEIGHT], []);
+    const [offsetDiffY] = useState(useDiff(offsetY, []));
 
     useCode(
       () =>
         block([
+          // debug("offsetDiff", offsetDiffY),
           cond(
-            greaterThan(offsetY, SCREEN_HEIGHT / 2),
+            and(
+              greaterThan(offsetDiffY, 0),
+              greaterThan(offsetY, SCREEN_HEIGHT / 2)
+            ),
             call([], Keyboard.dismiss)
           )
         ]),
@@ -87,6 +102,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
           {data.map(renderComment)}
         </ModalList>
         <FloatingComposer
+          textInputRef={textInputRef}
           onFocus={handleOnFocus}
           offsetY={offsetY}
           loading={loading}

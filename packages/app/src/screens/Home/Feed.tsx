@@ -4,6 +4,7 @@ import {
   NativeSyntheticEvent,
   StatusBar,
   StyleSheet,
+  TextInput,
   FlatList
 } from "react-native";
 
@@ -66,6 +67,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
     const [scrollY] = useState(new Value(0));
 
+    const textInputRef = useRef<TextInput>(null);
     const scrollRef = useRef<FlatList>(null);
     const modalRef = useRef<ModalListRef>(null);
 
@@ -112,13 +114,16 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const handleOnPressShare = () => navigation.navigate("CAPTURE");
 
     const handleOnPressMoreComments = (postId: string) => {
+      // console.log("on press more", postId);
       setCommentsPostId(postId);
       modalRef.current?.open();
     };
 
     const handleOnPressComposeCommment = (postId: string) => {
+      // console.log("postid", postId, textInputRef.current);
       setCommentsPostId(postId);
       modalRef.current?.openFully();
+      setTimeout(textInputRef.current?.focus, 50);
     };
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);
@@ -139,7 +144,11 @@ export const Feed: React.FC<FeedProps> = React.memo(
         />
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
-        <CommentsModal modalRef={modalRef} postId={commentsPostId} />
+        <CommentsModal
+          textInputRef={textInputRef}
+          modalRef={modalRef}
+          postId={commentsPostId}
+        />
       </Screen>
     );
   }
