@@ -25,7 +25,7 @@ import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
-const ICON_SIZE = 35;
+const ICON_SIZE = 30;
 
 export interface FriendButtonProps {
   user: User;

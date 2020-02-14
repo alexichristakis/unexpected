@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
-  Keyboard,
   TextInput,
-  Text,
   TouchableOpacity,
-  View,
-  KeyboardEvent,
   KeyboardAvoidingView,
   ActivityIndicator
 } from "react-native";
@@ -17,7 +13,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useValues, spring } from "react-native-redash";
 
-import { TextSizes, TextStyles, Colors, SCREEN_HEIGHT } from "@lib/styles";
+import { TextStyles, Colors, SCREEN_HEIGHT } from "@lib/styles";
 
 const {
   useCode,
