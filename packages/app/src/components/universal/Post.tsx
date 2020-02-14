@@ -17,10 +17,9 @@ import { formatName } from "@lib/utils";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
+import Comments from "@components/Comments/Comments";
 
 import MoreIcon from "@assets/svg/more.svg";
-
-import { Comments } from "./Comments";
 
 export interface PostProps {
   postId: string;

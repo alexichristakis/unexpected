@@ -24,7 +24,7 @@ import {
   ZoomedImageType,
   ModalListRef
 } from "@components/universal";
-import { CommentsModal } from "@components/universal/Comments";
+import { CommentsModal } from "@components/Comments";
 import { hideStatusBarOnScroll } from "@hooks";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";

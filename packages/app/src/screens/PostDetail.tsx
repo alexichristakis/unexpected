@@ -17,7 +17,6 @@ import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import {
-  Comments,
   NavBar,
   PostImage,
   ZoomedImage,
@@ -25,6 +24,7 @@ import {
   ZoomHandler,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
+import { Comments } from "@components/Comments";
 import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
@@ -176,12 +176,7 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
         <View style={styles.footer}>
           <Text style={TextStyles.small}>{description}</Text>
         </View>
-        <Comments
-          detail={true}
-          visible={true}
-          postId={post.id}
-          comments={comments}
-        />
+        <Comments postId={post.id} comments={comments} />
       </Animated.ScrollView>
       {zoomedImage && <ZoomedImage {...zoomedImage} />}
     </Screen>

@@ -4,12 +4,7 @@ import { connect, ConnectedProps } from "react-redux";
 import Animated from "react-native-reanimated";
 import { useValues, useDiff } from "react-native-redash";
 
-import {
-  ModalList,
-  ItemSeparator,
-  UserRow,
-  ModalListRef
-} from "@components/universal";
+import { ModalList, ModalListRef } from "@components/universal";
 import { Actions as PostActions } from "@redux/modules/post";
 import { User } from "@unexpected/global";
 import { RootState } from "@redux/types";

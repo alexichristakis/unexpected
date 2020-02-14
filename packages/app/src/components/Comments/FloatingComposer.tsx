@@ -16,7 +16,6 @@ import Animated, {
 
 import { TextSizes, TextStyles, Colors, SCREEN_HEIGHT } from "@lib/styles";
 
-import { Input } from "../Input";
 import { useValues, spring, timing, translate } from "react-native-redash";
 import { TextInput } from "react-native-gesture-handler";
 

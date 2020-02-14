@@ -10,9 +10,9 @@ import { formatName } from "@lib/utils";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
+import { UserImage } from "@components/universal";
 
-import { StackParamList } from "../../../App";
-import { UserImage } from "..";
+import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
   phoneNumber: selectors.phoneNumber(state),
