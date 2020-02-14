@@ -51,8 +51,6 @@ const {
 
 const { UNDETERMINED } = State;
 
-const SNAP_OPEN = SCREEN_HEIGHT / 2;
-
 const config = {
   damping: 50,
   mass: 1,
@@ -75,12 +73,14 @@ export type ModalListRef = {
   close: () => void;
 };
 
+const FULLY_OPEN = SB_HEIGHT();
+const SNAP_OPEN = SCREEN_HEIGHT / 2;
+const CLOSED = SCREEN_HEIGHT;
+
 export const ModalList = React.memo(
   React.forwardRef<ModalListRef, ModalListProps>(
     ({ title, style, children, offsetY = new Animated.Value(0) }, ref) => {
       const [clock] = useState(new Clock());
-
-      console.log("render modal list");
 
       const [isOpen, setIsOpen] = useState(false);
       const [lastSnap, setLastSnap] = useState(SCREEN_HEIGHT);
@@ -114,14 +114,13 @@ export const ModalList = React.memo(
         values.forEach(value => {
           if (value === SNAP_OPEN) {
             setIsOpen(true);
-            setLastSnap(SNAP_OPEN);
-          } else if (value === SB_HEIGHT()) {
+          } else if (value === FULLY_OPEN) {
             setIsOpen(true);
-            setLastSnap(SB_HEIGHT());
           } else {
             setIsOpen(false);
-            setLastSnap(SCREEN_HEIGHT);
           }
+
+          setLastSnap(value);
         });
       };
 
@@ -137,13 +136,13 @@ export const ModalList = React.memo(
             value: sub(dragY, lastScrollY),
             velocity: velocityY,
             state: gestureState,
-            snapPoints: [SB_HEIGHT(), SCREEN_HEIGHT, SNAP_OPEN],
+            snapPoints: [FULLY_OPEN, SNAP_OPEN, CLOSED],
             onSnap: handleOnSnap,
             offset,
             config
           }),
-          SB_HEIGHT(),
-          SCREEN_HEIGHT
+          FULLY_OPEN,
+          CLOSED
         )
       );
 
@@ -162,7 +161,6 @@ export const ModalList = React.memo(
       useCode(
         () =>
           block([
-            debug("offset", offset),
             set(offsetY, translateY),
             cond(
               eq(translateY, SNAP_OPEN),
@@ -170,7 +168,7 @@ export const ModalList = React.memo(
             ),
             cond(
               eq(translateY, SB_HEIGHT()),
-              call([], () => setLastSnap(SB_HEIGHT()))
+              call([], () => setLastSnap(FULLY_OPEN))
             ),
             cond(goUp, [
               set(
@@ -191,7 +189,7 @@ export const ModalList = React.memo(
                 spring({
                   clock,
                   from: offset,
-                  to: SB_HEIGHT(),
+                  to: FULLY_OPEN,
                   config
                 })
               ),
@@ -209,7 +207,7 @@ export const ModalList = React.memo(
                 spring({
                   clock,
                   from: offset,
-                  to: SCREEN_HEIGHT,
+                  to: CLOSED,
                   config
                 })
               ),
@@ -224,7 +222,7 @@ export const ModalList = React.memo(
         <TapGestureHandler
           ref={masterDrawerRef}
           maxDurationMs={100000}
-          maxDeltaY={lastSnap - SB_HEIGHT()}
+          maxDeltaY={lastSnap - FULLY_OPEN}
         >
           <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
             <Animated.View

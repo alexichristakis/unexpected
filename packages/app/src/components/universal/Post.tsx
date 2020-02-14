@@ -25,6 +25,7 @@ import Comments from "./Comments";
 export interface PostProps {
   postId: string;
   onPressMoreComments: (postId: string) => void;
+  onPressComposeComment: (postId: string) => void;
   renderImage: () => JSX.Element;
   onPressName: (phoneNumber: string) => void;
 }
@@ -51,6 +52,7 @@ const Post = React.memo(
         phoneNumber,
         onPressName,
         onPressMoreComments,
+        onPressComposeComment,
         renderImage,
         deletePost
       },
@@ -117,10 +119,8 @@ const Post = React.memo(
             <Text style={styles.description}>{description}</Text>
           ) : null}
           <Comments
+            onPressCompose={onPressComposeComment}
             onPressMore={onPressMoreComments}
-            detail={false}
-            visible={visible}
-            transitionRef={commentsTransitionRef}
             postId={post.id}
             comments={comments}
           />

@@ -116,6 +116,11 @@ export const Feed: React.FC<FeedProps> = React.memo(
       modalRef.current?.open();
     };
 
+    const handleOnPressComposeCommment = (postId: string) => {
+      setCommentsPostId(postId);
+      modalRef.current?.openFully();
+    };
+
     const handleOnGestureComplete = () => setZoomedImage(undefined);
 
     return (
@@ -123,6 +128,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
         <Posts
           scrollRef={scrollRef}
           scrollY={scrollY}
+          onPressComposeComment={handleOnPressComposeCommment}
           onPressMoreComments={handleOnPressMoreComments}
           refreshing={refreshing}
           onScrollEndDrag={handleOnScrollEndDrag}
@@ -133,7 +139,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
         />
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
-        <CommentsModal postId={commentsPostId} modalRef={modalRef} />
+        <CommentsModal modalRef={modalRef} postId={commentsPostId} />
       </Screen>
     );
   }

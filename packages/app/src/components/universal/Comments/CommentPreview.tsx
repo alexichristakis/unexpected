@@ -27,7 +27,6 @@ export type CommentsConnectedProps = ConnectedProps<typeof connector>;
 
 const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
   phoneNumber,
-  createdAt,
   user,
   body
 }) => {
@@ -46,14 +45,10 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
 
   return (
     <TouchableOpacity onPress={handleOnPress} style={styles.container}>
-      <UserImage size={30} phoneNumber={user.phoneNumber} />
-      <View style={styles.textContainer}>
-        <Text style={styles.body}>
-          <Text style={styles.name}>{formatName(user)}: </Text>
-          {body}
-        </Text>
-        <Text style={styles.createdAt}>{moment(createdAt).fromNow()}</Text>
-      </View>
+      <Text style={styles.body}>
+        <Text style={styles.name}>{formatName(user)}: </Text>
+        {body}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -61,12 +56,9 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginBottom: 5
+    marginBottom: 2
   },
-  textContainer: {
-    flex: 1,
-    marginLeft: 5
-  },
+
   name: {
     ...TextStyles.small,
     fontWeight: "600",

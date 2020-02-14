@@ -6,28 +6,18 @@ import {
   View,
   TouchableOpacity
 } from "react-native";
-import Animated, {
-  Transition,
-  Transitioning,
-  TransitioningView
-} from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
-import { useNavigation } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
 
-import Comment from "./Comment";
+import CommentPreview from "./CommentPreview";
 import Composer from "./Composer";
 import { TextStyles } from "@lib/styles";
 
-import { StackParamList } from "../../../App";
-
 const mapStateToProps = (state: RootState) => ({
-  phoneNumber: selectors.phoneNumber(state),
   loading: selectors.commentsLoading(state)
 });
 
@@ -38,79 +28,36 @@ const mapDispatchToProps = {
 export interface CommentsProps {
   postId: string;
   comments: CommentType[];
-  detail: boolean;
-  visible: boolean;
   onPressMore: (postId: string) => void;
-  transitionRef?: React.Ref<TransitioningView>;
+  onPressCompose: (postId: string) => void;
 }
 
 export type CommentsConnectedProps = ConnectedProps<typeof connector>;
 
 const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
-  transitionRef,
-  detail,
-  visible,
   onPressMore,
+  onPressCompose,
   loading,
   postId,
-  phoneNumber,
-  comments = [],
-  sendComment
+  comments = []
 }) => {
-  const [focused, setFocused] = useState(false);
-
   const handleOnPressMore = () => onPressMore(postId);
+  const handleOnPressCompose = () => onPressCompose(postId);
 
-  const handleOnFocus = () => {
-    setFocused(true);
-  };
-
-  const handleOnBlur = () => {
-    setFocused(false);
-  };
-
-  const handleOnSendMessage = (body: string) => {
-    sendComment({ body, phoneNumber, postId });
-  };
-
-  const transition = (
-    <Transition.Together>
-      <Transition.In type="fade" />
-      <Transition.Out type="fade" />
-      <Transition.Change interpolation="easeInOut" />
-    </Transition.Together>
-  );
-
-  // if (comments.length)
   return (
-    <Transitioning.View
-      style={styles.container}
-      ref={transitionRef}
-      transition={transition}
-    >
-      <KeyboardAvoidingView enabled={false} behavior={"padding"}>
-        {comments.length > 1 && !detail && (
-          <TouchableOpacity onPress={handleOnPressMore}>
-            <Text style={styles.preview}>{`${comments.length -
-              1} more comments`}</Text>
-          </TouchableOpacity>
-        )}
-        {comments.length > 0 && !detail && (
-          <Comment {...comments[comments.length - 1]} />
-        )}
-        {detail &&
-          comments.map(comment => <Comment key={comment.id} {...comment} />)}
-
-        <Composer
-          loading={loading}
-          onBlur={handleOnBlur}
-          onFocus={handleOnFocus}
-          onSendMessage={handleOnSendMessage}
-        />
-      </KeyboardAvoidingView>
-    </Transitioning.View>
+    <View style={styles.container}>
+      {comments.length > 1 && (
+        <TouchableOpacity onPress={handleOnPressMore}>
+          <Text style={styles.preview}>{`${comments.length -
+            1} more comments`}</Text>
+        </TouchableOpacity>
+      )}
+      {comments.length > 0 && (
+        <CommentPreview {...comments[comments.length - 1]} />
+      )}
+      <Composer loading={loading} onPress={handleOnPressCompose} />
+    </View>
   );
-  // return null;
 };
 
 const styles = StyleSheet.create({
