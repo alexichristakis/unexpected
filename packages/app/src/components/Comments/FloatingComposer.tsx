@@ -2,24 +2,35 @@ import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Keyboard,
+  TextInput,
   Text,
   TouchableOpacity,
   View,
   KeyboardEvent,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ActivityIndicator
 } from "react-native";
 import Animated, {
   interpolate,
   Extrapolate,
   Clock
 } from "react-native-reanimated";
+import { useValues, spring } from "react-native-redash";
 
 import { TextSizes, TextStyles, Colors, SCREEN_HEIGHT } from "@lib/styles";
 
-import { useValues, spring, timing, translate } from "react-native-redash";
-import { TextInput } from "react-native-gesture-handler";
+const {
+  useCode,
+  debug,
+  set,
+  multiply,
+  block,
+  greaterThan,
+  onChange,
+  cond
+} = Animated;
 
-const { useCode, debug, set, multiply, block, onChange, cond } = Animated;
+import SendIcon from "@assets/svg/send.svg";
 
 const config = {
   damping: 50,
@@ -45,7 +56,9 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
   onFocus,
   onSendMessage
 }) => {
+  const [clock] = useState(new Clock());
   const [message, setMessage] = useState("");
+  const [sendButtonScale] = useValues([0], []);
 
   const opacity = offsetY
     ? interpolate(offsetY, {
@@ -59,6 +72,24 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
     onSendMessage(message);
     setMessage("");
   };
+
+  useCode(
+    () =>
+      block([
+        cond(
+          greaterThan(message.length, 0),
+          set(
+            sendButtonScale,
+            spring({ clock, from: sendButtonScale, to: 1, config })
+          ),
+          set(
+            sendButtonScale,
+            spring({ clock, from: sendButtonScale, to: 0, config })
+          )
+        )
+      ]),
+    [message.length]
+  );
 
   return (
     <KeyboardAvoidingView
@@ -82,7 +113,13 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
           disabled={loading || !message.length}
           onPress={handleOnPressSend}
         >
-          <Text style={TextStyles.medium}>{loading ? "sending" : "send"}</Text>
+          {loading ? (
+            <ActivityIndicator style={{ height: 30, marginRight: 5 }} />
+          ) : (
+            <Animated.View style={{ transform: [{ scale: sendButtonScale }] }}>
+              <SendIcon width={30} height={30} />
+            </Animated.View>
+          )}
         </TouchableOpacity>
       </Animated.View>
     </KeyboardAvoidingView>
@@ -97,9 +134,10 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 5,
     right: 5,
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    borderRadius: 15,
+    paddingVertical: 5,
+    paddingLeft: 10,
+    paddingRight: 5,
     flexDirection: "row"
   },
   input: {

@@ -31,7 +31,7 @@ import {
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/constants";
 import { Colors, SB_HEIGHT, TextStyles } from "@lib/styles";
-import CloseIcon from "@assets/svg/cancel_button.svg";
+import CloseIcon from "@assets/svg/close.svg";
 
 const {
   interpolate,
@@ -246,9 +246,9 @@ export const ModalList = React.memo(
                 style={[styles.container, { transform: [{ translateY }] }]}
               >
                 <View style={styles.headerContainer}>
-                  <Text style={TextStyles.large}>{title}</Text>
+                  <Text style={TextStyles.medium}>{title}</Text>
                   <TouchableOpacity onPress={close}>
-                    <CloseIcon width={30} height={30} />
+                    <CloseIcon width={25} height={25} />
                   </TouchableOpacity>
                 </View>
                 <Animated.View
