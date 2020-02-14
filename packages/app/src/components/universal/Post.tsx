@@ -17,13 +17,14 @@ import { formatName } from "@lib/utils";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
+import Comments from "@components/Comments/Comments";
 
 import MoreIcon from "@assets/svg/more.svg";
 
-import Comments from "./Comments";
-
 export interface PostProps {
   postId: string;
+  onPressMoreComments: (postId: string) => void;
+  onPressComposeComment: (postId: string) => void;
   renderImage: () => JSX.Element;
   onPressName: (phoneNumber: string) => void;
 }
@@ -44,7 +45,18 @@ const mapDispatchToProps = { deletePost: PostActions.deletePost };
 
 const Post = React.memo(
   React.forwardRef<PostRef, PostConnectedProps & PostProps>(
-    ({ post, phoneNumber, onPressName, renderImage, deletePost }, ref) => {
+    (
+      {
+        post,
+        phoneNumber,
+        onPressName,
+        onPressMoreComments,
+        onPressComposeComment,
+        renderImage,
+        deletePost
+      },
+      ref
+    ) => {
       const commentsTransitionRef = React.createRef<TransitioningView>();
       const [visible, setVisible] = useState(false);
 
@@ -106,9 +118,8 @@ const Post = React.memo(
             <Text style={styles.description}>{description}</Text>
           ) : null}
           <Comments
-            detail={false}
-            visible={visible}
-            transitionRef={commentsTransitionRef}
+            onPressCompose={onPressComposeComment}
+            onPressMore={onPressMoreComments}
             postId={post.id}
             comments={comments}
           />
@@ -121,13 +132,13 @@ const Post = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 10
+    marginBottom: 30
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     marginBottom: 10
   },
   name: {
@@ -136,7 +147,7 @@ const styles = StyleSheet.create({
   description: {
     ...TextStyles.small,
     marginTop: 10,
-    paddingHorizontal: 10
+    paddingHorizontal: 5
   }
 });
 

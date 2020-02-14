@@ -96,81 +96,37 @@ const Settings: React.FC<SettingsProps> = React.memo(
       });
     };
 
-    const handleOnPressUser = (toUser: User) => {
-      if (phoneNumber === toUser.phoneNumber) {
-        navigation.navigate("USER_PROFILE");
-      } else {
-        navigation.navigate({
-          name: "PROFILE",
-          key: uuid(),
-          params: {
-            prevRoute: user.firstName,
-            phoneNumber: toUser.phoneNumber
-          }
-        });
-      }
-    };
-
-    const renderUserRow = ({ item, index }: ListRenderItemInfo<User>) => (
-      <UserRow onPress={handleOnPressUser} user={item} />
-    );
-
-    const renderListHeader = (length: number) =>
-      length ? (
-        <View style={styles.listHeaderContainer}>
-          <Text style={TextStyles.medium}>{`${length} friend ${
-            length > 1 ? "requests" : "request"
-          }:`}</Text>
-        </View>
-      ) : null;
-
-    const renderListFooter = (length: number) => (
-      <View style={[styles.buttonContainer, length ? { marginTop: 20 } : {}]}>
-        <Button
-          title="update profile picture"
-          style={styles.button}
-          onPress={navigateToNewProfilePicture}
-        />
-        <Button
-          title="edit profile"
-          style={styles.button}
-          onPress={navigateToEditProfile}
-        />
-        <Button
-          title="permissions"
-          style={styles.button}
-          onPress={navigateToPermissions}
-        />
-        <Button
-          title="share unexpected"
-          style={styles.button}
-          onPress={shareUnexpected}
-        />
-        {/* <Button
+    return (
+      <Screen style={styles.container}>
+        <Text style={[TextStyles.large, styles.header]}>settings:</Text>
+        <View style={[styles.buttonContainer]}>
+          <Button
+            title="update profile picture"
+            style={styles.button}
+            onPress={navigateToNewProfilePicture}
+          />
+          <Button
+            title="edit profile"
+            style={styles.button}
+            onPress={navigateToEditProfile}
+          />
+          <Button
+            title="permissions"
+            style={styles.button}
+            onPress={navigateToPermissions}
+          />
+          <Button
+            title="share unexpected"
+            style={styles.button}
+            onPress={shareUnexpected}
+          />
+          {/* <Button
           title="sync contacts"
           style={styles.button}
           onPress={getContacts}
         /> */}
-        <Button title="sign out" style={styles.button} onPress={logout} />
-      </View>
-    );
-
-    const renderSeparatorComponent = () => <ItemSeparator />;
-
-    const data = friendRequests
-      .filter(user => !!users[user])
-      .map(user => users[user]);
-
-    return (
-      <Screen style={styles.container}>
-        <Text style={[TextStyles.large, styles.header]}>settings:</Text>
-        <FlatList
-          renderItem={renderUserRow}
-          data={data}
-          ItemSeparatorComponent={renderSeparatorComponent}
-          ListHeaderComponent={renderListHeader(friendRequests.length)}
-          ListFooterComponent={renderListFooter(friendRequests.length)}
-        />
+          <Button title="sign out" style={styles.button} onPress={logout} />
+        </View>
         <Button
           title="dismiss"
           style={styles.button}
@@ -201,6 +157,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20
   },
   buttonContainer: {
+    flex: 1
     // paddingHorizontal: 20
     // marginTop: 20
   }

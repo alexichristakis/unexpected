@@ -33,7 +33,6 @@ import {
   Auth,
   Capture,
   EditProfile,
-  Friends,
   Discover,
   Feed,
   UserProfile,
@@ -66,7 +65,6 @@ export type StackParamList = {
   SHARE: BaseParams;
   POST: BaseParams & { postId: string };
   PROFILE: BaseParams & { phoneNumber: string };
-  FRIENDS: { user: User };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: undefined;
@@ -112,11 +110,6 @@ const HomeTab: React.FC<Props> = ({
         name="PROFILE"
         options={screenOptions}
         component={Profile}
-      />
-      <Stack.Screen
-        name="FRIENDS"
-        options={screenOptions}
-        component={Friends}
       />
       <Stack.Screen
         name="POST"

@@ -17,7 +17,6 @@ import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import {
-  Comments,
   NavBar,
   PostImage,
   ZoomedImage,
@@ -25,6 +24,7 @@ import {
   ZoomHandler,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
+import { Comment, FloatingComposer } from "@components/Comments";
 import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
@@ -38,13 +38,14 @@ import MoreIcon from "@assets/svg/more.svg";
 
 const mapStateToProps = (state: RootState, props: PostProps) => ({
   currentUserPhoneNumber: selectors.phoneNumber(state),
+  commentLoading: selectors.commentsLoading(state),
   post: selectors.post(state, props.route.params)
 });
 
 const mapDispatchToProps = {
   fetchPost: PostActions.fetchPost,
   deletePost: PostActions.deletePost,
-  takePhoto: ImageActions.takePhoto
+  sendComment: PostActions.sendComment
 };
 
 export type PostReduxProps = ConnectedProps<typeof connector>;
@@ -59,6 +60,8 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
   fetchPost,
   deletePost,
   currentUserPhoneNumber,
+  sendComment,
+  commentLoading,
   navigation,
   route
 }) => {
@@ -136,6 +139,10 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
     );
   };
 
+  const handleOnSendMessage = (body: string) => {
+    sendComment({ body, phoneNumber: currentUserPhoneNumber, postId });
+  };
+
   return (
     <Screen style={styles.container}>
       <NavBar
@@ -174,16 +181,19 @@ const PostDetail: React.FC<PostProps & PostReduxProps> = ({
           />
         </ZoomHandler>
         <View style={styles.footer}>
-          <Text style={TextStyles.small}>{description}</Text>
+          {description.length ? (
+            <Text style={styles.description}>{description}</Text>
+          ) : null}
+          {comments.map(comment => (
+            <Comment key={comment.id} {...comment} />
+          ))}
         </View>
-        <Comments
-          detail={true}
-          visible={true}
-          postId={post.id}
-          comments={comments}
-        />
       </Animated.ScrollView>
       {zoomedImage && <ZoomedImage {...zoomedImage} />}
+      <FloatingComposer
+        onSendMessage={handleOnSendMessage}
+        loading={commentLoading}
+      />
     </Screen>
   );
 };
@@ -203,7 +213,11 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 5,
-    paddingHorizontal: 10
+    paddingHorizontal: 5
+  },
+  description: {
+    ...TextStyles.small,
+    marginBottom: 5
   },
   scrollContentContainer: {
     paddingBottom: 50

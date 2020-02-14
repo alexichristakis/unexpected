@@ -3,14 +3,15 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import moment from "moment";
 
-import { TextStyles } from "@lib/styles";
+import { TextStyles, Colors } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
 
-import { StackParamList } from "../../../App";
+import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -56,6 +57,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 2
   },
+
   name: {
     ...TextStyles.small,
     fontWeight: "600",
@@ -63,6 +65,10 @@ const styles = StyleSheet.create({
   },
   body: {
     ...TextStyles.small
+  },
+  createdAt: {
+    ...TextStyles.small,
+    color: Colors.gray
   }
 });
 

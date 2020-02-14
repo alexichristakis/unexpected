@@ -4,6 +4,7 @@ import {
   NativeSyntheticEvent,
   StatusBar,
   StyleSheet,
+  TextInput,
   FlatList
 } from "react-native";
 
@@ -18,7 +19,12 @@ import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
 import { Posts } from "@components/Feed";
-import { ZoomedImage, ZoomedImageType } from "@components/universal";
+import {
+  ZoomedImage,
+  ZoomedImageType,
+  ModalListRef
+} from "@components/universal";
+import { CommentsModal } from "@components/Comments";
 import { hideStatusBarOnScroll } from "@hooks";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
@@ -57,9 +63,13 @@ export const Feed: React.FC<FeedProps> = React.memo(
     refreshing,
     shouldLaunchPermissions
   }) => {
+    const [commentsPostId, setCommentsPostId] = useState("");
     const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
     const [scrollY] = useState(new Value(0));
+
+    const textInputRef = useRef<TextInput>(null);
     const scrollRef = useRef<FlatList>(null);
+    const modalRef = useRef<ModalListRef>(null);
 
     const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
 
@@ -103,6 +113,19 @@ export const Feed: React.FC<FeedProps> = React.memo(
 
     const handleOnPressShare = () => navigation.navigate("CAPTURE");
 
+    const handleOnPressMoreComments = (postId: string) => {
+      // console.log("on press more", postId);
+      setCommentsPostId(postId);
+      modalRef.current?.open();
+    };
+
+    const handleOnPressComposeCommment = (postId: string) => {
+      // console.log("postid", postId, textInputRef.current);
+      setCommentsPostId(postId);
+      modalRef.current?.openFully();
+      setTimeout(textInputRef.current?.focus, 50);
+    };
+
     const handleOnGestureComplete = () => setZoomedImage(undefined);
 
     return (
@@ -110,6 +133,8 @@ export const Feed: React.FC<FeedProps> = React.memo(
         <Posts
           scrollRef={scrollRef}
           scrollY={scrollY}
+          onPressComposeComment={handleOnPressComposeCommment}
+          onPressMoreComments={handleOnPressMoreComments}
           refreshing={refreshing}
           onScrollEndDrag={handleOnScrollEndDrag}
           onGestureBegan={setZoomedImage}
@@ -119,6 +144,11 @@ export const Feed: React.FC<FeedProps> = React.memo(
         />
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
         <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
+        <CommentsModal
+          textInputRef={textInputRef}
+          modalRef={modalRef}
+          postId={commentsPostId}
+        />
       </Screen>
     );
   }
