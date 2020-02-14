@@ -61,7 +61,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginBottom: 5
+    marginBottom: 7
   },
   textContainer: {
     flex: 1,

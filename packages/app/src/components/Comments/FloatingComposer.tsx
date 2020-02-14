@@ -31,10 +31,10 @@ const config = {
 };
 
 export interface FloatingComposerProps {
-  offsetY: Animated.Value<number>;
-  textInputRef: React.RefObject<TextInput>;
+  offsetY?: Animated.Value<number>;
+  textInputRef?: React.RefObject<TextInput>;
   loading: boolean;
-  onFocus: () => void;
+  onFocus?: () => void;
   onSendMessage: (message: string) => void;
 }
 
@@ -47,11 +47,13 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
 }) => {
   const [message, setMessage] = useState("");
 
-  const opacity = interpolate(offsetY, {
-    inputRange: [SCREEN_HEIGHT / 2, SCREEN_HEIGHT],
-    outputRange: [1, 0],
-    extrapolate: Extrapolate.CLAMP
-  });
+  const opacity = offsetY
+    ? interpolate(offsetY, {
+        inputRange: [SCREEN_HEIGHT / 2, SCREEN_HEIGHT],
+        outputRange: [1, 0],
+        extrapolate: Extrapolate.CLAMP
+      })
+    : 1;
 
   const handleOnPressSend = () => {
     onSendMessage(message);
