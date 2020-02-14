@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Keyboard, KeyboardEvent, ScrollView, TextInput } from "react-native";
+import { Keyboard, KeyboardEvent, TextInput } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
 import Animated, { Easing } from "react-native-reanimated";
 import { useValues, useDiff } from "react-native-redash";
 
 import { ModalList, ModalListRef } from "@components/universal";
 import { Actions as PostActions } from "@redux/modules/post";
-import { User } from "@unexpected/global";
 import { RootState } from "@redux/types";
 import * as selectors from "@redux/selectors";
 import { Comment as CommentType } from "@unexpected/global";
@@ -67,8 +66,6 @@ export const CommentsModal: React.FC<CommentsModalProps &
         endCoordinates: { height }
       } = event;
 
-      console.log("keyboard will show");
-
       Animated.timing(keyboardHeight, {
         toValue: height,
         duration: 100,
@@ -76,11 +73,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
       }).start(() => scrollRef.current?.getNode().scrollToEnd());
     };
 
-    const onKeyboardWillHide = (event: KeyboardEvent) => {
-      const {
-        endCoordinates: { height }
-      } = event;
-
+    const onKeyboardWillHide = () => {
       Animated.timing(keyboardHeight, {
         toValue: 0,
         duration: 100,
@@ -102,7 +95,6 @@ export const CommentsModal: React.FC<CommentsModalProps &
     useCode(
       () =>
         block([
-          // debug("offsetDiff", offsetDiffY),
           cond(
             and(
               greaterThan(offsetDiffY, 0),
