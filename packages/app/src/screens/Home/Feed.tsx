@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import {
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StatusBar,
-  StyleSheet,
-  TextInput,
-  FlatList
-} from "react-native";
+import { StyleSheet, TextInput, FlatList } from "react-native";
 
 import { useScrollToTop } from "@react-navigation/native";
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
@@ -96,19 +89,22 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
+    const handleOnRefresh = () => {
+      Haptics.trigger("impactMedium");
+      fetchFeed();
+    };
+
     const handleOnPressShare = () => navigation.navigate("CAPTURE");
 
     const handleOnPressMoreComments = (postId: string) => {
-      // console.log("on press more", postId);
       setCommentsPostId(postId);
       modalRef.current?.open();
     };
 
     const handleOnPressComposeCommment = (postId: string) => {
-      // console.log("postid", postId, textInputRef.current);
       setCommentsPostId(postId);
       modalRef.current?.openFully();
-      setTimeout(textInputRef.current?.focus, 50);
+      setTimeout(textInputRef.current?.focus, 100);
     };
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);
@@ -121,7 +117,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
           onPressComposeComment={handleOnPressComposeCommment}
           onPressMoreComments={handleOnPressMoreComments}
           refreshing={refreshing}
-          onRefresh={fetchFeed}
+          onRefresh={handleOnRefresh}
           onGestureBegan={setZoomedImage}
           onGestureComplete={handleOnGestureComplete}
           onPressUser={handleOnPressUser}
@@ -142,7 +138,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingHorizontal: 20,
     alignItems: "center"
   }
 });

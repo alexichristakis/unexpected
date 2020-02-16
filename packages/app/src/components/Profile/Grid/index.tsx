@@ -176,7 +176,9 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
       </Transitioning.View>
     );
   },
-  (prevProps, nextProps) => prevProps.loading === nextProps.loading
+  (prevProps, nextProps) =>
+    prevProps.loading === nextProps.loading &&
+    prevProps.friendStatus === nextProps.friendStatus
 );
 
 const styles = StyleSheet.create({
