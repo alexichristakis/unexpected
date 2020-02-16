@@ -211,7 +211,7 @@ export function* notificationWatcher() {
         if (payload.type === "post") {
           const { route } = payload;
 
-          navigate("POST", { prevRoute: "Feed", postId: route.id });
+          // navigate("POST", { prevRoute: "Feed", postId: route.id });
         }
       }
     }

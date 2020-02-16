@@ -36,8 +36,6 @@ export interface ZoomHandlerProps {
 
 export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
   ({ children, onGestureBegan, onGestureComplete, renderKey }) => {
-    console.log("renderKey", renderKey);
-
     const pinchRef = React.createRef<PinchGestureHandler>();
     const panRef = React.createRef<PanGestureHandler>();
     const childRef = React.createRef<Animated.View>();
