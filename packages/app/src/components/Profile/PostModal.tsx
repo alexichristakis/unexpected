@@ -83,21 +83,6 @@ const PostModal: React.FC<PostModalProps &
 
     const isUser = currentUserPhoneNumber === post.phoneNumber;
 
-    const handleOnPressName = () => {
-      // if (isUser) {
-      //   navigation.navigate("USER_PROFILE");
-      // } else {
-      //   navigation.navigate({
-      //     name: "PROFILE",
-      //     key: uuid(),
-      //     params: {
-      //       prevRoute: "Post",
-      //       phoneNumber: post.phoneNumber
-      //     }
-      //   });
-      // }
-    };
-
     const {
       id,
       description = "",
@@ -148,11 +133,6 @@ const PostModal: React.FC<PostModalProps &
             style={{ paddingBottom: 200 }}
             ref={modalRef}
           >
-            {isUser && (
-              <TouchableOpacity onPress={handleOnPressMoreIcon}>
-                <MoreIcon width={20} height={20} />
-              </TouchableOpacity>
-            )}
             <ZoomHandler
               renderKey={photoId}
               onGestureComplete={handleOnGestureComplete}
@@ -165,6 +145,7 @@ const PostModal: React.FC<PostModalProps &
                 height={SCREEN_WIDTH * 1.2}
               />
             </ZoomHandler>
+
             <View style={styles.footer}>
               {description.length ? (
                 <Text style={styles.description}>{description}</Text>
