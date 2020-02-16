@@ -184,8 +184,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
 
 const styles = StyleSheet.create({
   list: {
-    height: "100%",
-    width: "100%"
+    alignSelf: "stretch"
   },
   contentContainer: {
     paddingBottom: 100

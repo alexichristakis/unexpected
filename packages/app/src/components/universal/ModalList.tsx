@@ -37,6 +37,7 @@ const {
   interpolate,
   useCode,
   cond,
+  and,
   debug,
   abs,
   eq,
@@ -67,6 +68,7 @@ export interface ModalListProps {
   title: string;
   style?: StyleProp<ViewStyle>;
   offsetY?: Animated.Value<number>;
+  onClose?: () => void;
 }
 
 export type ModalListRef = {
@@ -82,7 +84,14 @@ const CLOSED = SCREEN_HEIGHT;
 export const ModalList = React.memo(
   React.forwardRef<ModalListRef, ModalListProps>(
     (
-      { title, style, children, offsetY = new Animated.Value(0), scrollRef },
+      {
+        title,
+        style,
+        children,
+        offsetY = new Animated.Value(0),
+        scrollRef,
+        onClose
+      },
       ref
     ) => {
       const [clock] = useState(new Clock());
@@ -115,6 +124,11 @@ export const ModalList = React.memo(
         close
       }));
 
+      const handleClose = () => {
+        setIsOpen(false);
+        if (onClose) onClose();
+      };
+
       const handleOnSnap = (values: readonly number[]) => {
         values.forEach(value => {
           if (value === SNAP_OPEN) {
@@ -122,10 +136,13 @@ export const ModalList = React.memo(
           } else if (value === FULLY_OPEN) {
             setIsOpen(true);
           } else {
-            setIsOpen(false);
+            handleClose();
           }
 
-          setLastSnap(value);
+          // fix memory leak
+          if (value !== SCREEN_HEIGHT || !onClose) {
+            setLastSnap(value);
+          }
         });
       };
 
@@ -216,8 +233,10 @@ export const ModalList = React.memo(
                   config
                 })
               ),
-              call([], () => setIsOpen(false)),
-              cond(not(clockRunning(clock)), [set(goDown, 0)])
+              cond(not(clockRunning(clock)), [
+                set(goDown, 0),
+                call([], handleClose)
+              ])
             ])
           ]),
         []

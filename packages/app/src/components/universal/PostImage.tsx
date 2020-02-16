@@ -31,6 +31,8 @@ export interface PostImageProps {
 export const _PostImage: React.FC<PostImageProps &
   PostImageReduxProps> = React.memo(
   ({ phoneNumber, id, width, height, cache, requestCache }) => {
+    console.log("render post image", phoneNumber, id);
+
     useEffect(() => {
       // if the cache doesnt have a record of this photo download it
       if (!cache[id]) {
@@ -66,8 +68,15 @@ export const _PostImage: React.FC<PostImageProps &
     );
   },
   (prevProps, nextProps) => {
-    const { cache: prevCache } = prevProps;
-    const { id, cache: nextCache } = nextProps;
+    const {
+      phoneNumber: prevPhoneNumber,
+      id: prevId,
+      cache: prevCache
+    } = prevProps;
+    const { phoneNumber, id, cache: nextCache } = nextProps;
+
+    console.log("previd", prevId, "nextId", id);
+    if (prevId !== id || prevPhoneNumber !== phoneNumber) return false;
 
     if (!nextCache || !nextCache[id]) return true;
 

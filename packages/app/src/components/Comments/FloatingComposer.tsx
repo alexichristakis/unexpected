@@ -4,7 +4,9 @@ import {
   TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
-  ActivityIndicator
+  ActivityIndicator,
+  ViewStyle,
+  StyleProp
 } from "react-native";
 import Animated, {
   interpolate,
@@ -42,6 +44,7 @@ const config = {
 export interface FloatingComposerProps {
   offsetY?: Animated.Value<number>;
   textInputRef?: React.RefObject<TextInput>;
+  style?: StyleProp<ViewStyle>;
   loading: boolean;
   onFocus?: () => void;
   onSendMessage: (message: string) => void;
@@ -49,6 +52,7 @@ export interface FloatingComposerProps {
 
 const FloatingComposer: React.FC<FloatingComposerProps> = ({
   textInputRef,
+  style,
   offsetY,
   loading,
   onFocus,
@@ -91,7 +95,7 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
 
   return (
     <KeyboardAvoidingView
-      style={StyleSheet.absoluteFill}
+      style={[StyleSheet.absoluteFill, style]}
       enabled={true}
       pointerEvents="box-none"
       behavior="height"

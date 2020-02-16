@@ -16,7 +16,7 @@ import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 import { useValues } from "react-native-redash";
 
-import { Grid, Top, UserModal } from "@components/Profile";
+import { Grid, Top, UserModal, PostModal } from "@components/Profile";
 import { FriendButton, NavBar, ModalListRef } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT } from "@lib/styles";
@@ -55,10 +55,12 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     friends,
     route
   }) => {
+    const [focusedPostId, setFocusedPostId] = useState("");
     const [showTitle, setShowTitle] = useState(false);
     const [scrollY] = useValues([0], []);
 
     const modalRef = useRef<ModalListRef>(null);
+    // const postModalRef = useRef<ModalListRef>(null);
     const navBarTransitionRef = useRef<TransitioningView>(null);
 
     const getFriendStatusState = () => {
@@ -110,7 +112,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     );
 
     const handleOnPressUser = (toUser: User) => {
-      if (user.phoneNumber === toUser.phoneNumber) {
+      if (phoneNumber === toUser.phoneNumber) {
         navigation.navigate("USER_PROFILE");
       } else {
         navigation.navigate({
@@ -124,12 +126,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       }
     };
 
-    const handleOnPressPost = (post: Post) => {
-      navigation.navigate({
-        name: "POST",
-        key: uuid(),
-        params: { prevRoute: user.firstName, postId: post.id }
-      });
+    const handleOnPressPost = ({ id }: Post) => {
+      requestAnimationFrame(() => setFocusedPostId(id));
     };
 
     const handleOnScrollEndDrag = (
@@ -149,6 +147,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
         if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
       }
     };
+
+    const handlePostModalClose = () => setFocusedPostId("");
 
     return (
       <Screen style={styles.container}>
@@ -175,6 +175,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           data={friends}
           onPressUser={handleOnPressUser}
         />
+        <PostModal postId={focusedPostId} onClose={handlePostModalClose} />
       </Screen>
     );
   },

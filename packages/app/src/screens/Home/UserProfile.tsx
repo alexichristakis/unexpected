@@ -24,7 +24,7 @@ import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import { hideStatusBarOnScroll } from "@hooks";
-import { UserModal, Top, Grid } from "@components/Profile";
+import { UserModal, Top, Grid, PostModal } from "@components/Profile";
 import { ModalListRef } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
@@ -73,6 +73,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     const [modalType, setModalType] = useState<"friends" | "requests">(
       "friends"
     );
+    const [focusedPostId, setFocusedPostId] = useState("");
 
     const scrollRef = useRef<FlatList>(null);
     const modalRef = useRef<ModalListRef>(null);
@@ -137,12 +138,13 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       }
     };
 
-    const handleOnPressPost = (post: Post) => {
-      navigation.navigate({
-        name: "POST",
-        key: uuid(),
-        params: { prevRoute: user.firstName, postId: post.id }
-      });
+    const handleOnPressPost = ({ id }: Post) => {
+      requestAnimationFrame(() => setFocusedPostId(id));
+      // navigation.navigate({
+      //   name: "POST",
+      //   key: uuid(),
+      //   params: { prevRoute: user.firstName, postId: post.id }
+      // });
     };
 
     const handleOnScrollEndDrag = (
@@ -162,6 +164,8 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       }
     };
 
+    const handlePostModalClose = () => setFocusedPostId("");
+
     return (
       <Screen style={styles.container}>
         <Grid
@@ -179,6 +183,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           data={modalType === "friends" ? friends : friendRequests}
           onPressUser={handleOnPressUser}
         />
+        <PostModal postId={focusedPostId} onClose={handlePostModalClose} />
       </Screen>
     );
   },

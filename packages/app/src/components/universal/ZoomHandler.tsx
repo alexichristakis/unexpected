@@ -29,12 +29,15 @@ export type ZoomHandlerGestureBeganPayload = {
 
 export interface ZoomHandlerProps {
   children: React.ReactNode;
+  renderKey?: string;
   onGestureBegan: (payload: ZoomHandlerGestureBeganPayload) => void;
   onGestureComplete: () => void;
 }
 
 export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
-  ({ children, onGestureBegan, onGestureComplete }) => {
+  ({ children, onGestureBegan, onGestureComplete, renderKey }) => {
+    console.log("renderKey", renderKey);
+
     const pinchRef = React.createRef<PinchGestureHandler>();
     const panRef = React.createRef<PanGestureHandler>();
     const childRef = React.createRef<Animated.View>();
@@ -76,12 +79,7 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
             set(dragX, timing({ to: 0, from: dragX, duration, easing })),
             set(dragY, timing({ to: 0, from: dragY, duration, easing })),
             delay(set(opacity, 1), duration),
-            delay(
-              call([], () => {
-                onGestureComplete();
-              }),
-              duration
-            )
+            delay(call([], onGestureComplete), duration)
           ])
         ]),
       []
@@ -121,5 +119,5 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
       </PinchGestureHandler>
     );
   },
-  () => true
+  (prevProps, nextProps) => prevProps.renderKey === nextProps.renderKey
 );
