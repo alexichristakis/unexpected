@@ -34,7 +34,6 @@ import { Month, Months } from "./Month";
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const mapStateToProps = (state: RootState, props: GridProps) => ({
-  isUser: !props.phoneNumber,
   loading: selectors.postLoading(state),
   user: selectors.user(state, props),
   posts: selectors.usersPosts(state, props)
@@ -59,7 +58,6 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
   ({
     scrollRef,
     scrollY,
-    isUser,
     friendStatus = "friends",
     loading,
     onPressPost,
@@ -171,7 +169,6 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
           ListHeaderComponent={renderHeader}
           ItemSeparatorComponent={renderSeparatorComponent}
           ListEmptyComponent={renderEmptyComponent}
-          contentContainerStyle={!isUser ? styles.contentContainer : {}}
           renderItem={renderMonth}
           data={generateMonths(releasedPosts) as any}
           onScrollEndDrag={onScrollEndDrag}
@@ -185,9 +182,6 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
 const styles = StyleSheet.create({
   list: {
     alignSelf: "stretch"
-  },
-  contentContainer: {
-    paddingBottom: 100
   },
   separator: {
     alignSelf: "stretch",
