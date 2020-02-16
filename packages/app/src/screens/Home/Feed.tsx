@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, TextInput, FlatList } from "react-native";
 
 import { useScrollToTop } from "@react-navigation/native";
-import { RouteProp, useFocusEffect } from "@react-navigation/core";
+import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
 import Haptics from "react-native-haptic-feedback";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
@@ -19,14 +19,13 @@ import {
 } from "@components/universal";
 import { CommentsModal } from "@components/Comments";
 import { hideStatusBarOnScroll } from "@hooks";
-import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
 import { StackParamList } from "../../App";
 
-const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
+const { Value } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
   stale: selectors.feedStale(state),

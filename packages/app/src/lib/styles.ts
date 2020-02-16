@@ -26,12 +26,11 @@ export const isIPhoneX =
   (SCREEN_WIDTH === X_WIDTH && SCREEN_HEIGHT === X_HEIGHT) ||
   (SCREEN_WIDTH === XSMAX_WIDTH && SCREEN_HEIGHT === XSMAX_HEIGHT);
 
-export const SB_HEIGHT = () =>
-  Platform.select({
-    ios: isIPhoneX ? 44 : 20,
-    android: StatusBar.currentHeight,
-    default: 0
-  });
+export const SB_HEIGHT = Platform.select({
+  ios: isIPhoneX ? 44 : 20,
+  android: StatusBar.currentHeight,
+  default: 0
+});
 
 export const Colors = {
   nearBlack: "rgb(10, 10, 10)",

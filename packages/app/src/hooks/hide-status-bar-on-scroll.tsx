@@ -30,7 +30,7 @@ export function hideStatusBarOnScroll(scrollY: Animated.Value<number>) {
           }),
           call([], () => {
             Animated.timing(translateY, {
-              toValue: -SB_HEIGHT(),
+              toValue: -SB_HEIGHT,
               duration: 200,
               easing: Easing.ease
             }).start();
@@ -40,7 +40,7 @@ export function hideStatusBarOnScroll(scrollY: Animated.Value<number>) {
         )
       ),
       cond(
-        greaterThan(scrollY, SB_HEIGHT() / 2),
+        greaterThan(scrollY, SB_HEIGHT / 2),
         set(visible, 0),
         set(visible, 1)
       )
@@ -48,13 +48,11 @@ export function hideStatusBarOnScroll(scrollY: Animated.Value<number>) {
     []
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      StatusBar.setHidden(!statusBarVisible);
+  useFocusEffect(() => {
+    StatusBar.setHidden(!statusBarVisible);
 
-      return () => {};
-    }, [statusBarVisible])
-  );
+    return () => {};
+  });
 
   const style = {
     transform: [{ translateY }]
@@ -68,7 +66,7 @@ export function hideStatusBarOnScroll(scrollY: Animated.Value<number>) {
           left: 0,
           right: 0,
           top: 0,
-          height: SB_HEIGHT(),
+          height: SB_HEIGHT,
           backgroundColor: "white"
         },
         style

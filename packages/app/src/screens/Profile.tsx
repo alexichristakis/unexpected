@@ -60,7 +60,6 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     const [scrollY] = useValues([0], []);
 
     const modalRef = useRef<ModalListRef>(null);
-    // const postModalRef = useRef<ModalListRef>(null);
     const navBarTransitionRef = useRef<TransitioningView>(null);
 
     const getFriendStatusState = () => {
@@ -185,7 +184,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: SB_HEIGHT(),
+    paddingTop: SB_HEIGHT,
     alignItems: "center"
   },
   headerContainer: {

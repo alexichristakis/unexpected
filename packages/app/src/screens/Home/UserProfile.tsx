@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     zIndex: 1,
-    paddingTop: SB_HEIGHT(),
+    paddingTop: SB_HEIGHT,
     alignItems: "center",
     alignSelf: "stretch"
   }

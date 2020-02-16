@@ -33,20 +33,18 @@ export class PostController {
     });
   }
 
-  @Get("/:phoneNumber")
+  @Get("/:phoneNumber/posts")
   getUsersPosts(@PathParams("phoneNumber") phoneNumber: string) {
     return this.postService.getUsersPosts(phoneNumber);
   }
 
   @Get("/:phoneNumber/feed")
   async getUsersFeed(@PathParams("phoneNumber") phoneNumber: string) {
-    const feed = await this.postService.getFeedForUser(phoneNumber);
-
-    return feed;
+    return this.postService.getFeedForUser(phoneNumber);
   }
 
   @Get("/:id")
-  async getPost(@PathParams("id") id: string) {
+  async getPostId(@PathParams("id") id: string) {
     return this.postService.getPost(id);
   }
 

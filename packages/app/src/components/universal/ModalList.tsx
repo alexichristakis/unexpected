@@ -77,7 +77,7 @@ export type ModalListRef = {
   close: () => void;
 };
 
-const FULLY_OPEN = SB_HEIGHT();
+const FULLY_OPEN = SB_HEIGHT;
 const SNAP_OPEN = SCREEN_HEIGHT / 2;
 const CLOSED = SCREEN_HEIGHT;
 
@@ -189,7 +189,7 @@ export const ModalList = React.memo(
               call([], () => setLastSnap(SNAP_OPEN))
             ),
             cond(
-              eq(translateY, SB_HEIGHT()),
+              eq(translateY, SB_HEIGHT),
               call([], () => setLastSnap(FULLY_OPEN))
             ),
             cond(goUp, [

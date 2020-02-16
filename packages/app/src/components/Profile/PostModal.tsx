@@ -1,28 +1,14 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
-import {
-  ActionSheetIOS,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { ActionSheetIOS, StyleSheet, Text, View } from "react-native";
 
-import { RouteProp, useFocusEffect } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import moment from "moment";
 import Animated from "react-native-reanimated";
-import { onScroll } from "react-native-redash";
-import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
 import isEqual from "lodash/isEqual";
-import uuid from "uuid/v4";
 
 import {
-  NavBar,
   PostImage,
   ModalList,
-  ItemSeparator,
-  UserRow,
   ModalListRef,
   ZoomedImage,
   ZoomedImageType,
@@ -77,11 +63,11 @@ const PostModal: React.FC<PostModalProps &
     const modalRef = useRef<ModalListRef>(null);
 
     useEffect(() => {
-      if (postId) fetchPost(postId);
+      if (postId) {
+        fetchPost(postId);
+      }
       modalRef.current?.openFully();
     }, [postId]);
-
-    const isUser = currentUserPhoneNumber === post.phoneNumber;
 
     const {
       id,
@@ -174,7 +160,7 @@ const PostModal: React.FC<PostModalProps &
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: SB_HEIGHT()
+    paddingTop: SB_HEIGHT
   },
   header: {
     flexDirection: "row",

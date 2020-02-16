@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   contentContainer: {
-    paddingTop: SB_HEIGHT(),
+    paddingTop: SB_HEIGHT,
     paddingBottom: 50,
     alignItems: "center"
   }
