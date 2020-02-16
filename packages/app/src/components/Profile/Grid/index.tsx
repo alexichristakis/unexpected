@@ -181,7 +181,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
 
 const styles = StyleSheet.create({
   list: {
-    alignSelf: "stretch"
+    flex: 1
   },
   separator: {
     alignSelf: "stretch",

@@ -194,6 +194,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center"
   },
   headerContainer: {

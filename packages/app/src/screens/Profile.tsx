@@ -184,6 +184,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     paddingTop: SB_HEIGHT(),
     alignItems: "center"
   },
