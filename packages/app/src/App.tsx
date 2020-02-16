@@ -38,7 +38,6 @@ import {
   UserProfile,
   NewProfilePicture,
   Permissions,
-  PostDetail,
   Profile,
   Settings,
   Share,
@@ -63,7 +62,6 @@ export type StackParamList = {
   USER_PROFILE: undefined;
   AUTH: undefined;
   SHARE: BaseParams;
-  POST: BaseParams & { postId: string };
   PROFILE: BaseParams & { phoneNumber: string };
   SETTINGS: undefined;
   SIGN_UP: undefined;
@@ -110,11 +108,6 @@ const HomeTab: React.FC<Props> = ({
         name="PROFILE"
         options={screenOptions}
         component={Profile}
-      />
-      <Stack.Screen
-        name="POST"
-        options={screenOptions}
-        component={PostDetail}
       />
     </Stack.Navigator>
   );

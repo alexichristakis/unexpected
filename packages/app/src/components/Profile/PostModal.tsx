@@ -176,7 +176,6 @@ const PostModal: React.FC<PostModalProps &
           </ModalList>
           {zoomedImage && <ZoomedImage {...zoomedImage} />}
           <FloatingComposer
-            // style={{ marginBottom: 30 }}
             offsetY={scrollY}
             onSendMessage={handleOnSendMessage}
             loading={commentLoading}
