@@ -71,33 +71,18 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const scrollRef = useRef<FlatList>(null);
     const modalRef = useRef<ModalListRef>(null);
 
-    const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
+    const StatusBar = hideStatusBarOnScroll(scrollY);
 
     // @ts-ignore
     useScrollToTop(scrollRef);
 
     useEffect(() => {
-      // fetchFeed();
+      fetchFeed();
 
       if (shouldLaunchPermissions) {
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }
-    }, []);
-
-    const handleOnScrollEndDrag = (
-      event: NativeSyntheticEvent<NativeScrollEvent>
-    ) => {
-      const {
-        nativeEvent: {
-          contentOffset: { y }
-        }
-      } = event;
-
-      if (y < -100) {
-        Haptics.trigger("impactMedium");
-        fetchFeed();
-      }
-    };
+    }, [stale]);
 
     const handleOnPressUser = (userPhoneNumber: string) => {
       if (phoneNumber === userPhoneNumber) {
@@ -136,14 +121,14 @@ export const Feed: React.FC<FeedProps> = React.memo(
           onPressComposeComment={handleOnPressComposeCommment}
           onPressMoreComments={handleOnPressMoreComments}
           refreshing={refreshing}
-          onScrollEndDrag={handleOnScrollEndDrag}
+          onRefresh={fetchFeed}
           onGestureBegan={setZoomedImage}
           onGestureComplete={handleOnGestureComplete}
           onPressUser={handleOnPressUser}
           onPressShare={handleOnPressShare}
         />
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
-        <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
+        <StatusBar />
         <CommentsModal
           textInputRef={textInputRef}
           modalRef={modalRef}
@@ -159,14 +144,6 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingHorizontal: 20,
     alignItems: "center"
-  },
-  statusBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    height: SB_HEIGHT(),
-    backgroundColor: "white"
   }
 });
 

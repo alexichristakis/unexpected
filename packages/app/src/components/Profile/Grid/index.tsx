@@ -181,14 +181,14 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
 
 const styles = StyleSheet.create({
   list: {
-    flex: 1
+    flex: 1,
+    width: "100%"
   },
   separator: {
     alignSelf: "stretch",
     marginVertical: 10,
     marginHorizontal: 40,
     height: 1
-    // backgroundColor: Colors.lightGray
   },
   emptyStateContainer: {
     alignItems: "center"

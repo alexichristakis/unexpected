@@ -78,7 +78,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     const scrollRef = useRef<FlatList>(null);
     const modalRef = useRef<ModalListRef>(null);
 
-    const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
+    const StatusBar = hideStatusBarOnScroll(scrollY);
 
     // @ts-ignore
     useScrollToTop(scrollRef);
@@ -140,11 +140,6 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const handleOnPressPost = ({ id }: Post) => {
       requestAnimationFrame(() => setFocusedPostId(id));
-      // navigation.navigate({
-      //   name: "POST",
-      //   key: uuid(),
-      //   params: { prevRoute: user.firstName, postId: post.id }
-      // });
     };
 
     const handleOnScrollEndDrag = (
@@ -176,7 +171,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           headerContainerStyle={styles.headerContainer}
           renderHeader={renderTop}
         />
-        <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
+        <StatusBar />
         <UserModal
           modalRef={modalRef}
           type={modalType}
@@ -202,14 +197,6 @@ const styles = StyleSheet.create({
     paddingTop: SB_HEIGHT(),
     alignItems: "center",
     alignSelf: "stretch"
-  },
-  statusBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    height: SB_HEIGHT(),
-    backgroundColor: "white"
   }
 });
 
