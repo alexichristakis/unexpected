@@ -100,6 +100,7 @@ const UserModal: React.FC<UserModalProps &
 
     const title = type === "friends" ? "Friends" : "Requests";
     const data = type === "friends" ? friends : requests;
+
     return (
       <ModalList title={title} ref={modalRef} onClose={onClose}>
         {data.map(renderUserRow)}

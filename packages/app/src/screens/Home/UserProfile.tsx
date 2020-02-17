@@ -70,9 +70,9 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     user
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
-    const [modalType, setModalType] = useState<"friends" | "requests">(
-      "friends"
-    );
+    const [modalType, setModalType] = useState<
+      "friends" | "requests" | undefined
+    >(undefined);
     const [focusedPostId, setFocusedPostId] = useState("");
 
     const scrollRef = useRef<FlatList>(null);
@@ -160,6 +160,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     };
 
     const handlePostModalClose = () => setFocusedPostId("");
+    const handleUserModalClose = () => setModalType(undefined);
 
     return (
       <Screen style={styles.container}>
@@ -173,10 +174,10 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
         />
         <StatusBar />
         <UserModal
-          modalRef={modalRef}
+          visible={!!modalType}
           type={modalType}
-          data={modalType === "friends" ? friends : friendRequests}
-          onPressUser={handleOnPressUser}
+          phoneNumber={user.phoneNumber}
+          onClose={handleUserModalClose}
         />
         <PostModal postId={focusedPostId} onClose={handlePostModalClose} />
       </Screen>
