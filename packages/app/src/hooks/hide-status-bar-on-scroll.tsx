@@ -9,7 +9,10 @@ import { useValues } from "react-native-redash";
 
 const { onChange, set, cond, call, greaterThan, useCode } = Animated;
 
-export function hideStatusBarOnScroll(scrollY: Animated.Value<number>) {
+export function hideStatusBarOnScroll(
+  scrollY: Animated.Value<number>,
+  barStyle: "dark-content" | "light-content"
+) {
   const [statusBarVisible, setStatusBarVisible] = useState(true);
   const [translateY, visible] = useValues([0, 1], []);
 
@@ -49,6 +52,7 @@ export function hideStatusBarOnScroll(scrollY: Animated.Value<number>) {
   );
 
   useFocusEffect(() => {
+    StatusBar.setBarStyle(barStyle, true);
     StatusBar.setHidden(!statusBarVisible);
 
     return () => {};

@@ -78,7 +78,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     const scrollRef = useRef<FlatList>(null);
     const modalRef = useRef<ModalListRef>(null);
 
-    const StatusBar = hideStatusBarOnScroll(scrollY);
+    const StatusBar = hideStatusBarOnScroll(scrollY, "dark-content");
 
     // @ts-ignore
     useScrollToTop(scrollRef);

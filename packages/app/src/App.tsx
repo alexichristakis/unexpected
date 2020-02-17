@@ -12,7 +12,6 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp
 } from "@react-navigation/native-stack";
-import { User } from "@unexpected/global";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
@@ -90,6 +89,7 @@ const HomeTab: React.FC<Props> = ({
   navigation,
   component: Root,
   name,
+  // phoneNumber,
   ...rest
 }) => {
   navigation.setOptions({
@@ -106,6 +106,7 @@ const HomeTab: React.FC<Props> = ({
       <Stack.Screen name={name} options={screenOptions} component={Root} />
       <Stack.Screen
         name="PROFILE"
+        // initialParams={{phoneNumber}}
         options={screenOptions}
         component={Profile}
       />
@@ -120,16 +121,16 @@ const renderTabBar = (tabBarProps: BottomTabBarProps) => (
   </>
 );
 
-const AuthenticatedRoot = () => (
-  <Stack.Navigator screenOptions={{ stackPresentation: "modal" }}>
-    <Stack.Screen name="HOME" options={{ headerShown: false }}>
-      {rootStackScreenProps => {
-        // dont keep this
-        rootStackScreenProps.navigation.addListener("focus", () =>
-          StatusBar.setBarStyle("dark-content", true)
-        );
+const AuthenticatedRoot = () => {
+  // get initial route name from launched notification
 
-        return (
+  return (
+    <Stack.Navigator
+      // initialRouteName={}
+      screenOptions={{ stackPresentation: "modal" }}
+    >
+      <Stack.Screen name="HOME" options={{ headerShown: false }}>
+        {props => (
           <Tabs.Navigator
             tabBarOptions={{
               style: {
@@ -189,41 +190,41 @@ const AuthenticatedRoot = () => (
               )}
             </Tabs.Screen>
           </Tabs.Navigator>
-        );
-      }}
-    </Stack.Screen>
-    <Stack.Screen
-      name="NEW_PROFILE_PICTURE"
-      component={NewProfilePicture}
-      options={{
-        headerTitle: "share",
-        headerTitleStyle: TextStyles.large,
-        headerTintColor: "#231F20",
-        headerHideShadow: true
-      }}
-    />
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="NEW_PROFILE_PICTURE"
+        component={NewProfilePicture}
+        options={{
+          headerTitle: "share",
+          headerTitleStyle: TextStyles.large,
+          headerTintColor: "#231F20",
+          headerHideShadow: true
+        }}
+      />
 
-    <Stack.Screen name="CAPTURE">
-      {({ route }) => (
-        <Stack.Navigator>
-          <Stack.Screen name="CAPTURE" options={{ headerShown: false }}>
-            {({ navigation }) => (
-              <Capture navigation={navigation} route={route} />
-            )}
-          </Stack.Screen>
-          <Stack.Screen
-            name="SHARE"
-            component={Share}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      )}
-    </Stack.Screen>
-    <Stack.Screen name="SETTINGS" component={Settings} />
-    <Stack.Screen name="PERMISSIONS" component={Permissions} />
-    <Stack.Screen name="EDIT_PROFILE" component={EditProfile} />
-  </Stack.Navigator>
-);
+      <Stack.Screen name="CAPTURE">
+        {({ route }) => (
+          <Stack.Navigator>
+            <Stack.Screen name="CAPTURE" options={{ headerShown: false }}>
+              {({ navigation }) => (
+                <Capture navigation={navigation} route={route} />
+              )}
+            </Stack.Screen>
+            <Stack.Screen
+              name="SHARE"
+              component={Share}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="SETTINGS" component={Settings} />
+      <Stack.Screen name="PERMISSIONS" component={Permissions} />
+      <Stack.Screen name="EDIT_PROFILE" component={EditProfile} />
+    </Stack.Navigator>
+  );
+};
 
 const UnathenticatedRoot = () => (
   <Stack.Navigator>
