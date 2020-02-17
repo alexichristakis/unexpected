@@ -56,10 +56,10 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     route
   }) => {
     const [focusedPostId, setFocusedPostId] = useState("");
+    const [showUserModal, setShowUserModal] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
     const [scrollY] = useValues([0], []);
 
-    const modalRef = useRef<ModalListRef>(null);
     const navBarTransitionRef = useRef<TransitioningView>(null);
 
     const getFriendStatusState = () => {
@@ -97,16 +97,14 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
             })
           )
         ]),
-      [showTitle]
+      []
     );
-
-    const showFriends = () => modalRef.current?.open();
 
     const renderTop = () => (
       <Top
         phoneNumber={route.params.phoneNumber}
         scrollY={scrollY}
-        onPressFriends={showFriends}
+        onPressFriends={handleOnPressFriends}
       />
     );
 
@@ -129,6 +127,13 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       requestAnimationFrame(() => setFocusedPostId(id));
     };
 
+    const handleOnPressFriends = () => {
+      requestAnimationFrame(() => setShowUserModal(true));
+    };
+
+    const handlePostModalClose = () => setFocusedPostId("");
+    const handleUserModalClose = () => setShowUserModal(false);
+
     const handleOnScrollEndDrag = (
       event: NativeSyntheticEvent<NativeScrollEvent>
     ) => {
@@ -146,8 +151,6 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
         if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
       }
     };
-
-    const handlePostModalClose = () => setFocusedPostId("");
 
     return (
       <Screen style={styles.container}>
@@ -170,9 +173,9 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           renderHeader={renderTop}
         />
         <UserModal
-          modalRef={modalRef}
-          data={friends}
-          onPressUser={handleOnPressUser}
+          visible={showUserModal}
+          phoneNumber={route.params.phoneNumber}
+          onClose={handleUserModalClose}
         />
         <PostModal postId={focusedPostId} onClose={handlePostModalClose} />
       </Screen>

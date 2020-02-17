@@ -69,7 +69,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     useScrollToTop(scrollRef);
 
     useEffect(() => {
-      fetchFeed();
+      // fetchFeed();
 
       if (shouldLaunchPermissions) {
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);

@@ -188,13 +188,11 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    // paddingTop: 50,
-    // top: 50,
     width: "100%"
   },
   contentContainer: {
     paddingTop: SB_HEIGHT,
-    paddingBottom: 50,
+    paddingBottom: 10,
     alignItems: "center"
   }
 });

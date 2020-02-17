@@ -5,6 +5,7 @@ import moment from "moment";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 import isEqual from "lodash/isEqual";
+import sortBy from "lodash/sortBy";
 
 import {
   PostImage,
@@ -16,11 +17,9 @@ import {
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
 import { Comment, FloatingComposer } from "@components/Comments";
-import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
-import { Actions as ImageActions } from "@redux/modules/image";
-import { Actions as PostActions } from "@redux/modules/post";
+import { PostActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { User } from "@unexpected/global";
@@ -136,7 +135,7 @@ const PostModal: React.FC<PostModalProps &
               {description.length ? (
                 <Text style={styles.description}>{description}</Text>
               ) : null}
-              {comments.map(comment => (
+              {sortBy(comments, ({ createdAt }) => createdAt).map(comment => (
                 <Comment key={comment.id} {...comment} />
               ))}
             </View>
@@ -162,14 +161,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: SB_HEIGHT
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 5,
-    marginBottom: 10,
-    paddingHorizontal: 15
-  },
   footer: {
     marginTop: 5,
     paddingHorizontal: 5
@@ -177,9 +168,6 @@ const styles = StyleSheet.create({
   description: {
     ...TextStyles.small,
     marginBottom: 5
-  },
-  scrollContentContainer: {
-    paddingBottom: 50
   }
 });
 

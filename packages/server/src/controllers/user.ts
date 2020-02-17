@@ -44,10 +44,12 @@ export class UserController {
   @Get()
   async getUsers(
     @QueryParams("phoneNumbers") phoneNumbers: string,
-    @QueryParams("select") select: string
+    @QueryParams("select") select?: string
   ) {
-    const userPhoneNumbers = phoneNumbers.split(",");
-    const selectOn = select.split(",").join(" ");
+    const userPhoneNumbers = phoneNumbers.includes(",")
+      ? phoneNumbers.split(",")
+      : [phoneNumbers];
+    const selectOn = select?.split(",").join(" ") || "firstName lastName";
 
     return this.userService.getByPhoneNumber(
       userPhoneNumbers,
