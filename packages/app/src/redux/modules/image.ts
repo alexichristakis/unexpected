@@ -185,7 +185,9 @@ function* onRequestCache(
         headers: getHeaders({ jwt })
       }).promise;
 
-      yield put(Actions.cachePhoto(filePath, phoneNumber, id));
+      if (response.bytesWritten) {
+        yield put(Actions.cachePhoto(filePath, phoneNumber, id));
+      }
     } catch (err) {
       yield put(Actions.onError(err));
     }

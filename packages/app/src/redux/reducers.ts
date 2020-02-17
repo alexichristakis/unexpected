@@ -1,20 +1,22 @@
 import { combineReducers } from "redux";
 
-import app from "./modules/app";
-import auth from "./modules/auth";
-import image from "./modules/image";
-import permissions from "./modules/permissions";
-import post from "./modules/post";
-import user from "./modules/user";
+import {
+  AppReducer,
+  AuthReducer,
+  ImageReducer,
+  PermissionsReducer,
+  PostReducer,
+  UserReducer
+} from "./modules";
 import { RootState } from "./types";
 
 const appReducers = combineReducers({
-  app,
-  auth,
-  user,
-  permissions,
-  image,
-  post
+  app: AppReducer,
+  auth: AuthReducer,
+  image: ImageReducer,
+  permissions: PermissionsReducer,
+  post: PostReducer,
+  user: UserReducer
 });
 
 export const root = (state?: RootState, action?: any) => {

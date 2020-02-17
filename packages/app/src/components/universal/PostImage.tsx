@@ -66,8 +66,14 @@ export const _PostImage: React.FC<PostImageProps &
     );
   },
   (prevProps, nextProps) => {
-    const { cache: prevCache } = prevProps;
-    const { id, cache: nextCache } = nextProps;
+    const {
+      phoneNumber: prevPhoneNumber,
+      id: prevId,
+      cache: prevCache
+    } = prevProps;
+    const { phoneNumber, id, cache: nextCache } = nextProps;
+
+    if (prevId !== id || prevPhoneNumber !== phoneNumber) return false;
 
     if (!nextCache || !nextCache[id]) return true;
 

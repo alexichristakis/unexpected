@@ -1,25 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
-  Keyboard,
-  Text,
+  TextInput,
   TouchableOpacity,
-  View,
-  KeyboardEvent,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ActivityIndicator,
+  ViewStyle,
+  StyleProp
 } from "react-native";
 import Animated, {
   interpolate,
   Extrapolate,
   Clock
 } from "react-native-reanimated";
+import { useValues, spring } from "react-native-redash";
 
-import { TextSizes, TextStyles, Colors, SCREEN_HEIGHT } from "@lib/styles";
+import { TextStyles, Colors, SCREEN_HEIGHT } from "@lib/styles";
 
-import { useValues, spring, timing, translate } from "react-native-redash";
-import { TextInput } from "react-native-gesture-handler";
+const {
+  useCode,
+  debug,
+  set,
+  multiply,
+  block,
+  greaterThan,
+  onChange,
+  and,
+  not,
+  cond
+} = Animated;
 
-const { useCode, debug, set, multiply, block, onChange, cond } = Animated;
+import SendIcon from "@assets/svg/send.svg";
 
 const config = {
   damping: 50,
@@ -33,6 +44,7 @@ const config = {
 export interface FloatingComposerProps {
   offsetY?: Animated.Value<number>;
   textInputRef?: React.RefObject<TextInput>;
+  style?: StyleProp<ViewStyle>;
   loading: boolean;
   onFocus?: () => void;
   onSendMessage: (message: string) => void;
@@ -40,12 +52,15 @@ export interface FloatingComposerProps {
 
 const FloatingComposer: React.FC<FloatingComposerProps> = ({
   textInputRef,
+  style,
   offsetY,
   loading,
   onFocus,
   onSendMessage
 }) => {
+  const [clock] = useState(new Clock());
   const [message, setMessage] = useState("");
+  const [sendButtonScale] = useValues([0], []);
 
   const opacity = offsetY
     ? interpolate(offsetY, {
@@ -60,13 +75,30 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
     setMessage("");
   };
 
+  useCode(
+    () =>
+      block([
+        cond(
+          greaterThan(message.length, 0),
+          set(
+            sendButtonScale,
+            spring({ clock, from: sendButtonScale, to: 1, config })
+          ),
+          set(
+            sendButtonScale,
+            spring({ clock, from: sendButtonScale, to: 0, config })
+          )
+        )
+      ]),
+    [message.length]
+  );
+
   return (
     <KeyboardAvoidingView
-      style={StyleSheet.absoluteFill}
+      style={[StyleSheet.absoluteFill, style]}
       enabled={true}
       pointerEvents="box-none"
       behavior="height"
-      // keyboardVerticalOffset={15}
     >
       <Animated.View style={[{ opacity }, styles.container]}>
         <TextInput
@@ -75,6 +107,8 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
           onFocus={onFocus}
           placeholderTextColor={Colors.gray}
           placeholder="add a comment"
+          returnKeyType="send"
+          onSubmitEditing={handleOnPressSend}
           value={message}
           onChangeText={setMessage}
         />
@@ -82,7 +116,13 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
           disabled={loading || !message.length}
           onPress={handleOnPressSend}
         >
-          <Text style={TextStyles.medium}>{loading ? "sending" : "send"}</Text>
+          {loading ? (
+            <ActivityIndicator style={styles.activityIndicator} />
+          ) : (
+            <Animated.View style={{ transform: [{ scale: sendButtonScale }] }}>
+              <SendIcon width={30} height={30} />
+            </Animated.View>
+          )}
         </TouchableOpacity>
       </Animated.View>
     </KeyboardAvoidingView>
@@ -97,14 +137,19 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 5,
     right: 5,
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    borderRadius: 15,
+    paddingVertical: 5,
+    paddingLeft: 10,
+    paddingRight: 5,
     flexDirection: "row"
   },
   input: {
     flex: 1,
     ...TextStyles.medium
+  },
+  activityIndicator: {
+    height: 30,
+    marginRight: 5
   }
 });
 

@@ -48,13 +48,13 @@ export interface PostsProps {
   scrollY: Animated.Value<number>;
   scrollRef: React.Ref<FlatList>;
   refreshing: boolean;
+  onRefresh: () => void;
   onPressMoreComments: (postId: string) => void;
   onPressComposeComment: (postId: string) => void;
   onGestureBegan: (image: ZoomedImageType) => void;
   onGestureComplete: () => void;
   onPressUser: (phoneNumber: string) => void;
   onPressShare: () => void;
-  onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 }
 
 export type PostConnectedProps = ConnectedProps<typeof connector>;
@@ -66,10 +66,10 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
     scrollY,
     scrollRef,
     refreshing,
+    onRefresh,
     posts,
     onPressMoreComments,
     onPressComposeComment,
-    onScrollEndDrag,
     onGestureBegan,
     onGestureComplete,
     onPressUser,
@@ -104,11 +104,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
       }
     );
 
-    const { sortedPosts, latest } = sortPosts();
-
-    const renderTop = () => (
-      <Top latest={latest} refreshing={refreshing} scrollY={scrollY} />
-    );
+    const { sortedPosts } = sortPosts();
 
     const renderEmptyComponent = () => (
       <Button
@@ -178,11 +174,10 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
         windowSize={3}
         onViewableItemsChanged={onViewableItemsChangedRef.current}
         viewabilityConfig={VIEWABILITY_CONFIG}
-        ListHeaderComponent={renderTop}
-        ListHeaderComponentStyle={styles.headerContainer}
         ListEmptyComponent={renderEmptyComponent}
-        onScrollEndDrag={onScrollEndDrag}
         contentContainerStyle={styles.contentContainer}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         scrollEventThrottle={16}
         onScroll={onScroll({ y: scrollY })}
       />
@@ -196,13 +191,9 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   contentContainer: {
-    paddingTop: SB_HEIGHT(),
-    paddingBottom: 50,
+    paddingTop: SB_HEIGHT,
+    paddingBottom: 10,
     alignItems: "center"
-  },
-  headerContainer: {
-    zIndex: 1,
-    alignSelf: "stretch"
   }
 });
 

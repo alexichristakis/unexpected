@@ -1,19 +1,12 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
-import {
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StatusBar,
-  StyleSheet,
-  TextInput,
-  FlatList
-} from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { StyleSheet, TextInput, FlatList } from "react-native";
 
 import { useScrollToTop } from "@react-navigation/native";
-import { RouteProp, useFocusEffect } from "@react-navigation/core";
+import { RouteProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
 import Haptics from "react-native-haptic-feedback";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
@@ -26,14 +19,13 @@ import {
 } from "@components/universal";
 import { CommentsModal } from "@components/Comments";
 import { hideStatusBarOnScroll } from "@hooks";
-import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
 import { StackParamList } from "../../App";
 
-const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
+const { Value } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
   stale: selectors.feedStale(state),
@@ -71,7 +63,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const scrollRef = useRef<FlatList>(null);
     const modalRef = useRef<ModalListRef>(null);
 
-    const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
+    const StatusBar = hideStatusBarOnScroll(scrollY, "dark-content");
 
     // @ts-ignore
     useScrollToTop(scrollRef);
@@ -82,22 +74,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
       if (shouldLaunchPermissions) {
         setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
       }
-    }, []);
-
-    const handleOnScrollEndDrag = (
-      event: NativeSyntheticEvent<NativeScrollEvent>
-    ) => {
-      const {
-        nativeEvent: {
-          contentOffset: { y }
-        }
-      } = event;
-
-      if (y < -100) {
-        Haptics.trigger("impactMedium");
-        fetchFeed();
-      }
-    };
+    }, [stale]);
 
     const handleOnPressUser = (userPhoneNumber: string) => {
       if (phoneNumber === userPhoneNumber) {
@@ -111,19 +88,22 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
+    const handleOnRefresh = () => {
+      Haptics.trigger("impactMedium");
+      fetchFeed();
+    };
+
     const handleOnPressShare = () => navigation.navigate("CAPTURE");
 
     const handleOnPressMoreComments = (postId: string) => {
-      // console.log("on press more", postId);
       setCommentsPostId(postId);
       modalRef.current?.open();
     };
 
     const handleOnPressComposeCommment = (postId: string) => {
-      // console.log("postid", postId, textInputRef.current);
       setCommentsPostId(postId);
       modalRef.current?.openFully();
-      setTimeout(textInputRef.current?.focus, 50);
+      setTimeout(textInputRef.current?.focus, 100);
     };
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);
@@ -136,14 +116,14 @@ export const Feed: React.FC<FeedProps> = React.memo(
           onPressComposeComment={handleOnPressComposeCommment}
           onPressMoreComments={handleOnPressMoreComments}
           refreshing={refreshing}
-          onScrollEndDrag={handleOnScrollEndDrag}
+          onRefresh={handleOnRefresh}
           onGestureBegan={setZoomedImage}
           onGestureComplete={handleOnGestureComplete}
           onPressUser={handleOnPressUser}
           onPressShare={handleOnPressShare}
         />
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
-        <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
+        <StatusBar />
         <CommentsModal
           textInputRef={textInputRef}
           modalRef={modalRef}
@@ -157,16 +137,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingHorizontal: 20,
     alignItems: "center"
-  },
-  statusBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    height: SB_HEIGHT(),
-    backgroundColor: "white"
   }
 });
 

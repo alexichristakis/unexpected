@@ -49,11 +49,11 @@ export const user = createSelector(
   }
 );
 
-export const friends = createSelector([user, users], (user, users) =>
-  user.friends
-    .filter(phoneNumber => users[phoneNumber])
-    .map(phoneNumber => users[phoneNumber])
-);
+export const friends = createSelector([user, users], (user, users) => {
+  return user.friends.filter(num => !!users[num]).map(num => users[num]);
+});
+
+export const friendsNumbers = createSelector(user, ({ friends }) => friends);
 
 export const currentUser = createSelector(
   [users, phoneNumber],

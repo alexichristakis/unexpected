@@ -478,13 +478,13 @@
     p-queue "^2.4.2"
     p-retry "^4.0.0"
 
-"@tsed/common@5.42.1", "@tsed/common@^5.42.1":
-  version "5.42.1"
-  resolved "https://registry.yarnpkg.com/@tsed/common/-/common-5.42.1.tgz#86143953a4379047bd36ae750e72568331570131"
-  integrity sha512-Ga6azktO7YV3kokVPrc2rud4wsHf4n/qKPCKvfggyVyH69hwBizHdc8WHbg9ZR8NPTLiv6y5r5KnIrcMOmLITQ==
+"@tsed/common@5.42.2", "@tsed/common@^5.42.2":
+  version "5.42.2"
+  resolved "https://registry.yarnpkg.com/@tsed/common/-/common-5.42.2.tgz#f532a61480ad9f948550deeec3c1f5f81f9cd3b6"
+  integrity sha512-KLb6N3CS6jMaQJJD30Z7JXTPdA7G3D4Wc8TA7XyXK7C20s62mmnRuvvU+GY5keRwBR39H1kf0blToRyFbgWboA==
   dependencies:
-    "@tsed/core" "5.42.1"
-    "@tsed/di" "5.42.1"
+    "@tsed/core" "5.42.2"
+    "@tsed/di" "5.42.2"
     "@types/json-schema" "^7.0.3"
     globby "10.0.1"
     json-schema "^0.2.3"
@@ -496,21 +496,21 @@
     tslib "1.10.0"
     uuid "3.3.3"
 
-"@tsed/core@5.42.1", "@tsed/core@^5.42.1":
-  version "5.42.1"
-  resolved "https://registry.yarnpkg.com/@tsed/core/-/core-5.42.1.tgz#ffd925117ef1af1e9cab23aa538f99dfe3f15385"
-  integrity sha512-5WmTr4G7F+dYu8PSLwJU7A6oa13UaV/8P7TSJ1Hx8IWhlqsCo5tiA/Qto7VVz6s4VpLiLroHDXX9x3w1579lrQ==
+"@tsed/core@5.42.2", "@tsed/core@^5.42.2":
+  version "5.42.2"
+  resolved "https://registry.yarnpkg.com/@tsed/core/-/core-5.42.2.tgz#380c00df674a61abe8066ad4918c5975174b7308"
+  integrity sha512-iui1AJ0vtqYFWGAnVio37auQ6FBPU2uShyeZ1pJgqjmFJoKvdWN+cAIuzR1ZubTRC2PpFBA9CIMpsqKnUNayfg==
   dependencies:
     reflect-metadata "^0.1.13"
     source-map-support "0.5.16"
     tslib "1.10.0"
 
-"@tsed/di@5.42.1", "@tsed/di@^5.42.1":
-  version "5.42.1"
-  resolved "https://registry.yarnpkg.com/@tsed/di/-/di-5.42.1.tgz#ab8305f0a7d8c0100bd5a99a9b725ca53e5e8b42"
-  integrity sha512-jkc+0UKWQq5jQVnE5ADZ7aiFO9i/GameGh6B+ic7SUTicZvsHUbGaPJ6O9JgrrVTesXobMAXEe5puHAUrusSsQ==
+"@tsed/di@5.42.2", "@tsed/di@^5.42.2":
+  version "5.42.2"
+  resolved "https://registry.yarnpkg.com/@tsed/di/-/di-5.42.2.tgz#3af66f288c69d679efb971bac83b52401f54f885"
+  integrity sha512-dE8uqRMI8TJElNH5YWHKnuygZMOMVt91mRR0J1Q+metXBj3me0jcKCLlIcsAEwsLWYJGI0+McQtGYYlII/JsNw==
   dependencies:
-    "@tsed/core" "5.42.1"
+    "@tsed/core" "5.42.2"
     tslib "1.10.0"
 
 "@tsed/logger@5.2.1":
@@ -524,22 +524,22 @@
     streamroller "^1.0.3"
     tslib "1.10.0"
 
-"@tsed/mongoose@^5.42.1":
-  version "5.42.1"
-  resolved "https://registry.yarnpkg.com/@tsed/mongoose/-/mongoose-5.42.1.tgz#591d040378cb85c8ef93794a8be44df9c0374dcd"
-  integrity sha512-fBtaUecY6Xv0UeYSER7XyUzVqSaVgRHZCwfAk8zWWyJVSpB52jav70ycuy2vLXI5tfD0mmQQTzf6aSAXf5k7Wg==
+"@tsed/mongoose@^5.42.2":
+  version "5.42.2"
+  resolved "https://registry.yarnpkg.com/@tsed/mongoose/-/mongoose-5.42.2.tgz#f331887091c992a43af8f98e9f6d7de262ed287a"
+  integrity sha512-GfkYlGYB7z7Pxw3o5RrgNWIo6YO5w59ducwS1sEla6Sw0D/slRznXnG8NKAKI1EdrQwIOMRH1dY/ZdNeAfK6TA==
   dependencies:
-    "@tsed/common" "5.42.1"
-    "@tsed/core" "5.42.1"
+    "@tsed/common" "5.42.2"
+    "@tsed/core" "5.42.2"
     tslib "1.10.0"
 
-"@tsed/multipartfiles@^5.42.1":
-  version "5.42.1"
-  resolved "https://registry.yarnpkg.com/@tsed/multipartfiles/-/multipartfiles-5.42.1.tgz#b8a3bad90c34a674202dee53defac0fc1279818c"
-  integrity sha512-A1I2apzjd5siB/U8vgXX3xbQgV6rI26MsuHw2lk+LcrByEm0jI1YWDeNHXMlq9tyLCezrQ4N3JlvQB7ZmIFi0Q==
+"@tsed/multipartfiles@^5.42.2":
+  version "5.42.2"
+  resolved "https://registry.yarnpkg.com/@tsed/multipartfiles/-/multipartfiles-5.42.2.tgz#0aae305eeae0b456a6da6d20b48fa9b1c882ada7"
+  integrity sha512-PFHSAkvg7drkfDVdwcIHPSta+33wNhCqH1uSEnAlF3V30skfb4dkejp7yGTL1brK7ZuE4RlB/izKVTA51M2LSQ==
   dependencies:
-    "@tsed/common" "5.42.1"
-    "@tsed/core" "5.42.1"
+    "@tsed/common" "5.42.2"
+    "@tsed/core" "5.42.2"
     multer "1.4.2"
     tslib "1.10.0"
 
@@ -2568,10 +2568,10 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
-mongoose@^5.9.0:
-  version "5.9.0"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.9.0.tgz#0a707c3716faea01416708e9b7676f92160d5950"
-  integrity sha512-vAoQC6RAX5NqXX+H0WKRsvI0gUj3OhFwsu7JHKwsLQ3cNvE7ZfpeG5aDBvbx9XaW0a+Z2ZqysQpktJhSIzLKtg==
+mongoose@^5.9.1:
+  version "5.9.1"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.9.1.tgz#48a5fafe6bc7b57d6b41b12ebf55fa5f609518d6"
+  integrity sha512-qgS31/nZ63vpr8yBg6w8vaV8ITxwrF2ioNW5AakXmqvVBaOsI0xpDd5QBowESy2InDTk+iDaN5SNgSxGG6GntQ==
   dependencies:
     bson "~1.1.1"
     kareem "2.3.1"

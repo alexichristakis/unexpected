@@ -9,7 +9,6 @@ import FriendButton from "./FriendButton";
 import UserImage from "./UserImage";
 
 export interface UserRowProps {
-  // actions?: Array<{ title: string; onPress: () => void }>;
   onPress: (user: User) => void;
   user: User;
 }
@@ -26,7 +25,7 @@ export const UserRow: React.FC<UserRowProps> = ({ user, onPress }) => {
       style={styles.container}
     >
       <>
-        <UserImage phoneNumber={user.phoneNumber} size={40} />
+        <UserImage phoneNumber={user.phoneNumber} size={35} />
         <Text style={styles.name}>{formatName(user)}</Text>
         <View style={styles.buttonContainer}>
           <FriendButton user={user} />

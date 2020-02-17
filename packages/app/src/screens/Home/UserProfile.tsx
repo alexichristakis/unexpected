@@ -24,7 +24,7 @@ import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import { hideStatusBarOnScroll } from "@hooks";
-import { UserModal, Top, Grid } from "@components/Profile";
+import { UserModal, Top, Grid, PostModal } from "@components/Profile";
 import { ModalListRef } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
@@ -70,14 +70,15 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     user
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
-    const [modalType, setModalType] = useState<"friends" | "requests">(
-      "friends"
-    );
+    const [modalType, setModalType] = useState<
+      "friends" | "requests" | undefined
+    >(undefined);
+    const [focusedPostId, setFocusedPostId] = useState("");
 
     const scrollRef = useRef<FlatList>(null);
     const modalRef = useRef<ModalListRef>(null);
 
-    const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
+    const StatusBar = hideStatusBarOnScroll(scrollY, "dark-content");
 
     // @ts-ignore
     useScrollToTop(scrollRef);
@@ -137,12 +138,8 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       }
     };
 
-    const handleOnPressPost = (post: Post) => {
-      navigation.navigate({
-        name: "POST",
-        key: uuid(),
-        params: { prevRoute: user.firstName, postId: post.id }
-      });
+    const handleOnPressPost = ({ id }: Post) => {
+      requestAnimationFrame(() => setFocusedPostId(id));
     };
 
     const handleOnScrollEndDrag = (
@@ -162,6 +159,9 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       }
     };
 
+    const handlePostModalClose = () => setFocusedPostId("");
+    const handleUserModalClose = () => setModalType(undefined);
+
     return (
       <Screen style={styles.container}>
         <Grid
@@ -172,13 +172,14 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           headerContainerStyle={styles.headerContainer}
           renderHeader={renderTop}
         />
-        <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
+        <StatusBar />
         <UserModal
-          modalRef={modalRef}
+          visible={!!modalType}
           type={modalType}
-          data={modalType === "friends" ? friends : friendRequests}
-          onPressUser={handleOnPressUser}
+          phoneNumber={user.phoneNumber}
+          onClose={handleUserModalClose}
         />
+        <PostModal postId={focusedPostId} onClose={handlePostModalClose} />
       </Screen>
     );
   },
@@ -189,21 +190,14 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center"
   },
   headerContainer: {
     zIndex: 1,
-    paddingTop: SB_HEIGHT(),
+    paddingTop: SB_HEIGHT,
     alignItems: "center",
     alignSelf: "stretch"
-  },
-  statusBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    height: SB_HEIGHT(),
-    backgroundColor: "white"
   }
 });
 

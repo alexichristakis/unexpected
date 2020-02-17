@@ -16,7 +16,7 @@ import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 import { useValues } from "react-native-redash";
 
-import { Grid, Top, UserModal } from "@components/Profile";
+import { Grid, Top, UserModal, PostModal } from "@components/Profile";
 import { FriendButton, NavBar, ModalListRef } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT } from "@lib/styles";
@@ -55,10 +55,11 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     friends,
     route
   }) => {
+    const [focusedPostId, setFocusedPostId] = useState("");
+    const [showUserModal, setShowUserModal] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
     const [scrollY] = useValues([0], []);
 
-    const modalRef = useRef<ModalListRef>(null);
     const navBarTransitionRef = useRef<TransitioningView>(null);
 
     const getFriendStatusState = () => {
@@ -96,21 +97,19 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
             })
           )
         ]),
-      [showTitle]
+      []
     );
-
-    const showFriends = () => modalRef.current?.open();
 
     const renderTop = () => (
       <Top
         phoneNumber={route.params.phoneNumber}
         scrollY={scrollY}
-        onPressFriends={showFriends}
+        onPressFriends={handleOnPressFriends}
       />
     );
 
     const handleOnPressUser = (toUser: User) => {
-      if (user.phoneNumber === toUser.phoneNumber) {
+      if (phoneNumber === toUser.phoneNumber) {
         navigation.navigate("USER_PROFILE");
       } else {
         navigation.navigate({
@@ -124,13 +123,16 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       }
     };
 
-    const handleOnPressPost = (post: Post) => {
-      navigation.navigate({
-        name: "POST",
-        key: uuid(),
-        params: { prevRoute: user.firstName, postId: post.id }
-      });
+    const handleOnPressPost = ({ id }: Post) => {
+      requestAnimationFrame(() => setFocusedPostId(id));
     };
+
+    const handleOnPressFriends = () => {
+      requestAnimationFrame(() => setShowUserModal(true));
+    };
+
+    const handlePostModalClose = () => setFocusedPostId("");
+    const handleUserModalClose = () => setShowUserModal(false);
 
     const handleOnScrollEndDrag = (
       event: NativeSyntheticEvent<NativeScrollEvent>
@@ -171,10 +173,11 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           renderHeader={renderTop}
         />
         <UserModal
-          modalRef={modalRef}
-          data={friends}
-          onPressUser={handleOnPressUser}
+          visible={showUserModal}
+          phoneNumber={route.params.phoneNumber}
+          onClose={handleUserModalClose}
         />
+        <PostModal postId={focusedPostId} onClose={handlePostModalClose} />
       </Screen>
     );
   },
@@ -183,7 +186,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: SB_HEIGHT(),
+    flex: 1,
+    paddingTop: SB_HEIGHT,
     alignItems: "center"
   },
   headerContainer: {

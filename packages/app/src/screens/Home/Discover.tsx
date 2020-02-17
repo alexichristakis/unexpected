@@ -126,7 +126,7 @@ export const Discover: React.FC<DiscoverProps &
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: SB_HEIGHT(),
+    paddingTop: SB_HEIGHT,
     // paddingHorizontal: 20,
     alignItems: "center"
   },

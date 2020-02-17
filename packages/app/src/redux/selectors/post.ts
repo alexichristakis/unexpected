@@ -1,4 +1,5 @@
 import { createSelector } from "reselect";
+import moment from "moment";
 
 import { RootState } from "../types";
 import {
@@ -35,11 +36,14 @@ export const post = createSelector(
   (posts, commentMap, users, id) => {
     const post = posts[id] ?? {};
 
+    const comments = commentMap[id] ?? [];
+    const user = users[post.phoneNumber] ?? {};
+
     return {
       id, // in case post is undefined
       ...post,
-      comments: commentMap[id] ?? [],
-      user: users[post.phoneNumber] ?? {}
+      comments,
+      user
     };
   }
 );

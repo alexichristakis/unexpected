@@ -31,12 +31,13 @@ import {
 
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/constants";
 import { Colors, SB_HEIGHT, TextStyles } from "@lib/styles";
-import CloseIcon from "@assets/svg/cancel_button.svg";
+import CloseIcon from "@assets/svg/close.svg";
 
 const {
   interpolate,
   useCode,
   cond,
+  and,
   debug,
   abs,
   eq,
@@ -67,6 +68,7 @@ export interface ModalListProps {
   title: string;
   style?: StyleProp<ViewStyle>;
   offsetY?: Animated.Value<number>;
+  onClose?: () => void;
 }
 
 export type ModalListRef = {
@@ -75,14 +77,21 @@ export type ModalListRef = {
   close: () => void;
 };
 
-const FULLY_OPEN = SB_HEIGHT();
+const FULLY_OPEN = SB_HEIGHT;
 const SNAP_OPEN = SCREEN_HEIGHT / 2;
 const CLOSED = SCREEN_HEIGHT;
 
 export const ModalList = React.memo(
   React.forwardRef<ModalListRef, ModalListProps>(
     (
-      { title, style, children, offsetY = new Animated.Value(0), scrollRef },
+      {
+        title,
+        style,
+        children,
+        offsetY = new Animated.Value(0),
+        scrollRef,
+        onClose
+      },
       ref
     ) => {
       const [clock] = useState(new Clock());
@@ -115,6 +124,11 @@ export const ModalList = React.memo(
         close
       }));
 
+      const handleClose = () => {
+        setIsOpen(false);
+        if (onClose) onClose();
+      };
+
       const handleOnSnap = (values: readonly number[]) => {
         values.forEach(value => {
           if (value === SNAP_OPEN) {
@@ -122,10 +136,13 @@ export const ModalList = React.memo(
           } else if (value === FULLY_OPEN) {
             setIsOpen(true);
           } else {
-            setIsOpen(false);
+            handleClose();
           }
 
-          setLastSnap(value);
+          // fix memory leak
+          if (value !== SCREEN_HEIGHT || !onClose) {
+            setLastSnap(value);
+          }
         });
       };
 
@@ -172,7 +189,7 @@ export const ModalList = React.memo(
               call([], () => setLastSnap(SNAP_OPEN))
             ),
             cond(
-              eq(translateY, SB_HEIGHT()),
+              eq(translateY, SB_HEIGHT),
               call([], () => setLastSnap(FULLY_OPEN))
             ),
             cond(goUp, [
@@ -216,8 +233,10 @@ export const ModalList = React.memo(
                   config
                 })
               ),
-              call([], () => setIsOpen(false)),
-              cond(not(clockRunning(clock)), [set(goDown, 0)])
+              cond(not(clockRunning(clock)), [
+                set(goDown, 0),
+                call([], handleClose)
+              ])
             ])
           ]),
         []
@@ -246,9 +265,9 @@ export const ModalList = React.memo(
                 style={[styles.container, { transform: [{ translateY }] }]}
               >
                 <View style={styles.headerContainer}>
-                  <Text style={TextStyles.large}>{title}</Text>
+                  <Text style={TextStyles.medium}>{title}</Text>
                   <TouchableOpacity onPress={close}>
-                    <CloseIcon width={30} height={30} />
+                    <CloseIcon width={25} height={25} />
                   </TouchableOpacity>
                 </View>
                 <Animated.View

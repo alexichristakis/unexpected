@@ -296,7 +296,7 @@ function* onFetchUsersPosts(
     // default to fetching authenticated user's feed
     const userFetched = phoneNumber ? phoneNumber : userPhoneNumber;
 
-    const res = yield client.get(`/post/${userFetched}`, {
+    const res = yield client.get(`/post/${userFetched}/posts`, {
       headers: getHeaders({ jwt })
     });
 
