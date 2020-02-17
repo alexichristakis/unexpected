@@ -123,21 +123,6 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       />
     );
 
-    const handleOnPressUser = (toUser: User) => {
-      if (user.phoneNumber === toUser.phoneNumber) {
-        navigation.navigate("USER_PROFILE");
-      } else {
-        navigation.navigate({
-          name: "PROFILE",
-          key: uuid(),
-          params: {
-            prevRoute: user.firstName,
-            phoneNumber: toUser.phoneNumber
-          }
-        });
-      }
-    };
-
     const handleOnPressPost = ({ id }: Post) => {
       requestAnimationFrame(() => setFocusedPostId(id));
     };
