@@ -62,17 +62,15 @@ const UserModal: React.FC<UserModalProps &
       if (visible) {
         modalRef.current?.open();
 
-        // fetch users
-        const friendsToFetch = friendsNumbers.filter(
-          phoneNumber => !users[phoneNumber]
-        );
-        const requestsToFetch = requestNumbers.filter(
-          phoneNumber => !users[phoneNumber]
-        );
+        // fetch users that aren't cached
+        const toFetch =
+          type === "friends"
+            ? friendsNumbers.filter(phoneNumber => !users[phoneNumber])
+            : requestNumbers.filter(phoneNumber => !users[phoneNumber]);
 
-        fetchUsers(type === "friends" ? friendsToFetch : requestsToFetch);
+        if (toFetch.length) fetchUsers(toFetch);
       }
-    }, [visible, type]);
+    }, [visible, type, friendsNumbers.length, requestNumbers.length]);
 
     const navigation = useNavigation<Navigation>();
 
@@ -100,7 +98,6 @@ const UserModal: React.FC<UserModalProps &
 
     const title = type === "friends" ? "Friends" : "Requests";
     const data = type === "friends" ? friends : requests;
-
     return (
       <ModalList title={title} ref={modalRef} onClose={onClose}>
         {data.map(renderUserRow)}
