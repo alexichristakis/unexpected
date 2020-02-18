@@ -108,7 +108,7 @@ export function useNotificationEvents(
       ),
       Notifications.events().registerRemoteNotificationsRegistrationFailed(
         event => {
-          console.log(event.code, event.localizedDescription, event.domain);
+          //   console.log(event.code, event.localizedDescription, event.domain);
         }
       )
     ];

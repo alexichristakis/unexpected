@@ -111,8 +111,6 @@ const HomeTab: React.FC<HomeTabProps<keyof TabParamList>> = ({
     headerShown: false
   });
 
-  console.log("route in HomeTab", route);
-
   const screenOptions = {
     headerShown: false,
     contentStyle: { backgroundColor: "white" }

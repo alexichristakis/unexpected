@@ -108,7 +108,6 @@ const PostModal: React.FC<PostModalProps &
       sendComment({ body, phoneNumber: currentUserPhoneNumber, postId });
     };
 
-    console.log("postId", postId);
     if (postId.length)
       return (
         <>

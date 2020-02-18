@@ -133,7 +133,6 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       />
     );
 
-    console.log("route", route.params);
     return (
       <Screen style={styles.container}>
         <Grid
