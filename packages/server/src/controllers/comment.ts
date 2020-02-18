@@ -53,9 +53,12 @@ export class CommentController {
         )
       : [];
 
-    const [postAuthor, otherCommenters] = await Promise.all([
-      this.userService.getByPhoneNumber(post.phoneNumber),
-      this.userService.getByPhoneNumber(otherCommentersNumbers)
+    const [
+      postAuthor,
+      ...otherCommenters
+    ] = await this.userService.getByPhoneNumber([
+      post.phoneNumber,
+      ...otherCommentersNumbers
     ]);
 
     const [newComment] = await Promise.all([
