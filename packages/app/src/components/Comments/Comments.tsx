@@ -3,16 +3,16 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Text,
-  View,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
 
+import { Colors, TextStyles } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
-import { TextStyles, Colors } from "@lib/styles";
 
 import CommentPreview from "./CommentPreview";
 

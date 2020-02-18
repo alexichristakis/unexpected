@@ -10,7 +10,7 @@ import uuid from "uuid/v4";
 
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { TextSizes, TextStyles, isIPhoneX } from "@lib/styles";
+import { isIPhoneX, TextSizes, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState } from "@redux/types";
 

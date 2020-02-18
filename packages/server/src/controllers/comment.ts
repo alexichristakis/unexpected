@@ -9,15 +9,15 @@ import {
   UseAuth
 } from "@tsed/common";
 
-import { Exception } from "ts-httpexceptions";
-import uniq from "lodash/uniq";
 import { Comment } from "@unexpected/global";
+import uniq from "lodash/uniq";
+import { Exception } from "ts-httpexceptions";
 
 import { AuthMiddleware } from "../middlewares/auth";
 import { CommentService } from "../services/comment";
+import { NotificationService } from "../services/notification";
 import { PostService } from "../services/post";
 import { UserService } from "../services/user";
-import { NotificationService } from "../services/notification";
 
 @Controller("/comment")
 @UseAuth(AuthMiddleware)

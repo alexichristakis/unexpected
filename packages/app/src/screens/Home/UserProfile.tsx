@@ -1,9 +1,9 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
+  FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  StyleSheet,
-  FlatList
+  StyleSheet
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
@@ -15,9 +15,9 @@ import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
 
-import { hideStatusBarOnScroll } from "@hooks";
-import { UserModal, Top, Grid, PostModal } from "@components/Profile";
+import { Grid, PostModal, Top, UserModal } from "@components/Profile";
 import { ModalListRef } from "@components/universal";
+import { hideStatusBarOnScroll } from "@hooks";
 import { SB_HEIGHT } from "@lib/styles";
 import { AuthActions, PostActions, UserActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";

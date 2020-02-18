@@ -1,5 +1,5 @@
-import React from "react";
 import { useFocusEffect } from "@react-navigation/core";
+import React from "react";
 import { useCallback, useState } from "react";
 import { StatusBar } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";

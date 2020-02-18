@@ -1,11 +1,11 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { connect, ConnectedProps } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import moment from "moment";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { connect, ConnectedProps } from "react-redux";
 
-import { TextStyles, Colors } from "@lib/styles";
+import { Colors, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";

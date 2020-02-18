@@ -4,9 +4,9 @@ import {
   ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  ScrollView,
   StyleSheet,
-  ViewToken,
-  ScrollView
+  ViewToken
 } from "react-native";
 
 import { Post as PostType } from "@unexpected/global";

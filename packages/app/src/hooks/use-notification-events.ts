@@ -1,21 +1,22 @@
 import { useEffect } from "react";
-import { Notifications } from "react-native-notifications";
-import moment from "moment";
+
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { CompositeNavigationProp } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   NotificationPayload,
   PhotoNotificationPayload
 } from "@unexpected/global";
-import { CompositeNavigationProp } from "@react-navigation/core";
+import moment from "moment";
+import { Notifications } from "react-native-notifications";
 
-import * as selectors from "@redux/selectors";
-import { AppActions, UserActions } from "@redux/modules";
 import { NOTIFICATION_MINUTES } from "@lib/constants";
+import { AppActions, UserActions } from "@redux/modules";
+import * as selectors from "@redux/selectors";
 
-import { useReduxState } from "./use-redux-state";
+import { StackParamList, TabParamList } from "../App";
 import { useReduxAction } from "./use-redux-action";
-import { TabParamList, StackParamList } from "../App";
+import { useReduxState } from "./use-redux-state";
 
 export function useNotificationEvents(
   navigation: CompositeNavigationProp<
@@ -38,7 +39,7 @@ export function useNotificationEvents(
     const subscribers = [
       Notifications.events().registerNotificationOpened(
         (notification, complete) => {
-          // @ts-ignore
+          // @ts-ignore -- idk why these types are wrong?
           const { payload }: { payload: NotificationPayload } = notification;
 
           switch (payload.type) {

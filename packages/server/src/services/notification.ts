@@ -1,4 +1,4 @@
-import { Inject, Service, $log } from "@tsed/common";
+import { $log, Inject, Service } from "@tsed/common";
 import { Notification, Provider } from "apn";
 import moment from "moment";
 

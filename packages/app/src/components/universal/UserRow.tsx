@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 
-import { TextStyles, Colors } from "@lib/styles";
+import { Colors, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { User } from "@unexpected/global";
 

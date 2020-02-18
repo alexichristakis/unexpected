@@ -1,37 +1,37 @@
-import React, { useState, useImperativeHandle, useRef } from "react";
-import Animated, { Extrapolate } from "react-native-reanimated";
+import React, { useImperativeHandle, useRef, useState } from "react";
 import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Text,
-  StyleProp,
   ScrollView,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
   ViewStyle
 } from "react-native";
 import {
-  PanGestureHandler,
   NativeViewGestureHandler,
+  PanGestureHandler,
   State,
   TapGestureHandler
 } from "react-native-gesture-handler";
+import Animated, { Extrapolate } from "react-native-reanimated";
 import {
-  onGestureEvent,
-  useValues,
-  clamp,
   bin,
-  withOffset,
-  withSpring,
-  useDiff,
-  onScroll,
   bInterpolate,
+  clamp,
+  onGestureEvent,
+  onScroll,
+  spring,
   timing,
-  spring
+  useDiff,
+  useValues,
+  withOffset,
+  withSpring
 } from "react-native-redash";
 
+import CloseIcon from "@assets/svg/close.svg";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/constants";
 import { Colors, SB_HEIGHT, TextStyles } from "@lib/styles";
-import CloseIcon from "@assets/svg/close.svg";
 
 const {
   interpolate,

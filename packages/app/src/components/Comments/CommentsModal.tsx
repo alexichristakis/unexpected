@@ -1,15 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Keyboard, KeyboardEvent, TextInput } from "react-native";
-import { connect, ConnectedProps } from "react-redux";
 import Animated, { Easing } from "react-native-reanimated";
-import { useValues, useDiff } from "react-native-redash";
+import { useDiff, useValues } from "react-native-redash";
+import { connect, ConnectedProps } from "react-redux";
 
 import { ModalList, ModalListRef } from "@components/universal";
-import { Actions as PostActions } from "@redux/modules/post";
-import { RootState } from "@redux/types";
-import * as selectors from "@redux/selectors";
-import { Comment as CommentType } from "@unexpected/global";
 import { SCREEN_HEIGHT } from "@lib/constants";
+import { Actions as PostActions } from "@redux/modules/post";
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
+import { Comment as CommentType } from "@unexpected/global";
 
 import Comment from "./Comment";
 import FloatingComposer from "./FloatingComposer";

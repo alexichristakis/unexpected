@@ -4,13 +4,13 @@ import { StatusBar } from "react-native";
 import {
   BottomTabBar,
   BottomTabBarProps,
-  createBottomTabNavigator,
-  BottomTabNavigationProp
+  BottomTabNavigationProp,
+  createBottomTabNavigator
 } from "@react-navigation/bottom-tabs";
 import {
+  CompositeNavigationProp,
   ParamListBase,
-  RouteProp,
-  CompositeNavigationProp
+  RouteProp
 } from "@react-navigation/core";
 import { NavigationContainer } from "@react-navigation/native";
 import {
@@ -29,23 +29,23 @@ import createStore from "@redux/store";
 import { LaunchCameraButton } from "@components/Camera";
 import Connection from "@components/Connection";
 import { isIPhoneX, TextStyles } from "@lib/styles";
-import { useReduxState, useNotificationEvents } from "./hooks";
+import { useNotificationEvents, useReduxState } from "./hooks";
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
 import {
   Auth,
   Capture,
-  EditProfile,
   Discover,
+  EditProfile,
   Feed,
-  UserProfile,
   NewProfilePicture,
   Permissions,
   Profile,
   Settings,
   Share,
-  SignUp
+  SignUp,
+  UserProfile
 } from "./screens";
 
 import DiscoverIcon from "./assets/svg/discover.svg";

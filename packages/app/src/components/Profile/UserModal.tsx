@@ -1,19 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, { useEffect, useRef, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
 import {
-  ModalList,
   ItemSeparator,
-  UserRow,
-  ModalListRef
+  ModalList,
+  ModalListRef,
+  UserRow
 } from "@components/universal";
-import { User } from "@unexpected/global";
 import { Actions as UserActions } from "@redux/modules/user";
-import { RootState } from "@redux/types";
 import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
+import { User } from "@unexpected/global";
 
 import { ParamList } from "../../App";
 

@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import { Notifications } from "react-native-notifications";
 import {
   check,
   checkNotifications,
@@ -9,7 +10,6 @@ import {
   request,
   requestNotifications
 } from "react-native-permissions";
-import { Notifications } from "react-native-notifications";
 import { all, put, takeEvery, takeLatest } from "redux-saga/effects";
 
 import {
