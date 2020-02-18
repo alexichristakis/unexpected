@@ -56,7 +56,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
     loading,
     sendComment
   }) => {
-    const [offsetY, keyboardHeight] = useValues([SCREEN_HEIGHT, 0], []);
+    const [offsetY, keyboardHeight] = useValues([SCREEN_HEIGHT, 50], []);
     const [offsetDiffY] = useState(useDiff(offsetY, []));
 
     const scrollRef = useRef<Animated.ScrollView>(null);
@@ -75,7 +75,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
 
     const onKeyboardWillHide = () =>
       Animated.timing(keyboardHeight, {
-        toValue: 0,
+        toValue: 50,
         duration: 100,
         easing: Easing.ease
       }).start();
