@@ -9,6 +9,7 @@ import {
   request,
   requestNotifications
 } from "react-native-permissions";
+import { Notifications } from "react-native-notifications";
 import { all, put, takeEvery, takeLatest } from "redux-saga/effects";
 
 import {
@@ -96,9 +97,11 @@ function* onRequestNotifications() {
       settings
     }: NotificationsResponse = yield checkNotifications();
 
-    if (status !== "granted") {
-      ({ status, settings } = yield requestNotifications(["alert", "badge"]));
-    }
+    // if (status !== "granted") {
+    Notifications.registerRemoteNotifications();
+    // ({ status, settings } = yield Notifications.requestPermissions();
+    // (["alert", "badge"]));
+    // }
 
     yield put(Actions.setNotifications({ status, settings }));
   } catch (err) {

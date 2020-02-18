@@ -23,7 +23,7 @@ import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
-import { StackParamList } from "../../App";
+import { ParamList } from "../../App";
 
 const { Value } = Animated;
 
@@ -42,8 +42,8 @@ export type FeedReduxProps = ReduxPropsType<
   typeof mapDispatchToProps
 >;
 export interface FeedProps extends FeedReduxProps {
-  navigation: NativeStackNavigationProp<StackParamList, "FEED">;
-  route: RouteProp<StackParamList, "FEED">;
+  navigation: NativeStackNavigationProp<ParamList, "FEED">;
+  route: RouteProp<ParamList, "FEED">;
 }
 
 export const Feed: React.FC<FeedProps> = React.memo(
@@ -70,10 +70,9 @@ export const Feed: React.FC<FeedProps> = React.memo(
 
     useEffect(() => {
       // fetchFeed();
-
-      if (shouldLaunchPermissions) {
-        setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
-      }
+      // if (shouldLaunchPermissions) {
+      //   setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
+      // }
     }, [stale]);
 
     const handleOnPressUser = (userPhoneNumber: string) => {

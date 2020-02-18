@@ -24,7 +24,7 @@ import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { StackParamList } from "../App";
+import { ParamList } from "../App";
 
 const { useCode, debug, block, call, greaterThan, lessOrEq, cond } = Animated;
 
@@ -41,8 +41,8 @@ const mapDispatchToProps = {
 export type ProfileReduxProps = ConnectedProps<typeof connector>;
 
 export interface ProfileProps {
-  navigation: NativeStackNavigationProp<StackParamList, "PROFILE">;
-  route: RouteProp<StackParamList, "PROFILE">;
+  navigation: NativeStackNavigationProp<ParamList, "PROFILE">;
+  route: RouteProp<ParamList, "PROFILE">;
 }
 
 const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
@@ -55,6 +55,8 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     friends,
     route
   }) => {
+    const { focusedPostId: initialFocusedPostId = "" } = route.params;
+
     const [focusedPostId, setFocusedPostId] = useState("");
     const [showUserModal, setShowUserModal] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
@@ -177,7 +179,10 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           phoneNumber={route.params.phoneNumber}
           onClose={handleUserModalClose}
         />
-        <PostModal postId={focusedPostId} onClose={handlePostModalClose} />
+        <PostModal
+          postId={focusedPostId || initialFocusedPostId}
+          onClose={handlePostModalClose}
+        />
       </Screen>
     );
   },

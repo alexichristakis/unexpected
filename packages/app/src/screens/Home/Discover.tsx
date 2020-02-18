@@ -25,7 +25,7 @@ import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { User } from "@unexpected/global";
 
-import { StackParamList } from "../../App";
+import { ParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -37,8 +37,8 @@ const mapDispatchToProps = {
 
 export type DiscoverConnectorProps = ConnectedProps<typeof connector>;
 export interface DiscoverProps {
-  navigation: NativeStackNavigationProp<StackParamList, "DISCOVER">;
-  route: RouteProp<StackParamList, "DISCOVER">;
+  navigation: NativeStackNavigationProp<ParamList, "DISCOVER">;
+  route: RouteProp<ParamList, "DISCOVER">;
 }
 export const Discover: React.FC<DiscoverProps &
   DiscoverConnectorProps> = React.memo(

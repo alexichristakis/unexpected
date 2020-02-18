@@ -11,7 +11,7 @@ import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
 
-import { StackParamList } from "../../App";
+import { ParamList } from "../../App";
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -29,7 +29,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
   user,
   body
 }) => {
-  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<ParamList>>();
 
   const handleOnPress = () => {
     if (phoneNumber === user.phoneNumber) {

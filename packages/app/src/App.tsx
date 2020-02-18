@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from "react-native";
 
 import {
   BottomTabBar,
   BottomTabBarProps,
-  createBottomTabNavigator
+  createBottomTabNavigator,
+  BottomTabNavigationProp
 } from "@react-navigation/bottom-tabs";
-import { ParamListBase } from "@react-navigation/core";
+import {
+  ParamListBase,
+  RouteProp,
+  CompositeNavigationProp
+} from "@react-navigation/core";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
@@ -14,17 +19,20 @@ import {
 } from "@react-navigation/native-stack";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Notifications } from "react-native-notifications";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
+import { NotificationPayload } from "@unexpected/global";
+import { UserActions } from "@redux/modules";
 
 import { LaunchCameraButton } from "@components/Camera";
 import Connection from "@components/Connection";
 import { isIPhoneX, TextStyles } from "@lib/styles";
-import { useReduxState } from "./hooks";
+import { useReduxState, useReduxAction } from "./hooks";
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
@@ -58,10 +66,10 @@ export type StackParamList = {
   PERMISSIONS: undefined;
   DISCOVER: undefined;
   FEED: undefined;
-  USER_PROFILE: undefined;
   AUTH: undefined;
   SHARE: BaseParams;
-  PROFILE: BaseParams & { phoneNumber: string };
+  USER_PROFILE: undefined | { focusedPostId: string };
+  PROFILE: BaseParams & { phoneNumber: string; focusedPostId?: string };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: undefined;
@@ -70,49 +78,23 @@ export type StackParamList = {
 };
 
 export type TabParamList = {
-  FEED: undefined;
-  USER_PROFILE: undefined;
-  DISCOVER: undefined;
+  FEED_TAB: undefined;
+  USER_PROFILE_TAB: undefined;
+  DISCOVER_TAB: undefined;
 };
 
-type Props = Partial<React.ComponentProps<typeof Stack.Navigator>> & {
+export type ParamList = StackParamList & TabParamList;
+
+type HomeTabProps<T extends keyof TabParamList> = {
   name: keyof StackParamList;
   component: React.ComponentType<any>;
   navigation: NativeStackNavigationProp<ParamListBase>;
+  route: RouteProp<TabParamList, T>;
 };
 
 /* initialize navigators */
 const Stack = createNativeStackNavigator<StackParamList>();
 const Tabs = createBottomTabNavigator<TabParamList>();
-
-const HomeTab: React.FC<Props> = ({
-  navigation,
-  component: Root,
-  name,
-  // phoneNumber,
-  ...rest
-}) => {
-  navigation.setOptions({
-    headerShown: false
-  });
-
-  const screenOptions = {
-    headerShown: false,
-    contentStyle: { backgroundColor: "white" }
-  };
-
-  return (
-    <Stack.Navigator {...rest}>
-      <Stack.Screen name={name} options={screenOptions} component={Root} />
-      <Stack.Screen
-        name="PROFILE"
-        // initialParams={{phoneNumber}}
-        options={screenOptions}
-        component={Profile}
-      />
-    </Stack.Navigator>
-  );
-};
 
 const renderTabBar = (tabBarProps: BottomTabBarProps) => (
   <>
@@ -121,8 +103,126 @@ const renderTabBar = (tabBarProps: BottomTabBarProps) => (
   </>
 );
 
-const AuthenticatedRoot = () => {
-  // get initial route name from launched notification
+const HomeTab: React.FC<HomeTabProps<keyof TabParamList>> = ({
+  navigation,
+  component: Root,
+  name,
+  route,
+  ...rest
+}) => {
+  navigation.setOptions({
+    headerShown: false
+  });
+
+  console.log("route in HomeTab", route);
+
+  const screenOptions = {
+    headerShown: false,
+    contentStyle: { backgroundColor: "white" }
+  };
+
+  return (
+    <Stack.Navigator {...rest}>
+      <Stack.Screen name={name} options={screenOptions}>
+        {props => <Root {...props} />}
+      </Stack.Screen>
+      <Stack.Screen
+        name="PROFILE"
+        options={screenOptions}
+        component={Profile}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const TAB_BAR_OPTIONS = {
+  style: {
+    maxHeight: 60,
+    paddingTop: isIPhoneX ? 10 : 0,
+    backgroundColor: "white",
+    borderTopWidth: 0
+  },
+  showLabel: false,
+  activeTintColor: "#231F20",
+  inactiveTintColor: "#9C9C9C"
+};
+
+type AuthenticatedRootProps = {
+  route: any;
+  navigation: CompositeNavigationProp<
+    BottomTabNavigationProp<TabParamList>,
+    NativeStackNavigationProp<StackParamList>
+  >;
+};
+
+const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
+  navigation
+}) => {
+  const currentUserPhoneNumber = useReduxState(selectors.phoneNumber);
+  const updateUser = useReduxAction(UserActions.updateUser);
+
+  useEffect(() => {
+    console.log("registering");
+    const subscribers = [
+      Notifications.events().registerNotificationOpened(
+        (notification, complete) => {
+          console.log(notification);
+          // @ts-ignore
+          const { payload }: { payload: NotificationPayload } = notification;
+
+          console.log(payload);
+
+          switch (payload.type) {
+            case "user": {
+              const { phoneNumber } = payload.route;
+              // nav to user
+              navigation.navigate("PROFILE", {
+                prevRoute: "Feed",
+                phoneNumber
+              });
+              break;
+            }
+
+            case "post": {
+              const { phoneNumber, id } = payload.route;
+              console.log(phoneNumber, currentUserPhoneNumber, id);
+
+              if (phoneNumber === currentUserPhoneNumber) {
+                navigation.navigate("USER_PROFILE_TAB", {
+                  screen: "USER_PROFILE",
+                  params: { focusedPostId: id }
+                });
+              } else {
+                navigation.navigate("PROFILE", {
+                  prevRoute: "Feed",
+                  focusedPostId: id,
+                  phoneNumber
+                });
+              }
+              break;
+            }
+
+            case "photoTime": {
+              // set photoTime
+            }
+          }
+          complete();
+        }
+      ),
+      Notifications.events().registerRemoteNotificationsRegistered(event => {
+        console.log("TOKEN TOKEN TOKEN:", event.deviceToken);
+        updateUser({ deviceToken: event.deviceToken });
+      }),
+      Notifications.events().registerRemoteNotificationsRegistrationFailed(
+        event => {
+          console.log(event.code, event.localizedDescription, event.domain);
+        }
+      )
+    ];
+
+    // request permissions
+    Notifications.registerRemoteNotifications();
+  }, []);
 
   return (
     <Stack.Navigator
@@ -131,22 +231,9 @@ const AuthenticatedRoot = () => {
     >
       <Stack.Screen name="HOME" options={{ headerShown: false }}>
         {props => (
-          <Tabs.Navigator
-            tabBarOptions={{
-              style: {
-                maxHeight: 60,
-                paddingTop: isIPhoneX ? 10 : 0,
-                backgroundColor: "white",
-                borderTopWidth: 0
-              },
-              showLabel: false,
-              activeTintColor: "#231F20",
-              inactiveTintColor: "#9C9C9C"
-            }}
-            tabBar={renderTabBar}
-          >
+          <Tabs.Navigator tabBarOptions={TAB_BAR_OPTIONS} tabBar={renderTabBar}>
             <Tabs.Screen
-              name="FEED"
+              name="FEED_TAB"
               options={{
                 tabBarIcon: ({ color }) => (
                   <FeedIcon width={16} height={16} fill={color} />
@@ -158,7 +245,7 @@ const AuthenticatedRoot = () => {
               )}
             </Tabs.Screen>
             <Tabs.Screen
-              name="USER_PROFILE"
+              name="USER_PROFILE_TAB"
               options={{
                 tabBarIcon: ({ color }) => (
                   <ProfileIcon width={22} height={22} fill={color} />
@@ -174,7 +261,7 @@ const AuthenticatedRoot = () => {
               )}
             </Tabs.Screen>
             <Tabs.Screen
-              name="DISCOVER"
+              name="DISCOVER_TAB"
               options={{
                 tabBarIcon: ({ color }) => (
                   <DiscoverIcon width={16} height={16} fill={color} />
@@ -244,15 +331,22 @@ const UnathenticatedRoot = () => (
 const Router: React.FC = () => {
   const isAuthorized = useReduxState(selectors.isAuthorized);
 
+  // Notifications.events().registerRemoteNotificationsRegistered(event => {
+  //   console.log("TOKEN:", event.deviceToken);
+  // });
+  // Notifications.events().registerRemoteNotificationsRegistrationFailed(
+  //   event => {
+  //     console.log(event.code, event.localizedDescription, event.domain);
+  //   }
+  // );
+
   return (
     <NavigationContainer ref={setNavigatorRef}>
       <Stack.Navigator screenOptions={{ stackAnimation: "fade" }}>
         {isAuthorized ? (
-          <Stack.Screen
-            name="AUTHENTICATED"
-            options={{ headerShown: false }}
-            component={AuthenticatedRoot}
-          />
+          <Stack.Screen name="AUTHENTICATED" options={{ headerShown: false }}>
+            {props => <AuthenticatedRoot {...props} />}
+          </Stack.Screen>
         ) : (
           <Stack.Screen
             name="UNAUTHENTICATED"

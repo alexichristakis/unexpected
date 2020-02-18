@@ -165,83 +165,74 @@ export function* notificationWatcher() {
   const permission = yield select(selectors.notificationPermission);
 
   if (permission) {
-    const notificationChannel = yield call(notificationEmitter);
-
-    while (true) {
-      const {
-        token,
-        notification
-      }: { token: string; notification: Notification } = yield take(
-        notificationChannel
-      );
-
-      // new token received
-      if (token) {
-        yield put(
-          UserActions.updateUser({
-            deviceToken: token,
-            deviceOS: Platform.OS
-          })
-        );
-      }
-
-      // notification
-      if (notification) {
-        const { payload }: { payload: NotificationPayload } = notification;
-
-        // notification is to start the photo clock
-        if (payload.type === "photoTime") {
-          const { date } = payload;
-
-          const expiry = moment(date).add(NOTIFICATION_MINUTES, "minutes");
-
-          yield put(Actions.setCameraTimer(expiry));
-        }
-
-        if (payload.type === "user") {
-          const { route } = payload;
-
-          yield put(UserActions.fetchUsersRequests());
-          navigate("PROFILE", {
-            prevRoute: "Feed",
-            phoneNumber: route.phoneNumber
-          });
-        }
-
-        if (payload.type === "post") {
-          const { route } = payload;
-
-          // navigate("POST", { prevRoute: "Feed", postId: route.id });
-        }
-      }
-    }
+    // const notificationChannel = yield call(notificationEmitter);
+    // while (true) {
+    //   const {
+    //     token,
+    //     notification
+    //   }: { token: string; notification: Notification } = yield take(
+    //     notificationChannel
+    //   );
+    //   // new token received
+    //   if (token) {
+    //     yield put(
+    //       UserActions.updateUser({
+    //         deviceToken: token,
+    //         deviceOS: Platform.OS
+    //       })
+    //     );
+    //   }
+    //   // notification
+    //   if (notification) {
+    //     const { payload }: { payload: NotificationPayload } = notification;
+    //     // notification is to start the photo clock
+    //     if (payload.type === "photoTime") {
+    //       const { date } = payload;
+    //       const expiry = moment(date).add(NOTIFICATION_MINUTES, "minutes");
+    //       yield put(Actions.setCameraTimer(expiry));
+    //     }
+    //     if (payload.type === "user") {
+    //       const { route } = payload;
+    //       yield put(UserActions.fetchUsersRequests());
+    //       navigate("PROFILE", {
+    //         prevRoute: "Feed",
+    //         phoneNumber: route.phoneNumber
+    //       });
+    //     }
+    //     if (payload.type === "post") {
+    //       const { route } = payload;
+    //       // navigate("POST", { prevRoute: "Feed", postId: route.id });
+    //     }
+    //   }
+    // }
   }
 }
 
 const notificationEmitter = () =>
   eventChannel(emit => {
     const subscribers = [
-      Notifications.events().registerRemoteNotificationsRegistered(event => {
-        emit({ token: event.deviceToken });
-      }),
-      Notifications.events().registerNotificationReceivedForeground(
-        (notification, complete) => {
-          emit({ notification });
-          complete({ badge: false, alert: false, sound: false });
-        }
-      ),
-      Notifications.events().registerNotificationReceivedBackground(
-        (notification, complete) => {
-          emit({ notification });
-          complete({ badge: true, alert: true, sound: true });
-        }
-      ),
-      Notifications.events().registerNotificationOpened(
-        (notification, complete) => {
-          emit({ notification });
-          complete();
-        }
-      )
+      // Notifications.events().registerRemoteNotificationsRegistered(event => {
+      //   console.log(event.deviceToken);
+      //   emit({ token: event.deviceToken });
+      // })
+      // Notifications.events().registerNotificationReceivedForeground(
+      //   (notification, complete) => {
+      //     emit({ notification });
+      //     complete({ badge: false, alert: false, sound: false });
+      //   }
+      // ),
+      // Notifications.events().registerNotificationReceivedBackground(
+      //   (notification, complete) => {
+      //     emit({ notification });
+      //     complete({ badge: true, alert: true, sound: true });
+      //   }
+      // ),
+      // Notifications.events().registerNotificationOpened(
+      //   (notification, complete) => {
+      //     emit({ notification });
+      //     complete();
+      //   }
+      // )
     ];
 
     return () => {};

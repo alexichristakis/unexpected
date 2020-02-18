@@ -15,9 +15,9 @@ import { Actions as UserActions } from "@redux/modules/user";
 import { RootState } from "@redux/types";
 import * as selectors from "@redux/selectors";
 
-import { StackParamList } from "../../App";
+import { ParamList } from "../../App";
 
-type Navigation = NativeStackNavigationProp<StackParamList>;
+type Navigation = NativeStackNavigationProp<ParamList>;
 
 const mapStateToProps = (state: RootState, props: UserModalProps) => ({
   currentUserPhoneNumber: selectors.phoneNumber(state),

@@ -2,14 +2,8 @@ import React, { useCallback, useState, useRef } from "react";
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
-  StatusBar,
   StyleSheet,
-  FlatList,
-  View,
-  Text,
-  ScrollView,
-  ListRenderItem,
-  ListRenderItemInfo
+  FlatList
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
@@ -17,31 +11,24 @@ import { useScrollToTop } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
-import Animated, { Easing, useCode } from "react-native-reanimated";
-import { useValues } from "react-native-redash";
+import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
-import uuid from "uuid/v4";
 
 import { hideStatusBarOnScroll } from "@hooks";
 import { UserModal, Top, Grid, PostModal } from "@components/Profile";
 import { ModalListRef } from "@components/universal";
 import { SB_HEIGHT } from "@lib/styles";
-import { Actions as AuthActions } from "@redux/modules/auth";
-import { Actions as PostActions } from "@redux/modules/post";
-import { Actions as UserActions } from "@redux/modules/user";
+import { AuthActions, PostActions, UserActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { Post, User } from "@unexpected/global";
+import { Post } from "@unexpected/global";
 
-import { StackParamList } from "../../App";
+import { ParamList } from "../../App";
 
-const mapStateToProps = (state: RootState, props: UserProfileOwnProps) => ({
+const mapStateToProps = (state: RootState) => ({
   user: selectors.currentUser(state),
-  stale: selectors.feedStale(state),
-  // @ts-ignore
-  friends: selectors.friends(state),
-  friendRequests: selectors.friendRequests(state)
+  stale: selectors.feedStale(state)
 });
 const mapDispatchToProps = {
   logout: AuthActions.logout,
@@ -53,8 +40,8 @@ const mapDispatchToProps = {
 export type UserProfileReduxProps = ConnectedProps<typeof connector>;
 
 export interface UserProfileOwnProps {
-  navigation: NativeStackNavigationProp<StackParamList, "USER_PROFILE">;
-  route: RouteProp<StackParamList, "USER_PROFILE">;
+  navigation: NativeStackNavigationProp<ParamList, "USER_PROFILE">;
+  route: RouteProp<ParamList, "USER_PROFILE">;
 }
 
 export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
@@ -64,10 +51,9 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     fetchUser,
     fetchUsersRequests,
     fetchUsersPosts,
-    friendRequests,
-    friends,
     stale,
-    user
+    user,
+    route
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
     const [modalType, setModalType] = useState<
@@ -99,33 +85,24 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
 
     const goToSettings = () => navigation.navigate("SETTINGS");
 
+    const goToEditProfile = () => navigation.navigate("EDIT_PROFILE");
+
     const openFriends = () => {
       modalRef.current?.open();
       setModalType("friends");
     };
-
-    const goToEditProfile = () => navigation.navigate("EDIT_PROFILE");
 
     const openRequests = () => {
       modalRef.current?.open();
       setModalType("requests");
     };
 
-    const renderTop = () => (
-      <Top
-        phoneNumber={user.phoneNumber}
-        scrollY={scrollY}
-        onPressAddBio={goToEditProfile}
-        onPressFriends={openFriends}
-        onPressImage={goToNewProfilePicture}
-        onPressFriendRequests={openRequests}
-        onPressSettings={goToSettings}
-      />
-    );
-
     const handleOnPressPost = ({ id }: Post) => {
       requestAnimationFrame(() => setFocusedPostId(id));
     };
+
+    const handlePostModalClose = () => setFocusedPostId("");
+    const handleUserModalClose = () => setModalType(undefined);
 
     const handleOnScrollEndDrag = (
       event: NativeSyntheticEvent<NativeScrollEvent>
@@ -144,9 +121,19 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       }
     };
 
-    const handlePostModalClose = () => setFocusedPostId("");
-    const handleUserModalClose = () => setModalType(undefined);
+    const renderTop = () => (
+      <Top
+        phoneNumber={user.phoneNumber}
+        scrollY={scrollY}
+        onPressAddBio={goToEditProfile}
+        onPressFriends={openFriends}
+        onPressImage={goToNewProfilePicture}
+        onPressFriendRequests={openRequests}
+        onPressSettings={goToSettings}
+      />
+    );
 
+    console.log("route", route.params);
     return (
       <Screen style={styles.container}>
         <Grid
@@ -164,12 +151,21 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           phoneNumber={user.phoneNumber}
           onClose={handleUserModalClose}
         />
-        <PostModal postId={focusedPostId} onClose={handlePostModalClose} />
+        <PostModal
+          postId={
+            route.params?.focusedPostId.length
+              ? route.params?.focusedPostId
+              : focusedPostId
+          }
+          onClose={handlePostModalClose}
+        />
       </Screen>
     );
   },
   (prevProps, nextProps) =>
     prevProps.stale === nextProps.stale &&
+    prevProps.route.params?.focusedPostId ===
+      nextProps.route.params?.focusedPostId &&
     isEqual(prevProps.user, nextProps.user)
 );
 
