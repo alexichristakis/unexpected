@@ -34,7 +34,7 @@ export function useNotificationEvents(
     setCameraTimer(expiry);
   };
 
-  useEffect(() => {
+  return useEffect(() => {
     const subscribers = [
       Notifications.events().registerNotificationOpened(
         (notification, complete) => {

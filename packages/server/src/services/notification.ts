@@ -96,7 +96,7 @@ export class NotificationService {
     route: { id: string; phoneNumber: string }
   ) {
     let token;
-    let deviceOS = "ios";
+    const deviceOS = "ios";
     if (user instanceof Array) {
       token = user.map(({ deviceToken = "" }) => deviceToken);
     } else {

@@ -152,7 +152,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
         />
         <PostModal
           postId={
-            route.params?.focusedPostId.length
+            route.params?.focusedPostId?.length
               ? route.params?.focusedPostId
               : focusedPostId
           }

@@ -55,8 +55,6 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     friends,
     route
   }) => {
-    const { focusedPostId: initialFocusedPostId = "" } = route.params;
-
     const [focusedPostId, setFocusedPostId] = useState("");
     const [showUserModal, setShowUserModal] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
@@ -180,13 +178,20 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           onClose={handleUserModalClose}
         />
         <PostModal
-          postId={focusedPostId || initialFocusedPostId}
+          postId={
+            route.params?.focusedPostId?.length
+              ? route.params?.focusedPostId
+              : focusedPostId
+          }
           onClose={handlePostModalClose}
         />
       </Screen>
     );
   },
-  (prevProps, nextProps) => isEqual(prevProps.user, nextProps.user)
+  (prevProps, nextProps) =>
+    prevProps.route.params?.focusedPostId ===
+      nextProps.route.params?.focusedPostId &&
+    isEqual(prevProps.user, nextProps.user)
 );
 
 const styles = StyleSheet.create({
