@@ -10,6 +10,7 @@ import {
 } from "@tsed/common";
 
 import { Exception } from "ts-httpexceptions";
+import uniq from "lodash/uniq";
 import { Comment } from "@unexpected/global";
 
 import { AuthMiddleware } from "../middlewares/auth";
@@ -36,21 +37,38 @@ export class CommentController {
   @Put()
   async comment(@BodyParams("comment") comment: Comment) {
     const { postId } = comment;
-    const [fromUser, post] = await Promise.all([
+    const [fromUser, comments, post] = await Promise.all([
       this.userService.getByPhoneNumber(comment.phoneNumber),
+      this.commentService.getByPostId(postId),
       this.postService.getId(postId)
     ]);
 
     if (!fromUser || !post) throw new Exception();
 
-    const toUser = await this.userService.getByPhoneNumber(post.phoneNumber);
+    const otherCommentersNumbers = comments?.length
+      ? uniq(comments.map(({ phoneNumber }) => phoneNumber)).filter(
+          phoneNumber =>
+            phoneNumber !== fromUser.phoneNumber &&
+            phoneNumber !== post.phoneNumber
+        )
+      : [];
+
+    const [postAuthor, otherCommenters] = await Promise.all([
+      this.userService.getByPhoneNumber(post.phoneNumber),
+      this.userService.getByPhoneNumber(otherCommentersNumbers)
+    ]);
 
     const [newComment] = await Promise.all([
       this.commentService.createNewComment(comment),
       this.notificationService.notifyWithNavigationToPost(
-        toUser,
+        postAuthor,
         `${fromUser.firstName} commented on your post!`,
-        { ...post, id: postId }
+        { phoneNumber: post.phoneNumber, id: postId }
+      ),
+      this.notificationService.notifyWithNavigationToPost(
+        otherCommenters,
+        `${fromUser.firstName} also commented on a post you commented on`,
+        { phoneNumber: post.phoneNumber, id: postId }
       )
     ]);
 

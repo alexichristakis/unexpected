@@ -38,7 +38,6 @@ export class Server extends ServerLoader {
    * @returns {Server}
    */
   public $beforeRoutesInit(): void | Promise<any> {
-    // this.expressApp.disable("etag");
     this.use(GlobalAcceptMimesMiddleware)
       .use(cookieParser())
       .use(compress({}))

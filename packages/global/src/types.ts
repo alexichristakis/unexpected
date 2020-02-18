@@ -31,12 +31,12 @@ export type NewComment = Omit<Comment, "createdAt" | "id">;
 
 export type UserNotificationPayload = {
   type: "user";
-  route: User;
+  route: { phoneNumber: string };
 };
 
 export type PostNotificationPayload = {
   type: "post";
-  route: Post;
+  route: { id: string; phoneNumber: string };
 };
 
 export type NotificationRoutePayload =
