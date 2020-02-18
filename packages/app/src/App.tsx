@@ -19,20 +19,17 @@ import {
 } from "@react-navigation/native-stack";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Notifications } from "react-native-notifications";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
-import { NotificationPayload } from "@unexpected/global";
-import { UserActions } from "@redux/modules";
 
 import { LaunchCameraButton } from "@components/Camera";
 import Connection from "@components/Connection";
 import { isIPhoneX, TextStyles } from "@lib/styles";
-import { useReduxState, useReduxAction } from "./hooks";
+import { useReduxState, useNotificationEvents } from "./hooks";
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
@@ -158,71 +155,8 @@ type AuthenticatedRootProps = {
 const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
   navigation
 }) => {
-  const currentUserPhoneNumber = useReduxState(selectors.phoneNumber);
-  const updateUser = useReduxAction(UserActions.updateUser);
-
-  useEffect(() => {
-    console.log("registering");
-    const subscribers = [
-      Notifications.events().registerNotificationOpened(
-        (notification, complete) => {
-          console.log(notification);
-          // @ts-ignore
-          const { payload }: { payload: NotificationPayload } = notification;
-
-          console.log(payload);
-
-          switch (payload.type) {
-            case "user": {
-              const { phoneNumber } = payload.route;
-              // nav to user
-              navigation.navigate("PROFILE", {
-                prevRoute: "Feed",
-                phoneNumber
-              });
-              break;
-            }
-
-            case "post": {
-              const { phoneNumber, id } = payload.route;
-              console.log(phoneNumber, currentUserPhoneNumber, id);
-
-              if (phoneNumber === currentUserPhoneNumber) {
-                navigation.navigate("USER_PROFILE_TAB", {
-                  screen: "USER_PROFILE",
-                  params: { focusedPostId: id }
-                });
-              } else {
-                navigation.navigate("PROFILE", {
-                  prevRoute: "Feed",
-                  focusedPostId: id,
-                  phoneNumber
-                });
-              }
-              break;
-            }
-
-            case "photoTime": {
-              // set photoTime
-            }
-          }
-          complete();
-        }
-      ),
-      Notifications.events().registerRemoteNotificationsRegistered(event => {
-        console.log("TOKEN TOKEN TOKEN:", event.deviceToken);
-        updateUser({ deviceToken: event.deviceToken });
-      }),
-      Notifications.events().registerRemoteNotificationsRegistrationFailed(
-        event => {
-          console.log(event.code, event.localizedDescription, event.domain);
-        }
-      )
-    ];
-
-    // request permissions
-    Notifications.registerRemoteNotifications();
-  }, []);
+  // start listening for notification events
+  useNotificationEvents(navigation);
 
   return (
     <Stack.Navigator
@@ -330,15 +264,6 @@ const UnathenticatedRoot = () => (
 
 const Router: React.FC = () => {
   const isAuthorized = useReduxState(selectors.isAuthorized);
-
-  // Notifications.events().registerRemoteNotificationsRegistered(event => {
-  //   console.log("TOKEN:", event.deviceToken);
-  // });
-  // Notifications.events().registerRemoteNotificationsRegistrationFailed(
-  //   event => {
-  //     console.log(event.code, event.localizedDescription, event.domain);
-  //   }
-  // );
 
   return (
     <NavigationContainer ref={setNavigatorRef}>
