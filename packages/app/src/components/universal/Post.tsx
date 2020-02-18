@@ -18,7 +18,6 @@ import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import Comments from "@components/Comments/Comments";
-import UserImage from "./UserImage";
 
 import MoreIcon from "@assets/svg/more.svg";
 
