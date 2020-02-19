@@ -54,7 +54,7 @@ export const Discover: React.FC<DiscoverProps &
 
     const handleOnPressUser = (toUser: User) => {
       if (phoneNumber === toUser.phoneNumber) {
-        navigation.navigate("USER_PROFILE");
+        navigation.navigate("USER_PROFILE_TAB");
       } else {
         navigation.navigate({
           name: "PROFILE",

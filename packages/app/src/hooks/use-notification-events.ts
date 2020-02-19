@@ -24,6 +24,7 @@ export function useNotificationEvents(
     NativeStackNavigationProp<StackParamList>
   >
 ) {
+  const launchPermissions = useReduxState(selectors.shouldLaunchPermissions);
   const currentUserPhoneNumber = useReduxState(selectors.phoneNumber);
   const updateUser = useReduxAction(UserActions.updateUser);
   const setCameraTimer = useReduxAction(AppActions.setCameraTimer);
@@ -47,7 +48,7 @@ export function useNotificationEvents(
               const { phoneNumber } = payload.route;
               // nav to user
               navigation.navigate("PROFILE", {
-                prevRoute: "Feed",
+                prevRoute: "Back",
                 phoneNumber
               });
               break;
@@ -64,7 +65,7 @@ export function useNotificationEvents(
                 });
               } else {
                 navigation.navigate("PROFILE", {
-                  prevRoute: "Feed",
+                  prevRoute: "Back",
                   focusedPostId: id,
                   phoneNumber
                 });
@@ -113,6 +114,11 @@ export function useNotificationEvents(
         }
       )
     ];
+
+    if (launchPermissions) {
+      // wait for navigation to be initialized ? weird hack
+      setTimeout(() => navigation.navigate("PERMISSIONS"), 50);
+    }
 
     // request permissions
     // Notifications.registerRemoteNotifications();

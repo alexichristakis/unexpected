@@ -76,7 +76,7 @@ const UserModal: React.FC<UserModalProps &
 
     const handleOnPressUser = (toUser: User) => {
       if (currentUserPhoneNumber === toUser.phoneNumber) {
-        navigation.navigate("USER_PROFILE");
+        navigation.navigate("USER_PROFILE_TAB");
       } else {
         navigation.navigate({
           name: "PROFILE",

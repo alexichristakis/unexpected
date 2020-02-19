@@ -33,7 +33,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
 
   const handleOnPress = () => {
     if (phoneNumber === user.phoneNumber) {
-      navigation.navigate("USER_PROFILE");
+      navigation.navigate("USER_PROFILE_TAB");
     } else {
       navigation.navigate("PROFILE", {
         prevRoute: "Post",

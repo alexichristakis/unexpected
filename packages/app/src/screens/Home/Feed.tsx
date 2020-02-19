@@ -77,7 +77,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
 
     const handleOnPressUser = (userPhoneNumber: string) => {
       if (phoneNumber === userPhoneNumber) {
-        navigation.navigate("USER_PROFILE");
+        navigation.navigate("USER_PROFILE_TAB");
       } else {
         navigation.navigate({
           name: "PROFILE",
