@@ -1,5 +1,5 @@
-import { createSelector } from "reselect";
 import moment from "moment";
+import { createSelector } from "reselect";
 
 import { RootState } from "../types";
 import {

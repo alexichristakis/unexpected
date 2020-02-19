@@ -19,12 +19,12 @@ import { connect, ConnectedProps } from "react-redux";
 
 import { Button, Input } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
+import { isIPhoneX, TextStyles } from "@lib/styles";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
-import { StackParamList } from "../App";
-import { TextStyles, isIPhoneX } from "@lib/styles";
 import { Formik } from "formik";
+import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState, props: EditProfileProps) => ({
   user: selectors.currentUser(state),

@@ -10,7 +10,7 @@ import uuid from "uuid/v4";
 
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { TextSizes, TextStyles, isIPhoneX } from "@lib/styles";
+import { isIPhoneX, TextSizes, TextStyles } from "@lib/styles";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState } from "@redux/types";
 
@@ -62,21 +62,25 @@ const Settings: React.FC<SettingsProps> = ({ navigation, logout }) => {
       <Text style={[TextStyles.large, styles.header]}>settings:</Text>
       <View style={[styles.buttonContainer]}>
         <Button
+          white={true}
           title="update profile picture"
           style={styles.button}
           onPress={navigateToNewProfilePicture}
         />
         <Button
+          white={true}
           title="edit profile"
           style={styles.button}
           onPress={navigateToEditProfile}
         />
         <Button
+          white={true}
           title="permissions"
           style={styles.button}
           onPress={navigateToPermissions}
         />
         <Button
+          white={true}
           title="share unexpected"
           style={styles.button}
           onPress={shareUnexpected}
@@ -86,9 +90,15 @@ const Settings: React.FC<SettingsProps> = ({ navigation, logout }) => {
           style={styles.button}
           onPress={getContacts}
         /> */}
-        <Button title="sign out" style={styles.button} onPress={logout} />
+        <Button
+          white={true}
+          title="sign out"
+          style={styles.button}
+          onPress={logout}
+        />
       </View>
       <Button
+        white={true}
         title="dismiss"
         style={styles.button}
         onPress={navigation.goBack}

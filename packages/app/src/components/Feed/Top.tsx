@@ -5,7 +5,7 @@ import moment, { Moment } from "moment";
 import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 
-import { PullToRefresh, ItemSeparator } from "@components/universal";
+import { ItemSeparator, PullToRefresh } from "@components/universal";
 import { HORIZONTAL_GUTTER } from "@lib/constants";
 import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 

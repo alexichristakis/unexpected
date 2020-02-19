@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import { Notifications } from "react-native-notifications";
 import {
   check,
   checkNotifications,
@@ -16,7 +17,6 @@ import {
   createAction,
   ExtractActionFromActionCreator
 } from "../utils";
-import { notificationWatcher } from "./app";
 
 export interface PermissionsState {
   readonly loading: boolean;
@@ -97,7 +97,13 @@ function* onRequestNotifications() {
     }: NotificationsResponse = yield checkNotifications();
 
     if (status !== "granted") {
-      ({ status, settings } = yield requestNotifications(["alert", "badge"]));
+      Notifications.registerRemoteNotifications();
+
+      ({ status, settings } = yield checkNotifications());
+      // ({ status, settings } = yield requestNotifications([
+      //   "alert",
+      //   "badge"
+      // ]));
     }
 
     yield put(Actions.setNotifications({ status, settings }));
@@ -126,7 +132,6 @@ function* onRequestPermission(
 
 export function* permissionSagas() {
   yield all([
-    yield takeLatest(ActionTypes.SET_NOTIFICATIONS, notificationWatcher),
     yield takeLatest(ActionTypes.REQUEST_NOTIFICATIONS, onRequestNotifications),
     yield takeEvery(ActionTypes.REQUEST_PERMISSION, onRequestPermission)
   ]);

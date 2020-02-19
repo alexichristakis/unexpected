@@ -1,8 +1,8 @@
 import React, {
   forwardRef,
-  useState,
   useImperativeHandle,
-  useRef
+  useRef,
+  useState
 } from "react";
 import {
   GestureResponderEvent,

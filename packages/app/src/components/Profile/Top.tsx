@@ -5,10 +5,10 @@ import { connect, ConnectedProps } from "react-redux";
 
 import Gear from "@assets/svg/gear.svg";
 import { Button, PullToRefresh, UserImage } from "@components/universal";
-import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import { RootState } from "@redux/types";
-import * as selectors from "@redux/selectors";
 import { HORIZONTAL_GUTTER } from "@lib/constants";
+import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
 
 const mapStateToProps = (state: RootState, props: ProfileTopProps) => {
   const isUser = selectors.phoneNumber(state) === props.phoneNumber;

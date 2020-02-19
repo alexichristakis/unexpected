@@ -9,15 +9,15 @@ import {
 
 import _ from "lodash";
 import moment from "moment";
-import { connect, ConnectedProps } from "react-redux";
 import { TransitioningView } from "react-native-reanimated";
+import { connect, ConnectedProps } from "react-redux";
 
+import Comments from "@components/Comments/Comments";
 import { TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import Comments from "@components/Comments/Comments";
 
 import MoreIcon from "@assets/svg/more.svg";
 

@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
-import { StyleSheet, TextInput, FlatList } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { FlatList, StyleSheet, TextInput } from "react-native";
 
-import { useScrollToTop } from "@react-navigation/native";
 import { RouteProp } from "@react-navigation/core";
+import { useScrollToTop } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
 import Haptics from "react-native-haptic-feedback";
@@ -11,19 +11,19 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
+import { CommentsModal } from "@components/Comments";
 import { Posts } from "@components/Feed";
 import {
+  ModalListRef,
   ZoomedImage,
-  ZoomedImageType,
-  ModalListRef
+  ZoomedImageType
 } from "@components/universal";
-import { CommentsModal } from "@components/Comments";
 import { hideStatusBarOnScroll } from "@hooks";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
-import { StackParamList } from "../../App";
+import { ParamList } from "../../App";
 
 const { Value } = Animated;
 
@@ -42,8 +42,8 @@ export type FeedReduxProps = ReduxPropsType<
   typeof mapDispatchToProps
 >;
 export interface FeedProps extends FeedReduxProps {
-  navigation: NativeStackNavigationProp<StackParamList, "FEED">;
-  route: RouteProp<StackParamList, "FEED">;
+  navigation: NativeStackNavigationProp<ParamList, "FEED">;
+  route: RouteProp<ParamList, "FEED">;
 }
 
 export const Feed: React.FC<FeedProps> = React.memo(
@@ -70,15 +70,14 @@ export const Feed: React.FC<FeedProps> = React.memo(
 
     useEffect(() => {
       // fetchFeed();
-
-      if (shouldLaunchPermissions) {
-        setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
-      }
+      // if (shouldLaunchPermissions) {
+      //   setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
+      // }
     }, [stale]);
 
     const handleOnPressUser = (userPhoneNumber: string) => {
       if (phoneNumber === userPhoneNumber) {
-        navigation.navigate("USER_PROFILE");
+        navigation.navigate("USER_PROFILE_TAB");
       } else {
         navigation.navigate({
           name: "PROFILE",

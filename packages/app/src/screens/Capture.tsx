@@ -7,10 +7,10 @@ import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
 import Camera, {
+  CameraRef,
   FlipCameraButton,
   Shutter,
-  ToggleFlashModeButton,
-  CameraRef
+  ToggleFlashModeButton
 } from "@components/Camera";
 import { useLightStatusBar } from "@hooks";
 import { Actions as ImageActions } from "@redux/modules/image";

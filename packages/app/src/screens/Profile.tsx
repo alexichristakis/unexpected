@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -11,20 +11,20 @@ import { Post, User } from "@unexpected/global";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
 import Animated, { TransitioningView } from "react-native-reanimated";
+import { useValues } from "react-native-redash";
 import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
-import { useValues } from "react-native-redash";
 
-import { Grid, Top, UserModal, PostModal } from "@components/Profile";
-import { FriendButton, NavBar, ModalListRef } from "@components/universal";
+import { Grid, PostModal, Top, UserModal } from "@components/Profile";
+import { FriendButton, ModalListRef, NavBar } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT } from "@lib/styles";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { StackParamList } from "../App";
+import { ParamList } from "../App";
 
 const { useCode, debug, block, call, greaterThan, lessOrEq, cond } = Animated;
 
@@ -41,8 +41,8 @@ const mapDispatchToProps = {
 export type ProfileReduxProps = ConnectedProps<typeof connector>;
 
 export interface ProfileProps {
-  navigation: NativeStackNavigationProp<StackParamList, "PROFILE">;
-  route: RouteProp<StackParamList, "PROFILE">;
+  navigation: NativeStackNavigationProp<ParamList, "PROFILE">;
+  route: RouteProp<ParamList, "PROFILE">;
 }
 
 const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
@@ -108,21 +108,6 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       />
     );
 
-    const handleOnPressUser = (toUser: User) => {
-      if (phoneNumber === toUser.phoneNumber) {
-        navigation.navigate("USER_PROFILE");
-      } else {
-        navigation.navigate({
-          name: "PROFILE",
-          key: uuid(),
-          params: {
-            prevRoute: user.firstName,
-            phoneNumber: toUser.phoneNumber
-          }
-        });
-      }
-    };
-
     const handleOnPressPost = ({ id }: Post) => {
       requestAnimationFrame(() => setFocusedPostId(id));
     };
@@ -177,11 +162,21 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           phoneNumber={route.params.phoneNumber}
           onClose={handleUserModalClose}
         />
-        <PostModal postId={focusedPostId} onClose={handlePostModalClose} />
+        <PostModal
+          postId={
+            route.params?.focusedPostId?.length
+              ? route.params?.focusedPostId
+              : focusedPostId
+          }
+          onClose={handlePostModalClose}
+        />
       </Screen>
     );
   },
-  (prevProps, nextProps) => isEqual(prevProps.user, nextProps.user)
+  (prevProps, nextProps) =>
+    prevProps.route.params?.focusedPostId ===
+      nextProps.route.params?.focusedPostId &&
+    isEqual(prevProps.user, nextProps.user)
 );
 
 const styles = StyleSheet.create({

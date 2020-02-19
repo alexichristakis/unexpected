@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  StyleProp,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  ActivityIndicator,
-  ViewStyle,
-  StyleProp
+  ViewStyle
 } from "react-native";
 import Animated, {
-  interpolate,
+  Clock,
   Extrapolate,
-  Clock
+  interpolate
 } from "react-native-reanimated";
-import { useValues, spring } from "react-native-redash";
+import { spring, useValues } from "react-native-redash";
 
-import { TextStyles, Colors, SCREEN_HEIGHT } from "@lib/styles";
+import { Colors, SCREEN_HEIGHT, TextStyles } from "@lib/styles";
 
 const {
   useCode,

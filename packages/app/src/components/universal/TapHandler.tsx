@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { View, StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import { BaseButton } from "react-native-gesture-handler";
 import Animated, { Easing } from "react-native-reanimated";

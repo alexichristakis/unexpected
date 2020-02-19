@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   FlatList,
   ListRenderItemInfo,
@@ -19,14 +19,14 @@ import Animated, {
   TransitioningView
 } from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
-import { ConnectedProps, connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 import LockSVG from "@assets/svg/lock.svg";
 import { Colors, TextStyles } from "@lib/styles";
 
 import { formatName } from "@lib/utils";
-import { RootState } from "@redux/types";
 import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
 
 // import testPosts from "./test_data";
 import { Month, Months } from "./Month";

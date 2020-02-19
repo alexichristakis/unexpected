@@ -1,22 +1,22 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ActionSheetIOS, StyleSheet, Text, View } from "react-native";
 
+import isEqual from "lodash/isEqual";
+import sortBy from "lodash/sortBy";
 import moment from "moment";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
-import isEqual from "lodash/isEqual";
-import sortBy from "lodash/sortBy";
 
+import { Comment, FloatingComposer } from "@components/Comments";
 import {
-  PostImage,
   ModalList,
   ModalListRef,
+  PostImage,
   ZoomedImage,
   ZoomedImageType,
   ZoomHandler,
   ZoomHandlerGestureBeganPayload
 } from "@components/universal";
-import { Comment, FloatingComposer } from "@components/Comments";
 import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { PostActions } from "@redux/modules";
