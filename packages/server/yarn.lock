@@ -478,7 +478,7 @@
     p-queue "^2.4.2"
     p-retry "^4.0.0"
 
-"@tsed/common@5.43.0", "@tsed/common@^5.30.0":
+"@tsed/common@5.43.0", "@tsed/common@^5.43.0":
   version "5.43.0"
   resolved "https://registry.yarnpkg.com/@tsed/common/-/common-5.43.0.tgz#f830b13fa79e3b243539db2baaf19619ad6485dc"
   integrity sha512-u43lDHhQ7KTYXi/9AqLvyijVTH8nlGsANRv2FlKA493m/MnsLrISQGQ4pRv1rGe9AbsBxHR8C1JyyJAYr6CybQ==
@@ -496,7 +496,7 @@
     tslib "1.10.0"
     uuid "3.3.3"
 
-"@tsed/core@5.43.0", "@tsed/core@^5.30.0":
+"@tsed/core@5.43.0", "@tsed/core@^5.43.0":
   version "5.43.0"
   resolved "https://registry.yarnpkg.com/@tsed/core/-/core-5.43.0.tgz#bfd8d0ed74ce1bbf066ca221eb9d0d9b564e29b4"
   integrity sha512-dxYyT2sTjrioXHjArzYZYuHmi5GLU4jdSvLt79Fa2eiawBWgqsyTL+jhLxbzTVSZPNmuUnCURYh05f8FVfQMwQ==
@@ -505,7 +505,7 @@
     source-map-support "0.5.16"
     tslib "1.10.0"
 
-"@tsed/di@5.43.0", "@tsed/di@^5.30.0":
+"@tsed/di@5.43.0", "@tsed/di@^5.43.0":
   version "5.43.0"
   resolved "https://registry.yarnpkg.com/@tsed/di/-/di-5.43.0.tgz#6f68557c1768425f37b54f4904b95677f8766058"
   integrity sha512-sL8yZFZUDSGTCHIQsquNzYojGaxui/PDFPwvXGmDLbU8qjF8gpnnIeBMFHEjYsXEbAycc4wt3H+Mdl72Ojl3CA==
@@ -524,7 +524,7 @@
     streamroller "^1.0.3"
     tslib "1.10.0"
 
-"@tsed/mongoose@^5.30.0":
+"@tsed/mongoose@^5.43.0":
   version "5.43.0"
   resolved "https://registry.yarnpkg.com/@tsed/mongoose/-/mongoose-5.43.0.tgz#f692869aa6c1da3dccb54496b52e40d35405830f"
   integrity sha512-11CmM+wh96BZKI8TSYweJDPhUYC6SAvW8IVAh548kS/yeuZ8L3oF8rlCTW5v83/mVNbAAQ9E7AIk3vlAx/wGyA==
@@ -533,7 +533,7 @@
     "@tsed/core" "5.43.0"
     tslib "1.10.0"
 
-"@tsed/multipartfiles@^5.30.0":
+"@tsed/multipartfiles@^5.43.0":
   version "5.43.0"
   resolved "https://registry.yarnpkg.com/@tsed/multipartfiles/-/multipartfiles-5.43.0.tgz#254ba6a6b6e41cd39c1e7b775ed8c5d5ef6b5116"
   integrity sha512-f1fRP7zYSHG07JHOUQiTblOlVzlFzIKQA+yQcwbGKOWlSwbUkKgAw6VIs7CM5yfOdSMg3bc8Xx5G0MxNbqzGiQ==

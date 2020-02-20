@@ -18,11 +18,13 @@ import methodOverride from "method-override";
 
 const PROD = !!process.env.PORT;
 
+console.log("PROD:", PROD);
+
 @ServerSettings({
   rootDir: __dirname,
   acceptMimes: ["application/json"],
   port: process.env.PORT || 5000,
-  debug: true,
+  // debug: true,
 
   mount: {
     "/": PROD ? "dist/controllers/*" : "src/controllers/*"
