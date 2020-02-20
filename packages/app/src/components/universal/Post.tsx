@@ -13,7 +13,7 @@ import { TransitioningView } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
 import Comments from "@components/Comments/Comments";
-import { TextStyles } from "@lib/styles";
+import { TextStyles, Colors } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
@@ -103,9 +103,7 @@ const Post = React.memo(
               <TouchableOpacity onPress={handleOnPressName}>
                 <Text style={TextStyles.large}>{formatName(user)}</Text>
               </TouchableOpacity>
-              <Text style={TextStyles.medium}>
-                {moment(createdAt).fromNow()}
-              </Text>
+              <Text style={styles.time}>{moment(createdAt).fromNow()}</Text>
             </View>
             {isUser && (
               <TouchableOpacity onPress={handleOnPressMoreIcon}>
@@ -140,6 +138,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 10,
     marginBottom: 10
+  },
+  time: {
+    ...TextStyles.small,
+    color: Colors.gray
   },
   name: {
     marginBottom: 10

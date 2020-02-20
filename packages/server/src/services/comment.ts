@@ -2,6 +2,8 @@ import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import { Comment } from "@unexpected/global";
 
+import remove from "lodash/remove";
+
 import { Comment as CommentModel } from "../models/Comment";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
@@ -37,5 +39,23 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
       .exec();
 
     return comments;
+  }
+
+  async likeComment(phoneNumber: string, id: string) {
+    return this.model
+      .findByIdAndUpdate(id, { $push: { likes: phoneNumber } })
+      .exec();
+  }
+
+  async unLikeComment(phoneNumber: string, id: string) {
+    const comment = await this.model.findById(id).exec();
+
+    if (comment) {
+      remove(comment.likes, phoneNumber);
+
+      return comment.save();
+    }
+
+    return null;
   }
 }

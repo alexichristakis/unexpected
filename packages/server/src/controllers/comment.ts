@@ -6,7 +6,8 @@ import {
   Inject,
   PathParams,
   Put,
-  UseAuth
+  UseAuth,
+  Patch
 } from "@tsed/common";
 
 import { Comment } from "@unexpected/global";
@@ -76,6 +77,24 @@ export class CommentController {
     ]);
 
     return newComment;
+  }
+
+  @Patch("/:phoneNumber/like/:id")
+  likeComment(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("id") id: string
+  ) {
+    //
+    return this.commentService.likeComment(phoneNumber, id);
+  }
+
+  @Patch("/:phoneNumber/unlike/:id")
+  unlikeComment(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("id") id: string
+  ) {
+    //
+    return this.commentService.unLikeComment(phoneNumber, id);
   }
 
   @Delete("/:id")

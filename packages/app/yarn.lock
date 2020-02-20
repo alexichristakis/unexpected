@@ -942,18 +942,18 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-5.5.0.tgz#7f1d2e301b8a1294da44fb44d7b3fd6ea4d40c8a"
   integrity sha512-9fdOk1dxR3Bt+T4OuQxhf7EjyfbI6qVbPcNfTvVjGgRrx798ixAbBcCC+k5wp3LloVChVicXkyblu+wXEGiCWw==
 
-"@react-navigation/bottom-tabs@^5.0.5":
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.0.5.tgz#517e98a90a15cd61b3d7977e7f403e1f4011d9a4"
-  integrity sha512-0JuhMzoZLtzKIEbUj2VCq4D0ZTrTdug4zS3zumQeRbM+6X9aQJLIvqZn97PYnfs9QqOZZQulTAAXzbR2ItDvGg==
+"@react-navigation/bottom-tabs@^5.0.6":
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.0.6.tgz#aa282233d87c39f7414dcd5030d93465febcb0b9"
+  integrity sha512-TEanFKAt6rZbQdB7jC+yuERuY9cH05pLdpd5duGAEnPwT55UcmhNtPRoAHL3H9m4XRrzOQT6SzMAWkr/vtFWSQ==
   dependencies:
     color "^3.1.2"
     react-native-iphone-x-helper "^1.2.1"
 
-"@react-navigation/core@^5.1.4":
-  version "5.1.4"
-  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.1.4.tgz#bc6cca79833f70f879cdd7a6b78665878ce2f6de"
-  integrity sha512-BM/HHsRJdsr4xRKAI092FFz+T1A94Ggftf/BSZozBZ4i5btlJ0uXC3uBb1vpdhk/P/qfBOIEraZoEwOQ4JNpdg==
+"@react-navigation/core@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.1.5.tgz#252f64b27094a74c559d4fbfc20a14ddbcc443f5"
+  integrity sha512-xBneAOygKqFanIWrg+iGuNRxlxgTpT7ICKcD5pQTFxavxjonJvyJxAgIMH6kWwIzSvCtUuFrLa9TE5HLddF2Ng==
   dependencies:
     "@react-navigation/routers" "^5.0.1"
     escape-string-regexp "^2.0.0"
@@ -967,12 +967,12 @@
   resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-5.0.5.tgz#c5bcbfa92a7dbd8753893fb4c94d943a99c23c78"
   integrity sha512-gzBwX0tVLUFSBudLV1BxwcyOJ8FZ0+fzWiK9BjFkamUCXE7Vi9mA5PIgoXW69X3tnATTM3+7VA3d+/UcflpJow==
 
-"@react-navigation/native@^5.0.5":
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.0.5.tgz#4ba4518ddba602086b80fc507fa7b5588c1e71c2"
-  integrity sha512-k42UHDzZwjN3f9WgCUKycJmpo2xypZDlauhhvSoTJ1DG4+sv0PvS5onJwjQm83F2FGACkOSWSoBo7wbYc+fTRQ==
+"@react-navigation/native@^5.0.6":
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@react-navigation/native/-/native-5.0.6.tgz#050d6c212b9d59a2d9af5ba7f26857657d7b398f"
+  integrity sha512-Iok8RpNuoQpoKmnpj3e09B5ErceCroMv05YYEOp93IOfkHHH2erE7GOTxKHwO5C5ok8R7/QZlZ0TIqyQWxPDEQ==
   dependencies:
-    "@react-navigation/core" "^5.1.4"
+    "@react-navigation/core" "^5.1.5"
 
 "@react-navigation/routers@^5.0.1":
   version "5.0.1"
@@ -5681,10 +5681,10 @@ react-native-safe-area-context@^0.7.3:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-0.7.3.tgz#ad6bd4abbabe195332c53810e4ce5851eb21aa2a"
   integrity sha512-9Uqu1vlXPi+2cKW/CW6OnHxA76mWC4kF3wvlqzq4DY8hn37AeiXtLFs2WkxH4yXQRrnJdP6ivc65Lz+MqwRZAA==
 
-react-native-screens@^2.0.0-beta.6:
-  version "2.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-beta.6.tgz#d38c6eee0351f9c76e2a70e8b8861e3ae1005d89"
-  integrity sha512-Y0Iled8pPBaP4oKjkVft2yAnm20E7Ny5CCPrP79ctqY3fUJ/iQp79GsHSeaL+30ejZ7B9FaBv64o/toYn2SpRg==
+react-native-screens@^2.0.0-beta.8:
+  version "2.0.0-beta.8"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-beta.8.tgz#f302c5a93b1bf067739026dd64ac553145659ecd"
+  integrity sha512-UCu5to8SM52aLhmKQPcwQ0cXekFUdCza9VU76gDAsodJS3kvmNaCkjlSQ0eFucqYEhMqCCZ/fYxpdMbSsiYHGg==
   dependencies:
     debounce "^1.2.0"
 
@@ -5741,14 +5741,13 @@ react-native@0.61.5:
     stacktrace-parser "^0.1.3"
     whatwg-fetch "^3.0.0"
 
-react-redux@^7.1.3:
-  version "7.1.3"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.1.3.tgz#717a3d7bbe3a1b2d535c94885ce04cdc5a33fc79"
-  integrity sha512-uI1wca+ECG9RoVkWQFF4jDMqmaw0/qnvaSvOoL/GA4dNxf6LoV8sUAcNDvE5NWKs4hFpn0t6wswNQnY3f7HT3w==
+react-redux@^7.2.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.0.tgz#f970f62192b3981642fec46fd0db18a074fe879d"
+  integrity sha512-EvCAZYGfOLqwV7gh849xy9/pt55rJXPwmYvI4lilPM5rUT/1NxuuN59ipdBksRVSvz0KInbPnp4IfoXJXCqiDA==
   dependencies:
     "@babel/runtime" "^7.5.5"
     hoist-non-react-statics "^3.3.0"
-    invariant "^2.2.4"
     loose-envify "^1.4.0"
     prop-types "^15.7.2"
     react-is "^16.9.0"

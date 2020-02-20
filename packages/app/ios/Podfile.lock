@@ -265,7 +265,7 @@ PODS:
     - React
   - RNReanimated (1.7.0):
     - React
-  - RNScreens (2.0.0-beta.6):
+  - RNScreens (2.0.0-beta.8):
     - React
   - RNSVG (11.0.1):
     - React
@@ -467,7 +467,7 @@ SPEC CHECKSUMS:
   RNPermissions: 2f74237e97b08beda01e914301e12524ddddf5b8
   RNReactNativeHapticFeedback: 2566b468cc8d0e7bb2f84b23adc0f4614594d071
   RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
-  RNScreens: c2c8bdde0146f16eb6bf092dd7485534851f2711
+  RNScreens: d56b2da8367a56bbc9840e16d968339eb0ec7e7f
   RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b

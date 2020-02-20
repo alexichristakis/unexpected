@@ -1,10 +1,12 @@
+import React from "react";
+import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
+
 import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import moment from "moment";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { BaseButton } from "react-native-gesture-handler";
 import { connect, ConnectedProps } from "react-redux";
+import isEqual from "lodash/isEqual";
 
 import { UserImage } from "@components/universal";
 import { Colors, TextStyles } from "@lib/styles";
@@ -14,6 +16,7 @@ import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
 
 import { ParamList, StackParamList } from "../../App";
+import { PostActions } from "@redux/modules";
 
 type Navigation = NativeStackNavigationProp<ParamList>;
 
@@ -22,14 +25,27 @@ const mapStateToProps = (state: RootState, props: CommentProps) => ({
   user: selectors.user(state, props)
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  likeComment: PostActions.likeComment,
+  unLikeComment: PostActions.unLikeComment
+};
 
 interface CommentProps extends CommentType {}
 
 export type CommentsConnectedProps = ConnectedProps<typeof connector>;
 
 const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
-  ({ userPhoneNumber, phoneNumber, createdAt, user, body }) => {
+  ({
+    id,
+    userPhoneNumber,
+    phoneNumber,
+    createdAt,
+    user,
+    likes = [],
+    body,
+    likeComment,
+    unLikeComment
+  }) => {
     const navigation = useNavigation<Navigation>();
 
     const handleOnPress = () => {
@@ -40,6 +56,18 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
           prevRoute: "Post",
           phoneNumber: user.phoneNumber
         });
+      }
+    };
+
+    const handleOnPressLikes = () => {
+      console.log("likes pressed");
+    };
+
+    const handleOnPressLike = () => {
+      if (likes.includes(userPhoneNumber)) {
+        unLikeComment(id);
+      } else {
+        likeComment(id);
       }
     };
 
@@ -54,12 +82,22 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
 
             {body}
           </Text>
-          <Text style={styles.createdAt}>{moment(createdAt).fromNow()}</Text>
+
+          <Text style={styles.createdAt}>
+            {moment(createdAt).fromNow()}
+            <Text onPress={handleOnPressLikes} style={styles.createdAt}>
+              {" ∙ " + likes.length + " likes"}
+            </Text>
+          </Text>
         </View>
+        <TouchableOpacity onPress={handleOnPressLike}>
+          <Text style={styles.createdAt}>like</Text>
+        </TouchableOpacity>
       </View>
     );
   },
-  (prevProps, nextProps) => prevProps.id === nextProps.id
+  (prevProps, nextProps) =>
+    prevProps.id === nextProps.id && isEqual(prevProps.likes, nextProps.likes)
 );
 
 const styles = StyleSheet.create({

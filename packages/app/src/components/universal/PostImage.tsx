@@ -38,16 +38,17 @@ export const _PostImage: React.FC<PostImageProps &
       } else {
         // otherwise check to make sure it exists, then download
         RNFS.exists(cache[id].uri).then(res => {
-          if (!res) requestCache(phoneNumber, id);
+          if (!res) {
+            requestCache(phoneNumber, id);
+          }
         });
       }
     }, []);
 
-    if (cache[id])
+    if (cache[id]) {
       return (
         <Image
           source={{ uri: cache[id].uri }}
-          // source={require("@assets/png/test.png")}
           style={[
             styles.image,
             {
@@ -57,7 +58,7 @@ export const _PostImage: React.FC<PostImageProps &
           ]}
         />
       );
-
+    }
     // loading state
     return (
       <View style={[styles.loadingContainer, { width, height }]}>
