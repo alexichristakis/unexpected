@@ -1,20 +1,20 @@
 import { Default, Format, Required } from "@tsed/common";
-import { Indexed, Model, ObjectID } from "@tsed/mongoose";
+import { Indexed, Model, ObjectID, Ref } from "@tsed/mongoose";
+
+import { User } from "./user";
 
 @Model()
 export class FriendRequest {
   @ObjectID("id")
   _id: string;
 
-  @Indexed()
   @Required()
-  @Format("/^+?[1-9]d{1,14}$/")
-  from: string;
+  @Ref(User)
+  from: Ref<User>;
 
-  @Indexed()
   @Required()
-  @Format("/^+?[1-9]d{1,14}$/")
-  to: string;
+  @Ref(User)
+  to: Ref<User>;
 
   @Format("date-time")
   @Default(Date.now)

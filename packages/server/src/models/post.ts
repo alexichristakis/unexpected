@@ -1,15 +1,15 @@
 import { Default, Format, Property, Required } from "@tsed/common";
-import { Indexed, Model, ObjectID } from "@tsed/mongoose";
+import { Indexed, Model, ObjectID, Ref } from "@tsed/mongoose";
 
+import { User } from "./user";
 @Model()
 export class Post {
   @ObjectID("id")
   _id: string;
 
-  @Indexed()
   @Required()
-  @Format("/^+?[1-9]d{1,14}$/")
-  phoneNumber: string;
+  @Ref(User)
+  author: Ref<User>;
 
   @Property()
   description: string;
@@ -17,6 +17,7 @@ export class Post {
   // @Property()
   // location: string;
 
+  // id to object in google cloud storage
   @Required()
   photoId: string;
 

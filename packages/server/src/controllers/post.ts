@@ -10,7 +10,7 @@ import {
   UseAuth
 } from "@tsed/common";
 
-import { Comment, Post } from "@unexpected/global";
+import { Comment, NewPost } from "@unexpected/global";
 
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { PostService } from "../services/post";
@@ -21,26 +21,21 @@ export class PostController {
   @Inject(PostService)
   private postService: PostService;
 
-  @Put("/:phoneNumber")
+  @Put("/:uid")
   @UseAuth(AuthMiddleware, { select: Select.phoneFromPath })
-  sendPost(
-    @PathParams("phoneNumber") phoneNumber: string,
-    @BodyParams("post") post: Post
-  ) {
-    return this.postService.createNewPost({
-      ...post,
-      phoneNumber
-    });
+  sendPost(@PathParams("uid") uid: string, @BodyParams("post") post: NewPost) {
+    // uid, post
+    return this.postService.createNewPost(uid, post);
   }
 
-  @Get("/:phoneNumber/posts")
-  getUsersPosts(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.postService.getUsersPosts(phoneNumber);
+  @Get("/:uid/posts")
+  getUsersPosts(@PathParams("uid") uid: string) {
+    return this.postService.getUsersPosts(uid);
   }
 
-  @Get("/:phoneNumber/feed")
-  async getUsersFeed(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.postService.getFeedForUser(phoneNumber);
+  @Get("/:uid/feed")
+  async getUsersFeed(@PathParams("uid") uid: string) {
+    return this.postService.getFeedForUser(uid);
   }
 
   @Get("/:id")

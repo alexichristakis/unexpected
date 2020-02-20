@@ -6,7 +6,6 @@ import _ from "lodash";
 import Contacts from "react-native-contacts";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
-import uuid from "uuid/v4";
 
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";

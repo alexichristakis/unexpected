@@ -53,11 +53,9 @@ export class UserService extends CRUDService<UserModel, User> {
     }
   }
 
-  async updateValidNotifications(post: Post) {
-    const { createdAt, phoneNumber } = post;
-
-    const time = moment(createdAt);
-    const user = await this.findOne({ phoneNumber }, ["notifications"]);
+  async updateValidNotifications(uid: string) {
+    const time = moment();
+    const user = await this.model.findById(uid).exec();
 
     if (!user) return;
 
@@ -70,14 +68,15 @@ export class UserService extends CRUDService<UserModel, User> {
         )
     );
 
-    return this.updateOne(
-      { phoneNumber },
-      { notifications: updatedNotifications }
-    );
+    return this.model
+      .findByIdAndUpdate(uid, {
+        notifications: updatedNotifications
+      })
+      .exec();
   }
 
-  async cameraEnabled(phoneNumber: string) {
-    const user = await this.findOne({ phoneNumber }, ["notifications"]);
+  async cameraEnabled(uid: string) {
+    const user = await this.model.findById(uid).exec();
 
     if (!user) return { enabled: false };
 
@@ -163,11 +162,17 @@ export class UserService extends CRUDService<UserModel, User> {
     ]);
   }
 
-  async getUserFriends(phoneNumber: string) {
-    const user = await this.getByPhoneNumber(phoneNumber);
+  async getUserFriends(uid: string) {
+    const user = await this.model
+      .findById(uid)
+      .populate("friends")
+      .exec();
+
+    if (!user) return;
+
     const { friends } = user;
 
-    return this.getByPhoneNumber(friends);
+    return friends;
   }
 
   async getByPhoneNumber(phoneNumber?: string): Promise<UserModel & Document>;
