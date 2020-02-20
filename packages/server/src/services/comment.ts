@@ -38,4 +38,13 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
 
     return comments;
   }
+
+  async like(phoneNumber: string, id: string) {
+    const comment: Comment | null = await this.model
+      .findOneAndUpdate({ id }, { $push: { likes: phoneNumber } })
+      .lean()
+      .exec();
+
+    return comment;
+  }
 }

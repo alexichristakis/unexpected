@@ -1,6 +1,6 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Post } from "@unexpected/global";
+import { Post, NewPost } from "@unexpected/global";
 import groupBy from "lodash/groupBy";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
@@ -25,10 +25,17 @@ export class PostService extends CRUDService<PostModel, Post> {
   @Inject(SlackLogService)
   logger: SlackLogService;
 
-  createNewPost = async (post: Post) => {
+  getPostPopulated = (id: string) => {
+    return this.model
+      .findById(id)
+      .populate("author")
+      .exec();
+  };
+
+  createNewPost = async (uid: string, post: NewPost) => {
     return Promise.all([
-      this.create(post),
-      this.userService.updateValidNotifications(post),
+      this.create({ ...post, author: uid }),
+      this.userService.updateValidNotifications(uid),
       this.logger.sendMessage(post.phoneNumber, post.description)
     ]);
   };

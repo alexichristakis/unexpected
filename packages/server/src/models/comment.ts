@@ -1,21 +1,33 @@
 import { Default, Format, Property, Required } from "@tsed/common";
-import { Indexed, Model, ObjectID } from "@tsed/mongoose";
+import { Indexed, Model, ObjectID, Ref } from "@tsed/mongoose";
+
+import { Post } from "./post";
+import { User } from "./User";
 
 @Model()
 export class Comment {
   @ObjectID("id")
   _id: string;
 
-  @Property()
-  postId: string;
-
-  @Indexed()
   @Required()
-  @Format("/^+?[1-9]d{1,14}$/")
-  phoneNumber: string;
+  @Ref(Post)
+  post: Ref<Post>;
 
+  @Required()
+  @Ref(User)
+  author: Ref<User>;
+
+  @Required()
   @Property()
   body: string;
+
+  @Ref(User)
+  likes: Ref<User>[];
+
+  // if the comment is a reply to another comment
+  // this field is the comment id of the parent
+  @Ref(Comment)
+  replyTo?: Ref<Comment>;
 
   @Format("date-time")
   @Default(Date.now)

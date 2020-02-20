@@ -36,19 +36,17 @@ export class UserController {
     return this.userService.search(query);
   }
 
-  @Get("/:phoneNumber/camera")
-  async getIsCameraEnabled(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.userService.cameraEnabled(phoneNumber);
+  @Get("/:uid/camera")
+  async getIsCameraEnabled(@PathParams("uid") uid: string) {
+    return this.userService.cameraEnabled(uid);
   }
 
   @Get()
   async getUsers(
-    @QueryParams("phoneNumbers") phoneNumbers: string,
+    @QueryParams("uids") uids: string,
     @QueryParams("select") select?: string
   ) {
-    const userPhoneNumbers = phoneNumbers.includes(",")
-      ? phoneNumbers.split(",")
-      : [phoneNumbers];
+    const userPhoneNumbers = uids.includes(",") ? uids.split(",") : [uids];
     const selectOn = select?.split(",").join(" ") || "firstName lastName";
 
     return this.userService.getByPhoneNumber(
@@ -58,14 +56,14 @@ export class UserController {
     );
   }
 
-  @Get("/:phoneNumber")
-  async getUser(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.userService.getByPhoneNumber(phoneNumber);
+  @Get("/:uid")
+  async getUser(@PathParams("uid") uid: string) {
+    return this.userService.getId(uid);
   }
 
-  @Get("/:phoneNumber/friends")
-  async getUserFriends(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.userService.getUserFriends(phoneNumber);
+  @Get("/:uid/friends")
+  async getUserFriends(@PathParams("uid") uid: string) {
+    return this.userService.getUserFriends(uid);
   }
 
   @Put()

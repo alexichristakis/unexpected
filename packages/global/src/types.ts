@@ -23,11 +23,20 @@ export type UserNotificationRecord = {
 };
 
 export type Post = Omit<PostModel, "_id"> & { id: string };
+export type NewPost = {
+  photoId: string;
+  description: string;
+};
 
 export type FeedPost = Post & { user: User; comments: Comment[] };
 
 export type Comment = Omit<CommentModel, "_id"> & { id: string };
-export type NewComment = Omit<Comment, "createdAt" | "id">;
+export type NewComment = {
+  postId: string;
+  phoneNumber: string;
+  body: string;
+  replyTo?: string;
+};
 
 export type UserNotificationPayload = {
   type: "user";

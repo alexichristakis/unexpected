@@ -6,7 +6,8 @@ import {
   Inject,
   PathParams,
   Put,
-  UseAuth
+  UseAuth,
+  Patch
 } from "@tsed/common";
 
 import { Comment } from "@unexpected/global";
@@ -56,10 +57,10 @@ export class CommentController {
     const [
       postAuthor,
       ...otherCommenters
-    ] = await this.userService.getByPhoneNumber([
-      post.phoneNumber,
-      ...otherCommentersNumbers
-    ]);
+    ] = await this.userService.getByPhoneNumber(
+      [post.phoneNumber, ...otherCommentersNumbers],
+      true
+    );
 
     const [newComment] = await Promise.all([
       this.commentService.createNewComment(comment),
@@ -76,6 +77,33 @@ export class CommentController {
     ]);
 
     return newComment;
+  }
+
+  @Patch("/:phoneNumber/like/:id")
+  async likeComment(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("id") id: string
+  ) {
+    const comment = await this.commentService.like(phoneNumber, id);
+    if (comment) {
+      const [post, users] = await Promise.all([
+        this.postService.getId(comment.postId),
+        this.userService.getByPhoneNumber(
+          [comment.phoneNumber, phoneNumber],
+          true
+        )
+      ]);
+
+      if (users && post) {
+        const [commentAuthor, commentLiker] = users;
+      }
+
+      return this.notificationService.notifyWithNavigationToPost(
+        commentAuthor,
+        `${likeAuthor.firstName} liked your comment`,
+        { id: comment.postId }
+      );
+    }
   }
 
   @Delete("/:id")

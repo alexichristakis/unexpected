@@ -1,11 +1,17 @@
 import { Default, Format, Property, Required, Schema } from "@tsed/common";
-import { Indexed, Model, ObjectID, PostHook, Unique } from "@tsed/mongoose";
+import {
+  Indexed,
+  Model,
+  ObjectID,
+  Ref,
+  PostHook,
+  Unique
+} from "@tsed/mongoose";
+
 import { SlackLogService } from "../services/logger";
 
 @Model()
 export class User {
-  // @Required()
-  // notificationPreferences: NotificationPreferences;
   @ObjectID("id")
   _id: string;
 
@@ -44,6 +50,6 @@ export class User {
   notifications: string[];
 
   // mutual
-  @Property()
-  friends: string[];
+  @Ref(User)
+  friends: Ref<User>[];
 }
