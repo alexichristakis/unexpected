@@ -33,29 +33,26 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
   }
 
   async getByPostId(postId: string) {
-    const comments = await this.model
+    return this.model
       .find({ postId })
       .sort({ createdAt: -1 })
       .exec();
-
-    return comments;
   }
 
   async likeComment(phoneNumber: string, id: string) {
-    return this.model
-      .findByIdAndUpdate(id, { $push: { likes: phoneNumber } })
-      .exec();
-  }
-
-  async unLikeComment(phoneNumber: string, id: string) {
     const comment = await this.model.findById(id).exec();
 
-    if (comment) {
-      remove(comment.likes, phoneNumber);
+    if (!comment) return null;
 
-      return comment.save();
+    const { likes } = comment;
+    if (likes.includes(phoneNumber)) {
+      comment.likes = remove(likes, phoneNumber);
+    } else {
+      likes.push(phoneNumber);
     }
 
-    return null;
+    comment.save();
+
+    return comment;
   }
 }

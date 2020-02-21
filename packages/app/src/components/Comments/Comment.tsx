@@ -26,8 +26,7 @@ const mapStateToProps = (state: RootState, props: CommentProps) => ({
 });
 
 const mapDispatchToProps = {
-  likeComment: PostActions.likeComment,
-  unLikeComment: PostActions.unLikeComment
+  likeComment: PostActions.likeComment
 };
 
 interface CommentProps extends CommentType {}
@@ -43,8 +42,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
     user,
     likes = [],
     body,
-    likeComment,
-    unLikeComment
+    likeComment
   }) => {
     const navigation = useNavigation<Navigation>();
 
@@ -64,11 +62,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
     };
 
     const handleOnPressLike = () => {
-      if (likes.includes(userPhoneNumber)) {
-        unLikeComment(id);
-      } else {
-        likeComment(id);
-      }
+      likeComment(id);
     };
 
     return (
@@ -86,12 +80,14 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
           <Text style={styles.createdAt}>
             {moment(createdAt).fromNow()}
             <Text onPress={handleOnPressLikes} style={styles.createdAt}>
-              {" ∙ " + likes.length + " likes"}
+              {" ∙ " + likes.length + (likes.length === 1 ? " like" : " likes")}
             </Text>
           </Text>
         </View>
         <TouchableOpacity onPress={handleOnPressLike}>
-          <Text style={styles.createdAt}>like</Text>
+          <Text style={styles.createdAt}>
+            {likes.includes(userPhoneNumber) ? "unlike" : "like"}
+          </Text>
         </TouchableOpacity>
       </View>
     );

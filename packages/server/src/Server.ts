@@ -1,12 +1,7 @@
 import {
   GlobalAcceptMimesMiddleware,
   ServerLoader,
-  ServerSettings,
-  LogIncomingRequestMiddleware,
-  OverrideProvider,
-  Req,
-  $log,
-  GlobalErrorHandlerMiddleware
+  ServerSettings
 } from "@tsed/common";
 import "@tsed/mongoose";
 import "@tsed/multipartfiles";
@@ -18,13 +13,11 @@ import methodOverride from "method-override";
 
 const PROD = !!process.env.PORT;
 
-console.log("PROD:", PROD);
-
 @ServerSettings({
   rootDir: __dirname,
   acceptMimes: ["application/json"],
   port: process.env.PORT || 5000,
-  // debug: true,
+  debug: !PROD,
 
   mount: {
     "/": PROD ? "dist/controllers/*" : "src/controllers/*"
@@ -37,28 +30,17 @@ console.log("PROD:", PROD);
       useUnifiedTopology: true,
       useCreateIndex: true
     }
-  }
+  },
 
-  // logger: {
-  //   debug: true,
-  //   logRequest: true,
-  //   logStart: true,
-  //   logEnd: true,
-  //   disableRoutesSummary: true,
-  //   requestFields: [
-  //     "reqId",
-  //     "method",
-  //     "url",
-  //     "headers",
-  //     "body",
-  //     "query",
-  //     "params",
-  //     "duration"
-  //   ]
-  // }
-  // multer: {
-  //   //
-  // }
+  logger: {
+    debug: !PROD,
+    level: "info",
+    logRequest: !PROD,
+    logStart: !PROD,
+    logEnd: !PROD,
+    disableRoutesSummary: PROD,
+    requestFields: ["reqId", "url", "body", "query", "params", "duration"]
+  }
 })
 export class Server extends ServerLoader {
   public $beforeRoutesInit(): void | Promise<any> {
@@ -72,42 +54,5 @@ export class Server extends ServerLoader {
           extended: true
         })
       );
-
-    // this.use(CustomLogIncomingRequestMiddleware);
-    // this.use(GlobalErrorHandlerMiddleware);
   }
 }
-
-@OverrideProvider(LogIncomingRequestMiddleware)
-class CustomLogIncomingRequestMiddleware extends LogIncomingRequestMiddleware {
-  public use(@Req() request: any) {
-    // you can set a custom ID with another lib
-    request.id = require("uuid").v4();
-
-    return super.use(request); // required
-  }
-
-  protected requestToObject(request: any) {
-    $log.info({
-      reqId: request.id,
-      method: request.method,
-      url: request.originalUrl || request.url,
-      // duration: new Date().getTime() - request.tsedReqStart.getTime(),
-      // headers: request.headers,
-      body: request.body,
-      query: request.query,
-      params: request.params
-    });
-
-    // return {
-    //   reqId: request.id,
-    //   method: request.method,
-    //   url: request.originalUrl || request.url,
-    //   headers: request.headers,
-    //   body: request.body,
-    //   query: request.query,
-    //   params: request.params
-    // };
-  }
-}
-1;

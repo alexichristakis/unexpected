@@ -88,15 +88,6 @@ export class CommentController {
     return this.commentService.likeComment(phoneNumber, id);
   }
 
-  @Patch("/:phoneNumber/unlike/:id")
-  unlikeComment(
-    @PathParams("phoneNumber") phoneNumber: string,
-    @PathParams("id") id: string
-  ) {
-    //
-    return this.commentService.unLikeComment(phoneNumber, id);
-  }
-
   @Delete("/:id")
   deleteComment(@PathParams("id") id: string) {
     return this.commentService.delete(id);

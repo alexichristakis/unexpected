@@ -3,6 +3,7 @@ import { Keyboard, KeyboardEvent, TextInput } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { useDiff, useValues } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
+import isEqual from "lodash/isEqual";
 
 import { ModalList, ModalListRef } from "@components/universal";
 import { SCREEN_HEIGHT } from "@lib/constants";
@@ -137,7 +138,11 @@ export const CommentsModal: React.FC<CommentsModalProps &
         />
       </>
     );
-  }
+  },
+  (prevProps, nextProps) =>
+    isEqual(prevProps.data, nextProps.data) &&
+    prevProps.postId === nextProps.postId &&
+    prevProps.loading === nextProps.loading
 );
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
