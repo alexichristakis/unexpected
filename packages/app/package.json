@@ -8,7 +8,8 @@
     "start": "react-native start",
     "deploy": "appcenter codepush release-react -a alexi/unexpected -t '0.0.6' -d 'Production'",
     "check-types": "tsc -p . --noEmit --skipLibCheck",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.8.0",
