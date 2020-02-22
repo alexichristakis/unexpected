@@ -7,7 +7,7 @@ import {
   State
 } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
-import { withSpring, clamp } from "react-native-redash";
+import { clamp, withSpring } from "react-native-redash";
 
 import { Measurement } from "@components/universal";
 import { contains, onGestureEvent, useValues } from "react-native-redash";
@@ -92,7 +92,7 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
           onSnap: handleOnSnap,
           config
         }),
-        1,
+        0,
         pinch
       ),
       1

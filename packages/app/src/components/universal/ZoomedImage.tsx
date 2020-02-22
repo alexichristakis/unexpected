@@ -23,7 +23,6 @@ export type ZoomedImageType = {
 } & ZoomHandlerGestureBeganPayload;
 
 export interface ZoomedImageProps extends ZoomedImageType {}
-
 export const ZoomedImage: React.FC<ZoomedImageProps> = ({
   id,
   phoneNumber,
