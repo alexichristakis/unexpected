@@ -34,8 +34,8 @@ export const ZoomedImage: React.FC<ZoomedImageProps> = ({
   translateY
 }) => {
   const opacity = interpolate(scale, {
-    inputRange: [0, 1, 2],
-    outputRange: [0.5, 0, 0.8]
+    inputRange: [1, 1.3, 2],
+    outputRange: [0, 0.8, 0.8]
   });
 
   return (
