@@ -12,7 +12,7 @@ import { clamp, withSpring } from "react-native-redash";
 import { Measurement } from "@components/universal";
 import { contains, onGestureEvent, useValues } from "react-native-redash";
 
-const { max, useCode, block, cond, call } = Animated;
+const { max, useCode, divide, block, cond, call } = Animated;
 const { BEGAN, UNDETERMINED } = State;
 
 const config = {
@@ -48,6 +48,7 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
       [UNDETERMINED, UNDETERMINED],
       []
     );
+
     const [
       dragX,
       dragY,
@@ -62,25 +63,6 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
       opacity.setValue(1);
       onGestureComplete();
     };
-
-    const [translateY, translateX] = [
-      withSpring({
-        value: dragY,
-        velocity: velocityY,
-        state: panState,
-        snapPoints: [0],
-        onSnap: handleOnSnap,
-        config
-      }),
-      withSpring({
-        value: dragX,
-        velocity: velocityX,
-        state: panState,
-        snapPoints: [0],
-        onSnap: handleOnSnap,
-        config
-      })
-    ];
 
     const scale = max(
       clamp(
@@ -97,6 +79,31 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
       ),
       1
     );
+
+    const [translateY, translateX] = [
+      divide(
+        withSpring({
+          value: dragY,
+          velocity: velocityY,
+          state: panState,
+          snapPoints: [0],
+          onSnap: handleOnSnap,
+          config
+        }),
+        scale
+      ),
+      divide(
+        withSpring({
+          value: dragX,
+          velocity: velocityX,
+          state: panState,
+          snapPoints: [0],
+          onSnap: handleOnSnap,
+          config
+        }),
+        scale
+      )
+    ];
 
     useCode(
       () =>
