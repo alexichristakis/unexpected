@@ -13,7 +13,7 @@ import { TransitioningView } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
 import Comments from "@components/Comments/Comments";
-import { TextStyles, Colors } from "@lib/styles";
+import { Colors, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";

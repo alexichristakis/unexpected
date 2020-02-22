@@ -1,9 +1,9 @@
+import isEqual from "lodash/isEqual";
 import React, { useEffect, useRef, useState } from "react";
 import { Keyboard, KeyboardEvent, TextInput } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { useDiff, useValues } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
-import isEqual from "lodash/isEqual";
 
 import { ModalList, ModalListRef } from "@components/universal";
 import { SCREEN_HEIGHT } from "@lib/constants";

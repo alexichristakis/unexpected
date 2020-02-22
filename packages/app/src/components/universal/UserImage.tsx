@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
+  FlexStyle,
   Image,
+  StyleProp,
   StyleSheet,
   View,
-  StyleProp,
-  ViewStyle,
-  FlexStyle
+  ViewStyle
 } from "react-native";
 
 import moment from "moment";

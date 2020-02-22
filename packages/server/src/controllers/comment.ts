@@ -4,10 +4,10 @@ import {
   Delete,
   Get,
   Inject,
+  Patch,
   PathParams,
   Put,
-  UseAuth,
-  Patch
+  UseAuth
 } from "@tsed/common";
 
 import { Comment } from "@unexpected/global";

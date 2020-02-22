@@ -1,21 +1,21 @@
 import React, { useRef, useState } from "react";
-import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import isEqual from "lodash/isEqual";
 import moment from "moment";
 import Animated, { Easing } from "react-native-reanimated";
+import { timing, useValues } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
-import { useValues, timing } from "react-native-redash";
-import isEqual from "lodash/isEqual";
 
 import { UserImage } from "@components/universal";
 import { Colors, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
+import { PostActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
-import { PostActions } from "@redux/modules";
 
 import { ParamList } from "../../App";
 
@@ -170,7 +170,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
 
         {(likesTransitioning || likesOpen) && (
           <Animated.ScrollView
-            horizontal
+            horizontal={true}
             style={[styles.likesContainer, { height: likesHeight }]}
           >
             {likes.map((like, i) => {

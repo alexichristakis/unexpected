@@ -2,6 +2,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Comment, NewComment, Post, User } from "@unexpected/global";
 import immer from "immer";
 import _ from "lodash";
+import includes from "lodash/includes";
+import keyBy from "lodash/keyBy";
+import uniqBy from "lodash/uniqBy";
 import moment from "moment";
 import { TakePictureResponse } from "react-native-camera/types";
 import ImageResizer, {
@@ -9,9 +12,6 @@ import ImageResizer, {
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import uuid from "uuid/v4";
-import keyBy from "lodash/keyBy";
-import includes from "lodash/includes";
-import uniqBy from "lodash/uniqBy";
 
 import client, { getHeaders } from "@api";
 import { StackParamList } from "../../App";
@@ -192,6 +192,7 @@ export default (
 
         draft.comments[comment.postId] = comments;
         draft.commentsLoading = false;
+
         return draft;
       });
     }

@@ -4,7 +4,7 @@ import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import RNFS from "react-native-fs";
 import { connect } from "react-redux";
 
-import { Colors, SCREEN_WIDTH } from "@lib/styles";
+import { Colors } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -59,6 +59,7 @@ export const _PostImage: React.FC<PostImageProps &
         />
       );
     }
+
     // loading state
     return (
       <View style={[styles.loadingContainer, { width, height }]}>
