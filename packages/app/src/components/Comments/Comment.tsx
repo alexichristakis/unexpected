@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import moment from "moment";
-import { BaseButton } from "react-native-gesture-handler";
+import Animated, { Easing } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
+import { useValues, timing } from "react-native-redash";
 import isEqual from "lodash/isEqual";
 
 import { UserImage } from "@components/universal";
@@ -15,8 +16,24 @@ import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
 
-import { ParamList, StackParamList } from "../../App";
+import { ParamList } from "../../App";
 import { PostActions } from "@redux/modules";
+
+const {
+  debug,
+  Value,
+  Clock,
+  useCode,
+  call,
+  not,
+  cond,
+  eq,
+  lessOrEq,
+  lessThan,
+  clockRunning,
+  greaterOrEq,
+  set
+} = Animated;
 
 type Navigation = NativeStackNavigationProp<ParamList>;
 
@@ -44,7 +61,58 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
     body,
     likeComment
   }) => {
+    const [clock] = useState(new Clock());
+    const [likesTransitioning, setLikesTransitioning] = useState(false);
+    const [likesOpen, setLikesOpen] = useState(false);
+    const [likesHeight, openLikes, closeLikes] = useValues<number>(
+      [0, 0, 0],
+      []
+    );
     const navigation = useNavigation<Navigation>();
+
+    useCode(
+      () => [
+        cond(openLikes, [
+          set(
+            likesHeight,
+            timing({
+              clock,
+              to: 30,
+              from: likesHeight,
+              duration: 150,
+              easing: Easing.ease
+            })
+          ),
+          cond(not(clockRunning(clock)), [
+            set(openLikes, 0),
+            call([], () => {
+              setLikesOpen(true);
+              setLikesTransitioning(false);
+            })
+          ])
+        ]),
+        cond(closeLikes, [
+          set(
+            likesHeight,
+            timing({
+              clock,
+              to: 0,
+              from: likesHeight,
+              duration: 150,
+              easing: Easing.ease
+            })
+          ),
+          cond(not(clockRunning(clock)), [
+            set(closeLikes, 0),
+            call([], () => {
+              setLikesOpen(false);
+              setLikesTransitioning(false);
+            })
+          ])
+        ])
+      ],
+      []
+    );
 
     const handleOnPress = () => {
       if (userPhoneNumber === user.phoneNumber) {
@@ -58,38 +126,67 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
     };
 
     const handleOnPressLikes = () => {
-      console.log("likes pressed");
+      if (likesOpen) {
+        setLikesTransitioning(true);
+        closeLikes.setValue(1);
+      } else if (likes.length) {
+        setLikesTransitioning(true);
+        openLikes.setValue(1);
+      }
     };
 
-    const handleOnPressLike = () => {
-      likeComment(id);
-    };
+    const handleOnPressLike = () => likeComment(id);
 
     return (
-      <View style={styles.container}>
-        <UserImage size={30} phoneNumber={phoneNumber} />
-        <View style={styles.textContainer}>
-          <Text style={styles.body}>
-            <Text onPress={handleOnPress} style={styles.name}>
-              {formatName(user)}:{" "}
+      <>
+        <View style={styles.container}>
+          <UserImage size={30} phoneNumber={phoneNumber} />
+          <View style={styles.textContainer}>
+            <Text style={styles.body}>
+              <Text onPress={handleOnPress} style={styles.name}>
+                {formatName(user)}:{" "}
+              </Text>
+
+              {body}
             </Text>
 
-            {body}
-          </Text>
-
-          <Text style={styles.createdAt}>
-            {moment(createdAt).fromNow()}
-            <Text onPress={handleOnPressLikes} style={styles.createdAt}>
-              {" ∙ " + likes.length + (likes.length === 1 ? " like" : " likes")}
+            <Text style={styles.createdAt}>
+              {moment(createdAt).fromNow()}
+              {likes.length ? (
+                <Text onPress={handleOnPressLikes} style={styles.createdAt}>
+                  {" ∙ " +
+                    likes.length +
+                    (likes.length === 1 ? " like" : " likes")}
+                </Text>
+              ) : null}
             </Text>
-          </Text>
+          </View>
+          <TouchableOpacity
+            style={{ alignSelf: "center" }}
+            onPress={handleOnPressLike}
+          >
+            <Text style={styles.createdAt}>
+              {likes.includes(userPhoneNumber) ? "unlike" : "like"}
+            </Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={handleOnPressLike}>
-          <Text style={styles.createdAt}>
-            {likes.includes(userPhoneNumber) ? "unlike" : "like"}
-          </Text>
-        </TouchableOpacity>
-      </View>
+
+        {(likesTransitioning || likesOpen) && (
+          <Animated.ScrollView
+            horizontal
+            style={[styles.likesContainer, { height: likesHeight }]}
+          >
+            {likes.map((like, i) => (
+              <UserImage
+                key={i}
+                style={{ marginRight: 5 }}
+                phoneNumber={like}
+                size={20}
+              />
+            ))}
+          </Animated.ScrollView>
+        )}
+      </>
     );
   },
   (prevProps, nextProps) =>
@@ -104,6 +201,11 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
     marginLeft: 5
+  },
+  likesContainer: {
+    flexDirection: "row",
+    overflow: "hidden",
+    paddingLeft: 20
   },
   name: {
     ...TextStyles.small,

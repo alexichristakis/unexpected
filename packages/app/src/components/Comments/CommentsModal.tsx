@@ -41,6 +41,7 @@ const mapDispatchToProps = {
 export type CommentsModalConnectedProps = ConnectedProps<typeof connector>;
 
 export interface CommentsModalProps {
+  onClose: () => void;
   postId: string;
   textInputRef: React.RefObject<TextInput>;
   modalRef: React.RefObject<ModalListRef>;
@@ -52,6 +53,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
     data,
     modalRef,
     textInputRef,
+    onClose,
     phoneNumber,
     postId,
     loading,
@@ -120,6 +122,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
     return (
       <>
         <ModalList
+          onClose={onClose}
           title="Comments"
           ref={modalRef}
           scrollRef={scrollRef}

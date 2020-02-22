@@ -45,14 +45,13 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
     if (!comment) return null;
 
     const { likes } = comment;
+
     if (likes.includes(phoneNumber)) {
       comment.likes = remove(likes, phoneNumber);
     } else {
       likes.push(phoneNumber);
     }
 
-    comment.save();
-
-    return comment;
+    return comment.save();
   }
 }

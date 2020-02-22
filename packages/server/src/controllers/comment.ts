@@ -80,12 +80,33 @@ export class CommentController {
   }
 
   @Patch("/:phoneNumber/like/:id")
-  likeComment(
+  async likeComment(
     @PathParams("phoneNumber") phoneNumber: string,
     @PathParams("id") id: string
   ) {
-    //
-    return this.commentService.likeComment(phoneNumber, id);
+    const comment = await this.commentService.likeComment(phoneNumber, id);
+
+    if (comment && phoneNumber !== comment.phoneNumber) {
+      const [
+        commentAuthor,
+        commentLiker
+      ] = await this.userService.getByPhoneNumber(
+        [comment.phoneNumber, phoneNumber],
+        true
+      );
+
+      const post = await this.postService.getId(comment.postId);
+
+      if (!post) return null;
+
+      await this.notificationService.notifyWithNavigationToPost(
+        commentAuthor,
+        `${commentLiker.firstName} liked your comment!`,
+        { phoneNumber: post.phoneNumber, id: post.id }
+      );
+    }
+
+    return comment;
   }
 
   @Delete("/:id")
