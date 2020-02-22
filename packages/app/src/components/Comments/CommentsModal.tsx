@@ -1,3 +1,4 @@
+import isEqual from "lodash/isEqual";
 import React, { useEffect, useRef, useState } from "react";
 import { Keyboard, KeyboardEvent, TextInput } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
@@ -14,18 +15,7 @@ import { Comment as CommentType } from "@unexpected/global";
 import Comment from "./Comment";
 import FloatingComposer from "./FloatingComposer";
 
-const {
-  useCode,
-  debug,
-  cond,
-  and,
-  block,
-  call,
-  greaterThan,
-  diff,
-  lessThan,
-  greaterOrEq
-} = Animated;
+const { useCode, cond, and, block, call, greaterThan } = Animated;
 
 const mapStateToProps = (state: RootState, props: CommentsModalProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -40,6 +30,7 @@ const mapDispatchToProps = {
 export type CommentsModalConnectedProps = ConnectedProps<typeof connector>;
 
 export interface CommentsModalProps {
+  onClose: () => void;
   postId: string;
   textInputRef: React.RefObject<TextInput>;
   modalRef: React.RefObject<ModalListRef>;
@@ -51,6 +42,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
     data,
     modalRef,
     textInputRef,
+    onClose,
     phoneNumber,
     postId,
     loading,
@@ -119,6 +111,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
     return (
       <>
         <ModalList
+          onClose={onClose}
           title="Comments"
           ref={modalRef}
           scrollRef={scrollRef}
@@ -137,7 +130,11 @@ export const CommentsModal: React.FC<CommentsModalProps &
         />
       </>
     );
-  }
+  },
+  (prevProps, nextProps) =>
+    isEqual(prevProps.data, nextProps.data) &&
+    prevProps.postId === nextProps.postId &&
+    prevProps.loading === nextProps.loading
 );
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

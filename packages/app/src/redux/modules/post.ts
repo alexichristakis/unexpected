@@ -2,6 +2,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Comment, NewComment, Post, User } from "@unexpected/global";
 import immer from "immer";
 import _ from "lodash";
+import includes from "lodash/includes";
+import keyBy from "lodash/keyBy";
+import uniqBy from "lodash/uniqBy";
 import moment from "moment";
 import { TakePictureResponse } from "react-native-camera/types";
 import ImageResizer, {
@@ -25,7 +28,7 @@ type FeedEndpointReturn = {
   postIds: string[];
   posts: PostMap;
   users: { [id: string]: User };
-  comments: CommentMap;
+  comments: { [postId: string]: Comment[] };
 };
 
 type UserMap = {
@@ -40,7 +43,7 @@ type PostMap = {
 };
 
 type CommentMap = {
-  [postId: string]: Comment[];
+  [postId: string]: { [commentId: string]: Comment };
 };
 
 export interface PostState {
@@ -111,9 +114,9 @@ export default (
           lastFetched: moment().toISOString()
         };
 
-        draft.users = _.merge(draft.users, users);
-        draft.comments = _.merge(draft.comments, comments);
-        draft.posts = _.merge(draft.posts, posts);
+        draft.users = users;
+        draft.comments = comments;
+        draft.posts = posts;
       });
     }
 
@@ -123,7 +126,7 @@ export default (
       return immer(state, draft => {
         draft.commentsLoading = false;
 
-        draft.comments[post.id] = comments;
+        draft.comments[post.id] = keyBy(comments, ({ id }) => id);
         draft.posts[post.id] = post;
 
         return draft;
@@ -173,20 +176,33 @@ export default (
       const { postId, comments } = action.payload;
 
       return immer(state, draft => {
-        draft.comments[postId] = comments;
+        draft.comments[postId] = keyBy(comments, ({ id }) => id);
 
         return draft;
       });
     }
 
-    case ActionTypes.SEND_COMMENT_SUCCESS: {
+    case ActionTypes.LOAD_COMMENT: {
       const { comment } = action.payload;
 
       return immer(state, draft => {
-        const comments = draft.comments[comment.postId];
+        const comments = draft.comments[comment.postId] ?? {};
 
-        if (comments) comments.push(comment);
-        else draft.comments[comment.postId] = [comment];
+        comments[comment.id] = comment;
+
+        draft.comments[comment.postId] = comments;
+        draft.commentsLoading = false;
+
+        return draft;
+      });
+    }
+
+    // TODO: implement deleting comments
+    case ActionTypes.DELETE_COMMENT_SUCCESS: {
+      const { postId, id } = action.payload;
+
+      return immer(state, draft => {
+        delete draft.comments[postId][id];
 
         draft.commentsLoading = false;
 
@@ -194,16 +210,8 @@ export default (
       });
     }
 
-    case ActionTypes.DELETE_COMMENT_SUCCESS: {
-      const { id } = action.payload;
-
-      return immer(state, draft => {
-        _.remove(draft.comments[id], c => c.id === id);
-
-        draft.commentsLoading = false;
-
-        return draft;
-      });
+    case ActionTypes.LIKE_COMMENT: {
+      return { ...state, commentsLoading: true };
     }
 
     case ActionTypes.ON_ERROR: {
@@ -341,10 +349,15 @@ function* onFetchFeed(
         return acc;
       }, {} as UserMap);
 
+      const commentMap: CommentMap = {};
+      Object.keys(comments).map(
+        key => (commentMap[key] = keyBy(comments[key], ({ id }) => id))
+      );
+
       const userValues = Object.values(users);
       yield all([
         yield put(UserActions.loadUsers(userValues)),
-        yield put(Actions.fetchFeedSuccess(postIds, posts, userMap, comments))
+        yield put(Actions.fetchFeedSuccess(postIds, posts, userMap, commentMap))
       ]);
     }
 
@@ -430,7 +443,7 @@ function* onSendComment(
 
     const { data } = res;
 
-    yield put(Actions.sendCommentSuccess(data));
+    yield put(Actions.loadComment(data));
   } catch (err) {
     yield put(Actions.onError(err.message));
   }
@@ -448,9 +461,37 @@ function* onDeleteComment(
       headers: getHeaders({ jwt })
     });
 
-    yield put(Actions.deleteCommentSuccess(id));
+    const {
+      data: { postId }
+    } = res;
+
+    yield put(Actions.deleteCommentSuccess(postId, id));
   } catch (err) {
     yield put(Actions.onError(err.message));
+  }
+}
+
+function* onLikeComment(
+  action: ExtractActionFromActionCreator<typeof Actions.likeComment>
+) {
+  const { id } = action.payload;
+
+  try {
+    const phoneNumber = yield select(selectors.phoneNumber);
+    const jwt = yield select(selectors.jwt);
+
+    const res = yield client.patch(
+      `/comment/${phoneNumber}/like/${id}`,
+      {},
+      {
+        headers: getHeaders({ jwt })
+      }
+    );
+
+    const { data } = res;
+    yield put(Actions.loadComment(data));
+  } catch (err) {
+    yield put(Actions.onError(err));
   }
 }
 
@@ -463,7 +504,8 @@ export function* postSagas() {
     yield takeLatest(ActionTypes.FETCH_POST, onFetchPost),
     yield takeLatest(ActionTypes.FETCH_COMMENTS, onFetchComments),
     yield takeLatest(ActionTypes.SEND_COMMENT, onSendComment),
-    yield takeLatest(ActionTypes.DELETE_COMMENT, onDeleteComment)
+    yield takeLatest(ActionTypes.DELETE_COMMENT, onDeleteComment),
+    yield takeLatest(ActionTypes.LIKE_COMMENT, onLikeComment)
   ]);
 }
 
@@ -477,7 +519,9 @@ export enum ActionTypes {
   SEND_POST = "post/SEND_POST",
   SEND_POST_SUCCESS = "post/SEND_POST_SUCCESS",
   SEND_COMMENT = "post/SEND_COMMENT",
-  SEND_COMMENT_SUCCESS = "post/SEND_COMMENT_SUCCESS",
+  LOAD_COMMENT = "post/LOAD_COMMENT",
+  LIKE_COMMENT = "post/LIKE_COMMENT",
+  LIKE_COMMENT_SUCCESS = "post/LIKE_COMMENT_SUCCESS",
   FETCH_COMMENTS = "post/FETCH_COMMENTS",
   FETCH_COMMENTS_SUCCESS = "post/FETCH_COMMENTS_SUCCESS",
   DELETE_COMMENT = "post/DELETE_COMMENT",
@@ -533,8 +577,9 @@ export const Actions = {
 
   sendComment: (comment: NewComment) =>
     createAction(ActionTypes.SEND_COMMENT, { comment }),
-  sendCommentSuccess: (comment: Comment) =>
-    createAction(ActionTypes.SEND_COMMENT_SUCCESS, { comment }),
+  loadComment: (comment: Comment) =>
+    createAction(ActionTypes.LOAD_COMMENT, { comment }),
+
   fetchComments: (postId: string) =>
     createAction(ActionTypes.FETCH_COMMENTS, { postId }),
   fetchCommentsSuccess: (postId: string, comments: Comment[]) =>
@@ -542,8 +587,10 @@ export const Actions = {
 
   deleteComment: (id: string) =>
     createAction(ActionTypes.DELETE_COMMENT, { id }),
-  deleteCommentSuccess: (id: string) =>
-    createAction(ActionTypes.DELETE_COMMENT_SUCCESS, { id }),
+  deleteCommentSuccess: (postId: string, id: string) =>
+    createAction(ActionTypes.DELETE_COMMENT_SUCCESS, { postId, id }),
+
+  likeComment: (id: string) => createAction(ActionTypes.LIKE_COMMENT, { id }),
 
   onError: (error: string) => createAction(ActionTypes.ON_ERROR, { error })
 };

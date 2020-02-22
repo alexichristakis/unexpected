@@ -106,6 +106,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     };
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);
+    const handleOnCommentModalClose = () => setCommentsPostId("");
 
     return (
       <Screen style={styles.container}>
@@ -124,6 +125,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
         <StatusBar />
         <CommentsModal
+          onClose={handleOnCommentModalClose}
           textInputRef={textInputRef}
           modalRef={modalRef}
           postId={commentsPostId}

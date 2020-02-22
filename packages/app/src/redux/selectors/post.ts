@@ -28,7 +28,8 @@ const postIdFromProps = (_: RootState, props: { postId: string }) =>
 
 export const commentsForPost = createSelector(
   [_comments, postIdFromProps],
-  (commentMap, postId) => commentMap[postId] || []
+  (commentMap, postId) =>
+    commentMap[postId] ? Object.values(commentMap[postId]) : []
 );
 
 export const post = createSelector(
@@ -36,7 +37,7 @@ export const post = createSelector(
   (posts, commentMap, users, id) => {
     const post = posts[id] ?? {};
 
-    const comments = commentMap[id] ?? [];
+    const comments = commentMap[id] ? Object.values(commentMap[id]) : [];
     const user = users[post.phoneNumber] ?? {};
 
     return {

@@ -17,9 +17,12 @@ const PROD = !!process.env.PORT;
   rootDir: __dirname,
   acceptMimes: ["application/json"],
   port: process.env.PORT || 5000,
+  debug: !PROD,
+
   mount: {
     "/": PROD ? "dist/controllers/*" : "src/controllers/*"
   },
+
   mongoose: {
     url: PROD ? process.env.MONGODB_URI : "mongodb://127.0.0.1:27017/db1",
     connectionOptions: {
@@ -27,16 +30,19 @@ const PROD = !!process.env.PORT;
       useUnifiedTopology: true,
       useCreateIndex: true
     }
+  },
+
+  logger: {
+    debug: !PROD,
+    level: "info",
+    logRequest: !PROD,
+    logStart: !PROD,
+    logEnd: !PROD,
+    disableRoutesSummary: PROD,
+    requestFields: ["reqId", "url", "body", "query", "params", "duration"]
   }
-  // multer: {
-  //   //
-  // }
 })
 export class Server extends ServerLoader {
-  /**
-   * This method let you configure the express middleware required by your application to works.
-   * @returns {Server}
-   */
   public $beforeRoutesInit(): void | Promise<any> {
     this.use(GlobalAcceptMimesMiddleware)
       .use(cookieParser())

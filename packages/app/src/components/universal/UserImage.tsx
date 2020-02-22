@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import {
+  FlexStyle,
+  Image,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle
+} from "react-native";
 
 import moment from "moment";
 import RNFS from "react-native-fs";
@@ -25,9 +32,10 @@ export type UserImageReduxProps = ReduxPropsType<
 export interface UserImageProps extends UserImageReduxProps {
   phoneNumber: string;
   size: number;
+  style?: StyleProp<Omit<FlexStyle, "overflow">>;
 }
 export const _UserImage: React.FC<UserImageProps> = React.memo(
-  ({ phoneNumber, size, cache, requestCache }) => {
+  ({ phoneNumber, size, cache, style, requestCache }) => {
     const [loaded, setLoaded] = useState(false);
     const [error, setError] = useState(false);
 
@@ -50,6 +58,7 @@ export const _UserImage: React.FC<UserImageProps> = React.memo(
         <Image
           source={{ uri: cache[phoneNumber].uri }}
           style={[
+            style,
             styles.image,
             { width: size, height: size, borderRadius: size / 2 }
           ]}
@@ -59,6 +68,7 @@ export const _UserImage: React.FC<UserImageProps> = React.memo(
       return (
         <View
           style={[
+            style,
             styles.image,
             { width: size, height: size, borderRadius: size / 2 }
           ]}

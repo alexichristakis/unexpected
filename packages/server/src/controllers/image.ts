@@ -77,9 +77,4 @@ export class ImageController {
 
     return buffer;
   }
-
-  @Get("/:phoneNumber/posts/all")
-  async getUsersPhotos(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.imageService.downloadAllPhotoUrls(phoneNumber);
-  }
 }

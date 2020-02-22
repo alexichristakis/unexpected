@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ActionSheetIOS, StyleSheet, Text, View } from "react-native";
 
 import isEqual from "lodash/isEqual";

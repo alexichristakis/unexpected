@@ -27,7 +27,10 @@ export type Post = Omit<PostModel, "_id"> & { id: string };
 export type FeedPost = Post & { user: User; comments: Comment[] };
 
 export type Comment = Omit<CommentModel, "_id"> & { id: string };
-export type NewComment = Omit<Comment, "createdAt" | "id">;
+export type NewComment = Omit<
+  Comment,
+  "createdAt" | "id" | "likes" | "replyTo"
+>;
 
 export type UserNotificationPayload = {
   type: "user";

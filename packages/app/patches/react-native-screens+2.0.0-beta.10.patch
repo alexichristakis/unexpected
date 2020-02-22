@@ -1,8 +1,8 @@
 diff --git a/node_modules/react-native-screens/src/screens.d.ts b/node_modules/react-native-screens/src/screens.d.ts
-index cbaef2b..9450ecf 100644
+index ff39463..aa7680e 100644
 --- a/node_modules/react-native-screens/src/screens.d.ts
 +++ b/node_modules/react-native-screens/src/screens.d.ts
-@@ -26,7 +26,7 @@ declare module 'react-native-screens' {
+@@ -32,7 +32,7 @@ declare module 'react-native-screens' {
       * @type "modal" – the new screen will be presented modally. In addition this allow for a nested stack to be rendered inside such screens
       * @type "transparentModal" – the new screen will be presented modally but in addition the second to last screen will remain attached to the stack container such that if the top screen is non opaque the content below can still be seen. If "modal" is used instead the below screen will get unmounted as soon as the transition ends.
       */
