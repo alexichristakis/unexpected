@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
@@ -129,7 +129,11 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
 
     return (
       <>
-        <View style={styles.container}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={handleOnPressLikes}
+          style={styles.container}
+        >
           <UserImage size={30} phoneNumber={phoneNumber} />
           <View style={styles.textContainer}>
             <Text style={styles.body}>
@@ -141,13 +145,11 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
 
             <Text style={styles.createdAt}>
               {moment(createdAt).fromNow()}
-              {likes.length ? (
-                <Text onPress={handleOnPressLikes} style={styles.createdAt}>
-                  {" ∙ " +
-                    likes.length +
-                    (likes.length === 1 ? " like" : " likes")}
-                </Text>
-              ) : null}
+              {likes.length
+                ? " ∙ " +
+                  likes.length +
+                  (likes.length === 1 ? " like" : " likes")
+                : ""}
             </Text>
           </View>
 
@@ -166,7 +168,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
               height={15}
             />
           )}
-        </View>
+        </TouchableOpacity>
 
         {(likesTransitioning || likesOpen) && (
           <Animated.ScrollView
@@ -227,6 +229,7 @@ const styles = StyleSheet.create({
     alignSelf: "center"
   },
   svg: {
+    alignSelf: "center",
     marginLeft: 5,
     marginRight: 5
   }
