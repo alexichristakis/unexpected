@@ -15,18 +15,7 @@ import { Comment as CommentType } from "@unexpected/global";
 import Comment from "./Comment";
 import FloatingComposer from "./FloatingComposer";
 
-const {
-  useCode,
-  debug,
-  cond,
-  and,
-  block,
-  call,
-  greaterThan,
-  diff,
-  lessThan,
-  greaterOrEq
-} = Animated;
+const { useCode, cond, and, block, call, greaterThan } = Animated;
 
 const mapStateToProps = (state: RootState, props: CommentsModalProps) => ({
   phoneNumber: selectors.phoneNumber(state),

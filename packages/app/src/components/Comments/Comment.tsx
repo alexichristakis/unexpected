@@ -15,25 +15,14 @@ import { formatName } from "@lib/utils";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
-
-import { ParamList } from "../../App";
 import { PostActions } from "@redux/modules";
 
-const {
-  debug,
-  Value,
-  Clock,
-  useCode,
-  call,
-  not,
-  cond,
-  eq,
-  lessOrEq,
-  lessThan,
-  clockRunning,
-  greaterOrEq,
-  set
-} = Animated;
+import { ParamList } from "../../App";
+
+import HeartFilledSVG from "@assets/svg/heart_filled.svg";
+import HeartEmptySVG from "@assets/svg/heart_unfilled.svg";
+
+const { Clock, useCode, call, not, cond, clockRunning, set } = Animated;
 
 type Navigation = NativeStackNavigationProp<ParamList>;
 
@@ -114,8 +103,9 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
       []
     );
 
-    const handleOnPress = () => {
-      if (userPhoneNumber === user.phoneNumber) {
+    const handleOnPressName = () => navigateToProfile(user.phoneNumber);
+    const navigateToProfile = (phoneNumber: string) => {
+      if (userPhoneNumber === phoneNumber) {
         navigation.navigate("USER_PROFILE_TAB");
       } else {
         navigation.navigate("PROFILE", {
@@ -143,10 +133,9 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
           <UserImage size={30} phoneNumber={phoneNumber} />
           <View style={styles.textContainer}>
             <Text style={styles.body}>
-              <Text onPress={handleOnPress} style={styles.name}>
+              <Text onPress={handleOnPressName} style={styles.name}>
                 {formatName(user)}:{" "}
               </Text>
-
               {body}
             </Text>
 
@@ -161,14 +150,22 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
               ) : null}
             </Text>
           </View>
-          <TouchableOpacity
-            style={{ alignSelf: "center" }}
-            onPress={handleOnPressLike}
-          >
-            <Text style={styles.createdAt}>
-              {likes.includes(userPhoneNumber) ? "unlike" : "like"}
-            </Text>
-          </TouchableOpacity>
+
+          {likes.includes(userPhoneNumber) ? (
+            <HeartFilledSVG
+              style={styles.svg}
+              onPress={handleOnPressLike}
+              width={15}
+              height={15}
+            />
+          ) : (
+            <HeartEmptySVG
+              style={styles.svg}
+              onPress={handleOnPressLike}
+              width={15}
+              height={15}
+            />
+          )}
         </View>
 
         {(likesTransitioning || likesOpen) && (
@@ -176,14 +173,19 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
             horizontal
             style={[styles.likesContainer, { height: likesHeight }]}
           >
-            {likes.map((like, i) => (
-              <UserImage
-                key={i}
-                style={{ marginRight: 5 }}
-                phoneNumber={like}
-                size={20}
-              />
-            ))}
+            {likes.map((like, i) => {
+              const handleOnPress = () => navigateToProfile(like);
+
+              return (
+                <TouchableOpacity key={i} onPress={handleOnPress}>
+                  <UserImage
+                    style={{ marginRight: 5 }}
+                    phoneNumber={like}
+                    size={20}
+                  />
+                </TouchableOpacity>
+              );
+            })}
           </Animated.ScrollView>
         )}
       </>
@@ -218,6 +220,15 @@ const styles = StyleSheet.create({
   createdAt: {
     ...TextStyles.small,
     color: Colors.gray
+  },
+  likes: {
+    ...TextStyles.small,
+    color: Colors.gray,
+    alignSelf: "center"
+  },
+  svg: {
+    marginLeft: 5,
+    marginRight: 5
   }
 });
 
