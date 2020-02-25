@@ -2,15 +2,13 @@ import React, { useRef, useState } from "react";
 import {
   FlatList,
   ListRenderItemInfo,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
   StyleSheet,
   ViewToken
 } from "react-native";
 
 import { Post as PostType } from "@unexpected/global";
 import _ from "lodash";
+import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
@@ -26,6 +24,7 @@ import {
 } from "@components/universal";
 import { FEED_POST_HEIGHT, FEED_POST_WIDTH } from "@lib/constants";
 import { SB_HEIGHT } from "@lib/styles";
+import { PostActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
@@ -39,16 +38,17 @@ const VIEWABILITY_CONFIG = {
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const mapStateToProps = (state: RootState) => ({
-  posts: selectors.feed(state)
+  posts: selectors.feed(state),
+  refreshing: selectors.feedLoading(state)
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  fetchFeed: PostActions.fetchFeed
+};
 
 export interface PostsProps {
   scrollY: Animated.Value<number>;
   scrollRef: React.Ref<FlatList>;
-  refreshing: boolean;
-  onRefresh: () => void;
   onPressMoreComments: (postId: string) => void;
   onPressComposeComment: (postId: string) => void;
   onGestureBegan: (image: ZoomedImageType) => void;
@@ -66,7 +66,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
     scrollY,
     scrollRef,
     refreshing,
-    onRefresh,
+    fetchFeed,
     posts,
     onPressMoreComments,
     onPressComposeComment,
@@ -76,6 +76,11 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
     onPressShare
   }) => {
     const [scrollEnabled, setScrollEnabled] = useState(true);
+
+    const handleOnRefresh = () => {
+      Haptics.trigger("impactMedium");
+      fetchFeed();
+    };
 
     const sortPosts = () => {
       const sorted = _.sortBy(posts, ({ createdAt }) => -createdAt);
@@ -136,20 +141,6 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
         onGestureComplete();
       };
 
-      const renderImage = () => (
-        <ZoomHandler
-          onGestureComplete={handleOnGestureComplete}
-          onGestureBegan={handleOnGestureBegan}
-        >
-          <PostImage
-            width={FEED_POST_WIDTH}
-            height={FEED_POST_HEIGHT}
-            phoneNumber={phoneNumber}
-            id={photoId}
-          />
-        </ZoomHandler>
-      );
-
       return (
         <Post
           ref={ref => (cellRefs.current[id] = ref)}
@@ -157,8 +148,19 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
           onPressComposeComment={onPressComposeComment}
           onPressName={onPressUser}
           postId={id}
-          renderImage={renderImage}
-        />
+        >
+          <ZoomHandler
+            onGestureComplete={handleOnGestureComplete}
+            onGestureBegan={handleOnGestureBegan}
+          >
+            <PostImage
+              width={FEED_POST_WIDTH}
+              height={FEED_POST_HEIGHT}
+              phoneNumber={phoneNumber}
+              id={photoId}
+            />
+          </ZoomHandler>
+        </Post>
       );
     };
 
@@ -177,7 +179,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
         ListEmptyComponent={renderEmptyComponent}
         contentContainerStyle={styles.contentContainer}
         refreshing={refreshing}
-        onRefresh={onRefresh}
+        onRefresh={handleOnRefresh}
         scrollEventThrottle={16}
         onScroll={onScroll({ y: scrollY })}
       />

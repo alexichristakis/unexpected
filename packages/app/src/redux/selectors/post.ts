@@ -99,3 +99,8 @@ export const feed = createSelector(
     return postIds.map(id => postMap[id]);
   }
 );
+
+export const lastFetched = createSelector(
+  [feedState],
+  state => state.lastFetched
+);

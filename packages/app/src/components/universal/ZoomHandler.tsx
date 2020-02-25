@@ -1,5 +1,5 @@
 import React from "react";
-import ReactNative, { UIManager } from "react-native";
+import { findNodeHandle, UIManager } from "react-native";
 
 import {
   PanGestureHandler,
@@ -7,10 +7,15 @@ import {
   State
 } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
-import { clamp, withSpring } from "react-native-redash";
+import {
+  clamp,
+  contains,
+  onGestureEvent,
+  useValues,
+  withSpring
+} from "react-native-redash";
 
 import { Measurement } from "@components/universal";
-import { contains, onGestureEvent, useValues } from "react-native-redash";
 
 const { max, useCode, divide, block, cond, call } = Animated;
 const { BEGAN, UNDETERMINED } = State;
@@ -108,24 +113,28 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
     useCode(
       () =>
         block([
-          cond(contains([pinchState, panState], BEGAN), [
+          cond(
+            contains([pinchState, panState], BEGAN),
             call([], () => {
               if (childRef.current) {
                 UIManager.measure(
-                  ReactNative.findNodeHandle(childRef.current)!,
-                  (x, y, width, height, pageX, pageY) => {
+                  findNodeHandle(childRef.current)!,
+                  (_, __, width, height, pageX, pageY) => {
+                    // send animated values and measurements to <ZoomedImage />
                     onGestureBegan({
                       scale,
                       translateX,
                       translateY,
                       measurement: { x: pageX, y: pageY, w: width, h: height }
                     });
+
+                    // hide the original image
                     opacity.setValue(0);
                   }
                 );
               }
             })
-          ])
+          )
         ]),
       [renderKey]
     );

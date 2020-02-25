@@ -167,30 +167,25 @@ function* onRequestCache(
   const { phoneNumber, id } = action.payload;
   const jwt = yield select(selectors.jwt);
 
-  const network = yield select(selectors.isInternetReachable);
-  if (!network) {
-    yield put(Actions.onError("network error"));
-  } else {
-    try {
-      const fileName = id ? `${phoneNumber}_${id}` : `${phoneNumber}`;
-      const filePath = getFilePath(fileName);
+  try {
+    const fileName = id ? `${phoneNumber}_${id}` : `${phoneNumber}`;
+    const filePath = getFilePath(fileName);
 
-      const url = id
-        ? getPostImageURL(phoneNumber, id)
-        : getUserProfileURL(phoneNumber);
+    const url = id
+      ? getPostImageURL(phoneNumber, id)
+      : getUserProfileURL(phoneNumber);
 
-      const response: DownloadResult = yield RNFS.downloadFile({
-        fromUrl: url,
-        toFile: filePath,
-        headers: getHeaders({ jwt })
-      }).promise;
+    const response: DownloadResult = yield RNFS.downloadFile({
+      fromUrl: url,
+      toFile: filePath,
+      headers: getHeaders({ jwt })
+    }).promise;
 
-      if (response.bytesWritten) {
-        yield put(Actions.cachePhoto(filePath, phoneNumber, id));
-      }
-    } catch (err) {
-      yield put(Actions.onError(err));
+    if (response.bytesWritten) {
+      yield put(Actions.cachePhoto(filePath, phoneNumber, id));
     }
+  } catch (err) {
+    yield put(Actions.onError(err));
   }
 }
 
