@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import Animated, { interpolate } from "react-native-reanimated";
+import Animated, { interpolate, Extrapolate } from "react-native-reanimated";
 
 import PostImage from "./PostImage";
 import { ZoomHandlerGestureBeganPayload } from "./ZoomHandler";
@@ -34,8 +34,9 @@ export const ZoomedImage: React.FC<ZoomedImageProps> = ({
   translateY
 }) => {
   const opacity = interpolate(scale, {
-    inputRange: [1, 1.3, 2],
-    outputRange: [0, 0.8, 0.8]
+    inputRange: [1, 1.8],
+    outputRange: [0, 0.8],
+    extrapolate: Extrapolate.CLAMP
   });
 
   return (

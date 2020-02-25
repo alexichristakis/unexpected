@@ -102,11 +102,11 @@ export const Top: React.FC<ProfileTopProps & ProfileTopConnectedProps> = ({
             <View style={styles.headerRow}>
               <Text
                 testID="num-moments"
-                style={[TextStyles.large]}
+                style={styles.subheader}
               >{`${numPosts} ${numPosts === 1 ? "moment" : "moments"}, `}</Text>
               <Text
                 testID="friends"
-                style={[TextStyles.large]}
+                style={styles.subheader}
                 onPress={onPressFriends}
               >{`${friends.length} ${
                 friends.length === 1 ? "friend" : "friends"
@@ -155,6 +155,10 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     alignItems: "center"
+  },
+  subheader: {
+    ...TextStyles.large,
+    color: Colors.nearBlack
   },
   loaderContainer: {
     position: "absolute",
