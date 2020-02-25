@@ -1,12 +1,12 @@
 import { User } from "@unexpected/global";
 import React, { useEffect, useState } from "react";
 import {
+  ActionSheetIOS,
   ActivityIndicator,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  ActionSheetIOS
+  View
 } from "react-native";
 import {
   Transition,

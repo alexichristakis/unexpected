@@ -7,7 +7,6 @@ import {
   View
 } from "react-native";
 
-import isEqual from "lodash/isEqual";
 import moment from "moment";
 import { TransitioningView } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";

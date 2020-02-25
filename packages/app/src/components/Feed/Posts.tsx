@@ -27,8 +27,8 @@ import {
 } from "@components/universal";
 import { FEED_POST_HEIGHT, FEED_POST_WIDTH } from "@lib/constants";
 import { SB_HEIGHT } from "@lib/styles";
-import * as selectors from "@redux/selectors";
 import { PostActions } from "@redux/modules";
+import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
 import { Top } from "./Top";

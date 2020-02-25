@@ -9,10 +9,10 @@ import {
 import Animated from "react-native-reanimated";
 import {
   clamp,
-  withSpring,
   contains,
   onGestureEvent,
-  useValues
+  useValues,
+  withSpring
 } from "react-native-redash";
 
 import { Measurement } from "@components/universal";
