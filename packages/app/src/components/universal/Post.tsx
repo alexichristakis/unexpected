@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useState } from "react";
+import React, { useImperativeHandle, useState } from "react";
 import {
   ActionSheetIOS,
   StyleSheet,
@@ -7,7 +7,7 @@ import {
   View
 } from "react-native";
 
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
 import moment from "moment";
 import { TransitioningView } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
@@ -23,9 +23,9 @@ import MoreIcon from "@assets/svg/more.svg";
 
 export interface PostProps {
   postId: string;
+  children: React.ReactNode;
   onPressMoreComments: (postId: string) => void;
   onPressComposeComment: (postId: string) => void;
-  renderImage: () => JSX.Element;
   onPressName: (phoneNumber: string) => void;
 }
 
@@ -43,89 +43,82 @@ const mapStateToProps = (state: RootState, props: PostProps) => ({
 
 const mapDispatchToProps = { deletePost: PostActions.deletePost };
 
-const Post = React.memo(
-  React.forwardRef<PostRef, PostConnectedProps & PostProps>(
-    (
-      {
-        post,
-        phoneNumber,
-        onPressName,
-        onPressMoreComments,
-        onPressComposeComment,
-        renderImage,
-        deletePost
+const Post = React.forwardRef<PostRef, PostConnectedProps & PostProps>(
+  (
+    {
+      post,
+      phoneNumber,
+      onPressName,
+      onPressMoreComments,
+      onPressComposeComment,
+      children,
+      deletePost
+    },
+    ref
+  ) => {
+    const commentsTransitionRef = React.createRef<TransitioningView>();
+    const [visible, setVisible] = useState(false);
+
+    const { id, description, user, createdAt, comments } = post;
+
+    const isUser = user?.phoneNumber === phoneNumber;
+
+    useImperativeHandle(ref, () => ({
+      setVisible: () => {
+        commentsTransitionRef.current?.animateNextTransition();
+        setVisible(true);
       },
-      ref
-    ) => {
-      const commentsTransitionRef = React.createRef<TransitioningView>();
-      const [visible, setVisible] = useState(false);
+      setNotVisible: () => {
+        commentsTransitionRef.current?.animateNextTransition();
+        setVisible(false);
+      }
+    }));
 
-      const { id, description, user, createdAt, comments } = post;
+    const handleOnPressName = () => {
+      onPressName(user.phoneNumber);
+    };
 
-      const isUser = user?.phoneNumber === phoneNumber;
-
-      useImperativeHandle(ref, () => ({
-        setVisible: () => {
-          setTimeout(() => {
-            commentsTransitionRef.current?.animateNextTransition();
-            setVisible(true);
-          }, 500);
+    const handleOnPressMoreIcon = () => {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ["delete post", "cancel"],
+          destructiveButtonIndex: 0,
+          cancelButtonIndex: 1
         },
-        setNotVisible: () => {
-          commentsTransitionRef.current?.animateNextTransition();
-          setVisible(false);
-        }
-      }));
-
-      const handleOnPressName = () => {
-        onPressName(user.phoneNumber);
-      };
-
-      const handleOnPressMoreIcon = () => {
-        ActionSheetIOS.showActionSheetWithOptions(
-          {
-            options: ["delete post", "cancel"],
-            destructiveButtonIndex: 0,
-            cancelButtonIndex: 1
-          },
-          index => {
-            if (!index) {
-              deletePost(id);
-            }
+        index => {
+          if (!index) {
+            deletePost(id);
           }
-        );
-      };
-
-      return (
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <View>
-              <TouchableOpacity onPress={handleOnPressName}>
-                <Text style={TextStyles.large}>{formatName(user)}</Text>
-              </TouchableOpacity>
-              <Text style={styles.time}>{moment(createdAt).fromNow()}</Text>
-            </View>
-            {isUser && (
-              <TouchableOpacity onPress={handleOnPressMoreIcon}>
-                <MoreIcon width={20} height={20} />
-              </TouchableOpacity>
-            )}
-          </View>
-          {renderImage()}
-          {description.length ? (
-            <Text style={styles.description}>{description}</Text>
-          ) : null}
-          <Comments
-            onPressCompose={onPressComposeComment}
-            onPressMore={onPressMoreComments}
-            postId={post.id}
-            comments={comments}
-          />
-        </View>
+        }
       );
-    }
-  ),
-  (prevProps, nextProps) => _.isEqual(prevProps.post, nextProps.post)
+    };
+
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleOnPressName}>
+            <Text style={TextStyles.large}>{formatName(user)}</Text>
+            <Text style={styles.time}>{moment(createdAt).fromNow()}</Text>
+          </TouchableOpacity>
+          {isUser && (
+            <TouchableOpacity onPress={handleOnPressMoreIcon}>
+              <MoreIcon width={20} height={20} />
+            </TouchableOpacity>
+          )}
+        </View>
+        {children}
+        {description.length ? (
+          <Text style={styles.description}>{description}</Text>
+        ) : null}
+        <Comments
+          onPressCompose={onPressComposeComment}
+          onPressMore={onPressMoreComments}
+          postId={post.id}
+          comments={comments}
+        />
+      </View>
+    );
+  }
 );
 
 const styles = StyleSheet.create({

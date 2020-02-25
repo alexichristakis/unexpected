@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  ActionSheetIOS
 } from "react-native";
 import {
   Transition,
@@ -108,7 +109,19 @@ const FriendButton: React.FC<FriendButtonProps &
   const action = (state: ReturnType<typeof getState>) => {
     switch (state) {
       case "friends":
-        return () => deleteFriend(user.phoneNumber);
+        return () =>
+          ActionSheetIOS.showActionSheetWithOptions(
+            {
+              options: ["remove friend", "cancel"],
+              destructiveButtonIndex: 0,
+              cancelButtonIndex: 1
+            },
+            index => {
+              if (!index) {
+                deleteFriend(user.phoneNumber);
+              }
+            }
+          );
       case "requested":
         return () => cancelRequest(user.phoneNumber);
       case "none":

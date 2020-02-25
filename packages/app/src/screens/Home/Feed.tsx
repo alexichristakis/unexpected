@@ -5,7 +5,6 @@ import { RouteProp } from "@react-navigation/core";
 import { useScrollToTop } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
-import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
@@ -29,9 +28,8 @@ const { Value } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
   stale: selectors.feedStale(state),
-  phoneNumber: selectors.phoneNumber(state),
-  refreshing: selectors.feedLoading(state),
-  shouldLaunchPermissions: selectors.shouldLaunchPermissions(state)
+  lastFetched: selectors.lastFetched(state),
+  phoneNumber: selectors.phoneNumber(state)
 });
 const mapDispatchToProps = {
   fetchFeed: PostActions.fetchFeed
@@ -47,14 +45,7 @@ export interface FeedProps extends FeedReduxProps {
 }
 
 export const Feed: React.FC<FeedProps> = React.memo(
-  ({
-    stale,
-    navigation,
-    phoneNumber,
-    fetchFeed,
-    refreshing,
-    shouldLaunchPermissions
-  }) => {
+  ({ stale, navigation, phoneNumber, fetchFeed }) => {
     const [commentsPostId, setCommentsPostId] = useState("");
     const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
     const [scrollY] = useState(new Value(0));
@@ -69,10 +60,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
     useScrollToTop(scrollRef);
 
     useEffect(() => {
-      // fetchFeed();
-      // if (shouldLaunchPermissions) {
-      //   setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
-      // }
+      fetchFeed();
     }, [stale]);
 
     const handleOnPressUser = (userPhoneNumber: string) => {
@@ -85,11 +73,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
           params: { prevRoute: "Feed", phoneNumber: userPhoneNumber }
         });
       }
-    };
-
-    const handleOnRefresh = () => {
-      Haptics.trigger("impactMedium");
-      fetchFeed();
     };
 
     const handleOnPressShare = () => navigation.navigate("CAPTURE");
@@ -115,8 +98,6 @@ export const Feed: React.FC<FeedProps> = React.memo(
           scrollY={scrollY}
           onPressComposeComment={handleOnPressComposeCommment}
           onPressMoreComments={handleOnPressMoreComments}
-          refreshing={refreshing}
-          onRefresh={handleOnRefresh}
           onGestureBegan={setZoomedImage}
           onGestureComplete={handleOnGestureComplete}
           onPressUser={handleOnPressUser}
@@ -132,7 +113,10 @@ export const Feed: React.FC<FeedProps> = React.memo(
         />
       </Screen>
     );
-  }
+  },
+  (prevProps, nextProps) =>
+    prevProps.stale === nextProps.stale &&
+    prevProps.lastFetched === nextProps.lastFetched
 );
 
 const styles = StyleSheet.create({
