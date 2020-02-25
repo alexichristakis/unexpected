@@ -119,6 +119,8 @@ const FriendButton: React.FC<FriendButtonProps &
             index => {
               if (!index) {
                 deleteFriend(user.phoneNumber);
+              } else {
+                setLoading(false);
               }
             }
           );

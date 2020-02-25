@@ -2,9 +2,6 @@ import React, { useRef, useState } from "react";
 import {
   FlatList,
   ListRenderItemInfo,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
   StyleSheet,
   ViewToken
 } from "react-native";
