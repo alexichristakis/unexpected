@@ -10,9 +10,9 @@ import Animated, { Easing } from "react-native-reanimated";
 import {
   contains,
   onGestureEvent,
-  useValues,
   timing,
-  useClocks
+  useClocks,
+  useValues
 } from "react-native-redash";
 
 import { Measurement } from "@components/universal";

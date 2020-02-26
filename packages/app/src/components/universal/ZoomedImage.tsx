@@ -39,18 +39,18 @@ export const ZoomedImage: React.FC<ZoomedImageProps> = ({
     extrapolate: Extrapolate.CLAMP
   });
 
+  const style = {
+    left: measurement.x,
+    top: measurement.y,
+    transform: [{ scale }, { translateX }, { translateY }]
+  };
+
   return (
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.root]}>
       <Animated.View
         style={[StyleSheet.absoluteFill, styles.background, { opacity }]}
       />
-      <Animated.View
-        style={{
-          left: measurement.x,
-          top: measurement.y,
-          transform: [{ scale }, { translateX }, { translateY }]
-        }}
-      >
+      <Animated.View style={style}>
         <PostImage
           id={id}
           phoneNumber={phoneNumber}

@@ -4,11 +4,11 @@ import {
   ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  ScrollViewProps,
   StyleSheet,
   Text,
   View,
-  ViewStyle,
-  ScrollViewProps
+  ViewStyle
 } from "react-native";
 
 import { Post, User } from "@unexpected/global";
@@ -56,9 +56,14 @@ export interface GridProps {
   renderHeader?: () => JSX.Element;
 }
 
+type MonthsData = {
+  id: string;
+  month: string;
+  posts: Post[];
+}[];
+
 export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
   ({
-    phoneNumber,
     scrollRef,
     scrollY,
     friendStatus = "friends",
@@ -70,29 +75,21 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
     user,
     posts
   }) => {
-    const [months, setMonths] = useState<
-      {
-        id: string;
-        month: string;
-        posts: Post[];
-      }[]
-    >([]);
+    const [months, setMonths] = useState<MonthsData>([]);
 
     useEffect(() => {
-      generateMonths(posts).then(ret => {
-        setMonths(ret);
-      });
+      setTimeout(() => setMonths(generateMonths(posts)), 200);
     }, [posts.length]);
 
     // returns object mapping month (0, 1, 2, ...) to array of posts
     const generateMonths = (posts: Post[]) => {
-      if (friendStatus !== "friends") return Promise.resolve([]);
+      if (friendStatus !== "friends") return [];
 
       const map = groupBy(posts, ({ createdAt }) =>
         moment(createdAt).startOf("month")
       );
 
-      const ret = Object.keys(map)
+      return Object.keys(map)
         .sort((a, b) => moment(b).diff(moment(a)))
         .map(month => ({
           id: month,
@@ -101,8 +98,6 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
             moment(b.createdAt).diff(moment(a.createdAt))
           )
         }));
-
-      return Promise.resolve(ret);
     };
 
     const renderMonth = ({
@@ -139,7 +134,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
           </View>
         );
 
-      if (loading)
+      if (loading || (posts.length && !months.length))
         return (
           <View style={styles.emptyStateContainer}>
             <Text style={TextStyles.large}>Loading posts...</Text>
