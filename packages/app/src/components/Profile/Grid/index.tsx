@@ -150,49 +150,23 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
       );
     };
 
-    const renderScrollComponent = (props: ScrollViewProps) => (
-      <Animated.ScrollView
-        {...props}
+    return (
+      <AnimatedFlatList
         ref={scrollRef}
-        horizontal={false}
+        style={styles.list}
+        removeClippedSubviews={true}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         onScroll={onScroll({ y: scrollY })}
-        onScrollEndDrag={onScrollEndDrag}
-      />
-    );
-
-    return (
-      <FlatList
-        style={styles.list}
         ListHeaderComponentStyle={headerContainerStyle}
         ListHeaderComponent={renderHeader}
         ItemSeparatorComponent={renderSeparatorComponent}
         ListEmptyComponent={renderEmptyComponent}
         renderItem={renderMonth}
         data={months as any}
-        removeClippedSubviews={true}
-        renderScrollComponent={renderScrollComponent}
+        onScrollEndDrag={onScrollEndDrag}
       />
     );
-
-    // return (
-    //   <AnimatedFlatList
-    //     ref={scrollRef}
-    //     style={styles.list}
-    //     removeClippedSubviews={true}
-    //     scrollEventThrottle={16}
-    //     showsVerticalScrollIndicator={false}
-    //     onScroll={onScroll({ y: scrollY })}
-    //     ListHeaderComponentStyle={headerContainerStyle}
-    //     ListHeaderComponent={renderHeader}
-    //     ItemSeparatorComponent={renderSeparatorComponent}
-    //     ListEmptyComponent={renderEmptyComponent}
-    //     renderItem={renderMonth}
-    //     data={months as any}
-    //     onScrollEndDrag={onScrollEndDrag}
-    //   />
-    // );
   },
   (prevProps, nextProps) =>
     prevProps.loading === nextProps.loading &&
