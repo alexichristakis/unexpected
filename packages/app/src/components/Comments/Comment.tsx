@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import isEqual from "lodash/isEqual";
 import moment from "moment";
 import Animated, { Easing } from "react-native-reanimated";
 import { timing, useValues } from "react-native-redash";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
 import { UserImage } from "@components/universal";

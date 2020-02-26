@@ -1,12 +1,11 @@
 import React from "react";
 import { Share, StyleSheet, Text, View } from "react-native";
 
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import _ from "lodash";
 import Contacts from "react-native-contacts";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect } from "react-redux";
-import uuid from "uuid/v4";
 
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
@@ -58,7 +57,7 @@ const Settings: React.FC<SettingsProps> = ({ navigation, logout }) => {
   };
 
   return (
-    <Screen style={styles.container}>
+    <Screen stackPresentation={"modal"} style={styles.container}>
       <Text style={[TextStyles.large, styles.header]}>settings:</Text>
       <View style={[styles.buttonContainer]}>
         <Button

@@ -2,13 +2,13 @@ import { useEffect } from "react";
 
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   NotificationPayload,
   PhotoNotificationPayload
 } from "@unexpected/global";
 import moment from "moment";
 import { Notifications } from "react-native-notifications";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
 import { NOTIFICATION_MINUTES } from "@lib/constants";
 import { AppActions, UserActions } from "@redux/modules";

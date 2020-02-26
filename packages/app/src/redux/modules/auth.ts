@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { AxiosError, AxiosResponse } from "axios";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { BATCH, batchActions } from "redux-batched-actions";
 import { persistStore, REHYDRATE } from "redux-persist";
 import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";

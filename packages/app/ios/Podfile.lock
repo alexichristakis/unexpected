@@ -210,7 +210,7 @@ PODS:
     - React
   - react-native-image-resizer (1.2.0):
     - React
-  - react-native-netinfo (5.5.0):
+  - react-native-netinfo (5.5.1):
     - React
   - react-native-notifications (3.1.2):
     - React
@@ -265,7 +265,7 @@ PODS:
     - React
   - RNReanimated (1.7.0):
     - React
-  - RNScreens (2.0.0-beta.13):
+  - RNScreens (2.1.0):
     - React
   - RNSVG (11.0.1):
     - React
@@ -447,7 +447,7 @@ SPEC CHECKSUMS:
   react-native-camera: 3308898e1b09bf6211647c6e3e42d5f7aa02259e
   react-native-contacts: a30bebe23ddeda7c34bf97cfa5f952201efc5329
   react-native-image-resizer: efae8dd718cbd47755df95aa45ad859e701ad7d8
-  react-native-netinfo: b84ff0cae1147315b5dc1daf0f65c0cc6ee71fb3
+  react-native-netinfo: 3bf235d94cc291cf0673ad9fd9eaae82f84ed8a9
   react-native-notifications: f56a12d741eeb2fd4d7a418a4689111c50f7cd72
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
@@ -467,7 +467,7 @@ SPEC CHECKSUMS:
   RNPermissions: 2f74237e97b08beda01e914301e12524ddddf5b8
   RNReactNativeHapticFeedback: 2566b468cc8d0e7bb2f84b23adc0f4614594d071
   RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
-  RNScreens: ba539a5086136eb356e43699cb588a80369763ca
+  RNScreens: 2a9cd603bcebc34319c92e595283d760dd1f55f5
   RNSVG: 67f1f12dae2cef6ed59a42cae74a6b8f5a9e7b46
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b

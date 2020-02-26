@@ -13,12 +13,12 @@ import {
   RouteProp
 } from "@react-navigation/core";
 import { NavigationContainer } from "@react-navigation/native";
+import { gestureHandlerRootHOC } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp
-} from "@react-navigation/native-stack";
-import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+} from "react-native-screens/native-stack";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -162,7 +162,7 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
       screenOptions={{ stackPresentation: "modal" }}
     >
       <Stack.Screen name="HOME" options={{ headerShown: false }}>
-        {props => (
+        {() => (
           <Tabs.Navigator tabBarOptions={TAB_BAR_OPTIONS} tabBar={renderTabBar}>
             <Tabs.Screen
               name="FEED_TAB"
