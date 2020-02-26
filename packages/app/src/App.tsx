@@ -16,7 +16,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp
-} from "@react-navigation/native-stack";
+} from "react-native-screens/native-stack";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
@@ -162,7 +162,7 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
       screenOptions={{ stackPresentation: "modal" }}
     >
       <Stack.Screen name="HOME" options={{ headerShown: false }}>
-        {props => (
+        {() => (
           <Tabs.Navigator tabBarOptions={TAB_BAR_OPTIONS} tabBar={renderTabBar}>
             <Tabs.Screen
               name="FEED_TAB"

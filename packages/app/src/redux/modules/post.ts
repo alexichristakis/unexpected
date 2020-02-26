@@ -1,4 +1,4 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Comment, NewComment, Post, User } from "@unexpected/global";
 import immer from "immer";
 import _ from "lodash";

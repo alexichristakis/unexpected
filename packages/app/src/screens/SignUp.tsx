@@ -1,4 +1,4 @@
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Formik } from "formik";
 import React from "react";
 import {
@@ -41,7 +41,7 @@ const SignUp: React.FC<SignUpProps> = ({ createUser, loading, navigation }) => {
   };
 
   return (
-    <Screen style={styles.container}>
+    <Screen stackPresentation={"push"} style={styles.container}>
       <TouchableOpacity
         activeOpacity={1}
         style={styles.subContainer}

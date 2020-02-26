@@ -6,7 +6,7 @@ import {
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Post, User } from "@unexpected/global";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
@@ -14,7 +14,6 @@ import Animated, { TransitioningView } from "react-native-reanimated";
 import { useValues } from "react-native-redash";
 import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
-import uuid from "uuid/v4";
 
 import { Grid, PostModal, Top, UserModal } from "@components/Profile";
 import { FriendButton, ModalListRef, NavBar } from "@components/universal";
@@ -138,7 +137,7 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     };
 
     return (
-      <Screen style={styles.container}>
+      <Screen stackPresentation={"push"} style={styles.container}>
         <NavBar
           transitionRef={navBarTransitionRef}
           backButtonText={route.params.prevRoute}

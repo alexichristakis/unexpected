@@ -9,7 +9,7 @@ import {
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
 import { useScrollToTop } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
@@ -140,7 +140,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     );
 
     return (
-      <Screen style={styles.container}>
+      <Screen stackPresentation={"push"} style={styles.container}>
         <Grid
           scrollRef={scrollRef}
           scrollY={scrollY}

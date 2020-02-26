@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import _ from "lodash";
 import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
@@ -68,7 +68,7 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
   const initialFormValues = { firstName, lastName, bio };
 
   return (
-    <Screen style={styles.container}>
+    <Screen stackPresentation={"modal"} style={styles.container}>
       <Formik initialValues={initialFormValues} onSubmit={handleOnPressSubmit}>
         {({ values, handleChange, handleSubmit }) => (
           <>

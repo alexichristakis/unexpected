@@ -12,7 +12,7 @@ import {
 
 import client, { getHeaders } from "@api";
 import { RouteProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
@@ -99,7 +99,7 @@ export const Discover: React.FC<DiscoverProps &
     const renderSeparatorComponent = () => <ItemSeparator />;
 
     return (
-      <Screen style={styles.container}>
+      <Screen stackPresentation={"push"} style={styles.container}>
         <Input
           size={TextSizes.title}
           style={{ width: "100%", paddingHorizontal: 20 }}

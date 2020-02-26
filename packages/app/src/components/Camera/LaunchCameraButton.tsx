@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import moment from "moment";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { connect } from "react-redux";

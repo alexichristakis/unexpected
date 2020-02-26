@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
 
@@ -86,7 +86,7 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
   };
 
   return (
-    <Screen style={styles.container}>
+    <Screen stackPresentation={"modal"} style={styles.container}>
       <View style={styles.background} />
       <Camera
         ref={setCamera}

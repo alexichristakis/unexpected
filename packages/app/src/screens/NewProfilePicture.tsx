@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Screen } from "react-native-screens";
 import { connect, ConnectedProps } from "react-redux";
 
@@ -55,7 +55,7 @@ const NewProfilePicture: React.FC<NewProfilePictureProps> = React.memo(
     };
 
     return (
-      <Screen style={styles.container}>
+      <Screen stackPresentation={"modal"} style={styles.container}>
         {image ? (
           <PendingPostImage
             style={styles.photo}

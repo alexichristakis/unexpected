@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { CompositeNavigationProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import {
   NotificationPayload,
   PhotoNotificationPayload

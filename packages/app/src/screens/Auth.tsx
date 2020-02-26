@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Formik } from "formik";
 import React, { useCallback } from "react";
 import {
@@ -69,7 +69,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
   };
 
   return (
-    <Screen style={styles.container}>
+    <Screen stackPresentation={"push"} style={styles.container}>
       {/* <Background /> */}
       <TouchableOpacity
         activeOpacity={1}

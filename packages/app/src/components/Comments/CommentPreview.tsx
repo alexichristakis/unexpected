@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import moment from "moment";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";

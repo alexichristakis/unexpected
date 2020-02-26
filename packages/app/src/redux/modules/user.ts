@@ -1,6 +1,6 @@
 import { Platform } from "react-native";
 
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { FriendRequest, User } from "@unexpected/global";
 import { AxiosResponse } from "axios";
 import immer from "immer";

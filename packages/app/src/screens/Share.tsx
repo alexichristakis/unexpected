@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Formik } from "formik";
 import { Screen } from "react-native-screens";
 import { connect } from "react-redux";
@@ -47,7 +47,7 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
     };
 
     return (
-      <Screen style={styles.container}>
+      <Screen stackPresentation={"push"} style={styles.container}>
         <NavBar
           showBackButtonText={true}
           backButtonText="Capture"
