@@ -8,10 +8,10 @@ import {
 
 import { RouteProp } from "@react-navigation/core";
 import { useScrollToTop } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import _ from "lodash";
 import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 

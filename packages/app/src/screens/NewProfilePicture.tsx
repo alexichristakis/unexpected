@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
 import Camera, { CameraRef, Shutter } from "@components/Camera";

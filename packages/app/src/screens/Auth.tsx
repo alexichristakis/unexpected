@@ -1,5 +1,4 @@
 import { useFocusEffect } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Formik } from "formik";
 import React, { useCallback } from "react";
 import {
@@ -12,6 +11,7 @@ import {
   View
 } from "react-native";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect } from "react-redux";
 
 import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";

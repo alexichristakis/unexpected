@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect } from "react-redux";
 
 import Camera, {

@@ -1,4 +1,3 @@
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Comment, NewComment, Post, User } from "@unexpected/global";
 import immer from "immer";
 import _ from "lodash";
@@ -10,6 +9,7 @@ import { TakePictureResponse } from "react-native-camera/types";
 import ImageResizer, {
   Response as ImageResizerResponse
 } from "react-native-image-resizer";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import uuid from "uuid/v4";
 

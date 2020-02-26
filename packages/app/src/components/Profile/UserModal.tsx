@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import React, { useEffect, useRef, useState } from "react";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 

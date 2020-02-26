@@ -1,10 +1,10 @@
 import React from "react";
 import { Share, StyleSheet, Text, View } from "react-native";
 
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import _ from "lodash";
 import Contacts from "react-native-contacts";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect } from "react-redux";
 
 import { Button } from "@components/universal";

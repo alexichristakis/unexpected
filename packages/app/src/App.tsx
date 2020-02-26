@@ -13,12 +13,12 @@ import {
   RouteProp
 } from "@react-navigation/core";
 import { NavigationContainer } from "@react-navigation/native";
+import { gestureHandlerRootHOC } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp
 } from "react-native-screens/native-stack";
-import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";

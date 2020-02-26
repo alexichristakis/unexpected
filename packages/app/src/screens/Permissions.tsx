@@ -8,7 +8,6 @@ import { connect, ConnectedProps } from "react-redux";
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { isIPhoneX, SCREEN_HEIGHT, TextStyles } from "@lib/styles";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import {
   Actions as PermissionsActions,
   Permissions as PermissionTypes,
@@ -17,6 +16,7 @@ import {
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "App";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
 const mapStateToProps = (state: RootState) => ({
   ...selectors.permissions(state)

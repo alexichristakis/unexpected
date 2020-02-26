@@ -12,9 +12,9 @@ import {
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import _ from "lodash";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
 import { Button, Input } from "@components/universal";

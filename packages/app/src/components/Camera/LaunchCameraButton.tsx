@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import moment from "moment";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect } from "react-redux";
 
 import SVG from "@assets/svg/camera_button.svg";

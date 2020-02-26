@@ -12,8 +12,8 @@ import {
 
 import client, { getHeaders } from "@api";
 import { RouteProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 

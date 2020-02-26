@@ -1,11 +1,11 @@
 import { Platform } from "react-native";
 
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { FriendRequest, User } from "@unexpected/global";
 import { AxiosResponse } from "axios";
 import immer from "immer";
 import _ from "lodash";
 import moment from "moment-timezone";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { REHYDRATE } from "redux-persist";
 import {
   all,
