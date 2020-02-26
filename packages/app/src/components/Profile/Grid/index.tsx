@@ -42,7 +42,7 @@ const mapDispatchToProps = {};
 export type GridConnectedProps = ConnectedProps<typeof connector>;
 
 export interface GridProps {
-  scrollRef: React.Ref<RNAnimated.AnimatedComponent<FlatList>>;
+  scrollRef?: React.Ref<RNAnimated.AnimatedComponent<FlatList>>;
   scrollY: Animated.Value<number>;
   friendStatus?: "friends" | "notFriends" | "unknown";
   phoneNumber?: string;
