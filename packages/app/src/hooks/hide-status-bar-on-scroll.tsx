@@ -1,10 +1,10 @@
 import { useFocusEffect } from "@react-navigation/core";
 import React, { useState } from "react";
-import { StatusBar, TouchableOpacity, StyleSheet } from "react-native";
+import { StatusBar, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { withTimingTransition } from "react-native-redash";
-import { useMemoOne } from "use-memo-one";
 import { useValues } from "react-native-redash";
+import { useMemoOne } from "use-memo-one";
 
 import { SB_HEIGHT } from "@lib/styles";
 

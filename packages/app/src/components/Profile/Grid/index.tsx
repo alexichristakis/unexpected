@@ -1,24 +1,20 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  Animated as RNAnimated,
   FlatList,
   ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ScrollViewProps,
   StyleSheet,
   Text,
   View,
   ViewStyle
 } from "react-native";
 
-import { Post, User } from "@unexpected/global";
+import { Post } from "@unexpected/global";
 import groupBy from "lodash/groupBy";
 import moment from "moment";
-import Animated, {
-  Transition,
-  Transitioning,
-  TransitioningView
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
@@ -31,7 +27,7 @@ import { RootState } from "@redux/types";
 
 import { Top } from "../Top";
 import { Month, Months } from "./Month";
-import testPosts from "./test_data";
+// import testPosts from "./test_data";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -46,7 +42,7 @@ const mapDispatchToProps = {};
 export type GridConnectedProps = ConnectedProps<typeof connector>;
 
 export interface GridProps {
-  scrollRef?: React.Ref<Animated.ScrollView>;
+  scrollRef: React.Ref<RNAnimated.AnimatedComponent<FlatList>>;
   scrollY: Animated.Value<number>;
   friendStatus?: "friends" | "notFriends" | "unknown";
   phoneNumber?: string;

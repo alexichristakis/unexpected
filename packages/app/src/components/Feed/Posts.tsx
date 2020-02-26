@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import {
-  FlatList,
   Animated as RNAnimated,
+  FlatList,
   ListRenderItemInfo,
   StyleSheet,
   ViewToken

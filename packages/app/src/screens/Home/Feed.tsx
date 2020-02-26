@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated as RNAnimated,
   FlatList,
   StyleSheet,
-  TextInput,
-  Animated as RNAnimated
+  TextInput
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";

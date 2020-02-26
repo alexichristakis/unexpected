@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import {
-  FlatList,
   Animated as RNAnimated,
+  FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleSheet
