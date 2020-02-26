@@ -26,8 +26,6 @@ const {
   eq,
   debug,
   set,
-  sub,
-  abs,
   divide,
   block,
   cond,
