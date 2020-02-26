@@ -6,7 +6,7 @@ import {
   PinchGestureHandler,
   State
 } from "react-native-gesture-handler";
-import Animated, { Easing, clockRunning } from "react-native-reanimated";
+import Animated, { Easing } from "react-native-reanimated";
 import {
   contains,
   onGestureEvent,
@@ -18,6 +18,7 @@ import {
 import { Measurement } from "@components/universal";
 
 const {
+  clockRunning,
   max,
   useCode,
   and,

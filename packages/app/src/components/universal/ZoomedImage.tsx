@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import Animated, { interpolate, Extrapolate } from "react-native-reanimated";
+import Animated, { Extrapolate, interpolate } from "react-native-reanimated";
 
 import PostImage from "./PostImage";
 import { ZoomHandlerGestureBeganPayload } from "./ZoomHandler";

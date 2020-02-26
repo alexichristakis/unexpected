@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Text,
   View,
-  ViewStyle
+  ViewStyle,
+  ScrollViewProps
 } from "react-native";
 
 import { Post, User } from "@unexpected/global";
@@ -28,9 +29,9 @@ import { formatName } from "@lib/utils";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
-import testPosts from "./test_data";
-import { Month, Months } from "./Month";
 import { Top } from "../Top";
+import { Month, Months } from "./Month";
+import testPosts from "./test_data";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -154,6 +155,18 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
       );
     };
 
+    const renderScrollComponent = (props: ScrollViewProps) => (
+      <Animated.ScrollView
+        {...props}
+        ref={scrollRef}
+        horizontal={false}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll({ y: scrollY })}
+        onScrollEndDrag={onScrollEndDrag}
+      />
+    );
+
     return (
       <FlatList
         style={styles.list}
@@ -164,17 +177,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
         renderItem={renderMonth}
         data={months as any}
         removeClippedSubviews={true}
-        renderScrollComponent={props => (
-          <Animated.ScrollView
-            {...props}
-            ref={scrollRef}
-            horizontal={false}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
-            onScroll={onScroll({ y: scrollY })}
-            onScrollEndDrag={onScrollEndDrag}
-          />
-        )}
+        renderScrollComponent={renderScrollComponent}
       />
     );
 
