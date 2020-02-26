@@ -61,12 +61,11 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     >(undefined);
     const [focusedPostId, setFocusedPostId] = useState("");
 
-    const scrollRef = useRef<FlatList>(null);
+    const scrollRef = useRef<Animated.ScrollView>(null);
     const modalRef = useRef<ModalListRef>(null);
 
     const StatusBar = hideStatusBarOnScroll(scrollY, "dark-content");
 
-    // @ts-ignore
     useScrollToTop(scrollRef);
 
     useFocusEffect(

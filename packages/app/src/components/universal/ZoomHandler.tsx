@@ -6,28 +6,33 @@ import {
   PinchGestureHandler,
   State
 } from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
+import Animated, { Easing } from "react-native-reanimated";
 import {
-  clamp,
   contains,
   onGestureEvent,
-  useValues,
-  withSpring
+  timing,
+  useClocks,
+  useValues
 } from "react-native-redash";
 
 import { Measurement } from "@components/universal";
 
-const { max, useCode, divide, block, cond, call } = Animated;
-const { BEGAN, UNDETERMINED } = State;
-
-const config = {
-  damping: 50,
-  mass: 1,
-  stiffness: 500,
-  overshootClamping: false,
-  restSpeedThreshold: 0.1,
-  restDisplacementThreshold: 0.1
-};
+const {
+  clockRunning,
+  max,
+  useCode,
+  and,
+  not,
+  or,
+  eq,
+  debug,
+  set,
+  divide,
+  block,
+  cond,
+  call
+} = Animated;
+const { BEGAN, ACTIVE, UNDETERMINED } = State;
 
 export type ZoomHandlerGestureBeganPayload = {
   measurement: Measurement;
@@ -49,10 +54,15 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
     const panRef = React.createRef<PanGestureHandler>();
     const childRef = React.createRef<Animated.View>();
 
+    const [pinchClock, xClock, yClock] = useClocks(3, []);
+
     const [pinchState, panState] = useValues<State>(
       [UNDETERMINED, UNDETERMINED],
       []
     );
+
+    const pinchActive = or(eq(pinchState, ACTIVE), eq(pinchState, BEGAN));
+    const panActive = or(eq(panState, ACTIVE), eq(panState, BEGAN));
 
     const [
       dragX,
@@ -64,78 +74,65 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
       opacity
     ] = useValues<number>([0, 0, 0, 0, 1, 0, 1], []);
 
-    const handleOnSnap = () => {
-      opacity.setValue(1);
-      onGestureComplete();
+    const duration = 200;
+    const easing = Easing.inOut(Easing.ease);
+
+    const scale = max(pinch, 1);
+    const translateY = divide(dragY, scale);
+    const translateX = divide(dragX, scale);
+
+    const handleOnBegan = () => {
+      if (childRef.current) {
+        UIManager.measure(
+          findNodeHandle(childRef.current)!,
+          (_, __, width, height, pageX, pageY) => {
+            // send animated values and measurements to <ZoomedImage />
+            onGestureBegan({
+              scale,
+              translateX,
+              translateY,
+              measurement: { x: pageX, y: pageY, w: width, h: height }
+            });
+
+            // hide the original image
+            opacity.setValue(0);
+          }
+        );
+      }
     };
 
-    const scale = max(
-      clamp(
-        withSpring({
-          value: pinch,
-          velocity: pinchVelocity,
-          state: pinchState,
-          snapPoints: [1],
-          onSnap: handleOnSnap,
-          config
-        }),
-        0,
-        pinch
-      ),
-      1
+    const clocksNotRunning = and(
+      not(clockRunning(pinchClock)),
+      not(clockRunning(xClock)),
+      not(clockRunning(yClock))
     );
 
-    const [translateY, translateX] = [
-      divide(
-        withSpring({
-          value: dragY,
-          velocity: velocityY,
-          state: panState,
-          snapPoints: [0],
-          onSnap: handleOnSnap,
-          config
-        }),
-        scale
-      ),
-      divide(
-        withSpring({
-          value: dragX,
-          velocity: velocityX,
-          state: panState,
-          snapPoints: [0],
-          onSnap: handleOnSnap,
-          config
-        }),
-        scale
-      )
-    ];
+    const resetNode = (
+      node: Animated.Value<number>,
+      clock: Animated.Clock,
+      to: number
+    ) =>
+      set(
+        node,
+        timing({
+          from: node,
+          to,
+          clock,
+          duration,
+          easing
+        })
+      );
 
     useCode(
-      () =>
-        block([
-          cond(
-            contains([pinchState, panState], BEGAN),
-            call([], () => {
-              if (childRef.current) {
-                UIManager.measure(
-                  findNodeHandle(childRef.current)!,
-                  (_, __, width, height, pageX, pageY) => {
-                    // send animated values and measurements to <ZoomedImage />
-                    onGestureBegan({
-                      scale,
-                      translateX,
-                      translateY,
-                      measurement: { x: pageX, y: pageY, w: width, h: height }
-                    });
-
-                    // hide the original image
-                    opacity.setValue(0);
-                  }
-                );
-              }
-            })
-          )
-        ]),
+      () => [
+        cond(contains([pinchState, panState], BEGAN), call([], handleOnBegan)),
+        cond(and(not(pinchActive), not(panActive)), [
+          resetNode(pinch, pinchClock, 1),
+          resetNode(dragX, xClock, 0),
+          resetNode(dragY, yClock, 0),
+          cond(clocksNotRunning, [set(opacity, 1), call([], onGestureComplete)])
+        ])
+      ],
       [renderKey]
     );
 

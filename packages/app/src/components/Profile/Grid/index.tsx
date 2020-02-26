@@ -4,6 +4,7 @@ import {
   ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  ScrollViewProps,
   StyleSheet,
   Text,
   View,
@@ -28,8 +29,9 @@ import { formatName } from "@lib/utils";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
-// import testPosts from "./test_data";
+import { Top } from "../Top";
 import { Month, Months } from "./Month";
+import testPosts from "./test_data";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -44,15 +46,21 @@ const mapDispatchToProps = {};
 export type GridConnectedProps = ConnectedProps<typeof connector>;
 
 export interface GridProps {
-  scrollRef?: React.Ref<FlatList>;
-  scrollY?: Animated.Value<number>;
+  scrollRef?: React.Ref<Animated.ScrollView>;
+  scrollY: Animated.Value<number>;
   friendStatus?: "friends" | "notFriends" | "unknown";
   phoneNumber?: string;
   onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
   onPressPost: (item: Post) => void;
   headerContainerStyle?: ViewStyle;
-  renderHeader?: React.ComponentType<any>;
+  renderHeader?: () => JSX.Element;
 }
+
+type MonthsData = {
+  id: string;
+  month: string;
+  posts: Post[];
+}[];
 
 export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
   ({
@@ -67,13 +75,11 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
     user,
     posts
   }) => {
-    const [releasedPosts, setReleasedPosts] = useState<Post[]>(posts);
-    const gridTransitionRef = useRef<TransitioningView>();
+    const [months, setMonths] = useState<MonthsData>([]);
 
-    useLayoutEffect(() => {
-      gridTransitionRef.current?.animateNextTransition();
-      setReleasedPosts(posts);
-    }, [loading, posts.length, gridTransitionRef]);
+    useEffect(() => {
+      setTimeout(() => setMonths(generateMonths(posts)), 200);
+    }, [posts.length]);
 
     // returns object mapping month (0, 1, 2, ...) to array of posts
     const generateMonths = (posts: Post[]) => {
@@ -128,7 +134,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
           </View>
         );
 
-      if (loading)
+      if (loading || (posts.length && !months.length))
         return (
           <View style={styles.emptyStateContainer}>
             <Text style={TextStyles.large}>Loading posts...</Text>
@@ -144,36 +150,22 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
       );
     };
 
-    const transition = (
-      <Transition.Together>
-        <Transition.In type="fade" />
-        <Transition.Out type="fade" />
-        <Transition.Change interpolation="easeInOut" />
-      </Transition.Together>
-    );
-
     return (
-      <Transitioning.View
+      <AnimatedFlatList
+        ref={scrollRef}
         style={styles.list}
-        ref={gridTransitionRef as any}
-        transition={transition}
-      >
-        <AnimatedFlatList
-          ref={scrollRef}
-          style={styles.list}
-          removeClippedSubviews={true}
-          scrollEventThrottle={16}
-          showsVerticalScrollIndicator={false}
-          onScroll={onScroll({ y: scrollY })}
-          ListHeaderComponentStyle={headerContainerStyle}
-          ListHeaderComponent={renderHeader}
-          ItemSeparatorComponent={renderSeparatorComponent}
-          ListEmptyComponent={renderEmptyComponent}
-          renderItem={renderMonth}
-          data={generateMonths(releasedPosts) as any}
-          onScrollEndDrag={onScrollEndDrag}
-        />
-      </Transitioning.View>
+        removeClippedSubviews={true}
+        scrollEventThrottle={16}
+        showsVerticalScrollIndicator={false}
+        onScroll={onScroll({ y: scrollY })}
+        ListHeaderComponentStyle={headerContainerStyle}
+        ListHeaderComponent={renderHeader}
+        ItemSeparatorComponent={renderSeparatorComponent}
+        ListEmptyComponent={renderEmptyComponent}
+        renderItem={renderMonth}
+        data={months as any}
+        onScrollEndDrag={onScrollEndDrag}
+      />
     );
   },
   (prevProps, nextProps) =>
