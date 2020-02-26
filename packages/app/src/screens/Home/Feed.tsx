@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FlatList, StyleSheet, TextInput } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  TextInput,
+  Animated as RNAnimated
+} from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
 import { useScrollToTop } from "@react-navigation/native";
@@ -51,10 +56,15 @@ export const Feed: React.FC<FeedProps> = React.memo(
     const [scrollY] = useState(new Value(0));
 
     const textInputRef = useRef<TextInput>(null);
-    const scrollRef = useRef<FlatList>(null);
+    const scrollRef = useRef<RNAnimated.AnimatedComponent<FlatList>>(null);
     const modalRef = useRef<ModalListRef>(null);
 
     const StatusBar = hideStatusBarOnScroll(scrollY, "dark-content");
+
+    const handleOnPressStatusBar = () =>
+      scrollRef.current
+        ?.getNode()
+        .scrollToOffset({ animated: true, offset: 0 });
 
     // @ts-ignore
     useScrollToTop(scrollRef);
@@ -104,7 +114,7 @@ export const Feed: React.FC<FeedProps> = React.memo(
           onPressShare={handleOnPressShare}
         />
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
-        <StatusBar />
+        <StatusBar onPress={handleOnPressStatusBar} />
         <CommentsModal
           onClose={handleOnCommentModalClose}
           textInputRef={textInputRef}

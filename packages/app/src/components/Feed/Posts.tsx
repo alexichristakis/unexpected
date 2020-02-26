@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import {
   FlatList,
+  Animated as RNAnimated,
   ListRenderItemInfo,
   StyleSheet,
   ViewToken
@@ -48,7 +49,7 @@ const mapDispatchToProps = {
 
 export interface PostsProps {
   scrollY: Animated.Value<number>;
-  scrollRef: React.Ref<FlatList>;
+  scrollRef: React.Ref<RNAnimated.AnimatedComponent<FlatList>>;
   onPressMoreComments: (postId: string) => void;
   onPressComposeComment: (postId: string) => void;
   onGestureBegan: (image: ZoomedImageType) => void;

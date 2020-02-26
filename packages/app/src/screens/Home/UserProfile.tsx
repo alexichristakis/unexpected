@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import {
   FlatList,
+  Animated as RNAnimated,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleSheet
@@ -61,11 +62,17 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
     >(undefined);
     const [focusedPostId, setFocusedPostId] = useState("");
 
-    const scrollRef = useRef<Animated.ScrollView>(null);
+    const scrollRef = useRef<RNAnimated.AnimatedComponent<FlatList>>(null);
     const modalRef = useRef<ModalListRef>(null);
 
     const StatusBar = hideStatusBarOnScroll(scrollY, "dark-content");
 
+    const handleOnPressStatusBar = () =>
+      scrollRef.current
+        ?.getNode()
+        .scrollToOffset({ animated: true, offset: 0 });
+
+    // @ts-ignore
     useScrollToTop(scrollRef);
 
     useFocusEffect(
@@ -142,7 +149,7 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
           headerContainerStyle={styles.headerContainer}
           renderHeader={renderTop}
         />
-        <StatusBar />
+        <StatusBar onPress={handleOnPressStatusBar} />
         <UserModal
           visible={!!modalType}
           type={modalType}
