@@ -57,10 +57,10 @@ export class CommentController {
     const [
       postAuthor,
       ...otherCommenters
-    ] = await this.userService.getByPhoneNumber([
-      post.phoneNumber,
-      ...otherCommentersNumbers
-    ]);
+    ] = await this.userService.getByPhoneNumber(
+      [post.phoneNumber, ...otherCommentersNumbers],
+      true
+    );
 
     const [newComment] = await Promise.all([
       this.commentService.createNewComment(comment),
@@ -71,7 +71,7 @@ export class CommentController {
       ),
       this.notificationService.notifyWithNavigationToPost(
         otherCommenters,
-        `${fromUser.firstName} also commented on a post you commented on`,
+        `${fromUser.firstName} also commented ${postAuthor.firstName}'s post`,
         { phoneNumber: post.phoneNumber, id: postId }
       )
     ]);
