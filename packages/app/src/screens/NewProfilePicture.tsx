@@ -5,13 +5,14 @@ import { Screen } from "react-native-screens";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
-import Camera, { CameraRef, Shutter } from "@components/Camera";
-import { Button, Input, PendingPostImage } from "@components/universal";
+import Camera, { CameraRef } from "@components/Camera";
+import { Button, PendingPostImage } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
+
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
