@@ -1,4 +1,4 @@
-import { Inject, Service, $log } from "@tsed/common";
+import { $log, Inject, Service } from "@tsed/common";
 import { Notification, Provider } from "apn";
 import moment from "moment";
 
@@ -28,7 +28,7 @@ export class NotificationService {
   // private FCM = new Provider(settings.fcm);
 
   async send(
-    deviceToken: string = "",
+    deviceToken: string | string[] | undefined = "",
     deviceOS: string,
     body: string,
     data?: NotificationPayload
@@ -52,6 +52,7 @@ export class NotificationService {
         const results = await this.APNs.send(notification, deviceToken);
 
         results.failed.forEach(failure => {
+          $log.info(failure);
           this.sentryService.captureException(failure);
         });
 
@@ -89,10 +90,20 @@ export class NotificationService {
     });
   }
 
-  notifyWithNavigationToPost(user: User, body: string, route: Post) {
-    const { deviceOS, deviceToken } = user;
+  notifyWithNavigationToPost(
+    user: User | User[],
+    body: string,
+    route: { id: string; phoneNumber: string }
+  ) {
+    let token;
+    const deviceOS = "ios";
+    if (user instanceof Array) {
+      token = user.map(({ deviceToken = "" }) => deviceToken);
+    } else {
+      token = user.deviceToken;
+    }
 
-    return this.send(deviceToken, deviceOS, body, {
+    return this.send(token, deviceOS, body, {
       type: "post",
       route
     });

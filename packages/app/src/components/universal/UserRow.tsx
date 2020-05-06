@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 
-import { TextStyles, Colors } from "@lib/styles";
+import { Colors, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import { User } from "@unexpected/global";
 
@@ -9,7 +9,6 @@ import FriendButton from "./FriendButton";
 import UserImage from "./UserImage";
 
 export interface UserRowProps {
-  // actions?: Array<{ title: string; onPress: () => void }>;
   onPress: (user: User) => void;
   user: User;
 }
@@ -26,7 +25,7 @@ export const UserRow: React.FC<UserRowProps> = ({ user, onPress }) => {
       style={styles.container}
     >
       <>
-        <UserImage phoneNumber={user.phoneNumber} size={40} />
+        <UserImage phoneNumber={user.phoneNumber} size={35} />
         <Text style={styles.name}>{formatName(user)}</Text>
         <View style={styles.buttonContainer}>
           <FriendButton user={user} />
@@ -41,7 +40,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignSelf: "stretch",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 10
   },
   buttonContainer: {

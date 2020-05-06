@@ -12,8 +12,8 @@ import {
 
 import client, { getHeaders } from "@api";
 import { RouteProp } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 import uuid from "uuid/v4";
 
@@ -25,7 +25,7 @@ import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { User } from "@unexpected/global";
 
-import { StackParamList } from "../../App";
+import { ParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -37,8 +37,8 @@ const mapDispatchToProps = {
 
 export type DiscoverConnectorProps = ConnectedProps<typeof connector>;
 export interface DiscoverProps {
-  navigation: NativeStackNavigationProp<StackParamList, "DISCOVER">;
-  route: RouteProp<StackParamList, "DISCOVER">;
+  navigation: NativeStackNavigationProp<ParamList, "DISCOVER">;
+  route: RouteProp<ParamList, "DISCOVER">;
 }
 export const Discover: React.FC<DiscoverProps &
   DiscoverConnectorProps> = React.memo(
@@ -54,7 +54,7 @@ export const Discover: React.FC<DiscoverProps &
 
     const handleOnPressUser = (toUser: User) => {
       if (phoneNumber === toUser.phoneNumber) {
-        navigation.navigate("USER_PROFILE");
+        navigation.navigate("USER_PROFILE_TAB");
       } else {
         navigation.navigate({
           name: "PROFILE",
@@ -99,7 +99,7 @@ export const Discover: React.FC<DiscoverProps &
     const renderSeparatorComponent = () => <ItemSeparator />;
 
     return (
-      <Screen style={styles.container}>
+      <Screen stackPresentation={"push"} style={styles.container}>
         <Input
           size={TextSizes.title}
           style={{ width: "100%", paddingHorizontal: 20 }}
@@ -126,7 +126,7 @@ export const Discover: React.FC<DiscoverProps &
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: SB_HEIGHT(),
+    paddingTop: SB_HEIGHT,
     // paddingHorizontal: 20,
     alignItems: "center"
   },

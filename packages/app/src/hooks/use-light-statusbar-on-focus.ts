@@ -1,6 +1,6 @@
 import { useIsFocused } from "@react-navigation/core";
 import { useEffect } from "react";
-import { StatusBar, Platform } from "react-native";
+import { Platform, StatusBar } from "react-native";
 
 export function useLightStatusBar() {
   const isFocused = useIsFocused();

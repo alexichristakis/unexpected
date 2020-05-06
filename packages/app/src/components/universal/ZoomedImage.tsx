@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import Animated from "react-native-reanimated";
+import Animated, { Extrapolate, interpolate } from "react-native-reanimated";
 
 import PostImage from "./PostImage";
 import { ZoomHandlerGestureBeganPayload } from "./ZoomHandler";
@@ -23,7 +23,6 @@ export type ZoomedImageType = {
 } & ZoomHandlerGestureBeganPayload;
 
 export interface ZoomedImageProps extends ZoomedImageType {}
-
 export const ZoomedImage: React.FC<ZoomedImageProps> = ({
   id,
   phoneNumber,
@@ -34,23 +33,24 @@ export const ZoomedImage: React.FC<ZoomedImageProps> = ({
   translateX,
   translateY
 }) => {
-  const opacity = scale.interpolate({
-    inputRange: [0, 1, 2],
-    outputRange: [0.5, 0, 0.5]
+  const opacity = interpolate(scale, {
+    inputRange: [1, 1.8],
+    outputRange: [0, 0.8],
+    extrapolate: Extrapolate.CLAMP
   });
+
+  const style = {
+    left: measurement.x,
+    top: measurement.y,
+    transform: [{ scale }, { translateX }, { translateY }]
+  };
 
   return (
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.root]}>
       <Animated.View
         style={[StyleSheet.absoluteFill, styles.background, { opacity }]}
       />
-      <Animated.View
-        style={{
-          left: measurement.x,
-          top: measurement.y,
-          transform: [{ scale }, { translateX }, { translateY }]
-        }}
-      >
+      <Animated.View style={style}>
         <PostImage
           id={id}
           phoneNumber={phoneNumber}

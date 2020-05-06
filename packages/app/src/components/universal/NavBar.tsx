@@ -11,7 +11,7 @@ import Animated, {
   TransitioningView
 } from "react-native-reanimated";
 
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
 import BackButtonIcon from "@assets/svg/back_chevron.svg";
 import { TextStyles } from "@lib/styles";

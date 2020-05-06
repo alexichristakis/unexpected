@@ -17,6 +17,14 @@ export class Comment {
   @Property()
   body: string;
 
+  // phone numbers who have liked
+  @Property()
+  likes: string[];
+
+  // if a reply to another comment
+  @Property()
+  replyTo?: string;
+
   @Format("date-time")
   @Default(Date.now)
   createdAt: Date = new Date();

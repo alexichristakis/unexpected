@@ -1,39 +1,34 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import {
+  Animated as RNAnimated,
+  FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  StatusBar,
   StyleSheet
 } from "react-native";
 
 import { RouteProp, useFocusEffect } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useScrollToTop } from "@react-navigation/native";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
-import { connect } from "react-redux";
-import uuid from "uuid/v4";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
+import { connect, ConnectedProps } from "react-redux";
 
-import { hideStatusBarOnScroll, useDarkStatusBar } from "@hooks";
-import { Top } from "@components/Profile";
-import { Grid } from "@components/Profile/Grid";
+import { Grid, PostModal, Top, UserModal } from "@components/Profile";
+import { ModalListRef } from "@components/universal";
+import { hideStatusBarOnScroll } from "@hooks";
 import { SB_HEIGHT } from "@lib/styles";
-import { Actions as AuthActions } from "@redux/modules/auth";
-import { Actions as PostActions } from "@redux/modules/post";
-import { Actions as UserActions } from "@redux/modules/user";
+import { AuthActions, PostActions, UserActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
 import { Post } from "@unexpected/global";
-import { StackParamList } from "../../App";
 
-const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
+import { ParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
-  postsLoading: selectors.postLoading(state),
-  friendRequests: selectors.friendRequestNumbers(state),
   user: selectors.currentUser(state),
-  posts: selectors.currentUsersPosts(state),
   stale: selectors.feedStale(state)
 });
 const mapDispatchToProps = {
@@ -43,31 +38,42 @@ const mapDispatchToProps = {
   fetchUsersPosts: PostActions.fetchUsersPosts
 };
 
-export type UserProfileReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
-export interface UserProfileOwnProps {
-  navigation: NativeStackNavigationProp<StackParamList, "USER_PROFILE">;
-  route: RouteProp<StackParamList, "USER_PROFILE">;
-}
-export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
+export type UserProfileReduxProps = ConnectedProps<typeof connector>;
 
+export interface UserProfileOwnProps {
+  navigation: NativeStackNavigationProp<ParamList, "USER_PROFILE">;
+  route: RouteProp<ParamList, "USER_PROFILE">;
+}
+
+export type UserProfileProps = UserProfileOwnProps & UserProfileReduxProps;
 export const UserProfile: React.FC<UserProfileProps> = React.memo(
   ({
     navigation,
-    friendRequests,
     fetchUser,
     fetchUsersRequests,
     fetchUsersPosts,
     stale,
-    posts,
-    postsLoading,
-    user
+    user,
+    route
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
+    const [modalType, setModalType] = useState<
+      "friends" | "requests" | undefined
+    >(undefined);
+    const [focusedPostId, setFocusedPostId] = useState("");
 
-    const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
+    const scrollRef = useRef<RNAnimated.AnimatedComponent<FlatList>>(null);
+    const modalRef = useRef<ModalListRef>(null);
+
+    const StatusBar = hideStatusBarOnScroll(scrollY, "dark-content");
+
+    const handleOnPressStatusBar = () =>
+      scrollRef.current
+        ?.getNode()
+        .scrollToOffset({ animated: true, offset: 0 });
+
+    // @ts-ignore
+    useScrollToTop(scrollRef);
 
     useFocusEffect(
       useCallback(() => {
@@ -80,43 +86,29 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       }, [stale])
     );
 
-    const goToNewProfilePicture = () => {
+    const goToNewProfilePicture = () =>
       navigation.navigate("NEW_PROFILE_PICTURE");
+
+    const goToSettings = () => navigation.navigate("SETTINGS");
+
+    const goToEditProfile = () => navigation.navigate("EDIT_PROFILE");
+
+    const openFriends = () => {
+      modalRef.current?.open();
+      setModalType("friends");
     };
 
-    const goToSettings = () => {
-      navigation.navigate("SETTINGS");
+    const openRequests = () => {
+      modalRef.current?.open();
+      setModalType("requests");
     };
 
-    const goToFriends = () => {
-      navigation.navigate("FRIENDS", { user });
+    const handleOnPressPost = ({ id }: Post) => {
+      requestAnimationFrame(() => setFocusedPostId(id));
     };
 
-    const goToEditProfile = () => {
-      navigation.navigate("EDIT_PROFILE");
-    };
-
-    const renderTop = () => (
-      <Top
-        isUser={true}
-        friendRequests={friendRequests}
-        user={user}
-        numPosts={posts.length}
-        scrollY={scrollY}
-        onPressAddBio={goToEditProfile}
-        onPressFriends={goToFriends}
-        onPressImage={goToNewProfilePicture}
-        onPressSettings={goToSettings}
-      />
-    );
-
-    const handleOnPressPost = (post: Post) => {
-      navigation.navigate({
-        name: "POST",
-        key: uuid(),
-        params: { prevRoute: user.firstName, postId: post.id }
-      });
-    };
+    const handlePostModalClose = () => setFocusedPostId("");
+    const handleUserModalClose = () => setModalType(undefined);
 
     const handleOnScrollEndDrag = (
       event: NativeSyntheticEvent<NativeScrollEvent>
@@ -135,45 +127,65 @@ export const UserProfile: React.FC<UserProfileProps> = React.memo(
       }
     };
 
+    const renderTop = () => (
+      <Top
+        phoneNumber={user.phoneNumber}
+        scrollY={scrollY}
+        onPressAddBio={goToEditProfile}
+        onPressFriends={openFriends}
+        onPressImage={goToNewProfilePicture}
+        onPressFriendRequests={openRequests}
+        onPressSettings={goToSettings}
+      />
+    );
+
     return (
-      <Screen style={styles.container}>
+      <Screen stackPresentation={"push"} style={styles.container}>
         <Grid
-          loading={postsLoading}
-          onPressPost={handleOnPressPost}
+          scrollRef={scrollRef}
           scrollY={scrollY}
+          onPressPost={handleOnPressPost}
           onScrollEndDrag={handleOnScrollEndDrag}
-          ListHeaderComponentStyle={styles.headerContainer}
-          ListHeaderComponent={renderTop}
-          posts={posts}
+          headerContainerStyle={styles.headerContainer}
+          renderHeader={renderTop}
         />
-        <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
+        <StatusBar onPress={handleOnPressStatusBar} />
+        <UserModal
+          visible={!!modalType}
+          type={modalType}
+          phoneNumber={user.phoneNumber}
+          onClose={handleUserModalClose}
+        />
+        <PostModal
+          postId={
+            route.params?.focusedPostId?.length
+              ? route.params?.focusedPostId
+              : focusedPostId
+          }
+          onClose={handlePostModalClose}
+        />
       </Screen>
     );
   },
   (prevProps, nextProps) =>
     prevProps.stale === nextProps.stale &&
+    prevProps.route.params?.focusedPostId ===
+      nextProps.route.params?.focusedPostId &&
     isEqual(prevProps.user, nextProps.user)
 );
 
 const styles = StyleSheet.create({
   container: {
-    // paddingTop: SB_HEIGHT(),
+    flex: 1,
     alignItems: "center"
   },
   headerContainer: {
     zIndex: 1,
-    paddingTop: SB_HEIGHT(),
+    paddingTop: SB_HEIGHT,
     alignItems: "center",
     alignSelf: "stretch"
-  },
-  statusBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    height: SB_HEIGHT(),
-    backgroundColor: "white"
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(UserProfile);

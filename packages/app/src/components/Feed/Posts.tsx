@@ -1,16 +1,15 @@
 import React, { useRef, useState } from "react";
 import {
+  Animated as RNAnimated,
   FlatList,
   ListRenderItemInfo,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   StyleSheet,
-  View,
   ViewToken
 } from "react-native";
 
-import { Post as PostType, User } from "@unexpected/global";
+import { Post as PostType } from "@unexpected/global";
 import _ from "lodash";
+import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 import { onScroll } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
@@ -26,6 +25,7 @@ import {
 } from "@components/universal";
 import { FEED_POST_HEIGHT, FEED_POST_WIDTH } from "@lib/constants";
 import { SB_HEIGHT } from "@lib/styles";
+import { PostActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
@@ -39,19 +39,23 @@ const VIEWABILITY_CONFIG = {
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const mapStateToProps = (state: RootState) => ({
-  posts: selectors.feed(state)
+  posts: selectors.feed(state),
+  refreshing: selectors.feedLoading(state)
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  fetchFeed: PostActions.fetchFeed
+};
 
 export interface PostsProps {
   scrollY: Animated.Value<number>;
-  refreshing: boolean;
+  scrollRef: React.Ref<RNAnimated.AnimatedComponent<FlatList>>;
+  onPressMoreComments: (postId: string) => void;
+  onPressComposeComment: (postId: string) => void;
   onGestureBegan: (image: ZoomedImageType) => void;
   onGestureComplete: () => void;
   onPressUser: (phoneNumber: string) => void;
   onPressShare: () => void;
-  onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 }
 
 export type PostConnectedProps = ConnectedProps<typeof connector>;
@@ -61,15 +65,23 @@ export type PostRefMap = { [id: string]: PostRef | null };
 const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
   ({
     scrollY,
+    scrollRef,
     refreshing,
+    fetchFeed,
     posts,
-    onScrollEndDrag,
+    onPressMoreComments,
+    onPressComposeComment,
     onGestureBegan,
     onGestureComplete,
     onPressUser,
     onPressShare
   }) => {
     const [scrollEnabled, setScrollEnabled] = useState(true);
+
+    const handleOnRefresh = () => {
+      Haptics.trigger("impactMedium");
+      fetchFeed();
+    };
 
     const sortPosts = () => {
       const sorted = _.sortBy(posts, ({ createdAt }) => -createdAt);
@@ -98,11 +110,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
       }
     );
 
-    const { sortedPosts, latest } = sortPosts();
-
-    const renderTop = () => (
-      <Top latest={latest} refreshing={refreshing} scrollY={scrollY} />
-    );
+    const { sortedPosts } = sortPosts();
 
     const renderEmptyComponent = () => (
       <Button
@@ -134,32 +142,33 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
         onGestureComplete();
       };
 
-      const renderImage = () => (
-        <ZoomHandler
-          onGestureComplete={handleOnGestureComplete}
-          onGestureBegan={handleOnGestureBegan}
-        >
-          <PostImage
-            width={FEED_POST_WIDTH}
-            height={FEED_POST_HEIGHT}
-            phoneNumber={phoneNumber}
-            id={photoId}
-          />
-        </ZoomHandler>
-      );
-
       return (
         <Post
           ref={ref => (cellRefs.current[id] = ref)}
+          onPressMoreComments={onPressMoreComments}
+          onPressComposeComment={onPressComposeComment}
           onPressName={onPressUser}
           postId={id}
-          renderImage={renderImage}
-        />
+        >
+          <ZoomHandler
+            onGestureComplete={handleOnGestureComplete}
+            onGestureBegan={handleOnGestureBegan}
+          >
+            <PostImage
+              width={FEED_POST_WIDTH}
+              height={FEED_POST_HEIGHT}
+              phoneNumber={phoneNumber}
+              id={photoId}
+            />
+          </ZoomHandler>
+        </Post>
       );
     };
 
     return (
       <AnimatedFlatList
+        ref={scrollRef}
+        removeClippedSubviews={true}
         style={styles.container}
         data={sortedPosts}
         renderItem={renderPost}
@@ -168,11 +177,10 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
         windowSize={3}
         onViewableItemsChanged={onViewableItemsChangedRef.current}
         viewabilityConfig={VIEWABILITY_CONFIG}
-        ListHeaderComponent={renderTop}
-        ListHeaderComponentStyle={styles.headerContainer}
         ListEmptyComponent={renderEmptyComponent}
-        onScrollEndDrag={onScrollEndDrag}
         contentContainerStyle={styles.contentContainer}
+        refreshing={refreshing}
+        onRefresh={handleOnRefresh}
         scrollEventThrottle={16}
         onScroll={onScroll({ y: scrollY })}
       />
@@ -186,13 +194,9 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   contentContainer: {
-    paddingTop: SB_HEIGHT(),
-    paddingBottom: 50,
+    paddingTop: SB_HEIGHT,
+    paddingBottom: 10,
     alignItems: "center"
-  },
-  headerContainer: {
-    zIndex: 1,
-    alignSelf: "stretch"
   }
 });
 

@@ -13,9 +13,9 @@ export * from "./FriendButton";
 export * from "./NavBar";
 export * from "./ZoomHandler";
 export * from "./ZoomedImage";
+export * from "./ModalList";
 
 export { default as Post } from "./Post";
-export { default as Comments } from "./Comments";
 export { default as FriendButton } from "./FriendButton";
 export { default as PostImage } from "./PostImage";
 export { default as UserImage } from "./UserImage";

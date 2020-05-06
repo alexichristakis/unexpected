@@ -1,37 +1,40 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StatusBar,
-  StyleSheet
+  Animated as RNAnimated,
+  FlatList,
+  StyleSheet,
+  TextInput
 } from "react-native";
 
-import { RouteProp, useFocusEffect } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp } from "@react-navigation/core";
+import { useScrollToTop } from "@react-navigation/native";
 import _ from "lodash";
-import Haptics from "react-native-haptic-feedback";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Screen } from "react-native-screens";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 
+import { CommentsModal } from "@components/Comments";
 import { Posts } from "@components/Feed";
-import { ZoomedImage, ZoomedImageType } from "@components/universal";
-import { SB_HEIGHT } from "@lib/styles";
+import {
+  ModalListRef,
+  ZoomedImage,
+  ZoomedImageType
+} from "@components/universal";
+import { hideStatusBarOnScroll } from "@hooks";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
-import { StackParamList } from "../../App";
-import { hideStatusBarOnScroll } from "@hooks";
+import { ParamList } from "../../App";
 
-const { Value, block, cond, call, greaterOrEq, useCode } = Animated;
+const { Value } = Animated;
 
 const mapStateToProps = (state: RootState) => ({
   stale: selectors.feedStale(state),
-  phoneNumber: selectors.phoneNumber(state),
-  refreshing: selectors.feedLoading(state),
-  shouldLaunchPermissions: selectors.shouldLaunchPermissions(state)
+  lastFetched: selectors.lastFetched(state),
+  phoneNumber: selectors.phoneNumber(state)
 });
 const mapDispatchToProps = {
   fetchFeed: PostActions.fetchFeed
@@ -42,50 +45,37 @@ export type FeedReduxProps = ReduxPropsType<
   typeof mapDispatchToProps
 >;
 export interface FeedProps extends FeedReduxProps {
-  navigation: NativeStackNavigationProp<StackParamList, "FEED">;
-  route: RouteProp<StackParamList, "FEED">;
+  navigation: NativeStackNavigationProp<ParamList, "FEED">;
+  route: RouteProp<ParamList, "FEED">;
 }
 
 export const Feed: React.FC<FeedProps> = React.memo(
-  ({
-    stale,
-    navigation,
-    phoneNumber,
-    fetchFeed,
-    refreshing,
-    shouldLaunchPermissions
-  }) => {
-    const [scrollY] = useState(new Value(0));
+  ({ stale, navigation, phoneNumber, fetchFeed }) => {
+    const [commentsPostId, setCommentsPostId] = useState("");
     const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
+    const [scrollY] = useState(new Value(0));
 
-    const animatedStatusBarStyle = hideStatusBarOnScroll(scrollY);
+    const textInputRef = useRef<TextInput>(null);
+    const scrollRef = useRef<RNAnimated.AnimatedComponent<FlatList>>(null);
+    const modalRef = useRef<ModalListRef>(null);
+
+    const StatusBar = hideStatusBarOnScroll(scrollY, "dark-content");
+
+    const handleOnPressStatusBar = () =>
+      scrollRef.current
+        ?.getNode()
+        .scrollToOffset({ animated: true, offset: 0 });
+
+    // @ts-ignore
+    useScrollToTop(scrollRef);
 
     useEffect(() => {
       fetchFeed();
-
-      if (shouldLaunchPermissions) {
-        setTimeout(() => navigation.navigate("PERMISSIONS"), 100);
-      }
     }, [stale]);
-
-    const handleOnScrollEndDrag = (
-      event: NativeSyntheticEvent<NativeScrollEvent>
-    ) => {
-      const {
-        nativeEvent: {
-          contentOffset: { y }
-        }
-      } = event;
-
-      if (y < -100) {
-        Haptics.trigger("impactMedium");
-        fetchFeed();
-      }
-    };
 
     const handleOnPressUser = (userPhoneNumber: string) => {
       if (phoneNumber === userPhoneNumber) {
-        navigation.navigate("USER_PROFILE");
+        navigation.navigate("USER_PROFILE_TAB");
       } else {
         navigation.navigate({
           name: "PROFILE",
@@ -95,43 +85,54 @@ export const Feed: React.FC<FeedProps> = React.memo(
       }
     };
 
-    const handleOnPressShare = () => {
-      navigation.navigate("CAPTURE");
+    const handleOnPressShare = () => navigation.navigate("CAPTURE");
+
+    const handleOnPressMoreComments = (postId: string) => {
+      setCommentsPostId(postId);
+      modalRef.current?.open();
+    };
+
+    const handleOnPressComposeCommment = (postId: string) => {
+      setCommentsPostId(postId);
+      modalRef.current?.openFully();
+      setTimeout(textInputRef.current?.focus, 100);
     };
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);
+    const handleOnCommentModalClose = () => setCommentsPostId("");
 
     return (
-      <Screen style={styles.container}>
+      <Screen stackPresentation={"push"} style={styles.container}>
         <Posts
+          scrollRef={scrollRef}
           scrollY={scrollY}
-          refreshing={refreshing}
-          onScrollEndDrag={handleOnScrollEndDrag}
+          onPressComposeComment={handleOnPressComposeCommment}
+          onPressMoreComments={handleOnPressMoreComments}
           onGestureBegan={setZoomedImage}
           onGestureComplete={handleOnGestureComplete}
           onPressUser={handleOnPressUser}
           onPressShare={handleOnPressShare}
         />
         {zoomedImage && <ZoomedImage {...zoomedImage} />}
-        <Animated.View style={[styles.statusBar, animatedStatusBarStyle]} />
+        <StatusBar onPress={handleOnPressStatusBar} />
+        <CommentsModal
+          onClose={handleOnCommentModalClose}
+          textInputRef={textInputRef}
+          modalRef={modalRef}
+          postId={commentsPostId}
+        />
       </Screen>
     );
-  }
+  },
+  (prevProps, nextProps) =>
+    prevProps.stale === nextProps.stale &&
+    prevProps.lastFetched === nextProps.lastFetched
 );
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingHorizontal: 20,
     alignItems: "center"
-  },
-  statusBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    height: SB_HEIGHT(),
-    backgroundColor: "white"
   }
 });
 

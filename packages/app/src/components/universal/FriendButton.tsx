@@ -1,6 +1,7 @@
 import { User } from "@unexpected/global";
 import React, { useEffect, useState } from "react";
 import {
+  ActionSheetIOS,
   ActivityIndicator,
   StyleSheet,
   Text,
@@ -25,7 +26,7 @@ import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
-const ICON_SIZE = 35;
+const ICON_SIZE = 30;
 
 export interface FriendButtonProps {
   user: User;
@@ -108,7 +109,21 @@ const FriendButton: React.FC<FriendButtonProps &
   const action = (state: ReturnType<typeof getState>) => {
     switch (state) {
       case "friends":
-        return () => deleteFriend(user.phoneNumber);
+        return () =>
+          ActionSheetIOS.showActionSheetWithOptions(
+            {
+              options: ["remove friend", "cancel"],
+              destructiveButtonIndex: 0,
+              cancelButtonIndex: 1
+            },
+            index => {
+              if (!index) {
+                deleteFriend(user.phoneNumber);
+              } else {
+                setLoading(false);
+              }
+            }
+          );
       case "requested":
         return () => cancelRequest(user.phoneNumber);
       case "none":

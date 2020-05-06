@@ -4,17 +4,21 @@ import { StatusBar } from "react-native";
 import {
   BottomTabBar,
   BottomTabBarProps,
+  BottomTabNavigationProp,
   createBottomTabNavigator
 } from "@react-navigation/bottom-tabs";
-import { ParamListBase } from "@react-navigation/core";
-import { NavigationNativeContainer } from "@react-navigation/native";
+import {
+  CompositeNavigationProp,
+  ParamListBase,
+  RouteProp
+} from "@react-navigation/core";
+import { NavigationContainer } from "@react-navigation/native";
+import { gestureHandlerRootHOC } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp
-} from "@react-navigation/native-stack";
-import { User } from "@unexpected/global";
-import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+} from "react-native-screens/native-stack";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -25,25 +29,23 @@ import createStore from "@redux/store";
 import { LaunchCameraButton } from "@components/Camera";
 import Connection from "@components/Connection";
 import { isIPhoneX, TextStyles } from "@lib/styles";
-import { useReduxState } from "./hooks";
+import { useNotificationEvents, useReduxState } from "./hooks";
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
 import {
   Auth,
   Capture,
-  EditProfile,
-  Friends,
   Discover,
+  EditProfile,
   Feed,
-  UserProfile,
   NewProfilePicture,
   Permissions,
-  PostDetail,
   Profile,
   Settings,
   Share,
-  SignUp
+  SignUp,
+  UserProfile
 } from "./screens";
 
 import DiscoverIcon from "./assets/svg/discover.svg";
@@ -61,12 +63,10 @@ export type StackParamList = {
   PERMISSIONS: undefined;
   DISCOVER: undefined;
   FEED: undefined;
-  USER_PROFILE: undefined;
   AUTH: undefined;
   SHARE: BaseParams;
-  POST: BaseParams & { postId: string };
-  PROFILE: BaseParams & { phoneNumber: string };
-  FRIENDS: { user: User };
+  USER_PROFILE: undefined | { focusedPostId: string };
+  PROFILE: BaseParams & { phoneNumber: string; focusedPostId?: string };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: undefined;
@@ -75,25 +75,36 @@ export type StackParamList = {
 };
 
 export type TabParamList = {
-  FEED: undefined;
-  USER_PROFILE: undefined;
-  DISCOVER: undefined;
+  FEED_TAB: undefined;
+  USER_PROFILE_TAB: undefined;
+  DISCOVER_TAB: undefined;
 };
 
-type Props = Partial<React.ComponentProps<typeof Stack.Navigator>> & {
+export type ParamList = StackParamList & TabParamList;
+
+type HomeTabProps<T extends keyof TabParamList> = {
   name: keyof StackParamList;
   component: React.ComponentType<any>;
   navigation: NativeStackNavigationProp<ParamListBase>;
+  route: RouteProp<TabParamList, T>;
 };
 
 /* initialize navigators */
 const Stack = createNativeStackNavigator<StackParamList>();
 const Tabs = createBottomTabNavigator<TabParamList>();
 
-const HomeTab: React.FC<Props> = ({
+const renderTabBar = (tabBarProps: BottomTabBarProps) => (
+  <>
+    <LaunchCameraButton />
+    <BottomTabBar {...tabBarProps} />
+  </>
+);
+
+const HomeTab: React.FC<HomeTabProps<keyof TabParamList>> = ({
   navigation,
   component: Root,
   name,
+  route,
   ...rest
 }) => {
   navigation.setOptions({
@@ -107,62 +118,57 @@ const HomeTab: React.FC<Props> = ({
 
   return (
     <Stack.Navigator {...rest}>
-      <Stack.Screen name={name} options={screenOptions} component={Root} />
+      <Stack.Screen name={name} options={screenOptions}>
+        {props => <Root {...props} />}
+      </Stack.Screen>
       <Stack.Screen
         name="PROFILE"
         options={screenOptions}
         component={Profile}
       />
-      <Stack.Screen
-        name="FRIENDS"
-        options={screenOptions}
-        component={Friends}
-      />
-      <Stack.Screen
-        name="POST"
-        options={screenOptions}
-        component={PostDetail}
-      />
     </Stack.Navigator>
   );
 };
 
-const renderTabBar = (tabBarProps: BottomTabBarProps) => (
-  <>
-    <LaunchCameraButton />
-    <BottomTabBar {...tabBarProps} />
-  </>
-);
+const TAB_BAR_OPTIONS = {
+  style: {
+    maxHeight: 60,
+    paddingTop: isIPhoneX ? 10 : 0,
+    backgroundColor: "white",
+    borderTopWidth: 0
+  },
+  showLabel: false,
+  activeTintColor: "#231F20",
+  inactiveTintColor: "#9C9C9C"
+};
 
-const AuthenticatedRoot = () => (
-  <Stack.Navigator screenOptions={{ stackPresentation: "modal" }}>
-    <Stack.Screen name="HOME" options={{ headerShown: false }}>
-      {rootStackScreenProps => {
-        // dont keep this
-        rootStackScreenProps.navigation.addListener("focus", () =>
-          StatusBar.setBarStyle("dark-content", true)
-        );
+type AuthenticatedRootProps = {
+  route: any;
+  navigation: CompositeNavigationProp<
+    BottomTabNavigationProp<TabParamList>,
+    NativeStackNavigationProp<StackParamList>
+  >;
+};
 
-        return (
-          <Tabs.Navigator
-            tabBarOptions={{
-              style: {
-                maxHeight: 70,
-                paddingTop: isIPhoneX ? 10 : 0,
-                backgroundColor: "white",
-                borderTopWidth: 0
-              },
-              showLabel: false,
-              activeTintColor: "#231F20",
-              inactiveTintColor: "#9C9C9C"
-            }}
-            tabBar={renderTabBar}
-          >
+const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
+  navigation
+}) => {
+  // start listening for notification events
+  useNotificationEvents(navigation);
+
+  return (
+    <Stack.Navigator
+      // initialRouteName={}
+      screenOptions={{ stackPresentation: "modal" }}
+    >
+      <Stack.Screen name="HOME" options={{ headerShown: false }}>
+        {() => (
+          <Tabs.Navigator tabBarOptions={TAB_BAR_OPTIONS} tabBar={renderTabBar}>
             <Tabs.Screen
-              name="FEED"
+              name="FEED_TAB"
               options={{
                 tabBarIcon: ({ color }) => (
-                  <FeedIcon width={20} height={20} fill={color} />
+                  <FeedIcon width={16} height={16} fill={color} />
                 )
               }}
             >
@@ -171,10 +177,10 @@ const AuthenticatedRoot = () => (
               )}
             </Tabs.Screen>
             <Tabs.Screen
-              name="USER_PROFILE"
+              name="USER_PROFILE_TAB"
               options={{
                 tabBarIcon: ({ color }) => (
-                  <ProfileIcon width={30} height={30} fill={color} />
+                  <ProfileIcon width={22} height={22} fill={color} />
                 )
               }}
             >
@@ -187,10 +193,10 @@ const AuthenticatedRoot = () => (
               )}
             </Tabs.Screen>
             <Tabs.Screen
-              name="DISCOVER"
+              name="DISCOVER_TAB"
               options={{
                 tabBarIcon: ({ color }) => (
-                  <DiscoverIcon width={20} height={20} fill={color} />
+                  <DiscoverIcon width={16} height={16} fill={color} />
                 )
               }}
             >
@@ -203,41 +209,41 @@ const AuthenticatedRoot = () => (
               )}
             </Tabs.Screen>
           </Tabs.Navigator>
-        );
-      }}
-    </Stack.Screen>
-    <Stack.Screen
-      name="NEW_PROFILE_PICTURE"
-      component={NewProfilePicture}
-      options={{
-        headerTitle: "share",
-        headerTitleStyle: TextStyles.large,
-        headerTintColor: "#231F20",
-        headerHideShadow: true
-      }}
-    />
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="NEW_PROFILE_PICTURE"
+        component={NewProfilePicture}
+        options={{
+          headerTitle: "share",
+          headerTitleStyle: TextStyles.large,
+          headerTintColor: "#231F20",
+          headerHideShadow: true
+        }}
+      />
 
-    <Stack.Screen name="CAPTURE">
-      {({ route }) => (
-        <Stack.Navigator>
-          <Stack.Screen name="CAPTURE" options={{ headerShown: false }}>
-            {({ navigation }) => (
-              <Capture navigation={navigation} route={route} />
-            )}
-          </Stack.Screen>
-          <Stack.Screen
-            name="SHARE"
-            component={Share}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      )}
-    </Stack.Screen>
-    <Stack.Screen name="SETTINGS" component={Settings} />
-    <Stack.Screen name="PERMISSIONS" component={Permissions} />
-    <Stack.Screen name="EDIT_PROFILE" component={EditProfile} />
-  </Stack.Navigator>
-);
+      <Stack.Screen name="CAPTURE">
+        {({ route }) => (
+          <Stack.Navigator>
+            <Stack.Screen name="CAPTURE" options={{ headerShown: false }}>
+              {({ navigation }) => (
+                <Capture navigation={navigation} route={route} />
+              )}
+            </Stack.Screen>
+            <Stack.Screen
+              name="SHARE"
+              component={Share}
+              options={{ headerShown: false }}
+            />
+          </Stack.Navigator>
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="SETTINGS" component={Settings} />
+      <Stack.Screen name="PERMISSIONS" component={Permissions} />
+      <Stack.Screen name="EDIT_PROFILE" component={EditProfile} />
+    </Stack.Navigator>
+  );
+};
 
 const UnathenticatedRoot = () => (
   <Stack.Navigator>
@@ -258,14 +264,12 @@ const Router: React.FC = () => {
   const isAuthorized = useReduxState(selectors.isAuthorized);
 
   return (
-    <NavigationNativeContainer ref={setNavigatorRef}>
+    <NavigationContainer ref={setNavigatorRef}>
       <Stack.Navigator screenOptions={{ stackAnimation: "fade" }}>
         {isAuthorized ? (
-          <Stack.Screen
-            name="AUTHENTICATED"
-            options={{ headerShown: false }}
-            component={AuthenticatedRoot}
-          />
+          <Stack.Screen name="AUTHENTICATED" options={{ headerShown: false }}>
+            {props => <AuthenticatedRoot {...props} />}
+          </Stack.Screen>
         ) : (
           <Stack.Screen
             name="UNAUTHENTICATED"
@@ -274,7 +278,7 @@ const Router: React.FC = () => {
           />
         )}
       </Stack.Navigator>
-    </NavigationNativeContainer>
+    </NavigationContainer>
   );
 };
 

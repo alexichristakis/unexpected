@@ -1,3 +1,4 @@
+import { Colors } from "@lib/styles";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -5,10 +6,9 @@ export const ItemSeparator = () => <View style={styles.divider} />;
 
 const styles = StyleSheet.create({
   divider: {
-    height: 0.5,
-    backgroundColor: "gray",
-    // marginTop: 10,
-    marginLeft: 20,
+    height: 1,
+    backgroundColor: Colors.lightGray,
+    marginLeft: 25,
     width: "100%"
   }
 });

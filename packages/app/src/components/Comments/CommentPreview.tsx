@@ -1,16 +1,17 @@
+import { useNavigation } from "@react-navigation/core";
+import moment from "moment";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
-import { useNavigation } from "@react-navigation/core";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import { TextStyles } from "@lib/styles";
+import { Colors, TextStyles } from "@lib/styles";
 import { formatName } from "@lib/utils";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
 
-import { StackParamList } from "../../../App";
+import { ParamList } from "../../App";
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
   phoneNumber: selectors.phoneNumber(state),
@@ -28,11 +29,11 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
   user,
   body
 }) => {
-  const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<ParamList>>();
 
   const handleOnPress = () => {
     if (phoneNumber === user.phoneNumber) {
-      navigation.navigate("USER_PROFILE");
+      navigation.navigate("USER_PROFILE_TAB");
     } else {
       navigation.navigate("PROFILE", {
         prevRoute: "Post",
@@ -56,6 +57,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 2
   },
+
   name: {
     ...TextStyles.small,
     fontWeight: "600",
@@ -63,6 +65,10 @@ const styles = StyleSheet.create({
   },
   body: {
     ...TextStyles.small
+  },
+  createdAt: {
+    ...TextStyles.small,
+    color: Colors.gray
   }
 });
 

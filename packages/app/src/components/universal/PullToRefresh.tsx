@@ -68,7 +68,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({ scrollY }) => {
           { opacity: bInterpolate(readyToRefresh, 0, 1) }
         ]}
       >
-        pull to refresh
+        release to refresh
       </Animated.Text>
       <Animated.Text
         style={[
@@ -77,7 +77,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({ scrollY }) => {
           { opacity: bInterpolate(readyToRefresh, 1, 0) }
         ]}
       >
-        release to refresh
+        pull to refresh
       </Animated.Text>
     </Animated.View>
   );
@@ -86,8 +86,8 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({ scrollY }) => {
 const styles = StyleSheet.create({
   loaderContainer: {
     position: "absolute",
-    left: 20,
-    right: 20,
+    left: 15,
+    right: 15,
     bottom: 40
     // alignItems: "flex"
   },

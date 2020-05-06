@@ -4,19 +4,21 @@ import {
   Delete,
   Get,
   Inject,
+  Patch,
   PathParams,
   Put,
   UseAuth
 } from "@tsed/common";
 
-import { Exception } from "ts-httpexceptions";
 import { Comment } from "@unexpected/global";
+import uniq from "lodash/uniq";
+import { Exception } from "ts-httpexceptions";
 
 import { AuthMiddleware } from "../middlewares/auth";
 import { CommentService } from "../services/comment";
+import { NotificationService } from "../services/notification";
 import { PostService } from "../services/post";
 import { UserService } from "../services/user";
-import { NotificationService } from "../services/notification";
 
 @Controller("/comment")
 @UseAuth(AuthMiddleware)
@@ -36,25 +38,75 @@ export class CommentController {
   @Put()
   async comment(@BodyParams("comment") comment: Comment) {
     const { postId } = comment;
-    const [fromUser, post] = await Promise.all([
+    const [fromUser, comments, post] = await Promise.all([
       this.userService.getByPhoneNumber(comment.phoneNumber),
+      this.commentService.getByPostId(postId),
       this.postService.getId(postId)
     ]);
 
     if (!fromUser || !post) throw new Exception();
 
-    const toUser = await this.userService.getByPhoneNumber(post.phoneNumber);
+    const otherCommentersNumbers = comments?.length
+      ? uniq(comments.map(({ phoneNumber }) => phoneNumber)).filter(
+          phoneNumber =>
+            phoneNumber !== fromUser.phoneNumber &&
+            phoneNumber !== post.phoneNumber
+        )
+      : [];
+
+    const [
+      postAuthor,
+      ...otherCommenters
+    ] = await this.userService.getByPhoneNumber(
+      [post.phoneNumber, ...otherCommentersNumbers],
+      true
+    );
 
     const [newComment] = await Promise.all([
       this.commentService.createNewComment(comment),
       this.notificationService.notifyWithNavigationToPost(
-        toUser,
+        postAuthor,
         `${fromUser.firstName} commented on your post!`,
-        { ...post, id: postId }
+        { phoneNumber: post.phoneNumber, id: postId }
+      ),
+      this.notificationService.notifyWithNavigationToPost(
+        otherCommenters,
+        `${fromUser.firstName} also commented ${postAuthor.firstName}'s post`,
+        { phoneNumber: post.phoneNumber, id: postId }
       )
     ]);
 
     return newComment;
+  }
+
+  @Patch("/:phoneNumber/like/:id")
+  async likeComment(
+    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("id") id: string
+  ) {
+    const comment = await this.commentService.likeComment(phoneNumber, id);
+
+    if (comment && phoneNumber !== comment.phoneNumber) {
+      const [
+        commentAuthor,
+        commentLiker
+      ] = await this.userService.getByPhoneNumber(
+        [comment.phoneNumber, phoneNumber],
+        true
+      );
+
+      const post = await this.postService.getId(comment.postId);
+
+      if (!post) return null;
+
+      await this.notificationService.notifyWithNavigationToPost(
+        commentAuthor,
+        `${commentLiker.firstName} liked your comment!`,
+        { phoneNumber: post.phoneNumber, id: post.id }
+      );
+    }
+
+    return comment;
   }
 
   @Delete("/:id")

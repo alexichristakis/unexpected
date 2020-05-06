@@ -4,6 +4,8 @@ export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get(
   "window"
 );
 
+export const HORIZONTAL_GUTTER = 10;
+
 export const NOTIFICATION_MINUTES = 20;
 
 export const FEED_POST_WIDTH = SCREEN_WIDTH;

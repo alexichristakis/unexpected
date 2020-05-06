@@ -5,7 +5,8 @@ import moment, { Moment } from "moment";
 import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 
-import { PullToRefresh } from "@components/universal";
+import { ItemSeparator, PullToRefresh } from "@components/universal";
+import { HORIZONTAL_GUTTER } from "@lib/constants";
 import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
 
 export interface FeedTopProps {
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignSelf: "stretch",
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingTop: 5,
     paddingBottom: 20
   },

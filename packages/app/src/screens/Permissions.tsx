@@ -7,16 +7,16 @@ import { connect, ConnectedProps } from "react-redux";
 
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { SCREEN_HEIGHT, TextStyles, isIPhoneX } from "@lib/styles";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { isIPhoneX, SCREEN_HEIGHT, TextStyles } from "@lib/styles";
 import {
   Actions as PermissionsActions,
-  PermissionType,
-  Permissions as PermissionTypes
+  Permissions as PermissionTypes,
+  PermissionType
 } from "@redux/modules/permissions";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "App";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
 const mapStateToProps = (state: RootState) => ({
   ...selectors.permissions(state)
@@ -47,7 +47,7 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
     const handlePressRequest = (key: PermissionType) => () => request(key);
 
     return (
-      <Screen style={styles.container}>
+      <Screen stackPresentation={"modal"} style={styles.container}>
         <View style={styles.table}>
           <Text style={[TextStyles.medium, styles.header]}>
             we need your permission for a couple of things:

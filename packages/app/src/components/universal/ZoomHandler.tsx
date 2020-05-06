@@ -1,5 +1,5 @@
 import React from "react";
-import ReactNative, { UIManager } from "react-native";
+import { findNodeHandle, UIManager } from "react-native";
 
 import {
   PanGestureHandler,
@@ -7,95 +7,147 @@ import {
   State
 } from "react-native-gesture-handler";
 import Animated, { Easing } from "react-native-reanimated";
-import { delay } from "react-native-redash";
-
-import { Measurement } from "@components/universal";
 import {
   contains,
   onGestureEvent,
   timing,
+  useClocks,
   useValues
 } from "react-native-redash";
 
-const { or, and, not, useCode, block, cond, eq, set, call } = Animated;
+import { Measurement } from "@components/universal";
+
+const {
+  clockRunning,
+  max,
+  useCode,
+  and,
+  not,
+  or,
+  eq,
+  debug,
+  set,
+  divide,
+  block,
+  cond,
+  call
+} = Animated;
 const { BEGAN, ACTIVE, UNDETERMINED } = State;
 
 export type ZoomHandlerGestureBeganPayload = {
   measurement: Measurement;
-  scale: Animated.Value<number>;
-  translateX: Animated.Value<number>;
-  translateY: Animated.Value<number>;
+  scale: Animated.Adaptable<number>;
+  translateX: Animated.Adaptable<number>;
+  translateY: Animated.Adaptable<number>;
 };
 
 export interface ZoomHandlerProps {
   children: React.ReactNode;
+  renderKey?: string;
   onGestureBegan: (payload: ZoomHandlerGestureBeganPayload) => void;
   onGestureComplete: () => void;
 }
 
 export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
-  ({ children, onGestureBegan, onGestureComplete }) => {
+  ({ children, onGestureBegan, onGestureComplete, renderKey = "" }) => {
     const pinchRef = React.createRef<PinchGestureHandler>();
     const panRef = React.createRef<PanGestureHandler>();
     const childRef = React.createRef<Animated.View>();
 
-    const [pinchState, panState, dragX, dragY, scale, opacity] = useValues(
-      [UNDETERMINED, UNDETERMINED, 0, 0, 1, 1],
+    const [pinchClock, xClock, yClock] = useClocks(3, []);
+
+    const [pinchState, panState] = useValues<State>(
+      [UNDETERMINED, UNDETERMINED],
       []
     );
 
     const pinchActive = or(eq(pinchState, ACTIVE), eq(pinchState, BEGAN));
     const panActive = or(eq(panState, ACTIVE), eq(panState, BEGAN));
 
-    const duration = 250;
+    const [
+      dragX,
+      dragY,
+      velocityY,
+      velocityX,
+      pinch,
+      pinchVelocity,
+      opacity
+    ] = useValues<number>([0, 0, 0, 0, 1, 0, 1], []);
+
+    const duration = 200;
     const easing = Easing.inOut(Easing.ease);
 
+    const scale = max(pinch, 1);
+    const translateY = divide(dragY, scale);
+    const translateX = divide(dragX, scale);
+
+    const handleOnBegan = () => {
+      if (childRef.current) {
+        UIManager.measure(
+          findNodeHandle(childRef.current)!,
+          (_, __, width, height, pageX, pageY) => {
+            // send animated values and measurements to <ZoomedImage />
+            onGestureBegan({
+              scale,
+              translateX,
+              translateY,
+              measurement: { x: pageX, y: pageY, w: width, h: height }
+            });
+
+            // hide the original image
+            opacity.setValue(0);
+          }
+        );
+      }
+    };
+
+    const clocksNotRunning = and(
+      not(clockRunning(pinchClock)),
+      not(clockRunning(xClock)),
+      not(clockRunning(yClock))
+    );
+
+    const resetNode = (
+      node: Animated.Value<number>,
+      clock: Animated.Clock,
+      to: number
+    ) =>
+      set(
+        node,
+        timing({
+          from: node,
+          to,
+          clock,
+          duration,
+          easing
+        })
+      );
+
     useCode(
-      () =>
-        block([
-          cond(contains([pinchState, panState], BEGAN), [
-            call([], () => {
-              if (childRef.current) {
-                UIManager.measure(
-                  ReactNative.findNodeHandle(childRef.current)!,
-                  (x, y, width, height, pageX, pageY) => {
-                    onGestureBegan({
-                      scale,
-                      translateY: dragY,
-                      translateX: dragX,
-                      measurement: { x: pageX, y: pageY, w: width, h: height }
-                    });
-                    opacity.setValue(0);
-                  }
-                );
-              }
-            })
-          ]),
-          cond(and(not(pinchActive), not(panActive)), [
-            set(scale, timing({ to: 1, from: scale, duration, easing })),
-            set(dragX, timing({ to: 0, from: dragX, duration, easing })),
-            set(dragY, timing({ to: 0, from: dragY, duration, easing })),
-            delay(set(opacity, 1), duration),
-            delay(
-              call([], () => {
-                onGestureComplete();
-              }),
-              duration
-            )
-          ])
-        ]),
-      []
+      () => [
+        cond(contains([pinchState, panState], BEGAN), call([], handleOnBegan)),
+        cond(and(not(pinchActive), not(panActive)), [
+          resetNode(pinch, pinchClock, 1),
+          resetNode(dragX, xClock, 0),
+          resetNode(dragY, yClock, 0),
+          cond(clocksNotRunning, [set(opacity, 1), call([], onGestureComplete)])
+        ])
+      ],
+      [renderKey]
     );
 
     const pinchHandler = onGestureEvent({
-      scale,
-      state: pinchState
+      scale: pinch,
+      state: pinchState,
+      velocity: pinchVelocity
     });
 
     const panHandler = onGestureEvent({
       state: panState,
       translationX: dragX,
-      translationY: dragY
+      translationY: dragY,
+      velocityY,
+      velocityX
     });
 
     return (
@@ -121,5 +173,5 @@ export const ZoomHandler: React.FC<ZoomHandlerProps> = React.memo(
       </PinchGestureHandler>
     );
   },
-  () => true
+  (prevProps, nextProps) => prevProps.renderKey === nextProps.renderKey
 );

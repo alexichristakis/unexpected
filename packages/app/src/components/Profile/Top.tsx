@@ -1,30 +1,47 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated from "react-native-reanimated";
+import { connect, ConnectedProps } from "react-redux";
 
 import Gear from "@assets/svg/gear.svg";
 import { Button, PullToRefresh, UserImage } from "@components/universal";
+import { HORIZONTAL_GUTTER } from "@lib/constants";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import { User } from "@unexpected/global";
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
+
+const mapStateToProps = (state: RootState, props: ProfileTopProps) => {
+  const isUser = selectors.phoneNumber(state) === props.phoneNumber;
+
+  return {
+    isUser,
+    user: selectors.user(state, props),
+    numPosts: selectors.usersPostsLength(state, props),
+    friendRequests: isUser ? selectors.friendRequestNumbers(state) : null
+  };
+};
+
+const mapDispatchToProps = {};
+
+export type ProfileTopConnectedProps = ConnectedProps<typeof connector>;
 
 export interface ProfileTopProps {
-  user: User;
-  isUser?: boolean; // is currently signed in user
-  friendRequests?: string[];
-  numPosts: number;
+  phoneNumber: string;
   scrollY: Animated.Value<number>;
   onPressFriends: () => void;
   onPressImage?: () => void;
   onPressSettings?: () => void;
+  onPressFriendRequests?: () => void;
   onPressAddBio?: () => void;
 }
 
-export const Top: React.FC<ProfileTopProps> = ({
+export const Top: React.FC<ProfileTopProps & ProfileTopConnectedProps> = ({
   user,
   isUser,
   numPosts,
   scrollY,
   friendRequests,
+  onPressFriendRequests,
   onPressAddBio,
   onPressFriends,
   onPressImage,
@@ -48,7 +65,7 @@ export const Top: React.FC<ProfileTopProps> = ({
 
     return (
       <TouchableOpacity
-        onPress={onPressSettings}
+        onPress={onPressFriendRequests}
         style={styles.notificationIndicator}
       >
         <Text
@@ -85,11 +102,11 @@ export const Top: React.FC<ProfileTopProps> = ({
             <View style={styles.headerRow}>
               <Text
                 testID="num-moments"
-                style={[TextStyles.large]}
+                style={styles.subheader}
               >{`${numPosts} ${numPosts === 1 ? "moment" : "moments"}, `}</Text>
               <Text
                 testID="friends"
-                style={[TextStyles.large]}
+                style={styles.subheader}
                 onPress={onPressFriends}
               >{`${friends.length} ${
                 friends.length === 1 ? "friend" : "friends"
@@ -123,7 +140,7 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: "stretch",
     alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingTop: 5,
     paddingBottom: 20
   },
@@ -139,6 +156,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center"
   },
+  subheader: {
+    ...TextStyles.large,
+    color: Colors.nearBlack
+  },
   loaderContainer: {
     position: "absolute",
     left: 20,
@@ -153,7 +174,7 @@ const styles = StyleSheet.create({
   },
   bio: {
     flex: 1,
-    marginLeft: 20
+    marginLeft: HORIZONTAL_GUTTER
   },
   notificationIndicator: {
     marginLeft: 10,
@@ -179,3 +200,6 @@ const styles = StyleSheet.create({
     alignItems: "center"
   }
 });
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(Top);
