@@ -14,7 +14,7 @@
 
       references.forEach(async (package) => {
         await exec(`rm -rf ${package}`);
-        await exec(`cp -r ./dist ${package}`);
+        await exec(`cp -r ./src ${package}`);
       });
 
       console.info("deployed to:", references);

@@ -27,22 +27,16 @@ export abstract class CRUDService<Model, Type> {
   getId = (id: string, querySelector: Selector<Model> = []) => {
     const selectOn = this.formatSelector(querySelector);
 
-    return this.model
-      .findById(id)
-      .select(selectOn)
-      .exec();
+    return this.model.findById(id).select(selectOn).exec();
   };
 
   getAll = (querySelector: Selector<Model> = []) => {
     const selectOn = this.formatSelector(querySelector);
 
-    return this.model
-      .find()
-      .select(selectOn)
-      .exec();
+    return this.model.find().select(selectOn).exec();
   };
 
-  find = (params: Partial<Type>, querySelector: Selector<Model> = []) => {
+  find = (conditions: any, querySelector: Selector<Model> = []) => {
     const selectOn = this.formatSelector(querySelector);
 
     // const data = ['text 1', 'text 2'] as const;
@@ -50,19 +44,13 @@ export abstract class CRUDService<Model, Type> {
 
     // type Test = typeof (['hello'] as const);
 
-    return this.model
-      .find(params)
-      .select(selectOn)
-      .exec();
+    return this.model.find(conditions).select(selectOn).exec();
   };
 
   findOne = (params: Partial<Type>, querySelector: Selector<Model> = []) => {
     const selectOn = this.formatSelector(querySelector);
 
-    return this.model
-      .findOne(params)
-      .select(selectOn)
-      .exec();
+    return this.model.findOne(params).select(selectOn).exec();
   };
 
   updateOne = (params: Partial<Type>, newData: Partial<Model>) => {

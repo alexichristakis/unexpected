@@ -68,10 +68,21 @@ export class NotificationService {
     }
   }
 
-  notify(user: User, body: string) {
-    const { deviceOS, deviceToken } = user;
+  notify(
+    user:
+      | { deviceOS: string; deviceToken?: string }
+      | { deviceOS: string; deviceToken?: string }[],
+    body: string
+  ) {
+    let token;
+    const deviceOS = "ios";
+    if (user instanceof Array) {
+      token = user.map(({ deviceToken = "" }) => deviceToken);
+    } else {
+      token = user.deviceToken;
+    }
 
-    return this.send(deviceToken, deviceOS, body);
+    return this.send(token, deviceOS, body);
   }
 
   notifyPhotoTime(user: User) {
@@ -94,7 +105,9 @@ export class NotificationService {
   }
 
   notifyWithNavigationToPost(
-    user: User | User[],
+    user:
+      | { deviceOS: string; deviceToken: string }
+      | { deviceOS: string; deviceToken: string }[],
     body: string,
     route: { id: string; phoneNumber: string }
   ) {

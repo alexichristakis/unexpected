@@ -7,8 +7,8 @@ export class User {
   _id: string;
 
   @Indexed()
-  @Required()
   @Format("/^+?[1-9]d{1,14}$/")
+  @Required()
   phoneNumber: string;
 
   @Required()

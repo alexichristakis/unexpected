@@ -6,7 +6,7 @@ import { User } from "@global";
 
 @Middleware()
 export class AuthMiddleware implements IMiddleware {
-  public use(@Req() request: Req, @EndpointInfo() endpoint: EndpointInfo) {
+  public use(@Req() request: any, @EndpointInfo() endpoint: EndpointInfo) {
     // retrieve options given to the @UseAuth decorator
     const options = endpoint.get(AuthMiddleware) || {};
 
@@ -36,10 +36,10 @@ export class AuthMiddleware implements IMiddleware {
 }
 
 export const Select = {
-  phoneFromUserFromBody: (data: Req): Partial<User> => {
+  phoneFromUserFromBody: (data: any): Partial<User> => {
     return data.body.user.phoneNumber;
   },
-  phoneFromPath: (data: Req): any => {
+  phoneFromPath: (data: any): any => {
     return data.params.phoneNumber;
   },
 };

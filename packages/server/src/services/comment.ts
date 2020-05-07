@@ -33,8 +33,10 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
     return this.model.find({ postId }).sort({ createdAt: -1 }).exec();
   }
 
-  async likeComment(phoneNumber: string, id: string) {
-    const comment = await this.model.findById(id).exec();
+  async likeComment(phoneNumber: string, id: string, populate?: string) {
+    const comment = await (populate
+      ? this.model.findById(id).populate(populate).exec()
+      : this.model.findById(id).exec());
 
     if (!comment) return null;
 
