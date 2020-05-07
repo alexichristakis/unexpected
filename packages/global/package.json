@@ -2,6 +2,12 @@
   "name": "@unexpected/global",
   "version": "0.0.3",
   "scripts": {
-    "clean": "rm -rf node_modules && rm -rf dist"
+    "build": "yarn && tsc",
+    "clean": "rm -rf node_modules && rm -rf dist",
+    "deploy": "yarn clean && yarn build && node scripts/deploy.js"
+  },
+  "dependencies": {
+    "@tsed/common": "^5.52.1",
+    "@tsed/mongoose": "^5.52.1"
   }
 }

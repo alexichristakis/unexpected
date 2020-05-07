@@ -93,3 +93,15 @@ buck-out/
 # CocoaPods
 */**/Pods/
 
+**/*/src/global
+
+# next
+out/
+dist/
+.next/
+/.pnp
+.pnp.js
+.env*
+.firebase/
+
+

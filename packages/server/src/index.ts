@@ -1,9 +1,6 @@
 import { $log, ServerLoader } from "@tsed/common";
-import events from "events";
 
 import { Server } from "./Server";
-
-// events.EventEmitter.defaultMaxListeners = 25;
 
 async function bootstrap() {
   try {

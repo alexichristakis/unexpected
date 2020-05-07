@@ -7,10 +7,11 @@ import {
   Patch,
   PathParams,
   Put,
-  UseAuth
+  UseAuth,
 } from "@tsed/common";
+import filter from "lodash/filter";
 
-import { Comment } from "@unexpected/global";
+import { NewComment } from "@global";
 import uniq from "lodash/uniq";
 import { Exception } from "ts-httpexceptions";
 
@@ -36,21 +37,23 @@ export class CommentController {
   private notificationService: NotificationService;
 
   @Put()
-  async comment(@BodyParams("comment") comment: Comment) {
-    const { postId } = comment;
+  async comment(@BodyParams("comment") comment: NewComment) {
+    const { user: uid, post: postId } = comment;
+
     const [fromUser, comments, post] = await Promise.all([
-      this.userService.getByPhoneNumber(comment.phoneNumber),
-      this.commentService.getByPostId(postId),
-      this.postService.getId(postId)
+      this.userService.get(uid.toString()),
+      this.commentService.getByPostId(postId.toString()),
+      this.postService.getId(postId.toString()),
     ]);
 
     if (!fromUser || !post) throw new Exception();
 
     const otherCommentersNumbers = comments?.length
-      ? uniq(comments.map(({ phoneNumber }) => phoneNumber)).filter(
-          phoneNumber =>
-            phoneNumber !== fromUser.phoneNumber &&
-            phoneNumber !== post.phoneNumber
+      ? uniq(
+          filter(
+            comments,
+            ({ user }) => user !== fromUser.id && user !== post.user
+          )
         )
       : [];
 
@@ -73,7 +76,7 @@ export class CommentController {
         otherCommenters,
         `${fromUser.firstName} also commented ${postAuthor.firstName}'s post`,
         { phoneNumber: post.phoneNumber, id: postId }
-      )
+      ),
     ]);
 
     return newComment;
@@ -89,7 +92,7 @@ export class CommentController {
     if (comment && phoneNumber !== comment.phoneNumber) {
       const [
         commentAuthor,
-        commentLiker
+        commentLiker,
       ] = await this.userService.getByPhoneNumber(
         [comment.phoneNumber, phoneNumber],
         true

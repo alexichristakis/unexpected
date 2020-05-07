@@ -1,12 +1,11 @@
 import { $log, Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { User } from "@unexpected/global";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import moment from "moment";
 
+import { VerificationMessageModel } from "@global";
 import { SALT_ROUNDS } from "../lib/constants";
-import { VerificationMessage as VerificationMessageModel } from "../models/verification-message";
 import { TwilioService } from "./twilio";
 import { UserService } from "./user";
 
@@ -34,31 +33,24 @@ export class AuthService {
 
         const doc = new this.verificationMessageModel({
           phoneNumber: to,
-          code: encryptedCode
+          code: encryptedCode,
         });
 
         await doc.save();
 
         return encryptedCode;
       })
-      .catch(error => error);
+      .catch((error) => error);
   }
 
   async clearOldCodes() {
     return this.verificationMessageModel.deleteMany({}).exec();
   }
 
-  async checkVerification(
-    phoneNumber: string,
-    sentCode: string
-  ): Promise<{ verified: boolean; user?: User }> {
+  async checkVerification(phoneNumber: string, sentCode: string) {
     const verificationMessage = await this.verificationMessageModel
-      .findOne({
-        phoneNumber
-      })
-      .sort({
-        createdAt: -1
-      })
+      .findOne({ phoneNumber })
+      .sort({ createdAt: -1 })
       .exec();
 
     // no record of the phone number requested to be verified

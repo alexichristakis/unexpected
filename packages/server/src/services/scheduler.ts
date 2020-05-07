@@ -4,7 +4,7 @@ import Agenda from "agenda";
 import moment from "moment-timezone";
 import uuid from "uuid/v4";
 
-import { User } from "@unexpected/global";
+import { User } from "@global";
 
 import { AuthService } from "./auth";
 import { SlackLogService } from "./logger";
@@ -14,7 +14,7 @@ import { UserService } from "./user";
 export enum AgendaJobs {
   GENERATE_NOTIFICATIONS = "GENERATE_NOTIFICATIONS",
   SEND_NOTIFICATION = "SEND_NOTIFICATION",
-  CLEAR_CODES = "CLEAR_CODES"
+  CLEAR_CODES = "CLEAR_CODES",
 }
 
 @Service()
@@ -44,18 +44,18 @@ export class SchedulerService {
 
     this.agenda.processEvery("5 minutes");
 
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       this.agenda.once("ready", async () => {
         // await this.agenda.purge();
 
-        this.agenda.define(AgendaJobs.SEND_NOTIFICATION, async args => {
+        this.agenda.define(AgendaJobs.SEND_NOTIFICATION, async (args) => {
           const { to } = args.attrs.data;
           await Promise.all([
             this.notificationService.notifyPhotoTime(to),
             this.slackLogger.sendMessage(
               "notification sent",
               `${to.phoneNumber} -- ${to.firstName} ${to.lastName}`
-            )
+            ),
           ]);
         });
 
@@ -67,16 +67,16 @@ export class SchedulerService {
             "deviceOS",
             "deviceToken",
             "firstName",
-            "lastName"
+            "lastName",
           ]);
 
           const generatedTimes = await Promise.all(
-            users.map(user => this.scheduleNotificationForUser(user))
+            users.map((user) => this.scheduleNotificationForUser(user))
           );
 
           await Promise.all([
             this.userService.setNotificationTimes(generatedTimes),
-            this.slackLogger.logNotifications(generatedTimes)
+            this.slackLogger.logNotifications(generatedTimes),
           ]);
         });
 
@@ -109,7 +109,7 @@ export class SchedulerService {
     const times = this.generateTimes(timezone, NUM_NOTIFICATIONS);
 
     const jobs = await Promise.all(
-      times.map(time => {
+      times.map((time) => {
         const dateInstance = moment(time);
 
         $log.info(

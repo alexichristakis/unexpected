@@ -2,7 +2,7 @@ import { ChatPostMessageArguments, WebClient } from "@slack/web-api";
 import { Service } from "@tsed/common";
 import moment from "moment-timezone";
 
-import { UserNotificationRecord } from "@unexpected/global";
+import { UserNotificationRecord } from "@global";
 
 export type Topics = "Post" | "New User" | "";
 
@@ -14,7 +14,7 @@ export class SlackLogService {
     await this.client.chat.postMessage({
       username: "logger",
       channel: "CSBMSNQG6",
-      text: `${topic}: ${body}`
+      text: `${topic}: ${body}`,
     });
   }
 
@@ -25,7 +25,9 @@ export class SlackLogService {
         return (prev += ` { ${
           curr.phoneNumber
         }: ${curr.notifications
-          .map(noti => moment.tz(noti, "America/New_York").format("h:mm:ss a"))
+          .map((noti) =>
+            moment.tz(noti, "America/New_York").format("h:mm:ss a")
+          )
           .join(", ")} }`);
       }, "")}\`\`\``
     );

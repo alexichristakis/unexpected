@@ -14,7 +14,9 @@
       "@assets/*": ["assets/*"],
       "@screens/*": ["screens/*"],
       "@api": ["api"],
-      "@hooks": ["hooks"]
+      "@hooks": ["hooks"],
+      "@global": ["global"],
+      "@global/*": ["global/"]
     }
   },
   "files": ["./declarations.d.ts"],

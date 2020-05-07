@@ -2,7 +2,7 @@ import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import { FriendRequest } from "@unexpected/global";
 
-import { FriendRequest as FriendRequestModel } from "../models/friend-request";
+import { FriendRequestModel } from "@global";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
@@ -48,7 +48,7 @@ export class FriendService extends CRUDService<
         toUser,
         `${fromUser.firstName} sent you a friend request!`,
         fromUser
-      )
+      ),
     ]);
 
     return request;
@@ -60,6 +60,8 @@ export class FriendService extends CRUDService<
     if (doc) {
       return doc.remove();
     }
+
+    return null;
   }
 
   async acceptFriendRequest(from: string, to: string) {
@@ -68,5 +70,7 @@ export class FriendService extends CRUDService<
     if (doc) {
       return Promise.all([doc.remove(), this.userService.friend(from, to)]);
     }
+
+    return null;
   }
 }
