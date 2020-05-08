@@ -23,7 +23,7 @@ import { useMemoOne } from "use-memo-one";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib";
+import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG, Colors } from "@lib";
 import Swipeable from "./Swipeable";
 import Post, { POST_HEIGHT } from "@components/Post";
 import random from "lodash/random";
@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     overflow: "hidden",
+    backgroundColor: Colors.background,
     paddingTop: 150,
   },
 });

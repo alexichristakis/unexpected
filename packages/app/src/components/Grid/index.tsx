@@ -39,11 +39,7 @@ const mapDispatchToProps = {};
 export type GridConnectedProps = ConnectedProps<typeof connector>;
 
 export interface GridProps {
-  postIds: string[];
-  scrollRef?: React.Ref<RNAnimated.AnimatedComponent<FlatList>>;
-  scrollY: Animated.Value<number>;
-  onScrollEndDrag: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
-  onPressPost: (item: Post) => void;
+  uid: string;
 }
 
 type MonthsData = {
@@ -53,7 +49,7 @@ type MonthsData = {
 }[];
 
 export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
-  ({ scrollRef, scrollY, onPressPost, onScrollEndDrag, posts }) => {
+  ({ posts }) => {
     // returns object mapping month (0, 1, 2, ...) to array of posts
     const generateSections = (posts: Post[]) => {
       const map = groupBy(posts, ({ createdAt }) =>
@@ -85,7 +81,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
       <Month
         showHeader={index > 0}
         key={item.id}
-        onPressPost={onPressPost}
+        onPressPost={console.log}
         {...item}
       />
     );

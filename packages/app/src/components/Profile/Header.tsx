@@ -26,34 +26,22 @@ const mapDispatchToProps = {};
 export type HeaderConnectedProps = ConnectedProps<typeof connector>;
 
 export interface HeaderProps {
-  phoneNumber: string;
-  scrollY: Animated.Value<number>;
-  onPressFriends: () => void;
-  onPressImage?: () => void;
-  onPressSettings?: () => void;
-  onPressFriendRequests?: () => void;
-  onPressAddBio?: () => void;
+  uid: string;
+  offset: Animated.Value<number>;
 }
 
 export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
   user,
-  isUser,
   numPosts,
-  friendRequests,
-  onPressFriendRequests,
-  onPressAddBio,
-  onPressFriends,
-  onPressImage,
-  onPressSettings,
 }) => {
   const { phoneNumber, firstName, lastName, friends = [], bio = "" } = user;
+
+  const onPressAddBio = () => {};
 
   return (
     <Animated.View style={[styles.container]}>
       <View style={styles.row}>
-        <TouchableOpacity disabled={!onPressImage} onPress={onPressImage}>
-          <UserImage phoneNumber={phoneNumber} size={(SCREEN_WIDTH - 60) / 2} />
-        </TouchableOpacity>
+        <UserImage phoneNumber={phoneNumber} size={(SCREEN_WIDTH - 60) / 2} />
 
         <View
           style={{
@@ -77,7 +65,7 @@ export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
           <Text
             testID="friends"
             style={{ ...styles.subheader, textAlign: "center" }}
-            onPress={onPressFriends}
+            onPress={console.log}
           >{`${friends.length}\n${
             friends.length === 1 ? "friend" : "friends"
           }`}</Text>

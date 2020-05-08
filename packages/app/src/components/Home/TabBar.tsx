@@ -29,14 +29,19 @@ import {
 } from "@lib";
 import { useMemoOne } from "use-memo-one";
 
-const { set, divide, onChange, cond, eq } = Animated;
+const { set, divide, onChange, add, cond, eq } = Animated;
 
 export interface TabBarProps {
+  onPress: (index: 0 | 1) => void;
   y: Animated.Value<number>;
   x: Animated.Value<number>;
 }
 
-export const TabBar: React.FC<TabBarProps> = ({ x: xOffset, y: yOffset }) => {
+export const TabBar: React.FC<TabBarProps> = ({
+  onPress,
+  x: xOffset,
+  y: yOffset,
+}) => {
   const val = divide(xOffset, -SCREEN_WIDTH);
 
   const open = useValue<0 | 1>(0);
@@ -77,23 +82,43 @@ export const TabBar: React.FC<TabBarProps> = ({ x: xOffset, y: yOffset }) => {
     []
   );
 
-  const borderRadius = interpolate(yOffset, {
-    inputRange: [-300, 0],
+  const yOffsetBorderRadius = interpolate(yOffset, {
+    inputRange: [-50, 0],
     outputRange: [20, 1],
     extrapolate: Extrapolate.CLAMP,
   });
+
+  const translateX = interpolate(xOffset, {
+    inputRange: [-SCREEN_WIDTH - 50, -SCREEN_WIDTH, 0],
+    outputRange: [-50, 0, 0],
+    extrapolateRight: Extrapolate.CLAMP,
+  });
+
+  const xOffsetBorderRadius = interpolate(translateX, {
+    inputRange: [-50, 0],
+    outputRange: [20, 0],
+    extrapolate: Extrapolate.CLAMP,
+  });
+
+  const handleOnPressFeed = () => onPress(0);
+  const handleOnPressProfile = () => onPress(1);
 
   return (
     <PanGestureHandler activeOffsetY={[-10, 10]} {...handler}>
       <Animated.View
         style={{
           ...styles.container,
-          borderBottomLeftRadius: borderRadius,
-          borderBottomRightRadius: borderRadius,
+          transform: [{ translateX }],
+          borderBottomLeftRadius: yOffsetBorderRadius,
+          borderBottomRightRadius: add(
+            yOffsetBorderRadius,
+            xOffsetBorderRadius
+          ),
         }}
       >
         <Animated.View style={{ flexDirection: "row" }}>
           <Animated.Text
+            onPress={handleOnPressFeed}
             style={[
               TextStyles.medium,
               { marginRight: 10, opacity: mix(val, 1, 0.5) },
@@ -102,6 +127,7 @@ export const TabBar: React.FC<TabBarProps> = ({ x: xOffset, y: yOffset }) => {
             feed
           </Animated.Text>
           <Animated.Text
+            onPress={handleOnPressProfile}
             style={[TextStyles.medium, { opacity: mix(val, 0.5, 1) }]}
           >
             profile
