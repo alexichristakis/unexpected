@@ -1,23 +1,29 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "esnext",
+    "outDir": "dist",
+    "module": "commonjs",
     "lib": ["es6"],
-    "allowJs": true /* Report errors in .js files. */,
     "jsx": "react-native",
     "noEmit": true,
+    "isolatedModules": false,
+    "moduleResolution": "node",
     "baseUrl": "./src",
     "paths": {
       "@components/*": ["components/*"],
       "@redux/*": ["redux/*"],
-      "@lib/*": ["lib/*"],
       "@assets/*": ["assets/*"],
       "@screens/*": ["screens/*"],
+      "@lib": ["lib"],
       "@api": ["api"],
       "@hooks": ["hooks"],
-      "@global": ["global"],
-      "@global/*": ["global/"]
-    }
+      "@global": ["global"]
+    },
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true
   },
   "files": ["./declarations.d.ts"],
   "include": ["src"],

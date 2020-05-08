@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
-import { bInterpolate, useValues } from "react-native-redash";
+import { mix, useValues } from "react-native-redash";
 
 import { TextStyles } from "@lib/styles";
 
@@ -15,7 +15,7 @@ const {
   call,
   eq,
   block,
-  cond
+  cond,
 } = Animated;
 
 export interface PullToRefreshProps {
@@ -39,7 +39,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({ scrollY }) => {
             eq(readyToRefresh, 1),
             call([], () => Haptics.trigger("impactLight"))
           )
-        )
+        ),
       ]),
     []
   );
@@ -47,16 +47,16 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({ scrollY }) => {
   const animatedStyle = {
     opacity: scrollY.interpolate({
       inputRange: [-100, 0, 50],
-      outputRange: [1, 0, 0]
+      outputRange: [1, 0, 0],
     }),
     transform: [
       {
         translateY: scrollY.interpolate({
           inputRange: [-50, 0, 50],
-          outputRange: [-20, 0, 0]
-        })
-      }
-    ]
+          outputRange: [-20, 0, 0],
+        }),
+      },
+    ],
   };
 
   return (
@@ -65,7 +65,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({ scrollY }) => {
         style={[
           styles.text,
           TextStyles.large,
-          { opacity: bInterpolate(readyToRefresh, 0, 1) }
+          { opacity: mix(readyToRefresh, 0, 1) },
         ]}
       >
         release to refresh
@@ -74,7 +74,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({ scrollY }) => {
         style={[
           styles.text,
           TextStyles.large,
-          { opacity: bInterpolate(readyToRefresh, 1, 0) }
+          { opacity: mix(readyToRefresh, 1, 0) },
         ]}
       >
         pull to refresh
@@ -88,10 +88,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 15,
     right: 15,
-    bottom: 40
+    bottom: 40,
     // alignItems: "flex"
   },
   text: {
-    position: "absolute"
-  }
+    position: "absolute",
+  },
 });

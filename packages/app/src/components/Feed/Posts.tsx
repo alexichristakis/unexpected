@@ -11,7 +11,7 @@ import { Post as PostType } from "@unexpected/global";
 import _ from "lodash";
 import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
-import { onScroll } from "react-native-redash";
+import { onScrollEvent } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
 import {
@@ -182,7 +182,7 @@ const Posts: React.FC<PostsProps & PostConnectedProps> = React.memo(
         refreshing={refreshing}
         onRefresh={handleOnRefresh}
         scrollEventThrottle={16}
-        onScroll={onScroll({ y: scrollY })}
+        onScroll={onScrollEvent({ y: scrollY })}
       />
     );
   },

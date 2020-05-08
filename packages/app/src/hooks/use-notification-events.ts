@@ -1,10 +1,8 @@
 import { useEffect } from "react";
 
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import { CompositeNavigationProp } from "@react-navigation/core";
 import {
   NotificationPayload,
-  PhotoNotificationPayload
+  PhotoNotificationPayload,
 } from "@unexpected/global";
 import moment from "moment";
 import { Notifications } from "react-native-notifications";
@@ -14,15 +12,12 @@ import { NOTIFICATION_MINUTES } from "@lib/constants";
 import { AppActions, UserActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 
-import { StackParamList, TabParamList } from "../App";
+import { StackParamList } from "../App";
 import { useReduxAction } from "./use-redux-action";
 import { useReduxState } from "./use-redux-state";
 
 export function useNotificationEvents(
-  navigation: CompositeNavigationProp<
-    BottomTabNavigationProp<TabParamList>,
-    NativeStackNavigationProp<StackParamList>
-  >
+  navigation: NativeStackNavigationProp<StackParamList>
 ) {
   const launchPermissions = useReduxState(selectors.shouldLaunchPermissions);
   const currentUserPhoneNumber = useReduxState(selectors.phoneNumber);
@@ -49,7 +44,7 @@ export function useNotificationEvents(
               // nav to user
               navigation.navigate("PROFILE", {
                 prevRoute: "Back",
-                phoneNumber
+                phoneNumber,
               });
               break;
             }
@@ -61,13 +56,13 @@ export function useNotificationEvents(
                 // @ts-ignore
                 navigation.navigate("USER_PROFILE_TAB", {
                   screen: "USER_PROFILE",
-                  params: { focusedPostId: id }
+                  params: { focusedPostId: id },
                 });
               } else {
                 navigation.navigate("PROFILE", {
                   prevRoute: "Back",
                   focusedPostId: id,
-                  phoneNumber
+                  phoneNumber,
                 });
               }
               break;
@@ -109,15 +104,15 @@ export function useNotificationEvents(
         }
       ),
       Notifications.events().registerRemoteNotificationsRegistrationFailed(
-        event => {
+        (event) => {
           //   console.log(event.code, event.localizedDescription, event.domain);
         }
-      )
+      ),
     ];
 
     if (launchPermissions) {
       // wait for navigation to be initialized ? weird hack
-      setTimeout(() => navigation.navigate("PERMISSIONS"), 50);
+      // setTimeout(() => navigation.navigate("PERMISSIONS"), 50);
     }
 
     // request permissions

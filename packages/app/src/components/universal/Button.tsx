@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, ViewProps } from "react-native";
 import Animated from "react-native-reanimated";
-import { bInterpolateColor } from "react-native-redash";
+import { mixColor } from "react-native-redash";
 
 import { Colors, TextStyles } from "@lib/styles";
 
@@ -25,7 +25,7 @@ export const Button: React.FC<ButtonProps> = ({
   loading,
   title,
   white,
-  onPress
+  onPress,
 }) => {
   const [value] = useState(new Value(0));
 
@@ -37,11 +37,11 @@ export const Button: React.FC<ButtonProps> = ({
       style={styles.container}
       containerStyle={style}
       animatedStyle={{
-        backgroundColor: bInterpolateColor(
+        backgroundColor: mixColor(
           value,
           white ? "white" : Colors.background,
           Colors.nearBlack
-        )
+        ),
       }}
     >
       <>
@@ -53,12 +53,8 @@ export const Button: React.FC<ButtonProps> = ({
               marginLeft: icon ? 5 : 0,
               textTransform: "uppercase",
               opacity: loading ? 0 : 1,
-              color: bInterpolateColor(
-                value,
-                Colors.nearBlack,
-                Colors.background
-              )
-            }
+              color: mixColor(value, Colors.nearBlack, Colors.background),
+            },
           ]}
         >
           {title}
@@ -79,9 +75,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     borderRadius: 4,
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
   },
   activityIndicator: {
-    position: "absolute"
-  }
+    position: "absolute",
+  },
 });

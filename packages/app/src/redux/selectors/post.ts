@@ -9,10 +9,16 @@ import {
 } from "./user";
 
 const s = (state: RootState) => state.post || {};
+const p = (_: RootState, p: any) => p;
+
 const usersSelector = createSelector(s, state => state.users);
 
 const _posts = (state: RootState) => s(state).posts;
 const _comments = (state: RootState) => s(state).comments;
+
+export const allPosts = createSelector(_posts, posts => {
+  return Object.keys(posts)
+})
 
 export const commentsLoading = (state: RootState) => s(state).commentsLoading;
 export const postLoading = (state: RootState) => s(state).loading;
@@ -20,11 +26,15 @@ export const feedLoading = (state: RootState) => s(state).feed.loading;
 
 export const errorSendingPost = (state: RootState) => s(state).error;
 
+
 const phoneNumberFromProps = (_: RootState, props: { phoneNumber: string }) =>
   props.phoneNumber;
 
-const postIdFromProps = (_: RootState, props: { postId: string }) =>
-  props.postId;
+const postIdFromProps = (_: RootState, props: { postId?: string, id?: string }) =>
+  props.postId ?? props.id as string;
+
+
+const postIdsFromProps = (_:RootState, props: {postIds: string[]}) => props.postIds;
 
 export const commentsForPost = createSelector(
   [_comments, postIdFromProps],
@@ -37,8 +47,10 @@ export const post = createSelector(
   (posts, commentMap, users, id) => {
     const post = posts[id] ?? {};
 
+    console.log(users, post)
+
     const comments = commentMap[id] ? Object.values(commentMap[id]) : [];
-    const user = users[post.phoneNumber] ?? {};
+    const user = users[post.phoneNumber] ?? users['2069409629'];
 
     return {
       id, // in case post is undefined
@@ -48,6 +60,11 @@ export const post = createSelector(
     };
   }
 );
+
+export const posts = createSelector([_posts, postIdsFromProps], (postMap,  ids) => {
+
+  return ids.map(id => postMap[id])
+})
 
 export const usersPosts = createSelector(
   [usersSelector, _posts, userEntitySelector],

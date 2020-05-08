@@ -20,3 +20,12 @@ export const COLUMN_WIDTH = (
   columnSpan: number = 1
 ) =>
   ((SCREEN_WIDTH - (numColumns + 1) * IMAGE_GUTTER) / numColumns) * columnSpan;
+
+export const SPRING_CONFIG = {
+  damping: 40,
+  mass: 1,
+  stiffness: 300,
+  overshootClamping: false,
+  restSpeedThreshold: 0.1,
+  restDisplacementThreshold: 0.1,
+};
