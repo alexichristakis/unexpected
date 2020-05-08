@@ -1,18 +1,6 @@
-import React, { useCallback, useState, useRef, useMemo } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import Animated, {
-  useCode,
-  debug,
-  Value,
-  Clock,
-  interpolate,
-} from "react-native-reanimated";
+import React from "react";
+import { View, StyleSheet, Text } from "react-native";
+import Animated, { useCode, interpolate } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
 import * as selectors from "@redux/selectors";
@@ -31,6 +19,7 @@ import {
   mix,
 } from "react-native-redash";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
+import { getPostImageURL } from "@api";
 
 const {
   cond,
@@ -99,7 +88,7 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
         <View style={styles.header}>
           <Text style={TextStyles.large}>{post.description}</Text>
         </View>
-        <Image {...{ open }}>
+        <Image src={getPostImageURL("post.user", post.photoId)} {...{ open }}>
           {(translation) => <Comments postId={id} {...translation} />}
         </Image>
         <View style={styles.footer}>
@@ -157,7 +146,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginTop: 20,
-    // marginHorizontal: 10,
   },
   commentIndicator: {
     width: 30,

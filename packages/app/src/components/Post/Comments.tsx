@@ -3,7 +3,7 @@ import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 import { StyleSheet } from "react-native";
 
-import { SCREEN_WIDTH } from "@lib";
+import { SCREEN_WIDTH, Colors } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     width: "100%",
-    backgroundColor: "gray",
+    backgroundColor: Colors.lightGray,
   },
 });
 

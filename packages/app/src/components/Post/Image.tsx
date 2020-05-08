@@ -6,38 +6,22 @@ import React, {
   useImperativeHandle,
 } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
-import Animated, {
-  useCode,
-  debug,
-  Value,
-  Clock,
-  interpolate,
-} from "react-native-reanimated";
+import Animated, { interpolate } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
-import {
-  useGestureHandler,
-  useValue,
-  useValues,
-  //   withSpring,
-  WithSpringParams,
-  snapPoint,
-  useClock,
-  withSpring,
-  // spring,
-  withSpringTransition,
-  contains,
-} from "react-native-redash";
+import { useGestureHandler, useValues } from "react-native-redash";
 import { useMemoOne } from "use-memo-one";
+import FastImage from "react-native-fast-image";
+import random from "lodash/random";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib";
-import { TextStyles, Colors } from "@lib";
 import { withSpringImperative } from "@lib";
 
 import Comments from "./Comments";
-import random from "lodash/random";
+
+const AnimatedImage = Animated.createAnimatedComponent(FastImage);
 
 const {
   cond,
@@ -65,6 +49,7 @@ const randomColor = () =>
 const connector = connect((state: RootState) => ({}), {});
 
 export interface ImageProps {
+  src: string;
   open: Animated.Value<0 | 1>;
   children: ({
     translateX,
@@ -76,7 +61,7 @@ export interface ImageProps {
 export type PostConnectedProps = ConnectedProps<typeof connector>;
 
 const Image: React.FC<ImageProps & PostConnectedProps> = React.memo(
-  ({ children, open }) => {
+  ({ children, src, open }) => {
     const [state, value, velocity] = useValues([State.UNDETERMINED, 0, 0]);
 
     const handler = useGestureHandler({
@@ -107,7 +92,8 @@ const Image: React.FC<ImageProps & PostConnectedProps> = React.memo(
     return (
       <PanGestureHandler {...handler} activeOffsetX={[-10, 10]}>
         <Animated.View style={styles.container}>
-          <Animated.View
+          <AnimatedImage
+            source={src}
             style={[
               styles.image,
               { transform: [{ scale }], backgroundColor: randomColor() },

@@ -29,6 +29,8 @@ import Post, { POST_HEIGHT } from "@components/Post";
 import random from "lodash/random";
 import { TextStyles } from "@lib";
 
+import Header from "./Header";
+
 const {
   onChange,
   cond,
@@ -62,8 +64,6 @@ const connector = connect(
 export interface FeedProps {}
 
 export type FeedConnectedProps = ConnectedProps<typeof connector>;
-
-type FakePost = { id: string; color: string };
 
 const Feed: React.FC<FeedProps & FeedConnectedProps> = ({ postIds }) => {
   const state = useValue(State.UNDETERMINED);
@@ -155,8 +155,6 @@ const Feed: React.FC<FeedProps & FeedConnectedProps> = ({ postIds }) => {
     ]);
   }, []);
 
-  useCode(() => [debug("index", index)], []);
-
   return (
     <View style={styles.container}>
       <PanGestureHandler activeOffsetY={[-10, 10]} {...handler}>
@@ -170,6 +168,7 @@ const Feed: React.FC<FeedProps & FeedConnectedProps> = ({ postIds }) => {
           ))}
         </Animated.View>
       </PanGestureHandler>
+      <Header offset={translateY} />
     </View>
   );
 };

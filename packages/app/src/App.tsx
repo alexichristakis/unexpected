@@ -3,7 +3,6 @@ import { StatusBar } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
@@ -23,7 +22,7 @@ import {
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
-import { Auth, Home, Carousel, Profile, SignUp } from "./screens";
+import { Auth, Home, Profile, SignUp } from "./screens";
 
 type BaseParams = {
   prevRoute: string;
@@ -118,12 +117,10 @@ export const Context: React.FC = ({ children }) => {
 
   return (
     <Provider store={store}>
-      <SafeAreaProvider>
-        <PersistGate loading={null} persistor={persistor}>
-          <StatusBar barStyle="dark-content" />
-          {children}
-        </PersistGate>
-      </SafeAreaProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <StatusBar barStyle="dark-content" />
+        {children}
+      </PersistGate>
     </Provider>
   );
 };
