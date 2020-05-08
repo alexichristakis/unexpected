@@ -29,8 +29,8 @@ import {
 } from "react-native-redash";
 
 import CloseIcon from "@assets/svg/close.svg";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/constants";
-import { Colors, SB_HEIGHT, TextStyles } from "@lib/styles";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib";
+import { Colors, SB_HEIGHT, TextStyles } from "@lib";
 
 const {
   interpolate,

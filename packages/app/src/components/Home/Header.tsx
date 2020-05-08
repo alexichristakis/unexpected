@@ -1,10 +1,10 @@
 import React from "react";
 import Animated, { useCode, debug } from "react-native-reanimated";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { SCREEN_WIDTH } from "@lib/constants";
+import { SCREEN_WIDTH } from "@lib";
 import { mix } from "react-native-redash";
 import { StyleSheet } from "react-native";
-import { SB_HEIGHT, TextStyles } from "@lib/styles";
+import { SB_HEIGHT, TextStyles } from "@lib";
 
 const { divide } = Animated;
 

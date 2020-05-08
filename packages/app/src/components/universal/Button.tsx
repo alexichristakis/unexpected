@@ -3,7 +3,7 @@ import { ActivityIndicator, StyleSheet, ViewProps } from "react-native";
 import Animated from "react-native-reanimated";
 import { mixColor } from "react-native-redash";
 
-import { Colors, TextStyles } from "@lib/styles";
+import { Colors, TextStyles } from "@lib";
 
 import TapHandler from "./TapHandler";
 

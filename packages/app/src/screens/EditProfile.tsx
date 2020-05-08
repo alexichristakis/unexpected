@@ -8,7 +8,7 @@ import {
   Text,
   TextInputKeyPressEventData,
   TextInputSubmitEditingEventData,
-  View
+  View,
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
@@ -19,7 +19,7 @@ import { connect, ConnectedProps } from "react-redux";
 
 import { Button, Input } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { isIPhoneX, TextStyles } from "@lib/styles";
+import { isIPhoneX, TextStyles } from "@lib";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -28,10 +28,10 @@ import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState, props: EditProfileProps) => ({
   user: selectors.currentUser(state),
-  loading: selectors.userLoading(state)
+  loading: selectors.userLoading(state),
 });
 const mapDispatchToProps = {
-  updateUser: UserActions.updateUser
+  updateUser: UserActions.updateUser,
 };
 
 export type EditProfileConnectedProps = ConnectedProps<typeof connector>;
@@ -45,7 +45,7 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
   user: { firstName, lastName, bio },
   loading,
   navigation,
-  updateUser
+  updateUser,
 }) => {
   useLightStatusBar();
 
@@ -54,7 +54,7 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
   };
 
   const handleKeyPress = ({
-    nativeEvent
+    nativeEvent,
   }: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
     if (nativeEvent.key === "Enter") {
       Keyboard.dismiss();
@@ -125,21 +125,21 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20
+    padding: 20,
   },
   section: {
     marginBottom: 10,
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   keyboardAvoiding: {
     bottom: isIPhoneX ? 40 : 20,
     left: 20,
     right: 20,
 
-    position: "absolute"
+    position: "absolute",
     // marginTop: 100
-  }
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

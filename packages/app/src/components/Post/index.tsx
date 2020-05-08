@@ -17,12 +17,12 @@ import { connect, ConnectedProps } from "react-redux";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib/constants";
-import { TextStyles, Colors } from "@lib/styles";
+import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib";
+import { TextStyles, Colors } from "@lib";
 
 import Image from "./Image";
 import Comments from "./Comments";
-import { formatName } from "@lib/utils";
+import { formatName } from "@lib";
 import {
   useValues,
   useValue,

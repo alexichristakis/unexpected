@@ -5,7 +5,11 @@ import Animated, {
   interpolate,
   Extrapolate,
 } from "react-native-reanimated";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
+import {
+  PanGestureHandler,
+  State,
+  TapGestureHandler,
+} from "react-native-gesture-handler";
 import {
   mix,
   useValue,
@@ -16,11 +20,16 @@ import {
 } from "react-native-redash";
 import { StyleSheet, ViewStyle } from "react-native";
 
-import { SCREEN_WIDTH, SPRING_CONFIG } from "@lib/constants";
-import { SB_HEIGHT, TextStyles, Colors } from "@lib/styles";
+import {
+  TextStyles,
+  Colors,
+  SCREEN_WIDTH,
+  SPRING_CONFIG,
+  withSpringImperative,
+} from "@lib";
 import { useMemoOne } from "use-memo-one";
 
-const { set, divide } = Animated;
+const { set, divide, onChange, cond, eq } = Animated;
 
 export interface TabBarProps {
   y: Animated.Value<number>;
@@ -30,7 +39,9 @@ export interface TabBarProps {
 export const TabBar: React.FC<TabBarProps> = ({ x: xOffset, y: yOffset }) => {
   const val = divide(xOffset, -SCREEN_WIDTH);
 
-  const [state, value, velocity] = useValues([State.UNDETERMINED, 0, 0]);
+  const open = useValue<0 | 1>(0);
+  const [state, tapState] = useValues([State.UNDETERMINED, State.UNDETERMINED]);
+  const [value, velocity] = useValues([0, 0]);
 
   const handler = useGestureHandler({
     state,
@@ -38,16 +49,28 @@ export const TabBar: React.FC<TabBarProps> = ({ x: xOffset, y: yOffset }) => {
     velocityY: velocity,
   });
 
+  const tapHandler = useGestureHandler({
+    state: tapState,
+  });
+
   useCode(
     () => [
+      onChange(
+        tapState,
+        cond(eq(tapState, State.END), [
+          cond(open, [set(open, 0)], [set(open, 1)]),
+        ])
+      ),
       set(
         yOffset,
-        withSpring({
+        withSpringImperative({
           state,
           value,
           velocity,
+          open,
+          openOffset: -500,
+          closedOffset: 0,
           snapPoints: [0, -500],
-          config: SPRING_CONFIG,
         })
       ),
     ],
@@ -61,7 +84,7 @@ export const TabBar: React.FC<TabBarProps> = ({ x: xOffset, y: yOffset }) => {
   });
 
   return (
-    <PanGestureHandler {...handler}>
+    <PanGestureHandler activeOffsetY={[-10, 10]} {...handler}>
       <Animated.View
         style={{
           ...styles.container,
@@ -90,14 +113,16 @@ export const TabBar: React.FC<TabBarProps> = ({ x: xOffset, y: yOffset }) => {
             }}
           />
         </Animated.View>
-        <Animated.View
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 15,
-            backgroundColor: "blue",
-          }}
-        />
+        <TapGestureHandler {...tapHandler}>
+          <Animated.View
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              backgroundColor: "blue",
+            }}
+          />
+        </TapGestureHandler>
       </Animated.View>
     </PanGestureHandler>
   );
@@ -105,7 +130,6 @@ export const TabBar: React.FC<TabBarProps> = ({ x: xOffset, y: yOffset }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,

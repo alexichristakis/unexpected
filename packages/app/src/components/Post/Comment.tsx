@@ -10,8 +10,8 @@ import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
 import { UserImage } from "@components/universal";
-import { Colors, TextStyles } from "@lib/styles";
-import { formatName } from "@lib/utils";
+import { Colors, TextStyles } from "@lib";
+import { formatName } from "@lib";
 import { PostActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";

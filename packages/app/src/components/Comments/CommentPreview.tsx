@@ -5,8 +5,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
-import { Colors, TextStyles } from "@lib/styles";
-import { formatName } from "@lib/utils";
+import { Colors, TextStyles } from "@lib";
+import { formatName } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { Comment as CommentType } from "@unexpected/global";
@@ -15,7 +15,7 @@ import { ParamList } from "../../App";
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
   phoneNumber: selectors.phoneNumber(state),
-  user: selectors.user(state, props)
+  user: selectors.user(state, props),
 });
 
 const mapDispatchToProps = {};
@@ -27,7 +27,7 @@ export type CommentsConnectedProps = ConnectedProps<typeof connector>;
 const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
   phoneNumber,
   user,
-  body
+  body,
 }) => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamList>>();
 
@@ -37,7 +37,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
     } else {
       navigation.navigate("PROFILE", {
         prevRoute: "Post",
-        phoneNumber: user.phoneNumber
+        phoneNumber: user.phoneNumber,
       });
     }
   };
@@ -55,21 +55,21 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginBottom: 2
+    marginBottom: 2,
   },
 
   name: {
     ...TextStyles.small,
     fontWeight: "600",
-    marginRight: 3
+    marginRight: 3,
   },
   body: {
-    ...TextStyles.small
+    ...TextStyles.small,
   },
   createdAt: {
     ...TextStyles.small,
-    color: Colors.gray
-  }
+    color: Colors.gray,
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

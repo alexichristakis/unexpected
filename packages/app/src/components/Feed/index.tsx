@@ -23,11 +23,11 @@ import { useMemoOne } from "use-memo-one";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib/constants";
+import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib";
 import Swipeable from "./Swipeable";
 import Post, { POST_HEIGHT } from "@components/Post";
 import random from "lodash/random";
-import { TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib";
 
 const {
   onChange,

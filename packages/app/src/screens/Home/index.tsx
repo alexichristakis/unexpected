@@ -10,7 +10,7 @@ import { Pager, TabBar } from "@components/Home";
 import { RootState as RootStateType } from "@redux/types";
 import Feed from "@components/Feed";
 import Profile from "@components/Profile";
-import { Colors } from "@lib/styles";
+import { Colors } from "@lib";
 
 import { StackParamList } from "../../App";
 

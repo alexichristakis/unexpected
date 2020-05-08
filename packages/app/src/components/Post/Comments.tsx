@@ -3,7 +3,7 @@ import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 import { StyleSheet } from "react-native";
 
-import { SCREEN_WIDTH } from "@lib/constants";
+import { SCREEN_WIDTH } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 

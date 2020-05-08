@@ -5,8 +5,8 @@ import { connect, ConnectedProps } from "react-redux";
 
 import Gear from "@assets/svg/gear.svg";
 import { Button, PullToRefresh, UserImage } from "@components/universal";
-import { HORIZONTAL_GUTTER } from "@lib/constants";
-import { Colors, SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import { HORIZONTAL_GUTTER } from "@lib";
+import { Colors, SCREEN_WIDTH, TextStyles } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 

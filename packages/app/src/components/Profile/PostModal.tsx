@@ -15,10 +15,10 @@ import {
   ZoomedImage,
   ZoomedImageType,
   ZoomHandler,
-  ZoomHandlerGestureBeganPayload
+  ZoomHandlerGestureBeganPayload,
 } from "@components/universal";
-import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
-import { formatName } from "@lib/utils";
+import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib";
+import { formatName } from "@lib";
 import { PostActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -29,13 +29,13 @@ import MoreIcon from "@assets/svg/more.svg";
 const mapStateToProps = (state: RootState, props: PostModalProps) => ({
   currentUserPhoneNumber: selectors.phoneNumber(state),
   commentLoading: selectors.commentsLoading(state),
-  post: selectors.post(state, props)
+  post: selectors.post(state, props),
 });
 
 const mapDispatchToProps = {
   fetchPost: PostActions.fetchPost,
   deletePost: PostActions.deletePost,
-  sendComment: PostActions.sendComment
+  sendComment: PostActions.sendComment,
 };
 
 export type PostModalConnectedProps = ConnectedProps<typeof connector>;
@@ -45,8 +45,9 @@ export interface PostModalProps {
   postId: string;
 }
 
-const PostModal: React.FC<PostModalProps &
-  PostModalConnectedProps> = React.memo(
+const PostModal: React.FC<
+  PostModalProps & PostModalConnectedProps
+> = React.memo(
   ({
     postId,
     onClose,
@@ -55,7 +56,7 @@ const PostModal: React.FC<PostModalProps &
     deletePost,
     currentUserPhoneNumber,
     sendComment,
-    commentLoading
+    commentLoading,
   }) => {
     const [scrollY] = useState(new Animated.Value(0));
     const [zoomedImage, setZoomedImage] = useState<ZoomedImageType>();
@@ -74,7 +75,7 @@ const PostModal: React.FC<PostModalProps &
       createdAt,
       phoneNumber,
       photoId,
-      comments = []
+      comments = [],
     } = post;
 
     const handleOnGestureBegan = (payload: ZoomHandlerGestureBeganPayload) =>
@@ -83,7 +84,7 @@ const PostModal: React.FC<PostModalProps &
         phoneNumber,
         width: SCREEN_WIDTH,
         height: 1.2 * SCREEN_WIDTH,
-        ...payload
+        ...payload,
       });
 
     const handleOnGestureComplete = () => setZoomedImage(undefined);
@@ -93,9 +94,9 @@ const PostModal: React.FC<PostModalProps &
         {
           options: ["delete post", "cancel"],
           destructiveButtonIndex: 0,
-          cancelButtonIndex: 1
+          cancelButtonIndex: 1,
         },
-        index => {
+        (index) => {
           if (!index) {
             deletePost(id);
             // navigation.goBack();
@@ -135,7 +136,7 @@ const PostModal: React.FC<PostModalProps &
               {description.length ? (
                 <Text style={styles.description}>{description}</Text>
               ) : null}
-              {sortBy(comments, ({ createdAt }) => createdAt).map(comment => (
+              {sortBy(comments, ({ createdAt }) => createdAt).map((comment) => (
                 <Comment key={comment.id} {...comment} />
               ))}
             </View>
@@ -159,16 +160,16 @@ const PostModal: React.FC<PostModalProps &
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: SB_HEIGHT
+    paddingTop: SB_HEIGHT,
   },
   footer: {
     marginTop: 5,
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
   },
   description: {
     ...TextStyles.small,
-    marginBottom: 5
-  }
+    marginBottom: 5,
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

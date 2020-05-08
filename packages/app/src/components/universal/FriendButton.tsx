@@ -6,12 +6,12 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import {
   Transition,
   Transitioning,
-  TransitioningView
+  TransitioningView,
 } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
@@ -21,7 +21,7 @@ import DenySVG from "@assets/svg/cancel_button.svg";
 import CheckSVG from "@assets/svg/check_button.svg";
 import AddFriendSVG from "@assets/svg/plus_button.svg";
 
-import { TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -38,20 +38,21 @@ const mapStateToProps = (state: RootState) => ({
   requestedFriends: selectors.requestedFriendNumbers(state),
   refreshing: selectors.userRequestsLoading(state),
   currentUser: selectors.currentUser(state),
-  error: selectors.userError(state)
+  error: selectors.userError(state),
 });
 const mapDispatchToProps = {
   deleteFriend: UserActions.deleteFriend,
   sendFriendRequest: UserActions.friendUser,
   acceptRequest: UserActions.acceptRequest,
   denyRequest: UserActions.denyRequest,
-  cancelRequest: UserActions.cancelRequest
+  cancelRequest: UserActions.cancelRequest,
 };
 
 export type FriendButtonConnectedProps = ConnectedProps<typeof connector>;
 
-const FriendButton: React.FC<FriendButtonProps &
-  FriendButtonConnectedProps> = ({
+const FriendButton: React.FC<
+  FriendButtonProps & FriendButtonConnectedProps
+> = ({
   refreshing,
   friendRequests,
   requestedFriends,
@@ -63,7 +64,7 @@ const FriendButton: React.FC<FriendButtonProps &
   denyRequest,
   cancelRequest,
   deleteFriend,
-  acceptRequest
+  acceptRequest,
 }) => {
   const [loading, setLoading] = useState(refreshing);
   const ref = React.createRef<TransitioningView>();
@@ -114,9 +115,9 @@ const FriendButton: React.FC<FriendButtonProps &
             {
               options: ["remove friend", "cancel"],
               destructiveButtonIndex: 0,
-              cancelButtonIndex: 1
+              cancelButtonIndex: 1,
             },
-            index => {
+            (index) => {
               if (!index) {
                 deleteFriend(user.phoneNumber);
               } else {
@@ -216,20 +217,20 @@ const FriendButton: React.FC<FriendButtonProps &
 const styles = StyleSheet.create({
   transitioningView: {
     flex: 1,
-    alignItems: "flex-end"
+    alignItems: "flex-end",
   },
   container: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
   buttonContainer: {
     alignItems: "center",
-    flexDirection: "row"
+    flexDirection: "row",
   },
   label: {
     ...TextStyles.small,
-    marginRight: 10
-  }
+    marginRight: 10,
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

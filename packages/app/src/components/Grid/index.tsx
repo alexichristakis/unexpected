@@ -19,9 +19,9 @@ import { onScrollEvent } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
 import LockSVG from "@assets/svg/lock.svg";
-import { Colors, TextStyles } from "@lib/styles";
+import { Colors, TextStyles } from "@lib";
 
-import { formatName } from "@lib/utils";
+import { formatName } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 

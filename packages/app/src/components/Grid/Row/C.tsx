@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { Post } from "@unexpected/global";
 
-import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/constants";
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib";
 
 export interface CProps {
   renderPost: (post: Post, size: number) => JSX.Element;
@@ -13,7 +13,7 @@ export interface CProps {
 export const CSizes = {
   large: COLUMN_WIDTH(5, 3) + 2 * IMAGE_GUTTER,
   medium: COLUMN_WIDTH(5, 2) + IMAGE_GUTTER,
-  small: COLUMN_WIDTH(5)
+  small: COLUMN_WIDTH(5),
 };
 
 const C: React.FC<CProps> = ({ renderPost, posts }) => {
@@ -64,18 +64,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: IMAGE_GUTTER,
-    marginVertical: IMAGE_GUTTER / 2
+    marginVertical: IMAGE_GUTTER / 2,
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: CSizes.medium
+    width: CSizes.medium,
   },
   column: {
     justifyContent: "space-between",
     width: CSizes.medium,
-    height: CSizes.large
-  }
+    height: CSizes.large,
+  },
 });
 
 export default C;

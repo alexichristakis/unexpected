@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { Post } from "@unexpected/global";
 
-import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/constants";
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib";
 
 export interface AProps {
   renderPost: (post: Post, size: number) => JSX.Element;
@@ -12,7 +12,7 @@ export interface AProps {
 
 const A: React.FC<AProps> = ({ renderPost, posts }) => (
   <View style={styles.container}>
-    {posts.map(post => renderPost(post, COLUMN_WIDTH(posts.length)))}
+    {posts.map((post) => renderPost(post, COLUMN_WIDTH(posts.length)))}
   </View>
 );
 
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: IMAGE_GUTTER,
-    marginVertical: IMAGE_GUTTER / 2
-  }
+    marginVertical: IMAGE_GUTTER / 2,
+  },
 });
 
 export default A;

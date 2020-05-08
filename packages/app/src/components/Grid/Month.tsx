@@ -4,7 +4,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import uuid from "uuid/v4";
 
-import { TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib";
 
 import { Row, RowType, RowTypes } from "./Row";
 
@@ -20,7 +20,7 @@ export enum Months {
   "September",
   "October",
   "November",
-  "December"
+  "December",
 }
 
 export interface MonthProps {
@@ -44,7 +44,7 @@ export const Month: React.FC<MonthProps> = React.memo(
           rows.push({
             id: uuid(),
             type: RowTypes.A,
-            posts: posts.slice(index)
+            posts: posts.slice(index),
           });
 
           addedPosts = remainingPosts;
@@ -60,7 +60,7 @@ export const Month: React.FC<MonthProps> = React.memo(
                 rows.push({
                   id,
                   type: RowTypes.A,
-                  posts: posts.slice(index, index + addedPosts)
+                  posts: posts.slice(index, index + addedPosts),
                 });
               }
 
@@ -73,7 +73,7 @@ export const Month: React.FC<MonthProps> = React.memo(
               rows.push({
                 id,
                 type: RowTypes.B,
-                posts: posts.slice(index, index + addedPosts)
+                posts: posts.slice(index, index + addedPosts),
               });
 
               break;
@@ -85,7 +85,7 @@ export const Month: React.FC<MonthProps> = React.memo(
               rows.push({
                 id,
                 type: RowTypes.C,
-                posts: posts.slice(index, index + addedPosts)
+                posts: posts.slice(index, index + addedPosts),
               });
 
               break;
@@ -98,7 +98,7 @@ export const Month: React.FC<MonthProps> = React.memo(
                 rows.push({
                   id,
                   type: RowTypes.D,
-                  posts: posts.slice(index, index + addedPosts)
+                  posts: posts.slice(index, index + addedPosts),
                 });
               }
 
@@ -135,13 +135,13 @@ export const Month: React.FC<MonthProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%"
+    width: "100%",
   },
   headerContainer: {
     marginHorizontal: 10,
     marginBottom: 10,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 });

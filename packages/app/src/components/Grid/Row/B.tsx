@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { Post } from "@unexpected/global";
 
-import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/constants";
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib";
 
 export interface BProps {
   renderPost: (post: Post, size: number) => JSX.Element;
@@ -12,7 +12,7 @@ export interface BProps {
 
 export const BSizes = {
   large: COLUMN_WIDTH(5, 2) + IMAGE_GUTTER,
-  small: COLUMN_WIDTH(5, 1)
+  small: COLUMN_WIDTH(5, 1),
 };
 
 const B: React.FC<BProps> = ({ renderPost, posts }) => {
@@ -62,13 +62,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: IMAGE_GUTTER,
-    marginVertical: IMAGE_GUTTER / 2
+    marginVertical: IMAGE_GUTTER / 2,
   },
   middleColumn: {
     justifyContent: "space-between",
     width: BSizes.small,
-    height: BSizes.large
-  }
+    height: BSizes.large,
+  },
 });
 
 export default B;

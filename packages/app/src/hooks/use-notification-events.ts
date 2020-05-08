@@ -8,7 +8,7 @@ import moment from "moment";
 import { Notifications } from "react-native-notifications";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
-import { NOTIFICATION_MINUTES } from "@lib/constants";
+import { NOTIFICATION_MINUTES } from "@lib";
 import { AppActions, UserActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 

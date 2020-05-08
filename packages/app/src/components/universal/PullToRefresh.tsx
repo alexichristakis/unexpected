@@ -4,7 +4,7 @@ import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 import { mix, useValues } from "react-native-redash";
 
-import { TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib";
 
 const {
   useCode,

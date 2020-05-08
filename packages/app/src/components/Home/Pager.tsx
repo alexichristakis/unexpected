@@ -9,8 +9,8 @@ import {
   withSpring,
 } from "react-native-redash";
 
-import { SCREEN_WIDTH, Colors, SCREEN_HEIGHT } from "@lib/styles";
-import { SPRING_CONFIG } from "@lib/constants";
+import { SCREEN_WIDTH, Colors, SCREEN_HEIGHT } from "@lib";
+import { SPRING_CONFIG } from "@lib";
 
 const { set } = Animated;
 
@@ -45,7 +45,7 @@ export const Pager: React.FC<PagerProps> = React.memo(({ x, children }) => {
   );
 
   return (
-    <PanGestureHandler {...handler}>
+    <PanGestureHandler activeOffsetX={[-10, 10]} {...handler}>
       <Animated.View
         style={[styles.container, { transform: [{ translateX: x }] }]}
       >

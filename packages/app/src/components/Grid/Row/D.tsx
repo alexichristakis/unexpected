@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { Post } from "@unexpected/global";
 import random from "lodash/random";
 
-import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib/constants";
+import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib";
 
 export interface DProps {
   renderPost: (post: Post, size: number) => JSX.Element;
@@ -13,7 +13,7 @@ export interface DProps {
 
 export const DSizes = {
   large: COLUMN_WIDTH(5, 4) + 3 * IMAGE_GUTTER,
-  small: COLUMN_WIDTH(5, 1)
+  small: COLUMN_WIDTH(5, 1),
 };
 
 const D: React.FC<DProps> = ({ renderPost, posts }) => {
@@ -52,13 +52,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: IMAGE_GUTTER,
-    marginVertical: IMAGE_GUTTER / 2
+    marginVertical: IMAGE_GUTTER / 2,
   },
   column: {
     justifyContent: "space-between",
     width: DSizes.small,
-    height: DSizes.large
-  }
+    height: DSizes.large,
+  },
 });
 
 export default D;

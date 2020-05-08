@@ -13,7 +13,7 @@ import { useMemoOne } from "use-memo-one";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib/constants";
+import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib";
 
 const { cond, set, sub, add, eq, greaterThan } = Animated;
 

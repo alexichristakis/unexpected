@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
 import moment from "moment";
@@ -12,8 +12,8 @@ import { TransitioningView } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
 import Comments from "@components/Comments/Comments";
-import { Colors, TextStyles } from "@lib/styles";
-import { formatName } from "@lib/utils";
+import { Colors, TextStyles } from "@lib";
+import { formatName } from "@lib";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -37,7 +37,7 @@ export type PostConnectedProps = ConnectedProps<typeof connector>;
 
 const mapStateToProps = (state: RootState, props: PostProps) => ({
   phoneNumber: selectors.phoneNumber(state),
-  post: selectors.post(state, props)
+  post: selectors.post(state, props),
 });
 
 const mapDispatchToProps = { deletePost: PostActions.deletePost };
@@ -51,7 +51,7 @@ const Post = React.forwardRef<PostRef, PostConnectedProps & PostProps>(
       onPressMoreComments,
       onPressComposeComment,
       children,
-      deletePost
+      deletePost,
     },
     ref
   ) => {
@@ -70,7 +70,7 @@ const Post = React.forwardRef<PostRef, PostConnectedProps & PostProps>(
       setNotVisible: () => {
         commentsTransitionRef.current?.animateNextTransition();
         setVisible(false);
-      }
+      },
     }));
 
     const handleOnPressName = () => {
@@ -82,9 +82,9 @@ const Post = React.forwardRef<PostRef, PostConnectedProps & PostProps>(
         {
           options: ["delete post", "cancel"],
           destructiveButtonIndex: 0,
-          cancelButtonIndex: 1
+          cancelButtonIndex: 1,
         },
-        index => {
+        (index) => {
           if (!index) {
             deletePost(id);
           }
@@ -122,30 +122,30 @@ const Post = React.forwardRef<PostRef, PostConnectedProps & PostProps>(
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 30
+    marginBottom: 30,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 10,
-    marginBottom: 10
+    marginBottom: 10,
   },
   time: {
     ...TextStyles.small,
-    color: Colors.gray
+    color: Colors.gray,
   },
   name: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   description: {
     ...TextStyles.small,
     marginTop: 10,
-    paddingHorizontal: 5
-  }
+    paddingHorizontal: 5,
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps, null, {
-  forwardRef: true
+  forwardRef: true,
 });
 export default connector(Post);

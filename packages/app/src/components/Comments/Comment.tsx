@@ -10,8 +10,8 @@ import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
 import { UserImage } from "@components/universal";
-import { Colors, TextStyles } from "@lib/styles";
-import { formatName } from "@lib/utils";
+import { Colors, TextStyles } from "@lib";
+import { formatName } from "@lib";
 import { PostActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -28,11 +28,11 @@ type Navigation = NativeStackNavigationProp<ParamList>;
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
   userPhoneNumber: selectors.phoneNumber(state),
-  user: selectors.user(state, props)
+  user: selectors.user(state, props),
 });
 
 const mapDispatchToProps = {
-  likeComment: PostActions.likeComment
+  likeComment: PostActions.likeComment,
 };
 
 interface CommentProps extends CommentType {}
@@ -48,7 +48,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
     user,
     likes = [],
     body,
-    likeComment
+    likeComment,
   }) => {
     const [clock] = useState(new Clock());
     const [likesTransitioning, setLikesTransitioning] = useState(false);
@@ -69,7 +69,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
               to: 30,
               from: likesHeight,
               duration: 150,
-              easing: Easing.ease
+              easing: Easing.ease,
             })
           ),
           cond(not(clockRunning(clock)), [
@@ -77,8 +77,8 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
             call([], () => {
               setLikesOpen(true);
               setLikesTransitioning(false);
-            })
-          ])
+            }),
+          ]),
         ]),
         cond(closeLikes, [
           set(
@@ -88,7 +88,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
               to: 0,
               from: likesHeight,
               duration: 150,
-              easing: Easing.ease
+              easing: Easing.ease,
             })
           ),
           cond(not(clockRunning(clock)), [
@@ -96,9 +96,9 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
             call([], () => {
               setLikesOpen(false);
               setLikesTransitioning(false);
-            })
-          ])
-        ])
+            }),
+          ]),
+        ]),
       ],
       []
     );
@@ -110,7 +110,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
       } else {
         navigation.navigate("PROFILE", {
           prevRoute: "Post",
-          phoneNumber: user.phoneNumber
+          phoneNumber: user.phoneNumber,
         });
       }
     };
@@ -200,39 +200,39 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginBottom: 7
+    marginBottom: 7,
   },
   textContainer: {
     flex: 1,
-    marginLeft: 5
+    marginLeft: 5,
   },
   likesContainer: {
     flexDirection: "row",
     overflow: "hidden",
-    paddingLeft: 20
+    paddingLeft: 20,
   },
   name: {
     ...TextStyles.small,
     fontWeight: "600",
-    marginRight: 3
+    marginRight: 3,
   },
   body: {
-    ...TextStyles.small
+    ...TextStyles.small,
   },
   createdAt: {
     ...TextStyles.small,
-    color: Colors.gray
+    color: Colors.gray,
   },
   likes: {
     ...TextStyles.small,
     color: Colors.gray,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   svg: {
     alignSelf: "center",
     marginLeft: 5,
-    marginRight: 5
-  }
+    marginRight: 5,
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
