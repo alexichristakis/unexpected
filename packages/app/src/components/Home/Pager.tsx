@@ -1,5 +1,10 @@
 import React from "react";
-import Animated, { useCode, debug } from "react-native-reanimated";
+import Animated, {
+  useCode,
+  debug,
+  interpolate,
+  Extrapolate,
+} from "react-native-reanimated";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { StyleSheet, ViewStyle } from "react-native";
 import {
@@ -20,13 +25,12 @@ import { SPRING_CONFIG } from "@lib";
 const { set } = Animated;
 
 export interface PagerProps {
-  style: Animated.AnimateStyle<ViewStyle>;
   tab: Animated.Value<0 | 1>;
   x: Animated.Value<number>;
 }
 
 export const Pager: React.FC<PagerProps> = React.memo(
-  ({ style, tab, x, children }) => {
+  ({ tab, x, children }) => {
     const [velocity, translationX] = useValues([0, 0]);
     const state = useValue(State.UNDETERMINED);
 
@@ -34,6 +38,12 @@ export const Pager: React.FC<PagerProps> = React.memo(
       state,
       translationX,
       velocityX: velocity,
+    });
+
+    const borderTopRightRadius = interpolate(x, {
+      inputRange: [-SCREEN_WIDTH - 50, -SCREEN_WIDTH, 0],
+      outputRange: [20, 1, 1],
+      extrapolate: Extrapolate.CLAMP,
     });
 
     useCode(
@@ -57,7 +67,10 @@ export const Pager: React.FC<PagerProps> = React.memo(
     return (
       <PanGestureHandler activeOffsetX={[-10, 10]} {...handler}>
         <Animated.View
-          style={[styles.container, style, { transform: [{ translateX: x }] }]}
+          style={[
+            styles.container,
+            { borderTopRightRadius, transform: [{ translateX: x }] },
+          ]}
         >
           {children}
         </Animated.View>

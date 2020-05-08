@@ -17,6 +17,7 @@ import {
   useGestureHandler,
   withSpring,
   Vector,
+  clamp,
 } from "react-native-redash";
 import { StyleSheet, ViewStyle } from "react-native";
 
@@ -26,25 +27,27 @@ import {
   SCREEN_WIDTH,
   SPRING_CONFIG,
   withSpringImperative,
+  ACTIVITY_HEIGHT,
 } from "@lib";
 import { useMemoOne } from "use-memo-one";
 
 const { set, divide, onChange, add, cond, eq } = Animated;
 
 export interface TabBarProps {
+  open: Animated.Value<0 | 1>;
   onPress: (index: 0 | 1) => void;
   y: Animated.Value<number>;
   x: Animated.Value<number>;
 }
 
 export const TabBar: React.FC<TabBarProps> = ({
+  open,
   onPress,
   x: xOffset,
   y: yOffset,
 }) => {
   const val = divide(xOffset, -SCREEN_WIDTH);
 
-  const open = useValue<0 | 1>(0);
   const [state, tapState] = useValues([State.UNDETERMINED, State.UNDETERMINED]);
   const [value, velocity] = useValues([0, 0]);
 
@@ -68,15 +71,19 @@ export const TabBar: React.FC<TabBarProps> = ({
       ),
       set(
         yOffset,
-        withSpringImperative({
-          state,
-          value,
-          velocity,
-          open,
-          openOffset: -500,
-          closedOffset: 0,
-          snapPoints: [0, -500],
-        })
+        clamp(
+          withSpringImperative({
+            state,
+            value,
+            velocity,
+            open,
+            openOffset: -ACTIVITY_HEIGHT,
+            closedOffset: 0,
+            snapPoints: [0, -ACTIVITY_HEIGHT],
+          }),
+          -ACTIVITY_HEIGHT - 100,
+          0
+        )
       ),
     ],
     []

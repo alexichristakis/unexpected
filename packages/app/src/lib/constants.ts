@@ -8,6 +8,8 @@ export const HORIZONTAL_GUTTER = 10;
 
 export const NOTIFICATION_MINUTES = 20;
 
+export const ACTIVITY_HEIGHT = 500;
+
 export const FEED_POST_WIDTH = SCREEN_WIDTH;
 export const FEED_POST_HEIGHT = 1.2 * FEED_POST_WIDTH;
 
