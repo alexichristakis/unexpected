@@ -7,6 +7,7 @@ import uuid from "uuid/v4";
 import { TextStyles } from "@lib";
 
 import { Row, RowType, RowTypes } from "./Row";
+import { FocusedPostPayload } from "@hooks";
 
 export enum Months {
   "January",
@@ -24,14 +25,13 @@ export enum Months {
 }
 
 export interface MonthProps {
-  onPressPost: (item: Post) => void;
-  showHeader: boolean;
-  month: Months;
-  posts: Post[];
+  onPressPost: (payload: FocusedPostPayload) => void;
+  month: string;
+  posts: string[];
 }
 
 export const Month: React.FC<MonthProps> = React.memo(
-  ({ month, posts, showHeader, onPressPost }) => {
+  ({ month, posts, onPressPost }) => {
     const generateRows = () => {
       const rows: RowType[] = [];
 
@@ -53,13 +53,27 @@ export const Month: React.FC<MonthProps> = React.memo(
           const id = uuid();
 
           switch (version) {
+            // simple row
             case RowTypes.A: {
+              addedPosts = 4;
+
+              rows.push({
+                id,
+                type: RowTypes.A,
+                posts: posts.slice(index, index + addedPosts),
+              });
+
+              break;
+            }
+
+            // one medium, four small
+            case RowTypes.B: {
               if (remainingPosts >= 5) {
                 addedPosts = 5;
 
                 rows.push({
                   id,
-                  type: RowTypes.A,
+                  type: RowTypes.B,
                   posts: posts.slice(index, index + addedPosts),
                 });
               }
@@ -67,18 +81,7 @@ export const Month: React.FC<MonthProps> = React.memo(
               break;
             }
 
-            case RowTypes.B: {
-              addedPosts = 4;
-
-              rows.push({
-                id,
-                type: RowTypes.B,
-                posts: posts.slice(index, index + addedPosts),
-              });
-
-              break;
-            }
-
+            // one large, three small
             case RowTypes.C: {
               addedPosts = 4;
 
@@ -87,20 +90,6 @@ export const Month: React.FC<MonthProps> = React.memo(
                 type: RowTypes.C,
                 posts: posts.slice(index, index + addedPosts),
               });
-
-              break;
-            }
-
-            case RowTypes.D: {
-              if (remainingPosts >= 5) {
-                addedPosts = 5;
-
-                rows.push({
-                  id,
-                  type: RowTypes.D,
-                  posts: posts.slice(index, index + addedPosts),
-                });
-              }
 
               break;
             }
@@ -116,15 +105,16 @@ export const Month: React.FC<MonthProps> = React.memo(
     const momentsString = () =>
       `${posts.length} ${posts.length === 1 ? "moment" : "moments"}`;
 
+    const rows = generateRows();
+    console.log(rows);
     return (
       <View style={styles.container}>
-        {showHeader && (
-          <View style={styles.headerContainer}>
-            <Text style={TextStyles.medium}>{month}</Text>
-            <Text style={TextStyles.medium}>{momentsString()}</Text>
-          </View>
-        )}
-        {generateRows().map(({ id, type, posts }) => (
+        <View style={styles.headerContainer}>
+          <Text style={TextStyles.large}>{month}</Text>
+          <Text style={TextStyles.medium}>{momentsString()}</Text>
+        </View>
+
+        {rows.map(({ id, type, posts }) => (
           <Row key={id} onPressPost={onPressPost} type={type} posts={posts} />
         ))}
       </View>
@@ -136,6 +126,7 @@ export const Month: React.FC<MonthProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     width: "100%",
+    marginBottom: 10,
   },
   headerContainer: {
     marginHorizontal: 10,

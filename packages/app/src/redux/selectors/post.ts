@@ -7,6 +7,7 @@ import {
   user as userEntitySelector,
   users as usersEntitySelector,
 } from "./user";
+import { getPostImageURL } from "@api";
 
 const s = (state: RootState) => state.post || {};
 const p = (_: RootState, p: any) => p;
@@ -48,7 +49,7 @@ export const post = createSelector(
   (posts, commentMap, users, id) => {
     const post = posts[id] ?? {};
 
-    console.log(users, post);
+    // console.log(users, post);
 
     const comments = commentMap[id] ? Object.values(commentMap[id]) : [];
     const user = users[post.phoneNumber] ?? users["2069409629"];
@@ -61,6 +62,10 @@ export const post = createSelector(
     };
   }
 );
+
+export const postPhotoUrl = createSelector([post], (post) => {
+  return getPostImageURL(post.user, post.photoId);
+});
 
 export const postIds = createSelector([s], (state) => {
   return state.users["2069409629"].posts;

@@ -14,14 +14,15 @@ export const FEED_POST_WIDTH = SCREEN_WIDTH;
 export const FEED_POST_HEIGHT = 1.2 * FEED_POST_WIDTH;
 
 /* PROFILE GRID */
-export const IMAGE_GUTTER = 15;
-export const NUM_COLUMNS = 5;
+export const IMAGE_GUTTER = 10;
+export const NUM_COLUMNS = 4;
 
 export const COLUMN_WIDTH = (
-  numColumns: number = NUM_COLUMNS,
-  columnSpan: number = 1
+  columnSpan: number = 1,
+  numColumns = NUM_COLUMNS
 ) =>
-  ((SCREEN_WIDTH - (numColumns + 1) * IMAGE_GUTTER) / numColumns) * columnSpan;
+  ((SCREEN_WIDTH - (numColumns + 1) * IMAGE_GUTTER) / numColumns) * columnSpan +
+  (columnSpan - 1) * IMAGE_GUTTER;
 
 export const SPRING_CONFIG = {
   damping: 40,

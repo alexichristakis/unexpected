@@ -5,7 +5,14 @@ import React, {
   useMemo,
   useImperativeHandle,
 } from "react";
-import { View, StyleSheet, Text, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  ImageStyle,
+  ViewStyle,
+} from "react-native";
 import Animated, { interpolate } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
@@ -44,13 +51,15 @@ const {
 } = Animated;
 
 const randomColor = () =>
-  `rgba(${random(255)}, ${random(255)}, ${random(255)}, 0.4)`;
+  `rgba(${random(255)}, ${random(255)}, ${random(255)}, 1)`;
 
 const connector = connect((state: RootState) => ({}), {});
 
 export interface ImageProps {
   src: string;
   open: Animated.Value<0 | 1>;
+  style?: Animated.AnimateStyle<ImageStyle>;
+  containerStyle?: Animated.AnimateStyle<ViewStyle>;
   children: ({
     translateX,
   }: {
@@ -61,7 +70,7 @@ export interface ImageProps {
 export type PostConnectedProps = ConnectedProps<typeof connector>;
 
 const Image: React.FC<ImageProps & PostConnectedProps> = React.memo(
-  ({ children, src, open }) => {
+  ({ children, style, containerStyle, src, open }) => {
     const [state, value, velocity] = useValues([State.UNDETERMINED, 0, 0]);
 
     const handler = useGestureHandler({
@@ -91,32 +100,45 @@ const Image: React.FC<ImageProps & PostConnectedProps> = React.memo(
 
     return (
       <PanGestureHandler {...handler} activeOffsetX={[-10, 10]}>
-        <Animated.View style={styles.container}>
+        <Animated.View style={{ ...styles.container, ...containerStyle }}>
           <AnimatedImage
             source={src}
             style={[
               styles.image,
-              { transform: [{ scale }], backgroundColor: randomColor() },
+              {
+                ...style,
+                transform: [{ scale }, ...(style?.transform ?? [])],
+              },
             ]}
           />
           {children({ translateX })}
         </Animated.View>
       </PanGestureHandler>
     );
-  }
+  },
+  (p, n) => p.src === n.src
 );
 
 const styles = StyleSheet.create({
   container: {
     height: 450,
+    zIndex: 1,
+    width: "100%",
     flexDirection: "row",
+    alignSelf: "center",
+    // backgroundColor: "red",
+    // justifyContent: "center",
   },
   image: {
+    // backgroundColor: randomColor(),
+    backgroundColor: "white",
     position: "absolute",
     left: 0,
     right: 0,
+    top: 0,
+    bottom: 0,
     borderRadius: 20,
-    height: 450,
+    // height: 450,
   },
 });
 

@@ -13,10 +13,11 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
+import FocusedPost from "@components/FocusedPost";
 
 import {
   useNotificationEvents,
-  PhotoCarouselProvider,
+  FocusedPostProvider,
   useReduxState,
 } from "./hooks";
 import { setNavigatorRef } from "./navigation";
@@ -63,13 +64,13 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
   useNotificationEvents(navigation);
 
   return (
-    <PhotoCarouselProvider>
+    <FocusedPostProvider>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="HOME" component={Home} />
         <Stack.Screen name="PROFILE" component={Profile} />
       </Stack.Navigator>
-      {/* <Carousel {...{ navigation }} /> */}
-    </PhotoCarouselProvider>
+      <FocusedPost {...{ navigation }} />
+    </FocusedPostProvider>
   );
 };
 

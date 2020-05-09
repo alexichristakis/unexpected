@@ -1,7 +1,6 @@
 import React from "react";
 import Animated, {
   useCode,
-  debug,
   interpolate,
   Extrapolate,
 } from "react-native-reanimated";
@@ -10,26 +9,16 @@ import {
   State,
   TapGestureHandler,
 } from "react-native-gesture-handler";
-import {
-  mix,
-  useValue,
-  useValues,
-  useGestureHandler,
-  withSpring,
-  Vector,
-  clamp,
-} from "react-native-redash";
-import { StyleSheet, ViewStyle } from "react-native";
+import { mix, useValues, useGestureHandler, clamp } from "react-native-redash";
+import { StyleSheet } from "react-native";
 
 import {
   TextStyles,
   Colors,
   SCREEN_WIDTH,
-  SPRING_CONFIG,
   withSpringImperative,
   ACTIVITY_HEIGHT,
 } from "@lib";
-import { useMemoOne } from "use-memo-one";
 
 const { set, divide, onChange, add, cond, eq } = Animated;
 
@@ -163,6 +152,7 @@ export const TabBar: React.FC<TabBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    zIndex: 100,
     bottom: 0,
     left: 0,
     right: 0,

@@ -26,7 +26,7 @@ for (let i = 0; i < NUM_POSTS; i++) {
     phoneNumber: "2069409629",
     description: "test",
     id: uuid(),
-    photoId: uuid()
+    photoId: uuid(),
   });
 }
 

@@ -1,18 +1,16 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { Post } from "@unexpected/global";
-
 import { COLUMN_WIDTH, IMAGE_GUTTER } from "@lib";
 
 export interface AProps {
-  renderPost: (post: Post, size: number) => JSX.Element;
-  posts: Post[];
+  renderPost: (id: string, size: number) => JSX.Element;
+  posts: string[];
 }
 
 const A: React.FC<AProps> = ({ renderPost, posts }) => (
   <View style={styles.container}>
-    {posts.map((post) => renderPost(post, COLUMN_WIDTH(posts.length)))}
+    {posts.map((post) => renderPost(post, COLUMN_WIDTH(1, posts.length)))}
   </View>
 );
 
