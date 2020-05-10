@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
@@ -17,19 +17,19 @@ import { connect } from "react-redux";
 import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
 import { useDarkStatusBar, useLightStatusBar } from "@hooks";
-import { TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
 import { StackParamList } from "../App";
 
 const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
   ...auth,
-  ...ownProps
+  ...ownProps,
 });
 const mapDispatchToProps = {
   reset: AuthActions.reset,
   requestAuth: AuthActions.requestAuth,
-  checkCode: AuthActions.checkCode
+  checkCode: AuthActions.checkCode,
 };
 
 export type AuthReduxProps = ReduxPropsType<
@@ -48,7 +48,7 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
   isAwaitingCode,
   authError,
   requestAuth,
-  checkCode
+  checkCode,
 }) => {
   useDarkStatusBar();
 
@@ -119,32 +119,32 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 50,
     paddingHorizontal: 30,
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   subContainer: {
     width: "100%",
     height: "100%",
     justifyContent: "space-around",
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
   },
   formFields: {
     flex: 1,
     paddingTop: 50,
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   title: {
     ...TextStyles.title,
     fontSize: 40,
-    fontWeight: "500"
+    fontWeight: "500",
     // color: "white"
   },
   subtitle: {
-    ...TextStyles.large
+    ...TextStyles.large,
     // color: "white"
   },
   button: {
-    marginBottom: 45
-  }
+    marginBottom: 45,
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);

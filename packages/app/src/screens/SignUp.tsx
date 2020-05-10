@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 
 import { Button, Input } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
-import { isIPhoneX, TextStyles } from "@lib/styles";
+import { isIPhoneX, TextStyles } from "@lib";
 import { Actions, UserState as UserStateType } from "@redux/modules/user";
 import { RootState as RootStateType } from "@redux/types";
 
@@ -89,19 +89,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 50,
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   subContainer: {
     width: "100%",
     height: "100%",
     paddingVertical: isIPhoneX ? 100 : 0,
     paddingBottom: isIPhoneX ? 0 : 100,
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   formFields: {
     flex: 1,
-    justifyContent: "space-around"
-  }
+    justifyContent: "space-around",
+  },
 });
 
 const mapStateToProps = (
@@ -109,10 +109,10 @@ const mapStateToProps = (
   ownProps: SignUpOwnProps
 ) => ({
   ...user,
-  ...ownProps
+  ...ownProps,
 });
 const mapDispatchToProps = {
-  ...Actions
+  ...Actions,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

@@ -6,6 +6,10 @@ export class User {
   @ObjectID("id")
   _id: string;
 
+<<<<<<< HEAD:packages/global/src/models/user.ts
+=======
+  @Indexed()
+>>>>>>> 613d875d4490ce18425bf2949390e9c03144cd7b:packages/server/src/models/user.ts
   @Format("/^+?[1-9]d{1,14}$/")
   @Required()
   phoneNumber: string;
@@ -40,6 +44,10 @@ export class User {
   notifications: string[];
 
   // mutual
+<<<<<<< HEAD:packages/global/src/models/user.ts
+=======
+  @Property()
+>>>>>>> 613d875d4490ce18425bf2949390e9c03144cd7b:packages/server/src/models/user.ts
   @Ref(User)
   friends: Ref<User>[];
 }

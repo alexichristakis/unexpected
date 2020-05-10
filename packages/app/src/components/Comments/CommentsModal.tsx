@@ -6,7 +6,7 @@ import { useDiff, useValues } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
 import { ModalList, ModalListRef } from "@components/universal";
-import { SCREEN_HEIGHT } from "@lib/constants";
+import { SCREEN_HEIGHT } from "@lib";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -20,11 +20,11 @@ const { useCode, cond, and, block, call, greaterThan } = Animated;
 const mapStateToProps = (state: RootState, props: CommentsModalProps) => ({
   phoneNumber: selectors.phoneNumber(state),
   data: selectors.commentsForPost(state, props),
-  loading: selectors.commentsLoading(state)
+  loading: selectors.commentsLoading(state),
 });
 
 const mapDispatchToProps = {
-  sendComment: PostActions.sendComment
+  sendComment: PostActions.sendComment,
 };
 
 export type CommentsModalConnectedProps = ConnectedProps<typeof connector>;
@@ -36,8 +36,9 @@ export interface CommentsModalProps {
   modalRef: React.RefObject<ModalListRef>;
 }
 
-export const CommentsModal: React.FC<CommentsModalProps &
-  CommentsModalConnectedProps> = React.memo(
+export const CommentsModal: React.FC<
+  CommentsModalProps & CommentsModalConnectedProps
+> = React.memo(
   ({
     data,
     modalRef,
@@ -46,7 +47,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
     phoneNumber,
     postId,
     loading,
-    sendComment
+    sendComment,
   }) => {
     const [offsetY, keyboardHeight] = useValues([SCREEN_HEIGHT, 50], []);
     const [offsetDiffY] = useState(useDiff(offsetY, []));
@@ -55,13 +56,13 @@ export const CommentsModal: React.FC<CommentsModalProps &
 
     const onKeyboardWillShow = (event: KeyboardEvent) => {
       const {
-        endCoordinates: { height }
+        endCoordinates: { height },
       } = event;
 
       Animated.timing(keyboardHeight, {
         toValue: height,
         duration: 100,
-        easing: Easing.ease
+        easing: Easing.ease,
       }).start(() => scrollRef.current?.getNode().scrollToEnd());
     };
 
@@ -69,17 +70,17 @@ export const CommentsModal: React.FC<CommentsModalProps &
       Animated.timing(keyboardHeight, {
         toValue: 50,
         duration: 100,
-        easing: Easing.ease
+        easing: Easing.ease,
       }).start();
 
     useEffect(() => {
       const listeners = [
         Keyboard.addListener("keyboardWillShow", onKeyboardWillShow),
-        Keyboard.addListener("keyboardWillHide", onKeyboardWillHide)
+        Keyboard.addListener("keyboardWillHide", onKeyboardWillHide),
       ];
 
       return () => {
-        listeners.forEach(listener => listener.remove());
+        listeners.forEach((listener) => listener.remove());
       };
     }, []);
 
@@ -92,7 +93,7 @@ export const CommentsModal: React.FC<CommentsModalProps &
               greaterThan(offsetY, SCREEN_HEIGHT / 2)
             ),
             call([], Keyboard.dismiss)
-          )
+          ),
         ]),
       []
     );

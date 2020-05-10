@@ -6,16 +6,16 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  ViewStyle
+  ViewStyle,
 } from "react-native";
 import Animated, {
   Clock,
   Extrapolate,
-  interpolate
+  interpolate,
 } from "react-native-reanimated";
 import { spring, useValues } from "react-native-redash";
 
-import { Colors, SCREEN_HEIGHT, TextStyles } from "@lib/styles";
+import { Colors, SCREEN_HEIGHT, TextStyles } from "@lib";
 
 const {
   useCode,
@@ -27,7 +27,7 @@ const {
   onChange,
   and,
   not,
-  cond
+  cond,
 } = Animated;
 
 import SendIcon from "@assets/svg/send.svg";
@@ -38,7 +38,7 @@ const config = {
   stiffness: 500,
   overshootClamping: false,
   restSpeedThreshold: 0.1,
-  restDisplacementThreshold: 0.1
+  restDisplacementThreshold: 0.1,
 };
 
 export interface FloatingComposerProps {
@@ -56,7 +56,7 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
   offsetY,
   loading,
   onFocus,
-  onSendMessage
+  onSendMessage,
 }) => {
   const [clock] = useState(new Clock());
   const [message, setMessage] = useState("");
@@ -66,7 +66,7 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
     ? interpolate(offsetY, {
         inputRange: [SCREEN_HEIGHT / 2, SCREEN_HEIGHT],
         outputRange: [1, 0],
-        extrapolate: Extrapolate.CLAMP
+        extrapolate: Extrapolate.CLAMP,
       })
     : 1;
 
@@ -88,7 +88,7 @@ const FloatingComposer: React.FC<FloatingComposerProps> = ({
             sendButtonScale,
             spring({ clock, from: sendButtonScale, to: 0, config })
           )
-        )
+        ),
       ]),
     [message.length]
   );
@@ -141,16 +141,16 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingLeft: 10,
     paddingRight: 5,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   input: {
     flex: 1,
-    ...TextStyles.medium
+    ...TextStyles.medium,
   },
   activityIndicator: {
     height: 30,
-    marginRight: 5
-  }
+    marginRight: 5,
+  },
 });
 
 export default FloatingComposer;

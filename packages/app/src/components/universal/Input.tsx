@@ -4,10 +4,10 @@ import {
   Text,
   TextInput,
   TextInputProps,
-  View
+  View,
 } from "react-native";
 
-import { Colors, TextSizes, TextStyles } from "@lib/styles";
+import { Colors, TextSizes, TextStyles } from "@lib";
 
 export interface InputProps extends TextInputProps {
   textInputRef?: (value: TextInput | null) => void;
@@ -31,7 +31,7 @@ export const Input: React.FC<InputProps> = ({
 
   const textInputStyle = {
     borderBottomColor: light ? Colors.lightGray : Colors.nearBlack,
-    ...textColor
+    ...textColor,
   };
 
   return (
@@ -46,7 +46,7 @@ export const Input: React.FC<InputProps> = ({
         style={[
           error ? styles.error : styles.label,
           TextStyles.medium,
-          textColor
+          textColor,
         ]}
       >
         {error ? error : label}
@@ -64,6 +64,6 @@ const styles = StyleSheet.create({
     // paddingRight: 10,
 
     borderBottomWidth: 1,
-    marginBottom: 10
-  }
+    marginBottom: 10,
+  },
 });

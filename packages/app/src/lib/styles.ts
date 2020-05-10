@@ -3,18 +3,16 @@ import {
   Platform,
   StatusBar,
   StyleSheet,
-  TextStyle
+  TextStyle,
 } from "react-native";
 
-export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get(
-  "window"
-);
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 /* PROFILE GRID */
-export const IMAGE_GUTTER = 2;
-export const NUM_COLUMNS = 5;
-export const COLUMN_WIDTH =
-  (SCREEN_WIDTH - (NUM_COLUMNS + 1) * IMAGE_GUTTER) / NUM_COLUMNS;
+// export const IMAGE_GUTTER = 2;
+// export const NUM_COLUMNS = 5;
+// export const COLUMN_WIDTH =
+//   (SCREEN_WIDTH - (NUM_COLUMNS + 1) * IMAGE_GUTTER) / NUM_COLUMNS;
 
 const X_WIDTH = 375;
 const X_HEIGHT = 812;
@@ -29,7 +27,7 @@ export const isIPhoneX =
 export const SB_HEIGHT = Platform.select({
   ios: isIPhoneX ? 44 : 20,
   android: StatusBar.currentHeight,
-  default: 0
+  default: 0,
 });
 
 export const Colors = {
@@ -41,11 +39,11 @@ export const Colors = {
   pink: "#D31EB6",
   red: "rgb(255, 0, 0)",
   yellow: "#FFD60A",
-  green: "rgb(0, 255, 0)"
+  green: "rgb(0, 255, 0)",
 };
 
 const baseText: TextStyle = {
-  fontFamily: "AvenirNext-Regular"
+  fontFamily: "AvenirNext-Regular",
 };
 
 export enum TextSizes {
@@ -54,34 +52,34 @@ export enum TextSizes {
   large = "large",
   title = "title",
   light = "light",
-  bold = "bold"
+  bold = "bold",
 }
 export const TextStyles: { [key in TextSizes]: TextStyle } = StyleSheet.create({
   light: {
-    color: Colors.lightGray
+    color: Colors.lightGray,
   },
   small: {
     ...baseText,
     fontSize: 12,
-    color: Colors.nearBlack
+    color: Colors.nearBlack,
   },
   medium: {
     ...baseText,
     fontSize: 16,
 
-    color: Colors.nearBlack
+    color: Colors.nearBlack,
   },
   large: {
     ...baseText,
     fontSize: 20,
-    color: Colors.nearBlack
+    color: Colors.nearBlack,
   },
   title: {
     ...baseText,
     fontSize: 26,
-    color: Colors.nearBlack
+    color: Colors.nearBlack,
   },
   bold: {
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });

@@ -19,6 +19,10 @@ export class Comment {
   @Property()
   body: string;
 
+<<<<<<< HEAD
+=======
+  @Property()
+>>>>>>> 613d875d4490ce18425bf2949390e9c03144cd7b
   @Ref(User)
   likes: Ref<User>[];
 
