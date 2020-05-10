@@ -1,12 +1,12 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import Animated, { interpolate } from "react-native-reanimated";
 import { mix } from "react-native-redash";
 import { useMemoOne } from "use-memo-one";
 
-import { SB_HEIGHT, Colors, SCREEN_WIDTH, SCREEN_HEIGHT } from "@lib";
+import { Colors, SCREEN_WIDTH, SCREEN_HEIGHT } from "@lib";
 import { FocusedPostContext } from "@hooks";
-import Post, { AnimateProp, POST_HEIGHT } from "@components/Post";
+import Post, { AnimateProp } from "@components/Post";
 
 const {
   onChange,
@@ -39,6 +39,9 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
   const { id, close, origin, size, transition, isOpen } = useContext(
     FocusedPostContext
   );
+
+  // fetch new post data on each load
+  // useEffect(() => [fetchPost(id)], [id]);
 
   const animate: AnimateProp = useMemoOne(() => {
     const opacity = interpolate(transition, {

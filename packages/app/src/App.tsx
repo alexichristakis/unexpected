@@ -58,7 +58,7 @@ export type StackParamList = {
 export type ParamList = StackParamList;
 
 /* initialize navigators */
-// const Stack = createNativeStackNavigator<StackParamList>();
+const NativeStack = createNativeStackNavigator<StackParamList>();
 const Stack = createStackNavigator<StackParamList>();
 
 type AuthenticatedRootProps = {
