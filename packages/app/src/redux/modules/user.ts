@@ -1,6 +1,5 @@
 import { Platform } from "react-native";
 
-import { FriendRequest, User } from "@unexpected/global";
 import { AxiosResponse } from "axios";
 import immer from "immer";
 import _ from "lodash";
@@ -13,7 +12,7 @@ import {
   put,
   select,
   takeEvery,
-  takeLatest
+  takeLatest,
 } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
@@ -21,10 +20,11 @@ import client, { getHeaders } from "@api";
 import { StackParamList } from "../../App";
 import * as selectors from "../selectors";
 import {
-  ActionsUnion,
+  ActionTypes,
+  ActionUnion,
   createAction,
-  ExtractActionFromActionCreator
-} from "../utils";
+  ExtractActionFromActionCreator,
+} from "../types";
 
 export interface UserState {
   phoneNumber: string;
@@ -45,12 +45,12 @@ const initialState: UserState = {
   stale: false,
   loading: false,
   loadingRequests: false,
-  error: null
+  error: null,
 };
 
 export default (
   state: UserState = initialState,
-  action: ActionsUnion<typeof Actions>
+  action: ActionUnion
 ): UserState => {
   switch (action.type) {
     case ActionTypes.FETCH_USER:
@@ -66,14 +66,14 @@ export default (
       return {
         ...state,
         loadingRequests: true,
-        error: null
+        error: null,
       };
     }
 
     case ActionTypes.CREATE_USER_SUCCESS: {
       const { user } = action.payload;
 
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.loading = false;
         draft.phoneNumber = user.phoneNumber;
         draft.users[user.phoneNumber] = user;
@@ -85,7 +85,7 @@ export default (
     case ActionTypes.FRIEND_USER_SUCCESS: {
       const { request } = action.payload;
 
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.requestedFriends.push(request);
         draft.loading = false;
 
@@ -96,7 +96,7 @@ export default (
     case ActionTypes.FETCH_USERS_REQUESTS_SUCCESS: {
       const { requestedFriends, friendRequests } = action.payload;
 
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.loadingRequests = false;
 
         draft.friendRequests = friendRequests;
@@ -109,10 +109,10 @@ export default (
     case ActionTypes.ACCEPT_REQUEST_SUCCESS: {
       const { from, to } = action.payload;
 
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.requestedFriends = _.remove(
           draft.friendRequests,
-          request => request.from === from
+          (request) => request.from === from
         );
 
         draft.users[from].friends.push(to);
@@ -127,13 +127,13 @@ export default (
     case ActionTypes.DELETE_FRIEND_SUCCESS: {
       const { from, to } = action.payload;
 
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.users[from].friends = draft.users[from].friends.filter(
-          user => user !== to
+          (user) => user !== to
         );
 
         draft.users[to].friends = draft.users[to].friends.filter(
-          user => user !== from
+          (user) => user !== from
         );
 
         draft.loading = false;
@@ -145,9 +145,9 @@ export default (
     case ActionTypes.CANCEL_REQUEST_SUCCESS: {
       const { id } = action.payload;
 
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.requestedFriends = _.uniqBy(
-          draft.requestedFriends.filter(r => r.id !== id),
+          draft.requestedFriends.filter((r) => r.id !== id),
           ({ to }) => to
         );
 
@@ -158,9 +158,9 @@ export default (
     case ActionTypes.DENY_REQUEST_SUCCESS: {
       const { id } = action.payload;
 
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.friendRequests = _.uniqBy(
-          draft.friendRequests.filter(r => r.id !== id),
+          draft.friendRequests.filter((r) => r.id !== id),
           ({ from }) => from
         );
 
@@ -171,8 +171,8 @@ export default (
     case ActionTypes.LOAD_USERS: {
       const { users } = action.payload;
 
-      return immer(state, draft => {
-        users.forEach(user => {
+      return immer(state, (draft) => {
+        users.forEach((user) => {
           draft.users[user.phoneNumber] = user;
         });
 
@@ -207,7 +207,7 @@ function* onFetchUser(
       : `/user/${userPhoneNumber}`;
 
     const res: AxiosResponse<User> = yield call(client.get, endpoint, {
-      headers: getHeaders({ jwt })
+      headers: getHeaders({ jwt }),
     });
 
     const { data } = res;
@@ -223,11 +223,11 @@ function* onFetchUsersRequests() {
 
   try {
     const res = yield client.get(`/user/${phoneNumber}/requests`, {
-      headers: getHeaders({ jwt })
+      headers: getHeaders({ jwt }),
     });
 
     const {
-      data: { friendRequests, requestedFriends }
+      data: { friendRequests, requestedFriends },
     } = res;
 
     yield put(
@@ -254,7 +254,7 @@ function* onCreateUser(
     friends: [],
     deviceOS: Platform.OS,
     bio: "",
-    timezone: "America/New_York"
+    timezone: "America/New_York",
   };
 
   if (phoneNumber === "0000000000") {
@@ -266,7 +266,7 @@ function* onCreateUser(
         "/user",
         { user: newUser },
         {
-          headers: getHeaders({ jwt })
+          headers: getHeaders({ jwt }),
         }
       );
 
@@ -293,7 +293,7 @@ function* onUpdateUser(
       `/user/${phoneNumber}`,
       { user: { ...user } },
       {
-        headers: getHeaders({ jwt })
+        headers: getHeaders({ jwt }),
       }
     );
 
@@ -316,7 +316,7 @@ function* onFetchUsers(
     if (selectOn) endpoint += `&select=${selectOn.join(",")}`;
 
     const res: AxiosResponse<User[]> = yield client.get(endpoint, {
-      headers: getHeaders({ jwt })
+      headers: getHeaders({ jwt }),
     });
 
     const { data } = res;
@@ -362,7 +362,7 @@ function* onFriendUser(
       `user/${phoneNumber}/friend/${to}`,
       {},
       {
-        headers: getHeaders({ jwt })
+        headers: getHeaders({ jwt }),
       }
     );
 
@@ -387,7 +387,7 @@ function* onDeleteFriend(
       `user/${phoneNumber}/delete/${to}`,
       {},
       {
-        headers: getHeaders({ jwt })
+        headers: getHeaders({ jwt }),
       }
     );
 
@@ -408,11 +408,11 @@ function* onDenyRequest(
   const jwt = yield select(selectors.jwt);
 
   try {
-    const id = friendRequests.find(r => r.from === from)?.id;
+    const id = friendRequests.find((r) => r.from === from)?.id;
 
     if (id) {
       const res = yield client.delete(`user/request/${id}`, {
-        headers: getHeaders({ jwt })
+        headers: getHeaders({ jwt }),
       });
 
       yield put(Actions.denyRequestSuccess(id));
@@ -434,11 +434,11 @@ function* onCancelRequest(
   const jwt = yield select(selectors.jwt);
 
   try {
-    const id = requestedFriends.find(r => r.to === to)?.id;
+    const id = requestedFriends.find((r) => r.to === to)?.id;
 
     if (id) {
       const res = yield client.delete(`user/request/${id}`, {
-        headers: getHeaders({ jwt })
+        headers: getHeaders({ jwt }),
       });
 
       yield put(Actions.cancelRequestSuccess(id));
@@ -471,30 +471,8 @@ export function* userSagas() {
     yield takeEvery(ActionTypes.DELETE_FRIEND, onDeleteFriend),
     yield takeEvery(ActionTypes.ACCEPT_REQUEST, onAcceptRequest),
     yield takeEvery(ActionTypes.DENY_REQUEST, onDenyRequest),
-    yield takeEvery(ActionTypes.CANCEL_REQUEST, onCancelRequest)
+    yield takeEvery(ActionTypes.CANCEL_REQUEST, onCancelRequest),
   ]);
-}
-
-export enum ActionTypes {
-  CREATE_NEW_USER = "user/CREATE_NEW_USER",
-  CREATE_USER_SUCCESS = "user/CREATE_USER_SUCCESS",
-  FETCH_USER = "user/FETCH_USER",
-  FETCH_USERS = "user/FETCH_USERS",
-  FETCH_USERS_REQUESTS = "user/FETCH_USERS_REQUESTS",
-  FETCH_USERS_REQUESTS_SUCCESS = "user/FETCH_USERS_REQUESTS_SUCCESS",
-  UPDATE_USER = "user/UPDATE_USER",
-  FRIEND_USER = "user/FRIEND_USER",
-  FRIEND_USER_SUCCESS = "user/FRIEND_USER_SUCCESS",
-  ACCEPT_REQUEST = "user/ACCEPT_REQUEST",
-  ACCEPT_REQUEST_SUCCESS = "user/ACCEPT_REQUEST_SUCCESS",
-  CANCEL_REQUEST = "user/CANCEL_REQUEST",
-  CANCEL_REQUEST_SUCCESS = "user/CANCEL_REQUEST_SUCCESS",
-  DENY_REQUEST = "user/DENY_REQUEST",
-  DENY_REQUEST_SUCCESS = "user/DENY_REQUEST_SUCCESS",
-  DELETE_FRIEND = "user/DELETE_FRIEND",
-  DELETE_FRIEND_SUCCESS = "user/DELETE_FRIEND_SUCCESS",
-  LOAD_USERS = "user/LOAD_USERS",
-  ON_ERROR = "user/ERROR"
 }
 
 export const Actions = {
@@ -509,7 +487,7 @@ export const Actions = {
   ) =>
     createAction(ActionTypes.FETCH_USERS_REQUESTS_SUCCESS, {
       friendRequests,
-      requestedFriends
+      requestedFriends,
     }),
   createUser: (
     firstName: string,
@@ -519,7 +497,7 @@ export const Actions = {
     createAction(ActionTypes.CREATE_NEW_USER, {
       firstName,
       lastName,
-      navigation
+      navigation,
     }),
   createUserSuccess: (user: User) =>
     createAction(ActionTypes.CREATE_USER_SUCCESS, { user }),
@@ -553,5 +531,5 @@ export const Actions = {
   denyRequestSuccess: (id: string) =>
     createAction(ActionTypes.DENY_REQUEST_SUCCESS, { id }),
 
-  onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err })
+  onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err }),
 };

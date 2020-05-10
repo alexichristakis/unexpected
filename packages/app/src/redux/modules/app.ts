@@ -13,11 +13,8 @@ import { all, call, put, select, take, takeEvery } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
 import { NOTIFICATION_MINUTES } from "@lib";
-import { NotificationPayload } from "@unexpected/global";
-import { navigate } from "../../navigation";
 import * as selectors from "../selectors";
-import { ActionsUnion, createAction } from "../utils";
-import { Actions as UserActions } from "./user";
+import { ActionTypes, createAction, ActionUnion } from "../types";
 
 export interface AppState {
   appStatus: AppStatusType;
@@ -47,7 +44,7 @@ const initialState: AppState = {
 
 export default (
   state: AppState = initialState,
-  action: ActionsUnion<typeof Actions>
+  action: ActionUnion
 ): AppState => {
   switch (action.type) {
     case ActionTypes.SET_CAMERA_TIMER: {
@@ -206,10 +203,10 @@ function* onBackendOnline() {
   }
 }
 
-const NETWORK_SUCCESS_PATTERN = (action: ActionsUnion<typeof Actions>) =>
+const NETWORK_SUCCESS_PATTERN = (action: ActionUnion) =>
   /^.*\/.*_SUCCESS/.test(action.type);
 
-const NETWORK_ERROR_PATTERN = (action: ActionsUnion<typeof Actions>) =>
+const NETWORK_ERROR_PATTERN = (action: ActionUnion) =>
   /^.*\/ERROR.*/.test(action.type);
 
 export function* appSagas() {
@@ -218,19 +215,6 @@ export function* appSagas() {
     yield takeEvery(NETWORK_SUCCESS_PATTERN, onBackendOnline),
     yield takeEvery(NETWORK_ERROR_PATTERN, onBackendOffline),
   ]);
-}
-
-export enum ActionTypes {
-  UPDATE_NAVIGATION = "app/UPDATE_NAVIGATION",
-  NAVIGATE = "app/NAVIGATE",
-  PROCESS_NOTIFICATION = "app/PROCESS_NOTIFICATION",
-  SET_CAMERA_TIMER = "app/SET_CAMERA_TIMER",
-  EXPIRE_CAMERA = "app/EXPIRE_CAMERA",
-  SET_APP_STATUS = "app/SET_APP_STATUS",
-  SET_NET_INFO = "app/SET_NET_INFO",
-  NETWORK_OFFLINE = "app/NETWORK_OFFLINE",
-  NETWORK_ONLINE = "app/NETWORK_ONLINE",
-  DEBUG_ENABLE_CAMERA = "debug/ENABLE_CAMERA",
 }
 
 export const Actions = {

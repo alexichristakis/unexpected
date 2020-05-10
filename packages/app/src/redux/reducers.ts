@@ -6,7 +6,9 @@ import {
   ImageReducer,
   PermissionsReducer,
   PostReducer,
-  UserReducer
+  UserReducer,
+  CommentReducer,
+  FriendReducer,
 } from "./modules";
 import { RootState } from "./types";
 
@@ -16,7 +18,9 @@ const appReducers = combineReducers({
   image: ImageReducer,
   permissions: PermissionsReducer,
   post: PostReducer,
-  user: UserReducer
+  user: UserReducer,
+  comment: CommentReducer,
+  friend: FriendReducer,
 });
 
 export const root = (state?: RootState, action?: any) => {

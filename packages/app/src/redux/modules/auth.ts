@@ -8,10 +8,11 @@ import { all, fork, put, select, take, takeLatest } from "redux-saga/effects";
 import client from "@api";
 import { StackParamList } from "../../App";
 import {
-  ActionsUnion,
+  ActionTypes,
+  ActionUnion,
   createAction,
-  ExtractActionFromActionCreator
-} from "../utils";
+  ExtractActionFromActionCreator,
+} from "../types";
 import { Actions as UserActions } from "./user";
 
 export interface AuthState {
@@ -27,12 +28,12 @@ const initialState: AuthState = {
   phoneNumber: "",
   isAwaitingCode: false,
   authError: "",
-  jwt: null
+  jwt: null,
 };
 
 export default (
   state: AuthState = initialState,
-  action: ActionsUnion<typeof Actions>
+  action: ActionUnion
 ): AuthState => {
   switch (action.type) {
     case REHYDRATE as any: {
@@ -43,7 +44,7 @@ export default (
       if (auth)
         return {
           ...initialState,
-          jwt: auth.jwt
+          jwt: auth.jwt,
         };
       else return { ...initialState };
     }
@@ -73,14 +74,14 @@ export default (
         loading: false,
         isAwaitingCode: false,
         authError: "",
-        jwt: action.payload
+        jwt: action.payload,
       };
     }
 
     case ActionTypes.LOGOUT: {
       return {
         ...state,
-        jwt: null
+        jwt: null,
       };
     }
 
@@ -131,7 +132,7 @@ function* onVerifyCodeRequest(
             batchActions(
               [
                 UserActions.createUserSuccess(data.user),
-                Actions.setJWT(data.token)
+                Actions.setJWT(data.token),
               ],
               BATCH
             )
@@ -157,18 +158,8 @@ export function* authSagas() {
   yield all([
     yield takeLatest(ActionTypes.REQUEST_AUTH, onLoginRequest),
     yield takeLatest(ActionTypes.CHECK_CODE, onVerifyCodeRequest),
-    yield takeLatest(ActionTypes.LOGOUT, onLogout)
+    yield takeLatest(ActionTypes.LOGOUT, onLogout),
   ]);
-}
-
-export enum ActionTypes {
-  REQUEST_AUTH = "auth/REQUEST_AUTH",
-  CHECK_CODE = "auth/CHECK_CODE",
-  ERROR_REQUESTING_AUTH = "auth/ERROR_REQUESTING_AUTH",
-  TEXT_CODE_SUCCESS = "auth/TEXT_CODE_SUCCESS",
-  SET_JWT = "auth/SET_JWT",
-  RESET = "auth/RESET",
-  LOGOUT = "auth/LOGOUT"
 }
 
 export const Actions = {
@@ -183,7 +174,7 @@ export const Actions = {
     createAction(ActionTypes.CHECK_CODE, {
       phoneNumber,
       code,
-      navigation
+      navigation,
     }),
 
   errorRequestingAuth: (err: string) =>
@@ -193,5 +184,5 @@ export const Actions = {
   setJWT: (jwt: string) => createAction(ActionTypes.SET_JWT, jwt),
 
   reset: () => createAction(ActionTypes.RESET),
-  logout: () => createAction(ActionTypes.LOGOUT)
+  logout: () => createAction(ActionTypes.LOGOUT),
 };
