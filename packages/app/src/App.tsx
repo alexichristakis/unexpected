@@ -19,6 +19,7 @@ import {
   useNotificationEvents,
   FocusedPostProvider,
   useReduxState,
+  KeyboardStateProvider,
 } from "./hooks";
 import { setNavigatorRef } from "./navigation";
 
@@ -65,11 +66,13 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
 
   return (
     <FocusedPostProvider>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="HOME" component={Home} />
-        <Stack.Screen name="PROFILE" component={Profile} />
-      </Stack.Navigator>
-      <FocusedPost {...{ navigation }} />
+      <KeyboardStateProvider>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="HOME" component={Home} />
+          <Stack.Screen name="PROFILE" component={Profile} />
+        </Stack.Navigator>
+        <FocusedPost {...{ navigation }} />
+      </KeyboardStateProvider>
     </FocusedPostProvider>
   );
 };

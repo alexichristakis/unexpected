@@ -1,13 +1,12 @@
-import { Post } from "@unexpected/global";
-import random from "lodash/random";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import random from "lodash/random";
 import uuid from "uuid/v4";
 
+import { FocusedPostPayload } from "@hooks";
 import { TextStyles } from "@lib";
 
 import { Row, RowType, RowTypes } from "./Row";
-import { FocusedPostPayload } from "@hooks";
 
 export enum Months {
   "January",
@@ -32,7 +31,7 @@ export interface MonthProps {
 
 export const Month: React.FC<MonthProps> = React.memo(
   ({ month, posts, onPressPost }) => {
-    const generateRows = () => {
+    const generateRows = useCallback((posts: string[]) => {
       const rows: RowType[] = [];
 
       for (let index = 0; index < posts.length; ) {
@@ -100,25 +99,29 @@ export const Month: React.FC<MonthProps> = React.memo(
       }
 
       return rows;
-    };
+    }, []);
 
-    const momentsString = () =>
-      `${posts.length} ${posts.length === 1 ? "moment" : "moments"}`;
+    return useMemo(() => {
+      const rows = generateRows(posts);
 
-    const rows = generateRows();
-    console.log(rows);
-    return (
-      <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Text style={TextStyles.large}>{month}</Text>
-          <Text style={TextStyles.medium}>{momentsString()}</Text>
+      const momentsString = () =>
+        `${posts.length} ${posts.length === 1 ? "moment" : "moments"}`;
+
+      return (
+        <View style={styles.container}>
+          <View style={styles.headerContainer}>
+            <Text style={TextStyles.title}>{month}</Text>
+            <View style={styles.moments}>
+              <Text style={TextStyles.medium}>{momentsString()}</Text>
+            </View>
+          </View>
+
+          {rows.map(({ id, type, posts }) => (
+            <Row key={id} onPressPost={onPressPost} type={type} posts={posts} />
+          ))}
         </View>
-
-        {rows.map(({ id, type, posts }) => (
-          <Row key={id} onPressPost={onPressPost} type={type} posts={posts} />
-        ))}
-      </View>
-    );
+      );
+    }, [posts.length]);
   },
   (prevProps, nextProps) => prevProps.posts.length === nextProps.posts.length
 );
@@ -126,7 +129,7 @@ export const Month: React.FC<MonthProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginBottom: 10,
+    marginBottom: 30,
   },
   headerContainer: {
     marginHorizontal: 10,
@@ -134,5 +137,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  moments: {
+    padding: 5,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    backgroundColor: "#fffa94",
   },
 });

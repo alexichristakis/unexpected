@@ -1,4 +1,5 @@
 import React from "react";
+import { StyleSheet } from "react-native";
 import Animated, {
   useCode,
   interpolate,
@@ -6,11 +7,10 @@ import Animated, {
 } from "react-native-reanimated";
 import {
   PanGestureHandler,
-  State,
   TapGestureHandler,
+  State,
 } from "react-native-gesture-handler";
 import { mix, useValues, useGestureHandler, clamp } from "react-native-redash";
-import { StyleSheet } from "react-native";
 
 import {
   TextStyles,
@@ -19,6 +19,10 @@ import {
   withSpringImperative,
   ACTIVITY_HEIGHT,
 } from "@lib";
+import ProfileIcon from "@assets/svg/profile.svg";
+import FeedIcon from "@assets/svg/feed.svg";
+
+import TabBarIcon from "./Icon";
 
 const { set, divide, onChange, add, cond, eq } = Animated;
 
@@ -113,26 +117,29 @@ export const TabBar: React.FC<TabBarProps> = ({
         }}
       >
         <Animated.View style={{ flexDirection: "row" }}>
-          <Animated.Text
-            onPress={handleOnPressFeed}
-            style={[
-              TextStyles.medium,
-              { marginRight: 10, opacity: mix(val, 1, 0.5) },
-            ]}
-          >
-            feed
-          </Animated.Text>
-          <Animated.Text
-            onPress={handleOnPressProfile}
-            style={[TextStyles.medium, { opacity: mix(val, 0.5, 1) }]}
-          >
-            profile
-          </Animated.Text>
-          <Animated.View
-            style={{
-              ...styles.indicator,
-              transform: [{ translateX: mix(val, 0, 50) }],
+          <TabBarIcon
+            index={0}
+            name="Feed"
+            icon={{
+              component: FeedIcon,
+              inactive: Colors.nearBlack,
+              active: Colors.purple,
             }}
+            backgroundColor={"#ecb3ff"}
+            offset={val}
+            onPress={handleOnPressFeed}
+          />
+          <TabBarIcon
+            index={1}
+            name="Profile"
+            icon={{
+              component: ProfileIcon,
+              inactive: Colors.nearBlack,
+              active: Colors.yellow,
+            }}
+            backgroundColor={"#fffa94"}
+            offset={val}
+            onPress={handleOnPressProfile}
           />
         </Animated.View>
         <TapGestureHandler {...tapHandler}>
@@ -152,13 +159,12 @@ export const TabBar: React.FC<TabBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 100,
     bottom: 0,
     left: 0,
     right: 0,
     justifyContent: "space-between",
-    paddingTop: 15,
-    paddingHorizontal: 30,
+    paddingTop: 12,
+    paddingHorizontal: 20,
     height: 80,
     flexDirection: "row",
     backgroundColor: Colors.background,

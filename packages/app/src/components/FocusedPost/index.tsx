@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import { StyleSheet } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, { interpolate } from "react-native-reanimated";
 import { mix } from "react-native-redash";
 
 import { SB_HEIGHT, Colors, SCREEN_WIDTH, SCREEN_HEIGHT } from "@lib";
@@ -39,42 +39,49 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
     FocusedPostContext
   );
 
-  const animate: AnimateProp = {
-    header: {
-      transform: [{ translateY: mix(transition, 0, -215) }],
-      opacity: transition,
-    },
-    image: {
-      borderRadius: mix(transition, 5, 20),
-      transform: [
-        {
-          translateX: mix(
-            transition,
-            add(-SCREEN_WIDTH / 2, size, origin.x),
-            0
-          ),
-        },
-        {
-          translateY: mix(
-            transition,
-            sub(add(origin.y, size), SCREEN_HEIGHT / 2),
-            0
-          ),
-        },
-      ],
-      left: mix(transition, sub((SCREEN_WIDTH - 40) / 2, size), 0),
-      right: mix(transition, sub((SCREEN_WIDTH - 40) / 2, size), 0),
-      top: mix(transition, sub(225, size), 0),
-      bottom: mix(transition, sub(225, size), 0),
-    },
-    container: {
-      position: "absolute",
-    },
-    footer: {
-      transform: [{ translateY: mix(transition, 0, 245) }],
-      opacity: transition,
-    },
-  };
+  const animate: AnimateProp = useMemo(() => {
+    const opacity = interpolate(transition, {
+      inputRange: [0.66, 1],
+      outputRange: [0, 1],
+    });
+
+    return {
+      header: {
+        transform: [{ translateY: mix(transition, 0, -215) }],
+        opacity,
+      },
+      image: {
+        borderRadius: mix(transition, 5, 20),
+        transform: [
+          {
+            translateX: mix(
+              transition,
+              add(-SCREEN_WIDTH / 2, size, origin.x),
+              0
+            ),
+          },
+          {
+            translateY: mix(
+              transition,
+              sub(add(origin.y, size), SCREEN_HEIGHT / 2),
+              0
+            ),
+          },
+        ],
+        left: mix(transition, sub((SCREEN_WIDTH - 40) / 2, size), 0),
+        right: mix(transition, sub((SCREEN_WIDTH - 40) / 2, size), 0),
+        top: mix(transition, sub(225, size), 0),
+        bottom: mix(transition, sub(225, size), 0),
+      },
+      container: {
+        position: "absolute",
+      },
+      footer: {
+        transform: [{ translateY: mix(transition, 0, 245) }],
+        opacity,
+      },
+    };
+  }, []);
 
   return useMemo(
     () => (
@@ -92,6 +99,7 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
         />
         <Post
           light
+          visible={eq(transition, 1)}
           dragStarted={neq(transition, 1)}
           animate={animate}
           {...{ id }}

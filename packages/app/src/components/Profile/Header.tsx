@@ -1,11 +1,9 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
-import Gear from "@assets/svg/gear.svg";
 import { Button, PullToRefresh, UserImage } from "@components/universal";
-import { HORIZONTAL_GUTTER } from "@lib";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -39,7 +37,7 @@ export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
   const onPressAddBio = () => {};
 
   return (
-    <Animated.View style={[styles.container]}>
+    <Animated.View style={styles.container}>
       <View style={styles.row}>
         <UserImage phoneNumber={phoneNumber} size={(SCREEN_WIDTH - 60) / 2} />
 
@@ -51,7 +49,6 @@ export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
           }}
         >
           <Text
-            testID="num-moments"
             style={{ ...styles.subheader, textAlign: "center" }}
             numberOfLines={2}
           >{`${numPosts}\n${numPosts === 1 ? "post" : "posts"}`}</Text>
@@ -63,7 +60,6 @@ export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
             }}
           />
           <Text
-            testID="friends"
             style={{ ...styles.subheader, textAlign: "center" }}
             onPress={console.log}
           >{`${friends.length}\n${
@@ -72,7 +68,7 @@ export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
         </View>
       </View>
 
-      <View style={{ paddingTop: 10, alignSelf: "flex-start" }}>
+      <View style={{ paddingTop: 25, alignSelf: "flex-start" }}>
         <Text style={TextStyles.title}>{`${firstName} ${lastName}`}</Text>
         {bio.length || !onPressAddBio ? (
           <Text style={styles.bioText}>{bio}</Text>
@@ -90,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 15,
     paddingTop: 5,
-    paddingBottom: 20,
+    paddingBottom: 30,
   },
   headerContainer: {
     alignSelf: "stretch",
@@ -120,7 +116,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1,
   },
-
   notificationIndicator: {
     marginLeft: 10,
     height: 30,

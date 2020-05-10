@@ -161,6 +161,7 @@ const Feed: React.FC<FeedProps & FeedConnectedProps> = ({ postIds }) => {
         <Animated.View style={{ transform: [{ translateY }] }}>
           {postIds.map((id, key) => (
             <Post
+              visible={eq(index, key)}
               dragStarted={eq(state, State.BEGAN)}
               offset={sub(translateY, key * -POST_HEIGHT)}
               {...{ id, key }}

@@ -146,7 +146,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
             </Text>
           </View>
 
-          {likes.includes(userPhoneNumber) ? (
+          {/* {likes.includes(userPhoneNumber) ? (
             <HeartFilledSVG
               style={styles.svg}
               onPress={handleOnPressLike}
@@ -160,7 +160,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
               width={15}
               height={15}
             />
-          )}
+          )} */}
         </TouchableOpacity>
 
         {(likesTransitioning || likesOpen) && (
@@ -193,7 +193,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginBottom: 7,
+    marginBottom: 10,
   },
   textContainer: {
     flex: 1,

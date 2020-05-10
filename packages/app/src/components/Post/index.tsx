@@ -45,6 +45,7 @@ export type AnimateProp = {
 
 export interface PostProps {
   id: string;
+  visible?: Animated.Adaptable<0 | 1>;
   light?: boolean;
   dragStarted?: Animated.Adaptable<0 | 1>;
   offset?: Animated.Adaptable<number>;
@@ -60,6 +61,7 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
     id,
     post,
     light,
+    visible = 1,
     dragStarted = 0,
     offset = 0,
     animate = { image: {}, header: {}, footer: {} },
@@ -85,7 +87,9 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
           src={getPostImageURL("post.user", post.photoId)}
           {...{ open }}
         >
-          {(translation) => <Comments postId={id} {...translation} />}
+          {({ translateX }) => (
+            <Comments postId={id} {...{ translateX, visible }} />
+          )}
         </Image>
         <Animated.View style={{ ...styles.footer, ...animate.footer }}>
           <View style={styles.row}>

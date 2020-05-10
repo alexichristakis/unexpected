@@ -26,7 +26,7 @@ export interface RowProps extends Omit<RowType, "id"> {
 export const Row: React.FC<RowProps> = React.memo(
   ({ type, posts, onPressPost }) => {
     const renderPost = (id: string, size: number) => (
-      <GridImage onPress={onPressPost} {...{ id, size }} />
+      <GridImage key={id} onPress={onPressPost} {...{ id, size }} />
     );
 
     switch (type) {
