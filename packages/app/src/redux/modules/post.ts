@@ -43,14 +43,9 @@ type PostMap = {
   [postId: string]: Post;
 };
 
-type CommentMap = {
-  [postId: string]: { [commentId: string]: Comment };
-};
-
 export interface PostState {
   users: UserMap;
   posts: PostMap;
-  comments: CommentMap;
   feed: {
     posts: string[];
     lastFetched: string;
@@ -66,7 +61,6 @@ export interface PostState {
 const initialState: PostState = {
   users: {},
   posts: {},
-  comments: {},
   feed: {
     posts: [],
     lastFetched: "",
@@ -101,7 +95,7 @@ export default (
     }
 
     case ActionTypes.FETCH_FEED_SUCCESS: {
-      const { postIds, posts, users, comments } = action.payload;
+      const { postIds, posts, users } = action.payload;
 
       return immer(state, (draft) => {
         draft.feed = {
@@ -112,18 +106,14 @@ export default (
         };
 
         draft.users = users;
-        draft.comments = comments;
         draft.posts = posts;
       });
     }
 
     case ActionTypes.FETCH_POST_SUCCESS: {
-      const { post, comments } = action.payload;
+      const { post } = action.payload;
 
       return immer(state, (draft) => {
-        draft.commentsLoading = false;
-
-        draft.comments[post.id] = keyBy(comments, ({ id }) => id);
         draft.posts[post.id] = post;
       });
     }
@@ -294,17 +284,15 @@ function* onFetchFeed(
         return acc;
       }, {} as UserMap);
 
-      const commentMap: CommentMap = {};
-      Object.keys(comments).map(
-        (key) => (commentMap[key] = keyBy(comments[key], ({ id }) => id))
-      );
+      // const commentMap: CommentMap = {};
+      // Object.keys(comments).map(
+      //   (key) => (commentMap[key] = keyBy(comments[key], ({ id }) => id))
+      // );
 
       const userValues = Object.values(users);
       yield all([
         yield put(UserActions.loadUsers(userValues)),
-        yield put(
-          Actions.fetchFeedSuccess(postIds, posts, userMap, commentMap)
-        ),
+        yield put(Actions.fetchFeedSuccess(postIds, posts, userMap)),
       ]);
     }
 
@@ -381,17 +369,11 @@ export const Actions = {
 
   fetchFeed: (fromDate?: Date) =>
     createAction(ActionTypes.FETCH_FEED, { fromDate }),
-  fetchFeedSuccess: (
-    postIds: string[],
-    posts: PostMap,
-    users: UserMap,
-    comments: CommentMap
-  ) =>
+  fetchFeedSuccess: (postIds: string[], posts: PostMap, users: UserMap) =>
     createAction(ActionTypes.FETCH_FEED_SUCCESS, {
       postIds,
       posts,
       users,
-      comments,
     }),
 
   fetchPost: (id: string) => createAction(ActionTypes.FETCH_POST, { id }),

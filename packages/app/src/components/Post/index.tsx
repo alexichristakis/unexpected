@@ -2,14 +2,7 @@ import React from "react";
 import { View, StyleSheet, Text, ImageStyle, ViewStyle } from "react-native";
 import Animated, { useCode, interpolate } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
-import {
-  useValues,
-  useValue,
-  useGestureHandler,
-  withTransition,
-  mix,
-} from "react-native-redash";
-import { TapGestureHandler, State } from "react-native-gesture-handler";
+import { useValues } from "react-native-redash";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -20,8 +13,6 @@ import {
   formatName,
   Colors,
 } from "@lib";
-
-import { getPostImageURL } from "@api";
 
 import Image from "./Image";
 import Comments from "./Comments";
@@ -35,6 +26,7 @@ const { cond, onChange, set } = Animated;
 const connector = connect(
   (state: RootState, props: PostProps) => ({
     post: selectors.post(state, props),
+    numComments: selectors.numComments(state, props),
   }),
   {}
 );
@@ -63,6 +55,7 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
   ({
     id,
     post,
+    numComments,
     light,
     visible = 1,
     dragStarted = 0,
@@ -89,8 +82,7 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
         <Image
           style={animate.image}
           containerStyle={animate.container}
-          src={getPostImageURL("post.user", post.photoId)}
-          {...{ open }}
+          {...{ open, id }}
         >
           {({ translateX }) => (
             <Comments postId={id} {...{ translateX, visible }} />
@@ -116,12 +108,12 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
               <Text style={{ ...TextStyles.small, color }}>2 minutes ago</Text>
             </View>
           </View>
-          <CommentsButton {...{ open, numComments: post.comments.length }} />
+          <CommentsButton {...{ open, numComments }} />
         </Animated.View>
       </Animated.View>
     );
-  }
-  // (p, n) => p.id === n.id
+  },
+  (p, n) => p.id === n.id && p.numComments === n.numComments
 );
 
 const styles = StyleSheet.create({

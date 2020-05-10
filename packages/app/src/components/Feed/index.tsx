@@ -57,7 +57,7 @@ const {
 } = Animated;
 
 const connector = connect(
-  (state: RootState) => ({ postIds: selectors.allPosts(state) }),
+  (state: RootState) => ({ postIds: selectors.feedPosts(state) }),
   {}
 );
 

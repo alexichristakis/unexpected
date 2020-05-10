@@ -13,6 +13,7 @@ import {
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import immer from "immer";
 
+import * as selectors from "../selectors";
 import { Comment, User, Post, NewComment } from "@global";
 import client, { getHeaders } from "@api";
 
@@ -22,13 +23,20 @@ import {
   createAction,
   ExtractActionFromActionCreator,
 } from "../types";
+import keyBy from "lodash/keyBy";
 
-export interface CommentState {
-  readonly loading: boolean;
-}
+type CommentMap = {
+  [postId: string]: { [commentId: string]: Comment };
+};
+
+export type CommentState = Readonly<{
+  loading: boolean;
+  comments: CommentMap;
+}>;
 
 const initialState: CommentState = {
   loading: false,
+  comments: {},
 };
 
 export default (
@@ -53,7 +61,7 @@ export default (
         comments[comment.id] = comment;
 
         draft.comments[comment.post] = comments;
-        draft.commentsLoading = false;
+        draft.loading = false;
       });
     }
 
@@ -64,12 +72,12 @@ export default (
       return immer(state, (draft) => {
         delete draft.comments[postId][id];
 
-        draft.commentsLoading = false;
+        draft.loading = false;
       });
     }
 
     case ActionTypes.LIKE_COMMENT: {
-      return { ...state, commentsLoading: true };
+      return { ...state, loading: true };
     }
 
     default:
@@ -93,7 +101,7 @@ function* onFetchComments(
 
     yield put(Actions.fetchCommentsSuccess(postId, data));
   } catch (err) {
-    yield put(Actions.onError(err.message));
+    yield put(Actions.onCommentError(err.message));
   }
 }
 
@@ -114,7 +122,7 @@ function* onSendComment(
 
     yield put(Actions.loadComment(data));
   } catch (err) {
-    yield put(Actions.onError(err.message));
+    yield put(Actions.onCommentError(err.message));
   }
 }
 
@@ -136,7 +144,7 @@ function* onDeleteComment(
 
     yield put(Actions.deleteCommentSuccess(postId, id));
   } catch (err) {
-    yield put(Actions.onError(err.message));
+    yield put(Actions.onCommentError(err.message));
   }
 }
 
@@ -160,7 +168,7 @@ function* onLikeComment(
     const { data } = res;
     yield put(Actions.loadComment(data));
   } catch (err) {
-    yield put(Actions.onError(err));
+    yield put(Actions.onCommentError(err));
   }
 }
 
@@ -190,4 +198,7 @@ export const Actions = {
     createAction(ActionTypes.DELETE_COMMENT_SUCCESS, { postId, id }),
 
   likeComment: (id: string) => createAction(ActionTypes.LIKE_COMMENT, { id }),
+
+  onCommentError: (error: string) =>
+    createAction(ActionTypes.COMMENT_ERROR, { error }),
 };

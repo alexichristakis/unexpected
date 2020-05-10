@@ -5,17 +5,27 @@ import {
   CommentModel,
 } from "./models";
 
-export type FriendRequest = Omit<FriendRequestModel, "_id" | "createdAt"> & {
+export interface FriendRequest extends FriendRequestModel {
   id: string;
+  from: string;
+  to: string;
+}
+
+export type FriendRequest_populated = Omit<FriendRequest, "from" | "to"> & {
+  from: User;
+  to: User;
 };
 
 export interface User extends UserModel {
   id: string;
+  friends: string[];
 }
 
-export interface User_populated extends User {
+export type PartialUser = Partial<User> & { id: string };
+
+export type User_populated = Omit<User, "friends"> & {
   friends: User[];
-}
+};
 
 export type NewUser = Pick<
   User,
@@ -29,33 +39,39 @@ export type UserNotificationRecord = {
 
 export interface Post extends PostModel {
   id: string;
+  user: string;
 }
 
-export interface Post_populated extends Post {
+export type Post_populated = Omit<Post, "user"> & {
   user: User;
-}
+};
 
 export type NewPost = Pick<Post, "user" | "description" | "photoId">;
 
 export interface Comment extends CommentModel {
   id: string;
+  user: string;
+  post: string;
+  likes: string[];
 }
 
-export interface Comment_post_populated extends Comment {
+export type Comment_post_populated = Omit<Comment, "post"> & {
   post: Post;
-}
+};
 
-export interface Comment_likes_populaed extends Comment {
+export type Comment_likes_populaed = Omit<Comment, "likes"> & {
   likes: User[];
-}
+};
 
-export interface Comment_user_populated extends Comment {
+export type Comment_user_populated = Omit<Comment, "user"> & {
   user: User;
-}
+};
 
-export type Comment_populated = Comment_post_populated &
-  Comment_user_populated &
-  Comment_likes_populaed;
+export type Comment_populated = Omit<Comment, "user" | "likes" | "post"> & {
+  post: Post;
+  likes: User[];
+  user: User;
+};
 
 export type NewComment = Pick<Comment, "user" | "body" | "post">;
 
