@@ -69,7 +69,7 @@ export class AuthService {
     if (!comparison) return { verified: false };
 
     // check to see if the user already has an account
-    const userModel = await this.userService.getByPhoneNumber(phoneNumber);
+    const userModel = await this.userService.getByPhone(phoneNumber);
 
     if (userModel) {
       return { verified: true, user: userModel };

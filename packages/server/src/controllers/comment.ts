@@ -41,45 +41,45 @@ export class CommentController {
   async comment(@BodyParams("comment") comment: NewComment) {
     const { user: uid, post: postId } = comment;
 
-    const [fromUser, comments, post] = await Promise.all([
-      this.userService.get(uid.toString()),
-      this.commentService.getByPostId(postId.toString()),
-      this.postService.getId(postId.toString()),
-    ]);
+    // const [fromUser, comments, post] = await Promise.all([
+    //   this.userService.get(uid.toString()),
+    //   this.commentService.getByPostId(postId.toString()),
+    //   this.postService.getId(postId.toString()),
+    // ]);
 
-    if (!fromUser || !post) throw new Exception();
+    // if (!fromUser || !post) throw new Exception();
 
-    const otherCommentersNumbers = comments?.length
-      ? uniq(
-          filter(
-            comments,
-            ({ user }) => user !== fromUser.id && user !== post.user
-          )
-        ).map(({ user }) => user.toString())
-      : [];
+    // const otherCommentersNumbers = comments?.length
+    //   ? uniq(
+    //       filter(
+    //         comments,
+    //         ({ user }) => user !== fromUser.id && user !== post.user
+    //       )
+    //     ).map(({ user }) => user.toString())
+    //   : [];
 
-    const users = await this.userService.find(
-      { _id: { $in: [post.user.toString(), ...otherCommentersNumbers] } },
-      ["deviceOS", "deviceToken"]
-    );
+    // const users = await this.userService.find(
+    //   { _id: { $in: [post.user.toString(), ...otherCommentersNumbers] } },
+    //   ["deviceOS", "deviceToken"]
+    // );
 
-    const [postAuthor] = remove(users, (user) => user.id === post.user);
+    // const [postAuthor] = remove(users, (user) => user.id === post.user);
 
-    const [newComment] = await Promise.all([
-      this.commentService.createNewComment(comment as any),
-      this.notificationService.notify(
-        postAuthor,
-        `${fromUser.firstName} commented on your post!`
-        // { phoneNumber: post.phoneNumber, id: postId }
-      ),
-      this.notificationService.notify(
-        users,
-        `${fromUser.firstName} also commented ${postAuthor.firstName}'s post`
-        // { phoneNumber: post.phoneNumber, id: postId }
-      ),
-    ]);
+    // const [newComment] = await Promise.all([
+    //   this.commentService.createNewComment(comment as any),
+    //   this.notificationService.notify(
+    //     postAuthor,
+    //     `${fromUser.firstName} commented on your post!`
+    //     // { phoneNumber: post.phoneNumber, id: postId }
+    //   ),
+    //   this.notificationService.notify(
+    //     users,
+    //     `${fromUser.firstName} also commented ${postAuthor.firstName}'s post`
+    //     // { phoneNumber: post.phoneNumber, id: postId }
+    //   ),
+    // ]);
 
-    return newComment;
+    // return newComment;
   }
 
   @Patch("/:uid/like/:id")

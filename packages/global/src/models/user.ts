@@ -6,7 +6,6 @@ export class User {
   @ObjectID("id")
   _id: string;
 
-  @Indexed()
   @Format("/^+?[1-9]d{1,14}$/")
   @Required()
   phoneNumber: string;
@@ -41,7 +40,6 @@ export class User {
   notifications: string[];
 
   // mutual
-  @Property()
   @Ref(User)
   friends: Ref<User>[];
 }

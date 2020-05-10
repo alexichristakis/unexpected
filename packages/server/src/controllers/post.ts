@@ -7,10 +7,10 @@ import {
   Patch,
   PathParams,
   Put,
-  UseAuth
+  UseAuth,
 } from "@tsed/common";
 
-import { Comment, Post } from "@unexpected/global";
+import { Comment, Post } from "@global";
 
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { PostService } from "../services/post";
@@ -21,15 +21,12 @@ export class PostController {
   @Inject(PostService)
   private postService: PostService;
 
-  @Put("/:phoneNumber")
+  @Put("/:uid")
   @UseAuth(AuthMiddleware, { select: Select.phoneFromPath })
-  sendPost(
-    @PathParams("phoneNumber") phoneNumber: string,
-    @BodyParams("post") post: Post
-  ) {
+  sendPost(@PathParams("uid") uid: string, @BodyParams("post") post: Post) {
     return this.postService.createNewPost({
       ...post,
-      phoneNumber
+      user: uid,
     });
   }
 

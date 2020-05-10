@@ -10,9 +10,8 @@ import {
   QueryParams,
   UseAuth,
 } from "@tsed/common";
-import { User } from "@unexpected/global";
 
-import { UserModel } from "@global";
+import { User, UserModel, NewUser } from "@global";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { FriendService } from "../services/friend";
 import { UserService } from "../services/user";
@@ -35,79 +34,83 @@ export class UserController {
     return this.userService.search(query);
   }
 
-  @Get("/:phoneNumber/camera")
+  @Get("/:id/camera")
   async getIsCameraEnabled(@PathParams("phoneNumber") phoneNumber: string) {
     return this.userService.cameraEnabled(phoneNumber);
   }
 
   @Get()
   async getUsers(
-    @QueryParams("phoneNumbers") phoneNumbers: string,
+    @QueryParams("ids") ids: string,
     @QueryParams("select") select?: string
   ) {
-    const userPhoneNumbers = phoneNumbers.includes(",")
-      ? phoneNumbers.split(",")
-      : [phoneNumbers];
+    const uids = ids.includes(",") ? ids.split(",") : [ids];
+
     const selectOn = select?.split(",").join(" ") || "firstName lastName";
 
-    return this.userService.getByPhoneNumber(
-      userPhoneNumbers,
-      false,
-      selectOn + " phoneNumber"
-    );
+    return this.userService.getMultiple(uids, selectOn);
   }
 
-  @Get("/:phoneNumber")
-  async getUser(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.userService.getByPhoneNumber(phoneNumber);
+  @Get("/:id")
+  async getUser(
+    @PathParams("id") id: string,
+    @QueryParams("select") select?: string,
+    @QueryParams("populate") populate?: string
+  ) {
+    return this.userService.get(id, select, populate);
   }
 
-  @Get("/:phoneNumber/friends")
-  async getUserFriends(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.userService.getUserFriends(phoneNumber);
+  @Get("/phone/:phoneNumber")
+  async getUserByPhone(@PathParams("phoneNumber") phoneNumber: string) {
+    return this.userService.getByPhone(phoneNumber);
+  }
+
+  @Get("/:id/friends")
+  async getUserFriends(@PathParams("id") id: string) {
+    return this.userService.getFriends(id);
   }
 
   @Put()
-  @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromUserFromBody,
-  })
-  async createUser(@BodyParams("user") user: User): Promise<UserModel | void> {
-    return this.userService.createNewUser(user);
+  // @UseAuth(AuthMiddleware, {
+  //   // select: Select.phoneFromUserFromBody,
+  // })
+  async createUser(@BodyParams("user") user: NewUser) {
+    return this.userService.create(user);
   }
 
-  @Patch("/:phoneNumber")
+  @Patch("/:id")
   @UseAuth(AuthMiddleware, {
     select: Select.phoneFromPath,
   })
   async updateUser(
-    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("id") id: string,
     @BodyParams("user") user: Partial<User>
-  ): Promise<UserModel> {
-    await this.userService.updateOne({ phoneNumber }, user);
-
-    return this.userService.getByPhoneNumber(phoneNumber);
+  ) {
+    return this.userService.update(id, user);
   }
 
-  @Get("/:phoneNumber/requests")
-  async getRequests(@PathParams("phoneNumber") phoneNumber: string) {
-    const [friendRequests, requestedFriends] = await Promise.all([
-      this.friendService.getFriendRequests(phoneNumber),
-      this.friendService.getRequestedFriends(phoneNumber),
-    ]);
+  @Get("/:id/requests")
+  async getRequests(@PathParams("id") id: string) {
+    const requests = await this.friendService.getRequests(id);
+
+    const friendRequests = requests.filter(({ to }) => to.toString() === id);
+    const requestedFriends = requests.filter(
+      ({ from }) => from.toString() === id
+    );
 
     return { friendRequests, requestedFriends };
   }
 
-  @Patch("/:phoneNumber/friend/:to")
-  @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath,
-  })
+  @Patch("/:from/friend/:to")
+  // @UseAuth(AuthMiddleware, {
+  //   select: Select.phoneFromPath,
+  // })
   async friendUser(
-    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("from") from: string,
     @PathParams("to") to: string
   ) {
-    if (phoneNumber !== to) {
-      return this.friendService.sendFriendRequest(phoneNumber, to);
+    if (from !== to) {
+      return this.friendService.sendFriendRequest(from, to);
     }
 
     return null;
@@ -118,16 +121,16 @@ export class UserController {
     return this.friendService.delete(id);
   }
 
-  @Patch("/:from/accept/:phoneNumber")
-  @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath,
-  })
+  @Patch("/:to/accept/:from")
+  // @UseAuth(AuthMiddleware, {
+  //   select: Select.phoneFromPath,
+  // })
   async acceptFriendRequest(
-    @PathParams("from") from: string,
-    @PathParams("phoneNumber") phoneNumber: string
+    @PathParams("to") to: string,
+    @PathParams("from") from: string
   ) {
-    if (phoneNumber !== from) {
-      return this.friendService.acceptFriendRequest(from, phoneNumber);
+    if (to !== from) {
+      return this.friendService.acceptFriendRequest(from, to);
     }
 
     return null;

@@ -1,8 +1,8 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { FriendRequest } from "@unexpected/global";
+import filter from "lodash/filter";
 
-import { FriendRequestModel } from "@global";
+import { FriendRequest, FriendRequestModel, User } from "@global";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
@@ -27,28 +27,27 @@ export class FriendService extends CRUDService<
   @Inject(SlackLogService)
   private logger: SlackLogService;
 
-  async getFriendRequests(to: string) {
-    return this.find({ to });
-  }
-
-  async getRequestedFriends(from: string) {
-    return this.find({ from });
+  async getRequests(id: string) {
+    return this.model
+      .find({ $or: [{ to: id }, { from: id }] })
+      .populate("from to");
   }
 
   async sendFriendRequest(from: string, to: string) {
-    const [fromUser, toUser] = await this.userService.getByPhoneNumber(
-      [from, to],
-      true
-    );
+    console.log(from, to);
+
+    const users = await this.userService.getMultiple([from, to]);
+
+    const [fromUser] = filter(users, ({ id }) => id === from);
+    const [toUser] = filter(users, ({ id }) => id === to);
 
     const [request] = await Promise.all([
-      // @ts-ignore
-      this.create({ from, to }),
-      this.notificationService.notifyWithNavigationToUser(
-        toUser,
-        `${fromUser.firstName} sent you a friend request!`,
-        fromUser
-      ),
+      this.model.create({ from, to }),
+      // this.notificationService.notifyWithNavigationToUser(
+      //   toUser,
+      //   `${fromUser.firstName} sent you a friend request!`,
+      //   fromUser
+      // ),
     ]);
 
     return request;
@@ -65,10 +64,20 @@ export class FriendService extends CRUDService<
   }
 
   async acceptFriendRequest(from: string, to: string) {
-    const doc = await this.findOne({ from, to });
+    const doc = await this.model
+      .findOne({ from, to })
+      .populate("from to")
+      .exec();
+
+    console.log(doc);
 
     if (doc) {
-      return Promise.all([doc.remove(), this.userService.friend(from, to)]);
+      const { from: fromUser, to: toUser } = doc;
+
+      return Promise.all([
+        doc.remove(),
+        this.userService.friend(fromUser as User, toUser as User),
+      ]);
     }
 
     return null;

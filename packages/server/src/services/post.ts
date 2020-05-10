@@ -1,11 +1,10 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Post } from "@unexpected/global";
 import groupBy from "lodash/groupBy";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
 
-import { PostModel } from "@global";
+import { PostModel, Post, NewPost } from "@global";
 
 import { CommentService } from "./comment";
 import { CRUDService } from "./crud";
@@ -26,16 +25,16 @@ export class PostService extends CRUDService<PostModel, Post> {
   @Inject(SlackLogService)
   logger: SlackLogService;
 
-  createNewPost = async (post: Post) => {
+  createNewPost = async (post: NewPost) => {
     return Promise.all([
-      this.create(post),
+      this.model.create(post),
       this.userService.updateValidNotifications(post),
-      this.logger.sendMessage(post.phoneNumber, post.description),
+      this.logger.sendMessage(post.user.toString(), post.description),
     ]);
   };
 
-  getUsersPosts = async (phoneNumber: string) => {
-    const posts = await this.find({ phoneNumber });
+  getUsersPosts = async (user: string) => {
+    const posts = await this.find({ user });
 
     const postMap = keyBy(posts, ({ id }) => id);
 
@@ -52,7 +51,7 @@ export class PostService extends CRUDService<PostModel, Post> {
   };
 
   getFeedForUser = async (id: string) => {
-    const user = await this.userService.getId(id, ["friends"]);
+    const user = await this.userService.get(id, "friends");
 
     if (!user) return null;
 

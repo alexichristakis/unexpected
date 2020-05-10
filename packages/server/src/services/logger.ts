@@ -22,9 +22,7 @@ export class SlackLogService {
     return this.sendMessage(
       "notifications generated",
       `\`\`\`${times.reduce((prev, curr) => {
-        return (prev += ` { ${
-          curr.phoneNumber
-        }: ${curr.notifications
+        return (prev += ` { ${curr._id}: ${curr.notifications
           .map((noti) =>
             moment.tz(noti, "America/New_York").format("h:mm:ss a")
           )
