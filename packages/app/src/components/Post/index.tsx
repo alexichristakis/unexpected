@@ -26,6 +26,9 @@ import { getPostImageURL } from "@api";
 import Image from "./Image";
 import Comments from "./Comments";
 import CommentsButton from "./CommentsButton";
+import { useNavigation } from "@react-navigation/core";
+import { StackParamList } from "App";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const { cond, onChange, set } = Animated;
 
@@ -66,6 +69,8 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
     offset = 0,
     animate = { image: {}, header: {}, footer: {} },
   }) => {
+    const navigation = useNavigation<StackNavigationProp<StackParamList>>();
+
     const [open] = useValues<0 | 1>([0]);
 
     const scale = interpolate(offset, {
@@ -95,7 +100,17 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
           <View style={styles.row}>
             <View style={styles.profile} />
             <View>
-              <Text style={{ ...TextStyles.medium, color }}>
+              <Text
+                onPress={
+                  () =>
+                    navigation.push("PROFILE", { phoneNumber: "2069409629" })
+                  // navigation.push({
+                  //   key: "PROFILE",
+                  //   params: { phoneNumber: "2069409629" },
+                  // })
+                }
+                style={{ ...TextStyles.medium, color }}
+              >
                 {formatName(post.user)}
               </Text>
               <Text style={{ ...TextStyles.small, color }}>2 minutes ago</Text>

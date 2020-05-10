@@ -1,9 +1,9 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
-import { useVector, useValue, useValues } from "react-native-redash";
-import Animated, { interpolate, Extrapolate } from "react-native-reanimated";
+import { useVector, useValues } from "react-native-redash";
+import Animated from "react-native-reanimated";
 
 import Activity from "@components/Activity";
 import { Pager, TabBar } from "@components/Home";

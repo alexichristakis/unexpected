@@ -2,7 +2,7 @@ import { Post } from "@unexpected/global";
 import moment from "moment";
 import uuid from "uuid/v4";
 
-const NUM_POSTS = 40;
+const NUM_POSTS = 50;
 
 const posts: Post[] = [];
 

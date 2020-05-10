@@ -42,31 +42,35 @@ const Profile: React.FC<ProfileProps & ProfileConnectedProps> = ({
     fetchPosts(phoneNumber);
   }, []);
 
-  return (
-    <Animated.ScrollView
-      style={{
-        flex: 1,
-        paddingTop: SB_HEIGHT,
-        backgroundColor: Colors.background,
-      }}
-      contentContainerStyle={{
-        alignItems: "center",
-        justifyContent: "center",
-        paddingBottom: 100,
-      }}
-    >
-      <Header />
-      <Grid
-        phoneNumber={phoneNumber}
-        postIds={postIds}
-        // onPressPost={handleOnPressPost}
-        // scrollY={scrollY}
-        // friendStatus={getFriendStatusState()}
-        // onScrollEndDrag={handleOnScrollEndDrag}
-        // headerContainerStyle={styles.headerContainer}
-      />
-    </Animated.ScrollView>
-  );
+  const renderHeader = () => <Header />;
+
+  return <Grid postIds={postIds} renderHeader={renderHeader} />;
+
+  // return (
+  //   <Animated.ScrollView
+  //     style={{
+  //       flex: 1,
+  //       paddingTop: SB_HEIGHT,
+  //       backgroundColor: Colors.background,
+  //     }}
+  //     contentContainerStyle={{
+  //       alignItems: "center",
+  //       justifyContent: "center",
+  //       paddingBottom: 100,
+  //     }}
+  //   >
+  //     <Header />
+  //     <Grid
+  //       phoneNumber={phoneNumber}
+  //       postIds={postIds}
+  //       // onPressPost={handleOnPressPost}
+  //       // scrollY={scrollY}
+  //       // friendStatus={getFriendStatusState()}
+  //       // onScrollEndDrag={handleOnScrollEndDrag}
+  //       // headerContainerStyle={styles.headerContainer}
+  //     />
+  //   </Animated.ScrollView>
+  // );
 };
 
 export default connector(Profile);

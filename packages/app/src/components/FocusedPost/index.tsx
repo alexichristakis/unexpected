@@ -2,6 +2,7 @@ import React, { useContext, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import Animated, { interpolate } from "react-native-reanimated";
 import { mix } from "react-native-redash";
+import { useMemoOne } from "use-memo-one";
 
 import { SB_HEIGHT, Colors, SCREEN_WIDTH, SCREEN_HEIGHT } from "@lib";
 import { FocusedPostContext } from "@hooks";
@@ -39,7 +40,7 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
     FocusedPostContext
   );
 
-  const animate: AnimateProp = useMemo(() => {
+  const animate: AnimateProp = useMemoOne(() => {
     const opacity = interpolate(transition, {
       inputRange: [0.66, 1],
       outputRange: [0, 1],
@@ -51,6 +52,7 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
         opacity,
       },
       image: {
+        backgroundColor: Colors.background,
         borderRadius: mix(transition, 5, 20),
         transform: [
           {
@@ -99,7 +101,8 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
         />
         <Post
           light
-          visible={eq(transition, 1)}
+          // visible={eq(transition, 1)}
+          visible={new Animated.Value(1)}
           dragStarted={neq(transition, 1)}
           animate={animate}
           {...{ id }}

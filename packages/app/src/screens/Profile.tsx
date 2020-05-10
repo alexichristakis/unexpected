@@ -3,6 +3,8 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleSheet,
+  View,
+  Text,
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
@@ -15,7 +17,7 @@ import { Screen } from "react-native-screens";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
-import { Grid, PostModal, Top, UserModal } from "@components/Profile";
+import Profile from "@components/Profile";
 import { FriendButton, ModalListRef, NavBar } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT } from "@lib";
@@ -44,7 +46,7 @@ export interface ProfileProps {
   route: RouteProp<ParamList, "PROFILE">;
 }
 
-const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
+const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
   ({
     navigation,
     fetchUsersPosts,
@@ -137,39 +139,40 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     };
 
     return (
-      <Screen stackPresentation={"push"} style={styles.container}>
-        <NavBar
-          transitionRef={navBarTransitionRef}
-          backButtonText={route.params.prevRoute}
-          showTitle={showTitle}
-          showBackButtonText={!showTitle}
-          title={user.firstName}
-          navigation={navigation}
-          rightButton={<FriendButton showLabel={!showTitle} user={user} />}
-        />
-        <Grid
-          phoneNumber={route.params.phoneNumber}
-          onPressPost={handleOnPressPost}
-          scrollY={scrollY}
-          friendStatus={getFriendStatusState()}
-          onScrollEndDrag={handleOnScrollEndDrag}
-          headerContainerStyle={styles.headerContainer}
-          renderHeader={renderTop}
-        />
-        <UserModal
-          visible={showUserModal}
-          phoneNumber={route.params.phoneNumber}
-          onClose={handleUserModalClose}
-        />
-        <PostModal
-          postId={
-            route.params?.focusedPostId?.length
-              ? route.params?.focusedPostId
-              : focusedPostId
-          }
-          onClose={handlePostModalClose}
-        />
-      </Screen>
+      <Profile />
+      // <Screen stackPresentation={"push"} style={styles.container}>
+      //   <NavBar
+      //     transitionRef={navBarTransitionRef}
+      //     backButtonText={route.params.prevRoute}
+      //     showTitle={showTitle}
+      //     showBackButtonText={!showTitle}
+      //     title={user.firstName}
+      //     navigation={navigation}
+      //     rightButton={<FriendButton showLabel={!showTitle} user={user} />}
+      //   />
+      //   <Grid
+      //     phoneNumber={route.params.phoneNumber}
+      //     onPressPost={handleOnPressPost}
+      //     scrollY={scrollY}
+      //     friendStatus={getFriendStatusState()}
+      //     onScrollEndDrag={handleOnScrollEndDrag}
+      //     headerContainerStyle={styles.headerContainer}
+      //     renderHeader={renderTop}
+      //   />
+      //   <UserModal
+      //     visible={showUserModal}
+      //     phoneNumber={route.params.phoneNumber}
+      //     onClose={handleUserModalClose}
+      //   />
+      //   <PostModal
+      //     postId={
+      //       route.params?.focusedPostId?.length
+      //         ? route.params?.focusedPostId
+      //         : focusedPostId
+      //     }
+      //     onClose={handlePostModalClose}
+      //   />
+      // </Screen>
     );
   },
   (prevProps, nextProps) =>
@@ -192,4 +195,4 @@ const styles = StyleSheet.create({
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
-export default connector(Profile);
+export default connector(ProfileScreen);

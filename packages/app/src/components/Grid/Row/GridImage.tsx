@@ -28,7 +28,6 @@ const GridImage: React.FC<
 > = React.memo(
   ({ id, size, onPress, src }) => {
     const { id: focusedId, transition } = useContext(FocusedPostContext);
-
     const ref = useRef<Animated.View>(null);
 
     const handleOnPress = useCallback(() => {

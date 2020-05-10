@@ -277,6 +277,8 @@ PODS:
     - React
   - react-native-notifications (3.1.4):
     - React
+  - react-native-safe-area-context (1.0.0):
+    - React
   - React-RCTActionSheet (0.63.0-rc.1):
     - React-Core/RCTActionSheetHeaders (= 0.63.0-rc.1)
   - React-RCTAnimation (0.63.0-rc.1):
@@ -417,6 +419,7 @@ DEPENDENCIES:
   - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-notifications (from `../node_modules/react-native-notifications`)
+  - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-RCTActionSheet (from `/Users/alexi/unexpected/unexpected/packages/app/node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `/Users/alexi/unexpected/unexpected/packages/app/node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `/Users/alexi/unexpected/unexpected/packages/app/node_modules/react-native/Libraries/Blob`)
@@ -511,6 +514,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-notifications:
     :path: "../node_modules/react-native-notifications"
+  react-native-safe-area-context:
+    :path: "../node_modules/react-native-safe-area-context"
   React-RCTActionSheet:
     :path: "/Users/alexi/unexpected/unexpected/packages/app/node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -594,6 +599,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: e794dc2dbd0db0a1062ac5fa425d5df04c1970ca
   react-native-netinfo: b9650ab1b8b4362b3c455b1274e4bc48223cc957
   react-native-notifications: 36929512507417ba0021659bd2f9e0184dda2489
+  react-native-safe-area-context: a346c75f2288147527365ce27b59ca6d38c27805
   React-RCTActionSheet: ead415a8470cd3552f8cadce3b9b32e0d52e46a7
   React-RCTAnimation: 627dc8ad905b206c9bf10e9527079ef754b6a5dc
   React-RCTBlob: e70ce946cee9d400c5bfb0e8668dd11db852fa5a

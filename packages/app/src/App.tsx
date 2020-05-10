@@ -1,12 +1,17 @@
 import React from "react";
 import { StatusBar } from "react-native";
 
-import { NavigationContainer } from "@react-navigation/native";
+import Animated, { interpolate } from "react-native-reanimated";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
 } from "react-native-screens/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import {
+  createStackNavigator,
+  StackCardStyleInterpolator,
+} from "@react-navigation/stack";
 import { Provider } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -25,6 +30,7 @@ import { setNavigatorRef } from "./navigation";
 
 /* screens */
 import { Auth, Home, Profile, SignUp } from "./screens";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 type BaseParams = {
   prevRoute: string;
@@ -40,7 +46,8 @@ export type StackParamList = {
   AUTH: undefined;
   SHARE: BaseParams;
   USER_PROFILE: undefined | { focusedPostId: string };
-  PROFILE: BaseParams & { phoneNumber: string; focusedPostId?: string };
+  // PROFILE: BaseParams & { phoneNumber: string; focusedPostId?: string };
+  PROFILE: { phoneNumber: string };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: undefined;
@@ -51,7 +58,8 @@ export type StackParamList = {
 export type ParamList = StackParamList;
 
 /* initialize navigators */
-const Stack = createNativeStackNavigator<StackParamList>();
+// const Stack = createNativeStackNavigator<StackParamList>();
+const Stack = createStackNavigator<StackParamList>();
 
 type AuthenticatedRootProps = {
   route: any;
@@ -64,10 +72,28 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
   // start listening for notification events
   useNotificationEvents(navigation);
 
+  const cardStyleInterpolator: StackCardStyleInterpolator = ({ current }) => {
+    return {
+      cardStyle: {
+        opacity: current.progress,
+        transform: [
+          {
+            scale: current.progress.interpolate({
+              inputRange: [0, 0.5, 1],
+              outputRange: [0.9, 1.01, 1],
+            }),
+          },
+        ],
+      },
+    };
+  };
+
   return (
     <FocusedPostProvider>
       <KeyboardStateProvider>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator
+          screenOptions={{ headerShown: false, cardStyleInterpolator }}
+        >
           <Stack.Screen name="HOME" component={Home} />
           <Stack.Screen name="PROFILE" component={Profile} />
         </Stack.Navigator>
@@ -97,7 +123,7 @@ const Router: React.FC = () => {
 
   return (
     <NavigationContainer ref={setNavigatorRef}>
-      <Stack.Navigator screenOptions={{ stackAnimation: "fade" }}>
+      <Stack.Navigator screenOptions={{}}>
         {isAuthorized ? (
           <Stack.Screen name="AUTHENTICATED" options={{ headerShown: false }}>
             {(props) => <AuthenticatedRoot {...props} />}
@@ -121,10 +147,12 @@ export const Context: React.FC = ({ children }) => {
 
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <StatusBar barStyle="dark-content" />
-        {children}
-      </PersistGate>
+      <SafeAreaProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <StatusBar barStyle="dark-content" />
+          {children}
+        </PersistGate>
+      </SafeAreaProvider>
     </Provider>
   );
 };

@@ -6,7 +6,6 @@ import React, {
   useMemo,
 } from "react";
 import {
-  Animated as RNAnimated,
   FlatList,
   ListRenderItemInfo,
   NativeScrollEvent,
@@ -25,7 +24,7 @@ import { onScrollEvent, vec } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
 import LockSVG from "@assets/svg/lock.svg";
-import { Colors, TextStyles } from "@lib";
+import { Colors, TextStyles, SB_HEIGHT } from "@lib";
 
 import { formatName } from "@lib";
 import * as selectors from "@redux/selectors";
@@ -46,6 +45,7 @@ const mapDispatchToProps = {};
 export type GridConnectedProps = ConnectedProps<typeof connector>;
 
 export interface GridProps {
+  renderHeader: () => JSX.Element;
   uid: string;
 }
 
@@ -56,7 +56,7 @@ type MonthsData = {
 }[];
 
 export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
-  ({ posts }) => {
+  ({ posts, renderHeader }) => {
     const { setId, origin, size, open } = useContext(FocusedPostContext);
 
     const handleOnPressPost = useCallback((payload: FocusedPostPayload) => {
@@ -97,14 +97,19 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
       };
     }) => <Month key={item.id} onPressPost={handleOnPressPost} {...item} />;
 
-    const renderSeparatorComponent = () => <View style={styles.separator} />;
-
     return useMemo(() => {
       const sections = generateSections(testPosts);
+
       return (
-        <View style={styles.list}>
-          {sections.map((item, index) => renderSection({ item, index }))}
-        </View>
+        <FlatList
+          style={styles.list}
+          data={sections}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderSection}
+          removeClippedSubviews={true}
+          ListHeaderComponent={renderHeader}
+        />
       );
     }, []);
   }
@@ -114,6 +119,8 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     width: "100%",
+    paddingTop: SB_HEIGHT,
+    backgroundColor: Colors.background,
   },
   separator: {
     alignSelf: "stretch",
