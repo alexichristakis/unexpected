@@ -1,9 +1,9 @@
 import {
-  Comment as CommentModel,
-  FriendRequest as FriendRequestModel,
-  Post as PostModel,
-  User as UserModel
-} from "@unexpected/server";
+  FriendRequestModel,
+  UserModel,
+  PostModel,
+  CommentModel,
+} from "./models";
 
 export type FriendRequest = Omit<FriendRequestModel, "_id" | "createdAt"> & {
   id: string;

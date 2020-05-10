@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 
-import { Colors, TextStyles } from "@lib/styles";
-import { formatName } from "@lib/utils";
+import { Colors, TextStyles } from "@lib";
+import { formatName } from "@lib";
 import { User } from "@unexpected/global";
 
 import FriendButton from "./FriendButton";
@@ -41,16 +41,16 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "center",
     paddingHorizontal: 10,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   buttonContainer: {
     flex: 1,
     marginLeft: 10,
     flexDirection: "row",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
   },
   name: {
     ...TextStyles.medium,
-    marginLeft: 10
-  }
+    marginLeft: 10,
+  },
 });

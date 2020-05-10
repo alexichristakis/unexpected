@@ -5,8 +5,8 @@ import _ from "lodash";
 import moment from "moment";
 import { Document } from "mongoose";
 
+import { UserModel } from "@global";
 import { NOTIFICATION_MINUTES } from "../lib/constants";
-import { User as UserModel } from "../models/user";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
@@ -22,6 +22,10 @@ export class UserService extends CRUDService<UserModel, User> {
   @Inject(NotificationService)
   notificationService: NotificationService;
 
+  async get(uid: string) {
+    return this.model.findById(uid).exec();
+  }
+
   async createNewUser(newUser: User) {
     const user = await this.getByPhoneNumber(newUser.phoneNumber);
 
@@ -32,7 +36,7 @@ export class UserService extends CRUDService<UserModel, User> {
       this.logger.sendMessage(
         "new user",
         `${newUser.firstName} ${newUser.lastName}`
-      )
+      ),
     ]);
 
     return createdUser;
@@ -47,7 +51,7 @@ export class UserService extends CRUDService<UserModel, User> {
       return this.model
         .find({
           firstName: new RegExp(firstName, "i"),
-          lastName: new RegExp(lastName, "i")
+          lastName: new RegExp(lastName, "i"),
         })
         .exec();
     }
@@ -63,7 +67,7 @@ export class UserService extends CRUDService<UserModel, User> {
 
     const { notifications } = user;
     const updatedNotifications = notifications.filter(
-      notification =>
+      (notification) =>
         !time.isBetween(
           notification,
           moment(notification).add(NOTIFICATION_MINUTES, "minutes")
@@ -86,7 +90,8 @@ export class UserService extends CRUDService<UserModel, User> {
     const currentTime = moment();
 
     const payload = { enabled: false, start: "" };
-    notifications.forEach(notification => {
+
+    notifications.forEach((notification) => {
       const start = moment(notification);
       const end = start.clone().add(NOTIFICATION_MINUTES, "minutes");
 
@@ -104,8 +109,8 @@ export class UserService extends CRUDService<UserModel, User> {
       times.map(({ phoneNumber, notifications }) => ({
         updateOne: {
           filter: { phoneNumber },
-          update: { $set: { notifications } }
-        }
+          update: { $set: { notifications } },
+        },
       }))
     );
 
@@ -120,7 +125,7 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: to },
           {
-            friends: userTo.friends.filter(user => user !== from)
+            friends: userTo.friends.filter((user) => user !== from),
           }
         )
         .exec(),
@@ -128,10 +133,10 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: from },
           {
-            friends: userFrom.friends.filter(user => user !== to)
+            friends: userFrom.friends.filter((user) => user !== to),
           }
         )
-        .exec()
+        .exec(),
     ]);
   }
 
@@ -143,7 +148,7 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: from },
           {
-            friends: _.uniq([...userFrom.friends, to])
+            friends: _.uniq([...userFrom.friends, to]),
           }
         )
         .exec(),
@@ -151,7 +156,7 @@ export class UserService extends CRUDService<UserModel, User> {
         .updateOne(
           { phoneNumber: to },
           {
-            friends: _.uniq([...userTo.friends, from])
+            friends: _.uniq([...userTo.friends, from]),
           }
         )
         .exec(),
@@ -159,15 +164,17 @@ export class UserService extends CRUDService<UserModel, User> {
         userTo,
         `${userFrom.firstName} ${userFrom.lastName} accepted your friend request.`,
         userFrom
-      )
+      ),
     ]);
   }
 
-  async getUserFriends(phoneNumber: string) {
-    const user = await this.getByPhoneNumber(phoneNumber);
-    const { friends } = user;
+  async getUserFriends(uid: string) {
+    const user = await this.model.findById(uid).populate("friends").exec();
 
-    return this.getByPhoneNumber(friends);
+    if (!user) return null;
+
+    const { friends } = user;
+    return friends;
   }
 
   async getByPhoneNumber(phoneNumber?: string): Promise<UserModel & Document>;
@@ -184,7 +191,7 @@ export class UserService extends CRUDService<UserModel, User> {
     if (phoneNumber instanceof Array) {
       const users = await this.model
         .find({
-          phoneNumber: { $in: phoneNumber }
+          phoneNumber: { $in: phoneNumber },
         })
         // .select(select)
         .exec();

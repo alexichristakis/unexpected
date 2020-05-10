@@ -5,7 +5,8 @@ import groupBy from "lodash/groupBy";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
 
-import { Post as PostModel } from "../models/post";
+import { PostModel } from "@global";
+
 import { CommentService } from "./comment";
 import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
@@ -29,7 +30,7 @@ export class PostService extends CRUDService<PostModel, Post> {
     return Promise.all([
       this.create(post),
       this.userService.updateValidNotifications(post),
-      this.logger.sendMessage(post.phoneNumber, post.description)
+      this.logger.sendMessage(post.phoneNumber, post.description),
     ]);
   };
 
@@ -44,13 +45,36 @@ export class PostService extends CRUDService<PostModel, Post> {
   getPost = async (id: string) => {
     const [post, comments] = await Promise.all([
       this.getId(id),
-      this.commentService.getByPostId(id)
+      this.commentService.getByPostId(id),
     ]);
 
     return { post, comments };
   };
 
-  getFeedForUser = async (phoneNumber: string) => {
+  getFeedForUser = async (id: string) => {
+    const user = await this.userService.getId(id, ["friends"]);
+
+    if (!user) return null;
+
+    const { friends } = user;
+
+    const posts = await this.model
+      .find({ user: { $in: [...friends, id] } })
+      .populate("user")
+      .sort({ createdAt: -1 })
+      .exec();
+
+    const postIds: string[] = posts.map(({ id }) => id);
+    const comments = await this.commentService.getByPostIds(postIds);
+
+    const postMap = keyBy(posts, ({ id }) => id);
+    const commentMap = groupBy(comments, ({ post }) => post);
+
+    return { posts: postMap, comments: commentMap };
+  };
+
+  /*
+  getFeedForUser_old = async (phoneNumber: string) => {
     const user = await this.userService.findOne({ phoneNumber }, ["friends"]);
 
     if (!user) return [];
@@ -71,7 +95,7 @@ export class PostService extends CRUDService<PostModel, Post> {
     // gets all unique user entities in the feed
     const usersToFetch = uniqBy(
       [...posts, ...comments],
-      post => post.phoneNumber
+      (post) => post.phoneNumber
     ).map(({ phoneNumber }) => phoneNumber);
 
     // fetches users and comments
@@ -86,9 +110,10 @@ export class PostService extends CRUDService<PostModel, Post> {
       postIds,
       posts: postMap,
       users: userMap,
-      comments: commentMap
+      comments: commentMap,
     };
 
     return ret;
   };
+  */
 }

@@ -6,7 +6,7 @@ import { withTimingTransition } from "react-native-redash";
 import { useValues } from "react-native-redash";
 import { useMemoOne } from "use-memo-one";
 
-import { SB_HEIGHT } from "@lib/styles";
+import { SB_HEIGHT } from "@lib";
 
 const {
   interpolate,
@@ -18,7 +18,7 @@ const {
   cond,
   call,
   greaterThan,
-  useCode
+  useCode,
 } = Animated;
 
 export interface StatusBarProps {
@@ -36,14 +36,14 @@ export function hideStatusBarOnScroll(
     () =>
       withTimingTransition(visible, {
         duration: 200,
-        easing: Easing.ease
+        easing: Easing.ease,
       }),
     []
   );
 
   const translateY = interpolate(transition, {
     inputRange: [0, 1],
-    outputRange: [-SB_HEIGHT, 0]
+    outputRange: [-SB_HEIGHT, 0],
   });
 
   useCode(
@@ -58,9 +58,9 @@ export function hideStatusBarOnScroll(
           call([visible], ([visible]) => {
             setStatusBarVisible(!!visible);
             StatusBar.setHidden(!visible, "slide");
-          })
+          }),
         ]
-      )
+      ),
     ],
     []
   );
@@ -74,7 +74,7 @@ export function hideStatusBarOnScroll(
 
   const style = {
     backgroundColor: "white",
-    transform: [{ translateY }]
+    transform: [{ translateY }],
   };
 
   return ({ onPress }: StatusBarProps) => (
@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    height: SB_HEIGHT
-  }
+    height: SB_HEIGHT,
+  },
 });

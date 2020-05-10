@@ -8,13 +8,12 @@ import {
   PathParams,
   Put,
   QueryParams,
-  UseAuth
+  UseAuth,
 } from "@tsed/common";
 import { User } from "@unexpected/global";
 
-import { PhoneNumberContext } from "twilio/lib/rest/lookups/v1/phoneNumber";
+import { UserModel } from "@global";
 import { AuthMiddleware, Select } from "../middlewares/auth";
-import { User as UserModel } from "../models/user";
 import { FriendService } from "../services/friend";
 import { UserService } from "../services/user";
 
@@ -70,7 +69,7 @@ export class UserController {
 
   @Put()
   @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromUserFromBody
+    select: Select.phoneFromUserFromBody,
   })
   async createUser(@BodyParams("user") user: User): Promise<UserModel | void> {
     return this.userService.createNewUser(user);
@@ -78,7 +77,7 @@ export class UserController {
 
   @Patch("/:phoneNumber")
   @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath
+    select: Select.phoneFromPath,
   })
   async updateUser(
     @PathParams("phoneNumber") phoneNumber: string,
@@ -93,7 +92,7 @@ export class UserController {
   async getRequests(@PathParams("phoneNumber") phoneNumber: string) {
     const [friendRequests, requestedFriends] = await Promise.all([
       this.friendService.getFriendRequests(phoneNumber),
-      this.friendService.getRequestedFriends(phoneNumber)
+      this.friendService.getRequestedFriends(phoneNumber),
     ]);
 
     return { friendRequests, requestedFriends };
@@ -101,7 +100,7 @@ export class UserController {
 
   @Patch("/:phoneNumber/friend/:to")
   @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath
+    select: Select.phoneFromPath,
   })
   async friendUser(
     @PathParams("phoneNumber") phoneNumber: string,
@@ -110,6 +109,8 @@ export class UserController {
     if (phoneNumber !== to) {
       return this.friendService.sendFriendRequest(phoneNumber, to);
     }
+
+    return null;
   }
 
   @Delete("/request/:id")
@@ -119,7 +120,7 @@ export class UserController {
 
   @Patch("/:from/accept/:phoneNumber")
   @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath
+    select: Select.phoneFromPath,
   })
   async acceptFriendRequest(
     @PathParams("from") from: string,
@@ -128,11 +129,13 @@ export class UserController {
     if (phoneNumber !== from) {
       return this.friendService.acceptFriendRequest(from, phoneNumber);
     }
+
+    return null;
   }
 
   @Patch("/:phoneNumber/delete/:to")
   @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath
+    select: Select.phoneFromPath,
   })
   async deleteFriend(
     @PathParams("phoneNumber") phoneNumber: string,
@@ -141,5 +144,7 @@ export class UserController {
     if (phoneNumber !== to) {
       return this.userService.unfriend(phoneNumber, to);
     }
+
+    return null;
   }
 }

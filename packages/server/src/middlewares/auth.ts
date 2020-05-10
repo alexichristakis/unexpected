@@ -1,19 +1,16 @@
-import {
-  EndpointInfo,
-  IMiddleware,
-  Middleware,
-  Req,
-  UseAuth
-} from "@tsed/common";
-import { User } from "@unexpected/global";
+import { EndpointInfo, IMiddleware, Middleware, Req } from "@tsed/common";
 import jwt from "jsonwebtoken";
 import { Forbidden, Unauthorized } from "ts-httpexceptions";
 
+import { User } from "@global";
+
 @Middleware()
 export class AuthMiddleware implements IMiddleware {
-  public use(@Req() request: Req, @EndpointInfo() endpoint: EndpointInfo) {
+  public use(@Req() request: any, @EndpointInfo() endpoint: EndpointInfo) {
     // retrieve options given to the @UseAuth decorator
     const options = endpoint.get(AuthMiddleware) || {};
+
+    // request.ctx.get('headers')
 
     const { authorization } = request.headers;
 
@@ -39,16 +36,16 @@ export class AuthMiddleware implements IMiddleware {
 }
 
 export const Select = {
-  phoneFromUserFromBody: (data: Req): Partial<User> => {
+  phoneFromUserFromBody: (data: any): Partial<User> => {
     return data.body.user.phoneNumber;
   },
-  phoneFromPath: (data: Req): any => {
+  phoneFromPath: (data: any): any => {
     return data.params.phoneNumber;
-  }
+  },
 };
 
 export const Verify = {
   userPhoneNumberMatchesToken: (data: User, phoneNumber: string) => {
     return data.phoneNumber === phoneNumber;
-  }
+  },
 };

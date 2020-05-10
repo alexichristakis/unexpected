@@ -6,7 +6,7 @@ import Animated, { Extrapolate, interpolate } from "react-native-reanimated";
 import PostImage from "./PostImage";
 import { ZoomHandlerGestureBeganPayload } from "./ZoomHandler";
 
-import { Colors } from "@lib/styles";
+import { Colors } from "@lib";
 
 export type Measurement = {
   x: number;
@@ -31,18 +31,18 @@ export const ZoomedImage: React.FC<ZoomedImageProps> = ({
   measurement,
   scale,
   translateX,
-  translateY
+  translateY,
 }) => {
   const opacity = interpolate(scale, {
     inputRange: [1, 1.8],
     outputRange: [0, 0.8],
-    extrapolate: Extrapolate.CLAMP
+    extrapolate: Extrapolate.CLAMP,
   });
 
   const style = {
     left: measurement.x,
     top: measurement.y,
-    transform: [{ scale }, { translateX }, { translateY }]
+    transform: [{ scale }, { translateX }, { translateY }],
   };
 
   return (
@@ -64,9 +64,9 @@ export const ZoomedImage: React.FC<ZoomedImageProps> = ({
 
 const styles = StyleSheet.create({
   root: {
-    zIndex: 10
+    zIndex: 10,
   },
   background: {
-    backgroundColor: Colors.nearBlack
-  }
+    backgroundColor: Colors.nearBlack,
+  },
 });

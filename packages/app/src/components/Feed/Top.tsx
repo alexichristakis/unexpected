@@ -6,8 +6,8 @@ import Haptics from "react-native-haptic-feedback";
 import Animated from "react-native-reanimated";
 
 import { ItemSeparator, PullToRefresh } from "@components/universal";
-import { HORIZONTAL_GUTTER } from "@lib/constants";
-import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import { HORIZONTAL_GUTTER } from "@lib";
+import { SB_HEIGHT, SCREEN_WIDTH, TextStyles } from "@lib";
 
 export interface FeedTopProps {
   latest?: Date;
@@ -22,10 +22,10 @@ export const Top: React.FC<FeedTopProps> = React.memo(
         {
           translateY: scrollY.interpolate({
             inputRange: [-50, 0, 50],
-            outputRange: [-50, 0, 0]
-          })
-        }
-      ]
+            outputRange: [-50, 0, 0],
+          }),
+        },
+      ],
     };
 
     const formatTitle = (date: Moment) => {
@@ -80,22 +80,22 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     paddingHorizontal: 15,
     paddingTop: 5,
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   textContainer: {
-    flex: 1
+    flex: 1,
   },
   loaderContainer: {
     position: "absolute",
     height: 100,
     bottom: 20,
     left: 20,
-    right: 20
+    right: 20,
   },
   row: {
     alignSelf: "stretch",
     flexDirection: "row",
-    flex: 1
+    flex: 1,
   },
   header: {
     backgroundColor: "white",
@@ -104,6 +104,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingVertical: 10,
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 });

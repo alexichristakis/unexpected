@@ -1,14 +1,11 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Comment } from "@unexpected/global";
 
 import remove from "lodash/remove";
 
-import { Comment as CommentModel } from "../models/Comment";
+import { Comment, NewComment, CommentModel } from "@global";
 import { CRUDService } from "./crud";
-import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
-import { PostService } from "./post";
 import { UserService } from "./user";
 
 @Service()
@@ -33,14 +30,13 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
   }
 
   async getByPostId(postId: string) {
-    return this.model
-      .find({ postId })
-      .sort({ createdAt: -1 })
-      .exec();
+    return this.model.find({ postId }).sort({ createdAt: -1 }).exec();
   }
 
-  async likeComment(phoneNumber: string, id: string) {
-    const comment = await this.model.findById(id).exec();
+  async likeComment(phoneNumber: string, id: string, populate?: string) {
+    const comment = await (populate
+      ? this.model.findById(id).populate(populate).exec()
+      : this.model.findById(id).exec());
 
     if (!comment) return null;
 

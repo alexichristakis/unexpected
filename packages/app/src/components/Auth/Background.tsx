@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Animated, StatusBar, StyleSheet, View } from "react-native";
 
-import { Colors, SCREEN_HEIGHT } from "@lib/styles";
+import { Colors, SCREEN_HEIGHT } from "@lib";
 
 const CIRCLE_SIZE = 2 * SCREEN_HEIGHT;
 
@@ -20,25 +20,25 @@ export const Background = React.memo(() => {
     new Animated.Value(0),
     new Animated.Value(0),
     new Animated.Value(0),
-    new Animated.Value(0)
+    new Animated.Value(0),
   ]);
 
   useEffect(() => {
     Animated.stagger(
       1111,
-      animatedValues.map(value =>
+      animatedValues.map((value) =>
         Animated.loop(
           Animated.sequence([
             Animated.timing(value, {
               toValue: 1,
-              duration: 20000
+              duration: 20000,
               // useNativeDriver: true
             }),
             Animated.timing(value, {
               toValue: 0,
-              duration: 0
+              duration: 0,
               // useNativeDriver: true
-            })
+            }),
           ])
         )
       )
@@ -58,17 +58,17 @@ export const Background = React.memo(() => {
         transform: [
           { scale: value },
           { translateX: -CIRCLE_SIZE / (index + 1) },
-          { translateY: -CIRCLE_SIZE }
+          { translateY: -CIRCLE_SIZE },
         ],
         backgroundColor: value.interpolate({
           inputRange: [0, 2],
-          outputRange: [Colors.purple, Colors.pink]
+          outputRange: [Colors.purple, Colors.pink],
         }),
         // opacity: 0.2
         opacity: value.interpolate({
           inputRange: [0, 1],
-          outputRange: [1, 0]
-        })
+          outputRange: [1, 0],
+        }),
       }}
     />
   );
@@ -88,6 +88,6 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     left: 0,
-    right: 0
-  }
+    right: 0,
+  },
 });

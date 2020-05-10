@@ -4,11 +4,11 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
 
-import { Colors, TextStyles } from "@lib/styles";
+import { Colors, TextStyles } from "@lib";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -17,11 +17,11 @@ import { Comment as CommentType } from "@unexpected/global";
 import CommentPreview from "./CommentPreview";
 
 const mapStateToProps = (state: RootState) => ({
-  loading: selectors.commentsLoading(state)
+  loading: selectors.commentsLoading(state),
 });
 
 const mapDispatchToProps = {
-  sendComment: PostActions.sendComment
+  sendComment: PostActions.sendComment,
 };
 
 export interface CommentsProps {
@@ -38,7 +38,7 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
   onPressCompose,
   loading,
   postId,
-  comments = []
+  comments = [],
 }) => {
   const handleOnPressMore = () => onPressMore(postId);
   const handleOnPressCompose = () => onPressCompose(postId);
@@ -47,8 +47,9 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
     <View style={styles.container}>
       {comments.length > 1 && (
         <TouchableOpacity onPress={handleOnPressMore}>
-          <Text style={styles.preview}>{`${comments.length -
-            1} more comments`}</Text>
+          <Text style={styles.preview}>{`${
+            comments.length - 1
+          } more comments`}</Text>
         </TouchableOpacity>
       )}
       {comments.length > 0 && (
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 5,
     width: "100%",
-    alignSelf: "stretch"
+    alignSelf: "stretch",
   },
   composer: {
     backgroundColor: Colors.lightGray,
@@ -77,18 +78,18 @@ const styles = StyleSheet.create({
     marginTop: 5,
     paddingVertical: 5,
     paddingHorizontal: 10,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   text: {
     flex: 1,
     ...TextStyles.small,
-    color: Colors.gray
+    color: Colors.gray,
   },
   preview: {
     ...TextStyles.small,
     marginBottom: 2,
-    opacity: 0.6
-  }
+    opacity: 0.6,
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
@@ -15,7 +15,7 @@ import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect } from "react-redux";
 
 import { Button, Input, NavBar, PendingPostImage } from "@components/universal";
-import { SB_HEIGHT, TextSizes } from "@lib/styles";
+import { SB_HEIGHT, TextSizes } from "@lib";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -23,10 +23,10 @@ import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
   image: selectors.currentImage(state),
-  sending: selectors.postLoading(state)
+  sending: selectors.postLoading(state),
 });
 const mapDispatchToProps = {
-  sendPost: PostActions.sendPost
+  sendPost: PostActions.sendPost,
 };
 
 export interface SharePostOwnProps {
@@ -99,29 +99,29 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 35,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   subContainer: {
     width: "100%",
     height: "100%",
     paddingHorizontal: 50,
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   form: {
     flex: 1,
     alignSelf: "stretch",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   button: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   headerContent: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
     // paddingHorizontal: 10
   },
   camera: { width: 500, height: 600 },
-  shutter: { position: "absolute", bottom: 100 }
+  shutter: { position: "absolute", bottom: 100 },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SharePost);

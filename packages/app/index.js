@@ -9,6 +9,7 @@ import { name as appName } from "./app.json";
 enableScreens();
 
 const CodePushApp = codePush({
-  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
 })(App);
+
 AppRegistry.registerComponent(appName, () => (__DEV__ ? App : CodePushApp));

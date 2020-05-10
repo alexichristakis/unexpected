@@ -7,11 +7,11 @@ import { connect, ConnectedProps } from "react-redux";
 
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { isIPhoneX, SCREEN_HEIGHT, TextStyles } from "@lib/styles";
+import { isIPhoneX, SCREEN_HEIGHT, TextStyles } from "@lib";
 import {
   Actions as PermissionsActions,
   Permissions as PermissionTypes,
-  PermissionType
+  PermissionType,
 } from "@redux/modules/permissions";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -19,11 +19,11 @@ import { StackParamList } from "App";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
 const mapStateToProps = (state: RootState) => ({
-  ...selectors.permissions(state)
+  ...selectors.permissions(state),
 });
 const mapDispatchToProps = {
   requestNotifications: PermissionsActions.requestNotifications,
-  request: PermissionsActions.requestPermission
+  request: PermissionsActions.requestPermission,
 };
 
 export type PermissionsConnectedProps = ConnectedProps<typeof connector>;
@@ -40,7 +40,7 @@ const Permissions: React.FC<PermissionsProps> = React.memo(
     notifications,
     camera,
     location,
-    contacts
+    contacts,
   }) => {
     useLightStatusBar();
 
@@ -107,28 +107,28 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     paddingBottom: isIPhoneX ? 50 : 20,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
     // alignItems: "center"
   },
   table: {
     flex: 1,
     maxHeight: SCREEN_HEIGHT / 2,
-    alignSelf: "stretch"
+    alignSelf: "stretch",
   },
   header: {
-    marginBottom: 40
+    marginBottom: 40,
   },
   text: {
     flex: 2,
-    marginRight: 20
+    marginRight: 20,
   },
   button: {
-    flex: 1.5
+    flex: 1.5,
   },
   row: {
     flexDirection: "row",
-    marginBottom: 40
-  }
+    marginBottom: 40,
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

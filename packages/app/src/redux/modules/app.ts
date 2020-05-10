@@ -4,7 +4,7 @@ import moment, { Moment } from "moment-timezone";
 import {
   AppState as AppStatus,
   AppStateStatus as AppStatusType,
-  Platform
+  Platform,
 } from "react-native";
 import { Notification, Notifications } from "react-native-notifications";
 import { REHYDRATE } from "redux-persist";
@@ -12,7 +12,7 @@ import { eventChannel } from "redux-saga";
 import { all, call, put, select, take, takeEvery } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
-import { NOTIFICATION_MINUTES } from "@lib/constants";
+import { NOTIFICATION_MINUTES } from "@lib";
 import { NotificationPayload } from "@unexpected/global";
 import { navigate } from "../../navigation";
 import * as selectors from "../selectors";
@@ -37,12 +37,12 @@ const initialState: AppState = {
   networkStatus: {
     isConnected: false,
     isInternetReachable: false,
-    isBackendReachable: true
+    isBackendReachable: true,
   },
   camera: {
     enabled: false,
-    timeOfExpiry: undefined
-  }
+    timeOfExpiry: undefined,
+  },
 };
 
 export default (
@@ -55,28 +55,26 @@ export default (
 
       return {
         ...state,
-        camera: { enabled: true, timeOfExpiry: time.toISOString() }
+        camera: { enabled: true, timeOfExpiry: time.toISOString() },
       };
     }
 
     case ActionTypes.DEBUG_ENABLE_CAMERA: {
-      const timeOfExpiry = moment()
-        .add(10, "hours")
-        .toISOString();
+      const timeOfExpiry = moment().add(10, "hours").toISOString();
 
       return {
         ...state,
         camera: {
           enabled: true,
-          timeOfExpiry
-        }
+          timeOfExpiry,
+        },
       };
     }
 
     case ActionTypes.EXPIRE_CAMERA: {
       return {
         ...state,
-        camera: { enabled: false, timeOfExpiry: undefined }
+        camera: { enabled: false, timeOfExpiry: undefined },
       };
     }
 
@@ -90,7 +88,7 @@ export default (
       const { netInfo } = action.payload;
       const { isInternetReachable, isConnected } = netInfo;
 
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.networkStatus.isInternetReachable = !!isInternetReachable;
         draft.networkStatus.isConnected = !!isConnected;
 
@@ -99,7 +97,7 @@ export default (
     }
 
     case ActionTypes.NETWORK_OFFLINE: {
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.networkStatus.isBackendReachable = false;
 
         return draft;
@@ -107,7 +105,7 @@ export default (
     }
 
     case ActionTypes.NETWORK_ONLINE: {
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.networkStatus.isBackendReachable = true;
 
         return draft;
@@ -125,7 +123,7 @@ function* appWatcher() {
   while (true) {
     const {
       appStatus,
-      netInfo
+      netInfo,
     }: {
       appStatus: AppStatusType;
       netInfo: NetInfoState;
@@ -146,7 +144,7 @@ function* appWatcher() {
 }
 
 const appEmitter = () =>
-  eventChannel(emit => {
+  eventChannel((emit) => {
     const appStatusHandler = (state: AppStatusType) =>
       emit({ appStatus: state });
 
@@ -168,10 +166,10 @@ function* checkCameraStatus() {
     const phoneNumber = yield select(selectors.phoneNumber);
     try {
       const res = yield client.get(`/user/${phoneNumber}/camera`, {
-        headers: getHeaders({ jwt })
+        headers: getHeaders({ jwt }),
       });
       const {
-        data: { enabled, start }
+        data: { enabled, start },
       } = res;
 
       if (enabled) {
@@ -218,7 +216,7 @@ export function* appSagas() {
   yield all([
     yield takeEvery(REHYDRATE, onStartup),
     yield takeEvery(NETWORK_SUCCESS_PATTERN, onBackendOnline),
-    yield takeEvery(NETWORK_ERROR_PATTERN, onBackendOffline)
+    yield takeEvery(NETWORK_ERROR_PATTERN, onBackendOffline),
   ]);
 }
 
@@ -232,7 +230,7 @@ export enum ActionTypes {
   SET_NET_INFO = "app/SET_NET_INFO",
   NETWORK_OFFLINE = "app/NETWORK_OFFLINE",
   NETWORK_ONLINE = "app/NETWORK_ONLINE",
-  DEBUG_ENABLE_CAMERA = "debug/ENABLE_CAMERA"
+  DEBUG_ENABLE_CAMERA = "debug/ENABLE_CAMERA",
 }
 
 export const Actions = {
@@ -247,5 +245,5 @@ export const Actions = {
   setNetInfo: (netInfo: NetInfoState) =>
     createAction(ActionTypes.SET_NET_INFO, { netInfo }),
   networkSuccess: () => createAction(ActionTypes.NETWORK_ONLINE),
-  networkError: () => createAction(ActionTypes.NETWORK_OFFLINE)
+  networkError: () => createAction(ActionTypes.NETWORK_OFFLINE),
 };

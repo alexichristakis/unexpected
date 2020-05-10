@@ -27,6 +27,7 @@ certifications/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+mongod.log
 
 # OSX
 #
@@ -92,4 +93,16 @@ buck-out/
 
 # CocoaPods
 */**/Pods/
+
+**/*/src/global
+
+# next
+out/
+dist/
+.next/
+/.pnp
+.pnp.js
+.env*
+.firebase/
+
 

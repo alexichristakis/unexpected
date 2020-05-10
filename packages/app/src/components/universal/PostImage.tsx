@@ -4,18 +4,18 @@ import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import RNFS from "react-native-fs";
 import { connect } from "react-redux";
 
-import { Colors } from "@lib/styles";
+import { Colors } from "@lib";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 
 const mapStateToProps = (state: RootState, props: PostImageProps) => ({
   jwt: selectors.jwt(state),
-  cache: selectors.feedPhotoCacheForUser(state, props.phoneNumber)
+  cache: selectors.feedPhotoCacheForUser(state, props.phoneNumber),
 });
 
 const mapDispatchToProps = {
-  requestCache: ImageActions.requestCache
+  requestCache: ImageActions.requestCache,
 };
 
 export type PostImageReduxProps = ReduxPropsType<
@@ -28,8 +28,9 @@ export interface PostImageProps {
   width: number;
   height: number;
 }
-export const _PostImage: React.FC<PostImageProps &
-  PostImageReduxProps> = React.memo(
+export const _PostImage: React.FC<
+  PostImageProps & PostImageReduxProps
+> = React.memo(
   ({ phoneNumber, id, width, height, cache, requestCache }) => {
     useEffect(() => {
       // if the cache doesnt have a record of this photo download it
@@ -37,7 +38,7 @@ export const _PostImage: React.FC<PostImageProps &
         requestCache(phoneNumber, id);
       } else {
         // otherwise check to make sure it exists, then download
-        RNFS.exists(cache[id].uri).then(res => {
+        RNFS.exists(cache[id].uri).then((res) => {
           if (!res) {
             requestCache(phoneNumber, id);
           }
@@ -53,8 +54,8 @@ export const _PostImage: React.FC<PostImageProps &
             styles.image,
             {
               width,
-              height
-            }
+              height,
+            },
           ]}
         />
       );
@@ -71,7 +72,7 @@ export const _PostImage: React.FC<PostImageProps &
     const {
       phoneNumber: prevPhoneNumber,
       id: prevId,
-      cache: prevCache
+      cache: prevCache,
     } = prevProps;
     const { phoneNumber, id, cache: nextCache } = nextProps;
 
@@ -93,13 +94,13 @@ export const _PostImage: React.FC<PostImageProps &
 const styles = StyleSheet.create({
   image: {
     resizeMode: "cover",
-    backgroundColor: Colors.gray
+    backgroundColor: Colors.gray,
   },
   loadingContainer: {
     backgroundColor: Colors.gray,
     alignItems: "center",
-    justifyContent: "center"
-  }
+    justifyContent: "center",
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(_PostImage);

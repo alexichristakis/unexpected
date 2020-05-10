@@ -9,18 +9,18 @@ import { connect } from "react-redux";
 
 import SVG from "@assets/svg/camera_button.svg";
 import { TouchableScale } from "@components/universal";
-import { NOTIFICATION_MINUTES } from "@lib/constants";
+import { NOTIFICATION_MINUTES } from "@lib";
 import { Actions as AppActions } from "@redux/modules/app";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
 import { StackParamList } from "../../App";
 
 const mapStateToProps = (state: RootState) => ({
-  ...selectors.camera(state)
+  ...selectors.camera(state),
 });
 
 const mapDispatchToProps = {
-  expireCamera: AppActions.expireCamera
+  expireCamera: AppActions.expireCamera,
 };
 
 export type LaunchCameraButtonReduxProps = ReduxPropsType<
@@ -43,13 +43,13 @@ const _LaunchCameraButton: React.FC<LaunchCameraButtonReduxProps> = React.memo(
 
         Animated.spring(scale, {
           toValue: 1,
-          useNativeDriver: true
+          useNativeDriver: true,
         }).start();
       } else {
         Animated.timing(scale, {
           toValue: 0,
           duration: 200,
-          useNativeDriver: true
+          useNativeDriver: true,
         }).start(() => {
           expireCamera();
           setVisible(false);
@@ -110,10 +110,10 @@ const styles = StyleSheet.create({
     bottom: 90,
     left: 0,
     right: 0,
-    alignItems: "center"
+    alignItems: "center",
   },
   svg: {
     position: "absolute",
-    alignSelf: "center"
-  }
+    alignSelf: "center",
+  },
 });

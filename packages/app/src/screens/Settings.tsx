@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 
 import { Button } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { isIPhoneX, TextSizes, TextStyles } from "@lib/styles";
+import { isIPhoneX, TextSizes, TextStyles } from "@lib";
 import { Actions as AuthActions } from "@redux/modules/auth";
 import { ReduxPropsType, RootState } from "@redux/types";
 
@@ -17,7 +17,7 @@ import { StackParamList } from "../App";
 
 const mapStateToProps = (_: RootState) => ({});
 const mapDispatchToProps = {
-  logout: AuthActions.logout
+  logout: AuthActions.logout,
 };
 
 export type SettingsReduxProps = ReduxPropsType<
@@ -52,7 +52,7 @@ const Settings: React.FC<SettingsProps> = ({ navigation, logout }) => {
   const shareUnexpected = async () => {
     const result = await Share.share({
       title: "share unexpected",
-      message: "https://expect.photos"
+      message: "https://expect.photos",
     });
   };
 
@@ -111,24 +111,24 @@ const styles = StyleSheet.create({
     flex: 1,
     // padding: 20,
     paddingBottom: isIPhoneX ? 20 : 0,
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   listHeaderContainer: {
     paddingHorizontal: 20,
-    width: "100%"
+    width: "100%",
   },
   header: {
-    padding: 20
+    padding: 20,
   },
   button: {
     marginBottom: 20,
-    marginHorizontal: 20
+    marginHorizontal: 20,
   },
   buttonContainer: {
-    flex: 1
+    flex: 1,
     // paddingHorizontal: 20
     // marginTop: 20
-  }
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);

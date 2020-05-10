@@ -1,4 +1,4 @@
-import { Colors } from "@lib/styles";
+import { Colors } from "@lib";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -9,6 +9,6 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: Colors.lightGray,
     marginLeft: 25,
-    width: "100%"
-  }
+    width: "100%",
+  },
 });

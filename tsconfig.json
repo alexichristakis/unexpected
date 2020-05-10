@@ -1,18 +1,26 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "moduleResolution": "node",
-    "module": "commonjs",
-    "noEmit": false,
-    "baseUrl": "packages/",
-    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@unexpected/*": ["./packages/*/src"]
+    },
+    "noEmit": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["esnext", "dom"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "allowSyntheticDefaultImports": true,
-    "strictPropertyInitialization": false
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noStrictGenericChecks": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esnext"
   },
-  "include": ["packages/"],
-  "exclude": ["node_modules/"]
+  "exclude": ["node_modules"]
 }
