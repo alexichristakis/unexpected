@@ -6,22 +6,24 @@ export class User {
   @ObjectID("id")
   _id: string;
 
-  @Indexed()
   @Format("/^+?[1-9]d{1,14}$/")
   @Required()
   phoneNumber: string;
 
-  @Required()
+  @Property()
+  placeholder: boolean;
+
+  @Property()
   firstName: string;
 
-  @Required()
+  @Property()
   lastName: string;
 
   @Property()
   @Default("")
   bio: string;
 
-  @Required()
+  @Property()
   deviceOS: string;
 
   @Property()
@@ -41,7 +43,6 @@ export class User {
   notifications: string[];
 
   // mutual
-  @Property()
   @Ref(User)
   friends: Ref<User>[];
 }

@@ -23,7 +23,7 @@ export class AuthMiddleware implements IMiddleware {
 
         const { select, verify = (a: any, b: any) => a === b } = options;
         if (select && verify)
-          if (!verify(select(request), payload.phoneNumber)) {
+          if (!verify(request.params[select], payload.id)) {
             throw new Forbidden("Forbidden");
           }
       } catch (err) {

@@ -7,10 +7,10 @@ import {
   Patch,
   PathParams,
   Put,
-  UseAuth
+  UseAuth,
 } from "@tsed/common";
 
-import { Comment, Post } from "@unexpected/global";
+import { Comment, Post } from "@global";
 
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { PostService } from "../services/post";
@@ -21,26 +21,41 @@ export class PostController {
   @Inject(PostService)
   private postService: PostService;
 
-  @Put("/:phoneNumber")
-  @UseAuth(AuthMiddleware, { select: Select.phoneFromPath })
+  @Get()
+  getAll() {
+    return this.postService.getAll();
+  }
+
+  @Get("/migrate")
+  updateAll() {
+    return this.postService.updateAll();
+  }
+
+  @Get("/populate/user")
+  getAllWithUser() {
+    return this.postService.getAll(null, "user");
+  }
+
+  @Put("/:userId")
+  @UseAuth(AuthMiddleware, { select: "userId" })
   sendPost(
-    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("userId") userId: string,
     @BodyParams("post") post: Post
   ) {
     return this.postService.createNewPost({
       ...post,
-      phoneNumber
+      user: userId,
     });
   }
 
-  @Get("/:phoneNumber/posts")
-  getUsersPosts(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.postService.getUsersPosts(phoneNumber);
+  @Get("/:userId/posts")
+  getUsersPosts(@PathParams("userId") userId: string) {
+    return this.postService.getUsersPosts(userId);
   }
 
-  @Get("/:phoneNumber/feed")
-  async getUsersFeed(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.postService.getFeedForUser(phoneNumber);
+  @Get("/:userId/feed")
+  async getUsersFeed(@PathParams("userId") userId: string) {
+    return this.postService.getFeedForUser(userId);
   }
 
   @Get("/:id")

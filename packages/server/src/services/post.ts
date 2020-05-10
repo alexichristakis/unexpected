@@ -1,19 +1,17 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Post } from "@unexpected/global";
 import groupBy from "lodash/groupBy";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
 
-import { PostModel } from "@global";
+import { PostModel, Post, NewPost } from "@global";
 
 import { CommentService } from "./comment";
-import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { UserService } from "./user";
 
 @Service()
-export class PostService extends CRUDService<PostModel, Post> {
+export class PostService {
   @Inject(PostModel)
   model: MongooseModel<PostModel>;
 
@@ -26,16 +24,26 @@ export class PostService extends CRUDService<PostModel, Post> {
   @Inject(SlackLogService)
   logger: SlackLogService;
 
-  createNewPost = async (post: Post) => {
+  getAll = async (select?: string | null, populate?: string | null) => {
+    return this.model.find().select(select).populate(populate).exec();
+  };
+
+  updateAll = async () => {
+    return this.model
+      .updateMany({}, { user: "5df4235c379aefb72228de51" })
+      .exec();
+  };
+
+  createNewPost = async (post: NewPost) => {
     return Promise.all([
-      this.create(post),
+      this.model.create(post),
       this.userService.updateValidNotifications(post),
-      this.logger.sendMessage(post.phoneNumber, post.description),
+      this.logger.sendMessage(post.user.toString(), post.description),
     ]);
   };
 
-  getUsersPosts = async (phoneNumber: string) => {
-    const posts = await this.find({ phoneNumber });
+  getUsersPosts = async (user: string) => {
+    const posts = await this.model.find({ user });
 
     const postMap = keyBy(posts, ({ id }) => id);
 
@@ -44,7 +52,7 @@ export class PostService extends CRUDService<PostModel, Post> {
 
   getPost = async (id: string) => {
     const [post, comments] = await Promise.all([
-      this.getId(id),
+      this.model.findById(id).exec(),
       this.commentService.getByPostId(id),
     ]);
 
@@ -52,7 +60,7 @@ export class PostService extends CRUDService<PostModel, Post> {
   };
 
   getFeedForUser = async (id: string) => {
-    const user = await this.userService.getId(id, ["friends"]);
+    const user = await this.userService.get(id, "friends");
 
     if (!user) return null;
 
@@ -71,6 +79,10 @@ export class PostService extends CRUDService<PostModel, Post> {
     const commentMap = groupBy(comments, ({ post }) => post);
 
     return { posts: postMap, comments: commentMap };
+  };
+
+  delete = async (_id: string) => {
+    return this.model.deleteOne({ _id });
   };
 
   /*

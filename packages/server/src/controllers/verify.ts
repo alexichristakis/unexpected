@@ -29,8 +29,12 @@ export class UserController {
     );
 
     if (response.verified) {
+      const { user } = response;
+
+      console.log("placeholder:", user);
+
       // generate JWT
-      const token = this.authService.generateJWT(phoneNumber);
+      const token = this.authService.generateJWT(user?._id);
 
       return { ...response, token };
     }

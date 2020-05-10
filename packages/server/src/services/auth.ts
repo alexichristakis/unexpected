@@ -69,19 +69,21 @@ export class AuthService {
     if (!comparison) return { verified: false };
 
     // check to see if the user already has an account
-    const userModel = await this.userService.getByPhoneNumber(phoneNumber);
+    const userModel = await this.userService.getByPhone(phoneNumber);
 
     if (userModel) {
       return { verified: true, user: userModel };
     }
 
+    const placeholder = await this.userService.createPlaceholder(phoneNumber);
+
     // otherwise verified and new user
-    return { verified: true };
+    return { verified: true, newUser: true, user: placeholder };
   }
 
-  generateJWT(phoneNumber: string): string {
+  generateJWT(id: string): string {
     const privateKey = process.env.AUTH_PRIVATE_KEY as string;
-    const token = jwt.sign({ phoneNumber }, privateKey, { algorithm: "RS256" });
+    const token = jwt.sign({ id }, privateKey, { algorithm: "RS256" });
 
     return token;
   }

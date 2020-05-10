@@ -19,7 +19,6 @@ export class Comment {
   @Property()
   body: string;
 
-  @Property()
   @Ref(User)
   likes: Ref<User>[];
 

@@ -6,7 +6,7 @@ import {
   Patch,
   PathParams,
   Put,
-  UseAuth
+  UseAuth,
 } from "@tsed/common";
 import moment from "moment";
 
@@ -21,14 +21,11 @@ export class UserController {
   @Inject(UserService)
   private userService: UserService;
 
-  @Get("/:phoneNumber")
+  @Get("/phone/:phoneNumber")
   async notifyUser(@PathParams("phoneNumber") phoneNumber: string) {
-    const [user] = await Promise.all([
-      this.userService.getByPhoneNumber(phoneNumber),
-      this.userService.setNotificationTimes([
-        { phoneNumber, notifications: [moment().toISOString()] }
-      ])
-    ]);
+    const user = await this.userService.getByPhone(phoneNumber);
+
+    if (!user) return null;
 
     return this.notificationService.notifyPhotoTime(user);
   }
