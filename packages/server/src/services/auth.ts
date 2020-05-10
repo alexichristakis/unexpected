@@ -75,13 +75,15 @@ export class AuthService {
       return { verified: true, user: userModel };
     }
 
+    const placeholder = await this.userService.createPlaceholder(phoneNumber);
+
     // otherwise verified and new user
-    return { verified: true };
+    return { verified: true, newUser: true, user: placeholder };
   }
 
-  generateJWT(phoneNumber: string): string {
+  generateJWT(id: string): string {
     const privateKey = process.env.AUTH_PRIVATE_KEY as string;
-    const token = jwt.sign({ phoneNumber }, privateKey, { algorithm: "RS256" });
+    const token = jwt.sign({ id }, privateKey, { algorithm: "RS256" });
 
     return token;
   }

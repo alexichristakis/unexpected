@@ -23,13 +23,13 @@ export class CommentService {
   }
 
   async getByPostIds(postIds: string[]) {
-    const comments = await this.model.find({ postId: { $in: postIds } }).exec();
+    const comments = await this.model.find({ post: { $in: postIds } }).exec();
 
     return comments;
   }
 
-  async getByPostId(postId: string) {
-    return this.model.find({ postId }).sort({ createdAt: -1 }).exec();
+  async getByPostId(post: string) {
+    return this.model.find({ post }).sort({ createdAt: -1 }).exec();
   }
 
   async likeComment(phoneNumber: string, id: string, populate?: string) {

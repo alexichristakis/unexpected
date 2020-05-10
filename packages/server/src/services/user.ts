@@ -27,6 +27,10 @@ export class UserService {
   @Inject(NotificationService)
   notificationService: NotificationService;
 
+  async createPlaceholder(phone: string) {
+    return this.model.create({ phoneNumber: phone, placeholder: true });
+  }
+
   async create(newUser: NewUser) {
     const user = await this.getByPhone(newUser.phoneNumber);
 

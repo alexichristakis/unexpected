@@ -82,18 +82,14 @@ export class UserController {
     return this.userService.getFriends(id);
   }
 
-  @Put()
-  // @UseAuth(AuthMiddleware, {
-  //   // select: Select.phoneFromUserFromBody,
-  // })
+  @Put("/:id")
+  @UseAuth(AuthMiddleware, { select: "id" })
   async createUser(@BodyParams("user") user: NewUser) {
     return this.userService.create(user);
   }
 
   @Patch("/:id")
-  @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath,
-  })
+  @UseAuth(AuthMiddleware, { select: "id" })
   async updateUser(
     @PathParams("id") id: string,
     @BodyParams("user") user: Partial<User>
@@ -114,9 +110,9 @@ export class UserController {
   }
 
   @Patch("/:from/friend/:to")
-  // @UseAuth(AuthMiddleware, {
-  //   select: Select.phoneFromPath,
-  // })
+  @UseAuth(AuthMiddleware, {
+    select: Select.phoneFromPath,
+  })
   async friendUser(
     @PathParams("from") from: string,
     @PathParams("to") to: string
@@ -130,13 +126,11 @@ export class UserController {
 
   @Delete("/request/:id")
   async deleteRequest(@PathParams("id") id: string) {
-    // return this.friendService.delete(id);
+    return this.friendService.delete(id);
   }
 
   @Patch("/:to/accept/:from")
-  // @UseAuth(AuthMiddleware, {
-  //   select: Select.phoneFromPath,
-  // })
+  @UseAuth(AuthMiddleware, { select: "to" })
   async acceptFriendRequest(
     @PathParams("to") to: string,
     @PathParams("from") from: string
@@ -148,16 +142,13 @@ export class UserController {
     return null;
   }
 
-  @Patch("/:phoneNumber/delete/:to")
-  @UseAuth(AuthMiddleware, {
-    select: Select.phoneFromPath,
-  })
+  @Patch("/:from/delete/:to")
   async deleteFriend(
-    @PathParams("phoneNumber") phoneNumber: string,
+    @PathParams("from") from: string,
     @PathParams("to") to: string
   ) {
-    if (phoneNumber !== to) {
-      return this.userService.unfriend(phoneNumber, to);
+    if (from !== to) {
+      return this.userService.unfriend(from, to);
     }
 
     return null;

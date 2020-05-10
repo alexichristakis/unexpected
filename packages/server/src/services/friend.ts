@@ -33,13 +33,17 @@ export class FriendService {
     return this.model.find().exec();
   }
 
+  async delete(id: string) {
+    return this.model.deleteOne({ _id: id });
+  }
+
   async sendFriendRequest(from: string, to: string) {
     console.log(from, to);
 
-    const users = await this.userService.getMultiple([from, to]);
+    // const users = await this.userService.getMultiple([from, to]);
 
-    const [fromUser] = filter(users, ({ id }) => id === from);
-    const [toUser] = filter(users, ({ id }) => id === to);
+    // const [fromUser] = filter(users, ({ id }) => id === from);
+    // const [toUser] = filter(users, ({ id }) => id === to);
 
     const [request] = await Promise.all([
       this.model.create({ from, to }),

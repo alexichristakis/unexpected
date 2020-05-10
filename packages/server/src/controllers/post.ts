@@ -36,23 +36,26 @@ export class PostController {
     return this.postService.getAll(null, "user");
   }
 
-  @Put("/:uid")
-  @UseAuth(AuthMiddleware, { select: Select.phoneFromPath })
-  sendPost(@PathParams("uid") uid: string, @BodyParams("post") post: Post) {
+  @Put("/:userId")
+  @UseAuth(AuthMiddleware, { select: "userId" })
+  sendPost(
+    @PathParams("userId") userId: string,
+    @BodyParams("post") post: Post
+  ) {
     return this.postService.createNewPost({
       ...post,
-      user: uid,
+      user: userId,
     });
   }
 
-  @Get("/:phoneNumber/posts")
-  getUsersPosts(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.postService.getUsersPosts(phoneNumber);
+  @Get("/:userId/posts")
+  getUsersPosts(@PathParams("userId") userId: string) {
+    return this.postService.getUsersPosts(userId);
   }
 
-  @Get("/:phoneNumber/feed")
-  async getUsersFeed(@PathParams("phoneNumber") phoneNumber: string) {
-    return this.postService.getFeedForUser(phoneNumber);
+  @Get("/:userId/feed")
+  async getUsersFeed(@PathParams("userId") userId: string) {
+    return this.postService.getFeedForUser(userId);
   }
 
   @Get("/:id")

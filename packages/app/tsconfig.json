@@ -17,11 +17,6 @@
       "@lib": ["lib"],
       "@api": ["api"],
       "@hooks": ["hooks"],
-<<<<<<< HEAD
-      "@global": ["global"],
-      "@global/*": ["global/"]
-    }
-=======
       "@global": ["global"]
     },
     "skipDefaultLibCheck": true,
@@ -29,7 +24,6 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "experimentalDecorators": true
->>>>>>> 613d875d4490ce18425bf2949390e9c03144cd7b
   },
   "files": ["./declarations.d.ts"],
   "include": ["src"],
