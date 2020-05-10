@@ -7,12 +7,11 @@ import uniqBy from "lodash/uniqBy";
 import { PostModel, Post, NewPost } from "@global";
 
 import { CommentService } from "./comment";
-import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { UserService } from "./user";
 
 @Service()
-export class PostService extends CRUDService<PostModel, Post> {
+export class PostService {
   @Inject(PostModel)
   model: MongooseModel<PostModel>;
 
@@ -25,6 +24,16 @@ export class PostService extends CRUDService<PostModel, Post> {
   @Inject(SlackLogService)
   logger: SlackLogService;
 
+  getAll = async (select?: string | null, populate?: string | null) => {
+    return this.model.find().select(select).populate(populate).exec();
+  };
+
+  updateAll = async () => {
+    return this.model
+      .updateMany({}, { user: "5df4235c379aefb72228de51" })
+      .exec();
+  };
+
   createNewPost = async (post: NewPost) => {
     return Promise.all([
       this.model.create(post),
@@ -34,7 +43,7 @@ export class PostService extends CRUDService<PostModel, Post> {
   };
 
   getUsersPosts = async (user: string) => {
-    const posts = await this.find({ user });
+    const posts = await this.model.find({ user });
 
     const postMap = keyBy(posts, ({ id }) => id);
 
@@ -43,7 +52,7 @@ export class PostService extends CRUDService<PostModel, Post> {
 
   getPost = async (id: string) => {
     const [post, comments] = await Promise.all([
-      this.getId(id),
+      this.model.findById(id).exec(),
       this.commentService.getByPostId(id),
     ]);
 
@@ -70,6 +79,10 @@ export class PostService extends CRUDService<PostModel, Post> {
     const commentMap = groupBy(comments, ({ post }) => post);
 
     return { posts: postMap, comments: commentMap };
+  };
+
+  delete = async (_id: string) => {
+    return this.model.deleteOne({ _id });
   };
 
   /*

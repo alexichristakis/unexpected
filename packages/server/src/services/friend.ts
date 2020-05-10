@@ -3,16 +3,12 @@ import { MongooseModel } from "@tsed/mongoose";
 import filter from "lodash/filter";
 
 import { FriendRequest, FriendRequestModel, User } from "@global";
-import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
 import { UserService } from "./user";
 
 @Service()
-export class FriendService extends CRUDService<
-  FriendRequestModel,
-  FriendRequest
-> {
+export class FriendService {
   // model
   @Inject(FriendRequestModel)
   model: MongooseModel<FriendRequestModel>;
@@ -31,6 +27,10 @@ export class FriendService extends CRUDService<
     return this.model
       .find({ $or: [{ to: id }, { from: id }] })
       .populate("from to");
+  }
+
+  async getAll() {
+    return this.model.find().exec();
   }
 
   async sendFriendRequest(from: string, to: string) {
@@ -54,7 +54,7 @@ export class FriendService extends CRUDService<
   }
 
   async deleteFriendRequest(from: string, to: string) {
-    const doc = await this.findOne({ from, to });
+    const doc = await this.model.findOne({ from, to });
 
     if (doc) {
       return doc.remove();

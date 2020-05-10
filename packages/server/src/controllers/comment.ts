@@ -14,7 +14,6 @@ import remove from "lodash/remove";
 
 import { NewComment, User } from "@global";
 import uniq from "lodash/uniq";
-import { Exception } from "ts-httpexceptions";
 
 import { AuthMiddleware } from "../middlewares/auth";
 import { CommentService } from "../services/comment";
@@ -102,7 +101,7 @@ export class CommentController {
 
   @Delete("/:id")
   deleteComment(@PathParams("id") id: string) {
-    return this.commentService.delete(id);
+    // return this.commentService.delete(id);
   }
 
   @Get("/:postId")

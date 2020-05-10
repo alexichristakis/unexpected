@@ -11,7 +11,7 @@ import {
   UseAuth,
 } from "@tsed/common";
 
-import { User, UserModel, NewUser } from "@global";
+import { User, NewUser } from "@global";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { FriendService } from "../services/friend";
 import { UserService } from "../services/user";
@@ -39,11 +39,23 @@ export class UserController {
     return this.userService.cameraEnabled(phoneNumber);
   }
 
+  @Get("/all")
+  async getAll() {
+    return this.userService.getAll();
+  }
+
+  @Get("/requests/all")
+  async getAllRequests() {
+    return this.friendService.getAll();
+  }
+
   @Get()
   async getUsers(
     @QueryParams("ids") ids: string,
     @QueryParams("select") select?: string
   ) {
+    if (!ids || !ids.length) return null;
+
     const uids = ids.includes(",") ? ids.split(",") : [ids];
 
     const selectOn = select?.split(",").join(" ") || "firstName lastName";
@@ -118,7 +130,7 @@ export class UserController {
 
   @Delete("/request/:id")
   async deleteRequest(@PathParams("id") id: string) {
-    return this.friendService.delete(id);
+    // return this.friendService.delete(id);
   }
 
   @Patch("/:to/accept/:from")

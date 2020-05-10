@@ -4,12 +4,11 @@ import { MongooseModel } from "@tsed/mongoose";
 import remove from "lodash/remove";
 
 import { Comment, NewComment, CommentModel } from "@global";
-import { CRUDService } from "./crud";
 import { NotificationService } from "./notification";
 import { UserService } from "./user";
 
 @Service()
-export class CommentService extends CRUDService<CommentModel, Comment> {
+export class CommentService {
   @Inject(CommentModel)
   model: MongooseModel<CommentModel>;
 
@@ -19,8 +18,8 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
   @Inject(NotificationService)
   private notificationService: NotificationService;
 
-  async createNewComment(comment: Comment) {
-    return this.create(comment);
+  async createNewComment(comment: NewComment) {
+    return this.model.create(comment);
   }
 
   async getByPostIds(postIds: string[]) {

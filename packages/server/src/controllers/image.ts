@@ -5,7 +5,7 @@ import {
   PathParams,
   Put,
   UseAfter,
-  UseAuth
+  UseAuth,
 } from "@tsed/common";
 import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
 import multer from "multer";
@@ -21,7 +21,7 @@ export class ImageController {
 
   @Put("/:phoneNumber/:id")
   @MulterOptions({
-    storage: multer.memoryStorage()
+    storage: multer.memoryStorage(),
   })
   async uploadPost(
     @MultipartFile("image") file: Express.Multer.File,
@@ -53,7 +53,7 @@ export class ImageController {
 
   @Put("/:phoneNumber")
   @MulterOptions({
-    storage: multer.memoryStorage()
+    storage: multer.memoryStorage(),
   })
   async uploadProfileImage(
     @MultipartFile("image") file: Express.Multer.File,

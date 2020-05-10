@@ -21,6 +21,21 @@ export class PostController {
   @Inject(PostService)
   private postService: PostService;
 
+  @Get()
+  getAll() {
+    return this.postService.getAll();
+  }
+
+  @Get("/migrate")
+  updateAll() {
+    return this.postService.updateAll();
+  }
+
+  @Get("/populate/user")
+  getAllWithUser() {
+    return this.postService.getAll(null, "user");
+  }
+
   @Put("/:uid")
   @UseAuth(AuthMiddleware, { select: Select.phoneFromPath })
   sendPost(@PathParams("uid") uid: string, @BodyParams("post") post: Post) {
