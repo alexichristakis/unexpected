@@ -184,7 +184,7 @@ function* checkCameraStatus() {
 
 function* onStartup() {
   // start event channels
-  yield all([call(appWatcher), call(checkCameraStatus)]);
+  // yield all([call(appWatcher), call(checkCameraStatus)]);
 }
 
 function* onBackendOffline() {

@@ -16,7 +16,7 @@ const { onChange, cond, call } = Animated;
 
 const connector = connect(
   (state: RootState, props: CommentsProps) => ({
-    comments: selectors.commentsForPost(state, props),
+    // comments: selectors.commentsForPost(state, props),
   }),
   {}
 );

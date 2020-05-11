@@ -17,16 +17,13 @@ export const userRequestsLoading = createSelector(
 
 export const phoneNumber = createSelector(s, (state) => state.phoneNumber);
 
-const phoneNumberFromProps = (_: RootState, props: { phoneNumber?: string }) =>
-  props?.phoneNumber;
+export const userId = createSelector(s, (state) => state.id);
 
-export const user = createSelector(
-  [users, phoneNumber, phoneNumberFromProps],
-  (users, userPhoneNumber, phoneNumber) => {
-    if (phoneNumber) return users[phoneNumber];
-    else return users[userPhoneNumber];
-  }
-);
+const idFromProps = (_: RootState, props: { id: string }) => props.id;
+
+export const user = createSelector([users, idFromProps], (users, id) => {
+  return users[id] ?? {};
+});
 
 export const currentUser = createSelector(
   [users, phoneNumber],

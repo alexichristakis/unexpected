@@ -55,10 +55,8 @@ const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     friends,
     route,
   }) => {
-    const [focusedPostId, setFocusedPostId] = useState("");
-    const [showUserModal, setShowUserModal] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
-    const [scrollY] = useValues([0], []);
+    const [scrollY] = useValues([0]);
 
     const navBarTransitionRef = useRef<TransitioningView>(null);
 

@@ -17,9 +17,8 @@ import Grid from "../Grid";
 import { SB_HEIGHT, Colors } from "@lib";
 
 const connector = connect(
-  (state: RootState) => ({
-    phoneNumber: selectors.phoneNumber(state),
-    postIds: selectors.postIds(state),
+  (state: RootState, props: ProfileProps) => ({
+    postIds: selectors.usersPosts(state, props),
   }),
   {
     fetchPosts: PostActions.fetchUsersPosts,
@@ -27,23 +26,26 @@ const connector = connect(
   }
 );
 
-export interface ProfileProps {}
+export interface ProfileProps {
+  userId: string;
+}
 
 export type ProfileConnectedProps = ConnectedProps<typeof connector>;
 
 const Profile: React.FC<ProfileProps & ProfileConnectedProps> = ({
-  phoneNumber,
   fetchPosts,
   fetchUser,
+  userId,
   postIds,
 }) => {
   useEffect(() => {
-    fetchUser(phoneNumber);
-    fetchPosts(phoneNumber);
+    // fetchUser(phoneNumber);
+    // fetchPosts(phoneNumber);
   }, []);
 
-  const renderHeader = () => <Header />;
+  const renderHeader = () => <Header id={userId} />;
 
+  // return null;
   return <Grid postIds={postIds} renderHeader={renderHeader} />;
 
   // return (

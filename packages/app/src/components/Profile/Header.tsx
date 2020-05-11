@@ -9,13 +9,13 @@ import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
 const mapStateToProps = (state: RootState, props: HeaderProps) => {
-  const isUser = selectors.phoneNumber(state) === props.phoneNumber;
+  // const isUser = selectors.phoneNumber(state) === props.phoneNumber;
 
   return {
-    isUser,
+    // isUser,
     user: selectors.user(state, props),
-    numPosts: selectors.usersPostsLength(state, props),
-    friendRequests: isUser ? selectors.friendRequestNumbers(state) : null,
+    // numPosts: selectors.usersPostsLength(state, props),
+    // friendRequests: isUser ? selectors.friendRequestNumbers(state) : null,
   };
 };
 
@@ -24,13 +24,13 @@ const mapDispatchToProps = {};
 export type HeaderConnectedProps = ConnectedProps<typeof connector>;
 
 export interface HeaderProps {
-  uid: string;
+  id: string;
   offset: Animated.Value<number>;
 }
 
 export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
   user,
-  numPosts,
+  numPosts = 5,
 }) => {
   const { phoneNumber, firstName, lastName, friends = [], bio = "" } = user;
 

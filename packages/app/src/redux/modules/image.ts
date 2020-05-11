@@ -165,29 +165,25 @@ const getFilePath = (name: string) => {
 function* onRequestCache(
   action: ExtractActionFromActionCreator<typeof Actions.requestCache>
 ) {
-  const { phoneNumber, id } = action.payload;
-  const jwt = yield select(selectors.jwt);
-
-  try {
-    const fileName = id ? `${phoneNumber}_${id}` : `${phoneNumber}`;
-    const filePath = getFilePath(fileName);
-
-    const url = id
-      ? getPostImageURL(phoneNumber, id)
-      : getUserProfileURL(phoneNumber);
-
-    const response: DownloadResult = yield RNFS.downloadFile({
-      fromUrl: url,
-      toFile: filePath,
-      headers: getHeaders({ jwt }),
-    }).promise;
-
-    if (response.bytesWritten) {
-      yield put(Actions.cachePhoto(filePath, phoneNumber, id));
-    }
-  } catch (err) {
-    yield put(Actions.onError(err));
-  }
+  // const { phoneNumber, id } = action.payload;
+  // const jwt = yield select(selectors.jwt);
+  // try {
+  //   const fileName = id ? `${phoneNumber}_${id}` : `${phoneNumber}`;
+  //   const filePath = getFilePath(fileName);
+  //   const url = id
+  //     ? getPostImageURL(phoneNumber, id)
+  //     : getUserProfileURL(phoneNumber);
+  //   const response: DownloadResult = yield RNFS.downloadFile({
+  //     fromUrl: url,
+  //     toFile: filePath,
+  //     headers: getHeaders({ jwt }),
+  //   }).promise;
+  //   if (response.bytesWritten) {
+  //     yield put(Actions.cachePhoto(filePath, phoneNumber, id));
+  //   }
+  // } catch (err) {
+  //   yield put(Actions.onError(err));
+  // }
 }
 
 export function* imageSagas() {

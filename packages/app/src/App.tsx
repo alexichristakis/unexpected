@@ -12,7 +12,7 @@ import {
   createStackNavigator,
   StackCardStyleInterpolator,
 } from "@react-navigation/stack";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
@@ -74,6 +74,9 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
 
   const cardStyleInterpolator: StackCardStyleInterpolator = ({ current }) => {
     return {
+      containerStyle: {
+        //
+      },
       cardStyle: {
         opacity: current.progress,
         transform: [
@@ -103,39 +106,42 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
   );
 };
 
-const UnathenticatedRoot = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="AUTH"
-      options={{ headerShown: false }}
-      component={Auth}
-    />
-    <Stack.Screen
-      name="SIGN_UP"
-      options={{ headerShown: false }}
-      component={SignUp}
-    />
-  </Stack.Navigator>
-);
-
 const Router: React.FC = () => {
-  const isAuthorized = useReduxState(selectors.isAuthorized);
+  const isAuthorized = useSelector(selectors.isAuthorized);
+  const isNewAccount = useSelector(selectors.isNewAccount);
 
   return (
     <NavigationContainer ref={setNavigatorRef}>
-      <Stack.Navigator screenOptions={{}}>
-        {isAuthorized ? (
-          <Stack.Screen name="AUTHENTICATED" options={{ headerShown: false }}>
+      <NativeStack.Navigator screenOptions={{ stackAnimation: "fade" }}>
+        {isAuthorized && !isNewAccount ? (
+          <NativeStack.Screen
+            name="AUTHENTICATED"
+            options={{ headerShown: false }}
+          >
             {(props) => <AuthenticatedRoot {...props} />}
-          </Stack.Screen>
+          </NativeStack.Screen>
         ) : (
-          <Stack.Screen
+          <NativeStack.Screen
             name="UNAUTHENTICATED"
             options={{ headerShown: false }}
-            component={UnathenticatedRoot}
-          />
+          >
+            {() => (
+              <NativeStack.Navigator>
+                <NativeStack.Screen
+                  name="AUTH"
+                  options={{ headerShown: false }}
+                  component={Auth}
+                />
+                <NativeStack.Screen
+                  name="SIGN_UP"
+                  options={{ headerShown: false }}
+                  component={SignUp}
+                />
+              </NativeStack.Navigator>
+            )}
+          </NativeStack.Screen>
         )}
-      </Stack.Navigator>
+      </NativeStack.Navigator>
     </NavigationContainer>
   );
 };

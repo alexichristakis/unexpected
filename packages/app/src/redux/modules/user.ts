@@ -29,6 +29,7 @@ import {
 
 export interface UserState {
   phoneNumber: string;
+  id: string;
   users: { [phoneNumber: string]: PartialUser };
   stale: boolean;
   loading: boolean;
@@ -38,6 +39,7 @@ export interface UserState {
 
 const initialState: UserState = {
   phoneNumber: "",
+  id: "",
   users: {},
   stale: false,
   loading: false,
@@ -73,6 +75,7 @@ export default (
       return immer(state, (draft) => {
         draft.loading = false;
         draft.phoneNumber = user.phoneNumber;
+        draft.id = user.id;
         draft.users[user.id] = user;
 
         return draft;
@@ -215,14 +218,12 @@ function* onFetchUsers(
 }
 
 function* onStartup() {
-  const jwt = yield select(selectors.jwt);
-  const user = yield select(selectors.currentUser);
-
-  if (jwt) {
-    const timezone = moment.tz.guess(true);
-
-    if (timezone !== user.timezone) yield put(Actions.updateUser({ timezone }));
-  }
+  // const jwt = yield select(selectors.jwt);
+  // const user = yield select(selectors.currentUser);
+  // if (jwt) {
+  //   const timezone = moment.tz.guess(true);
+  //   if (timezone !== user.timezone) yield put(Actions.updateUser({ timezone }));
+  // }
 }
 
 export function* userSagas() {

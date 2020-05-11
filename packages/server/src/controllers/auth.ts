@@ -3,7 +3,7 @@ import { Controller, Inject, PathParams, Post } from "@tsed/common";
 import { AuthService } from "../services/auth";
 import { UserService } from "../services/user";
 
-@Controller("/verify")
+@Controller("/auth")
 export class UserController {
   @Inject(AuthService)
   private authService: AuthService;

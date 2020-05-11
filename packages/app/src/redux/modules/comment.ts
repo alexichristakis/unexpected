@@ -1,15 +1,3 @@
-import { Platform } from "react-native";
-import { Notifications } from "react-native-notifications";
-import {
-  check,
-  checkNotifications,
-  NotificationsResponse,
-  Permission,
-  PERMISSIONS,
-  PermissionStatus,
-  request,
-  requestNotifications,
-} from "react-native-permissions";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import immer from "immer";
 

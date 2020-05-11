@@ -258,14 +258,15 @@ function* onFetchFeed(
 ) {
   // const { fromDate } = action.payload;
 
+  console.log("fetching feed");
   try {
     const jwt = yield select(selectors.jwt);
-    const phoneNumber = yield select(selectors.phoneNumber);
+    const userId = yield select(selectors.userId);
     // const feedState: FeedState = yield select(selectors.feedState);
 
     // const from = fromDate ? fromDate : feedState.lastFetched;
 
-    const res = yield client.get(`post/${phoneNumber}/feed`, {
+    const res = yield client.get(`post/${userId}/feed`, {
       headers: getHeaders({ jwt }),
     });
 
