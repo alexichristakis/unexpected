@@ -35,6 +35,8 @@ export const usersPosts = createSelector(
   [posts, (_: RootState, props: { userId: string }) => props.userId],
   (postMap, userId) => {
     //
+    console.log(postMap, userId);
+
     const posts = Object.values(postMap).filter(({ user }) => user === userId);
 
     return posts.map(({ id, createdAt }) => ({ id, createdAt }));

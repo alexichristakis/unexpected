@@ -8,14 +8,15 @@ import Animated, { Easing } from "react-native-reanimated";
 import { timing, useValues } from "react-native-redash";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
+import Image from "react-native-fast-image";
 
+import { Comment as CommentType } from "@global";
 import { UserImage } from "@components/universal";
 import { Colors, TextStyles } from "@lib";
 import { formatName } from "@lib";
 import { PostActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { Comment as CommentType } from "@unexpected/global";
 
 import { ParamList } from "../../App";
 
@@ -40,16 +41,7 @@ interface CommentProps extends CommentType {}
 export type CommentsConnectedProps = ConnectedProps<typeof connector>;
 
 const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
-  ({
-    id,
-    userPhoneNumber,
-    phoneNumber,
-    createdAt,
-    user,
-    likes = [],
-    body,
-    likeComment,
-  }) => {
+  ({ id, createdAt, user, likes = [], body, likeComment }) => {
     const [clock] = useState(new Clock());
     const [likesTransitioning, setLikesTransitioning] = useState(false);
     const [likesOpen, setLikesOpen] = useState(false);
@@ -127,7 +119,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
           onPress={handleOnPressLikes}
           style={styles.container}
         >
-          <UserImage size={30} phoneNumber={phoneNumber} />
+          <UserImage size={30} id={user} />
           <View style={styles.textContainer}>
             <Text style={styles.body}>
               <Text onPress={handleOnPressName} style={styles.name}>

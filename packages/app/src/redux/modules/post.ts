@@ -10,7 +10,7 @@ import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import uuid from "uuid/v4";
 
-import { Comment, User, Post, NewComment } from "@global";
+import { Comment, User, Post, NewComment, Post_populated } from "@global";
 import client, { getHeaders } from "@api";
 
 import * as selectors from "../selectors";
@@ -24,52 +24,33 @@ import { Actions as AppActions } from "./app";
 import { Actions as UserActions } from "./user";
 
 import { StackParamList } from "../../App";
-
-type FeedEndpointReturn = {
-  postIds: string[];
-  posts: PostMap;
-  users: { [id: string]: User };
-  comments: { [postId: string]: Comment[] };
-};
-
-type UserMap = {
-  [phoneNumber: string]: {
-    posts: string[];
-    lastFetched: string;
-  };
-};
+import { AxiosResponse } from "axios";
 
 type PostMap = {
   [postId: string]: Post;
 };
 
 export interface PostState {
-  users: UserMap;
   posts: PostMap;
   feed: {
     posts: string[];
-    lastFetched: string;
+    lastFetched: number;
     stale: boolean;
     loading: boolean;
   };
   loading: boolean;
-  commentsLoading: boolean;
-  loadingPosts: { [phoneNumber: string]: boolean };
   error: string;
 }
 
 const initialState: PostState = {
-  users: {},
   posts: {},
   feed: {
     posts: [],
-    lastFetched: "",
+    lastFetched: -1,
     stale: true,
     loading: false,
   },
   loading: false,
-  commentsLoading: false,
-  loadingPosts: {},
   error: "",
 };
 
@@ -85,27 +66,19 @@ export default (
       });
     }
 
-    case ActionTypes.FETCH_POST:
-    case ActionTypes.FETCH_COMMENTS:
-    case ActionTypes.SEND_COMMENT:
-    case ActionTypes.DELETE_COMMENT: {
-      return immer(state, (draft) => {
-        draft.commentsLoading = true;
-      });
-    }
-
     case ActionTypes.FETCH_FEED_SUCCESS: {
-      const { postIds, posts, users } = action.payload;
+      const { posts } = action.payload;
 
       return immer(state, (draft) => {
+        const lastFetched = moment().unix();
+
         draft.feed = {
           loading: false,
-          posts: postIds,
+          posts: Object.keys(posts),
           stale: false,
-          lastFetched: moment().toISOString(),
+          lastFetched,
         };
 
-        draft.users = users;
         draft.posts = posts;
       });
     }
@@ -138,14 +111,10 @@ export default (
     }
 
     case ActionTypes.FETCH_USERS_POSTS_SUCCESS: {
-      const { phoneNumber, postIds, posts } = action.payload;
+      const { posts } = action.payload;
 
       return immer(state, (draft) => {
         draft.loading = false;
-        draft.users[phoneNumber] = {
-          posts: postIds,
-          lastFetched: moment().toISOString(),
-        };
 
         draft.posts = _.merge(draft.posts, posts);
       });
@@ -157,7 +126,6 @@ export default (
       return immer(state, (draft) => {
         draft.error = error;
         draft.loading = false;
-        draft.commentsLoading = false;
         draft.feed.loading = false;
       });
     }
@@ -245,9 +213,7 @@ function* onFetchUsersPosts(
 
     const { data } = res;
 
-    const postIds = Object.keys(data);
-
-    yield put(Actions.fetchUsersPostsSuccess(userFetched, postIds, data));
+    yield put(Actions.fetchUsersPostsSuccess(data));
   } catch (err) {
     yield put(Actions.onPostError(err.message));
   }
@@ -270,31 +236,11 @@ function* onFetchFeed(
       headers: getHeaders({ jwt }),
     });
 
-    const { data }: { data: FeedEndpointReturn } = res;
+    const { data } = res;
     if (data) {
-      const { postIds, posts, users, comments } = data;
+      const { posts, users } = data;
 
-      const postsByUser = _.groupBy(posts, ({ user }) => user);
-
-      const userMap = Object.keys(users).reduce((acc, curr) => {
-        acc[curr] = {
-          posts: postsByUser[curr]?.map(({ id }) => id),
-          lastFetched: moment().toISOString(),
-        };
-
-        return acc;
-      }, {} as UserMap);
-
-      // const commentMap: CommentMap = {};
-      // Object.keys(comments).map(
-      //   (key) => (commentMap[key] = keyBy(comments[key], ({ id }) => id))
-      // );
-
-      const userValues = Object.values(users);
-      yield all([
-        yield put(UserActions.loadUsers(userValues)),
-        yield put(Actions.fetchFeedSuccess(postIds, posts, userMap)),
-      ]);
+      yield put(Actions.fetchFeedSuccess(posts, users));
     }
 
     // yield put(Actions.fetchFeedSuccess(posts));
@@ -357,22 +303,13 @@ export function* postSagas() {
 export const Actions = {
   fetchUsersPosts: (phoneNumber?: string) =>
     createAction(ActionTypes.FETCH_USERS_POSTS, { phoneNumber }),
-  fetchUsersPostsSuccess: (
-    phoneNumber: string,
-    postIds: string[],
-    posts: PostMap
-  ) =>
-    createAction(ActionTypes.FETCH_USERS_POSTS_SUCCESS, {
-      phoneNumber,
-      postIds,
-      posts,
-    }),
+  fetchUsersPostsSuccess: (posts: PostMap) =>
+    createAction(ActionTypes.FETCH_USERS_POSTS_SUCCESS, { posts }),
 
   fetchFeed: (fromDate?: Date) =>
     createAction(ActionTypes.FETCH_FEED, { fromDate }),
-  fetchFeedSuccess: (postIds: string[], posts: PostMap, users: UserMap) =>
+  fetchFeedSuccess: (posts: PostMap, users: User[]) =>
     createAction(ActionTypes.FETCH_FEED_SUCCESS, {
-      postIds,
       posts,
       users,
     }),

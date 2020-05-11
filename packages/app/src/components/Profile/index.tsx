@@ -46,7 +46,7 @@ const Profile: React.FC<ProfileProps & ProfileConnectedProps> = ({
   const renderHeader = () => <Header id={userId} />;
 
   // return null;
-  return <Grid postIds={postIds} renderHeader={renderHeader} />;
+  return <Grid {...{ userId, renderHeader }} />;
 
   // return (
   //   <Animated.ScrollView
