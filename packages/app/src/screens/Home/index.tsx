@@ -8,6 +8,7 @@ import Animated from "react-native-reanimated";
 import Activity from "@components/Activity";
 import { Pager, TabBar } from "@components/Home";
 
+import * as selectors from "@redux/selectors";
 import { RootState as RootStateType } from "@redux/types";
 import Feed from "@components/Feed";
 import Profile from "@components/Profile";
@@ -15,14 +16,22 @@ import { Colors, SCREEN_WIDTH } from "@lib";
 
 import { StackParamList } from "../../App";
 
-const connector = connect((state: RootStateType) => ({}), {});
+const connector = connect(
+  (state: RootStateType) => ({
+    userId: selectors.userId(state),
+  }),
+  {}
+);
 
 export type HomeReduxProps = ConnectedProps<typeof connector>;
 export interface HomeOwnProps {
   navigation: NativeStackNavigationProp<StackParamList>;
 }
 
-const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({ navigation }) => {
+const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({
+  userId,
+  navigation,
+}) => {
   const offset = useVector(0, 0);
   const [activeTab, activityOpen] = useValues<0 | 1>([0, 0]);
 
@@ -35,7 +44,7 @@ const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({ navigation }) => {
       <Animated.View style={pagerContainer}>
         <Pager tab={activeTab} {...offset}>
           <Feed />
-          <Profile />
+          <Profile {...{ userId }} />
           <View style={{ width: 100 }} />
         </Pager>
         <TabBar open={activityOpen} onPress={handleOnPressTab} {...offset} />

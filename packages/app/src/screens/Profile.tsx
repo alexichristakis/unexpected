@@ -8,7 +8,6 @@ import {
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
-import { Post, User } from "@unexpected/global";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
 import Animated, { TransitioningView } from "react-native-reanimated";
@@ -56,10 +55,8 @@ const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     friends,
     route,
   }) => {
-    const [focusedPostId, setFocusedPostId] = useState("");
-    const [showUserModal, setShowUserModal] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
-    const [scrollY] = useValues([0], []);
+    const [scrollY] = useValues([0]);
 
     const navBarTransitionRef = useRef<TransitioningView>(null);
 
@@ -101,43 +98,6 @@ const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       []
     );
 
-    const renderTop = () => (
-      <Top
-        phoneNumber={route.params.phoneNumber}
-        scrollY={scrollY}
-        onPressFriends={handleOnPressFriends}
-      />
-    );
-
-    const handleOnPressPost = ({ id }: Post) => {
-      requestAnimationFrame(() => setFocusedPostId(id));
-    };
-
-    const handleOnPressFriends = () => {
-      requestAnimationFrame(() => setShowUserModal(true));
-    };
-
-    const handlePostModalClose = () => setFocusedPostId("");
-    const handleUserModalClose = () => setShowUserModal(false);
-
-    const handleOnScrollEndDrag = (
-      event: NativeSyntheticEvent<NativeScrollEvent>
-    ) => {
-      const {
-        nativeEvent: {
-          contentOffset: { y },
-        },
-      } = event;
-
-      if (y < -100) {
-        Haptics.trigger("impactMedium");
-        fetchUser(phoneNumber);
-
-        // if friends fetch and render posts too
-        if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
-      }
-    };
-
     return (
       <Profile />
       // <Screen stackPresentation={"push"} style={styles.container}>
@@ -174,11 +134,7 @@ const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       //   />
       // </Screen>
     );
-  },
-  (prevProps, nextProps) =>
-    prevProps.route.params?.focusedPostId ===
-      nextProps.route.params?.focusedPostId &&
-    isEqual(prevProps.user, nextProps.user)
+  }
 );
 
 const styles = StyleSheet.create({

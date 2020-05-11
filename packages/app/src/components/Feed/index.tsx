@@ -22,7 +22,7 @@ import {
 import { useMemoOne } from "use-memo-one";
 
 import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
+import { RootState, PostActionTypes } from "@redux/types";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG, Colors } from "@lib";
 import Swipeable from "./Swipeable";
 import Post, { POST_HEIGHT } from "@components/Post";
@@ -30,6 +30,7 @@ import random from "lodash/random";
 import { TextStyles } from "@lib";
 
 import Header from "./Header";
+import { PostActions } from "@redux/modules";
 
 const {
   onChange,
@@ -57,17 +58,24 @@ const {
 } = Animated;
 
 const connector = connect(
-  (state: RootState) => ({ postIds: selectors.allPosts(state) }),
-  {}
+  (state: RootState) => ({ postIds: selectors.feedPosts(state) }),
+  { fetchFeed: PostActions.fetchFeed }
 );
 
 export interface FeedProps {}
 
 export type FeedConnectedProps = ConnectedProps<typeof connector>;
 
-const Feed: React.FC<FeedProps & FeedConnectedProps> = ({ postIds }) => {
+const Feed: React.FC<FeedProps & FeedConnectedProps> = ({
+  postIds,
+  fetchFeed,
+}) => {
   const state = useValue(State.UNDETERMINED);
   const [value, velocity, index] = useValues<number>([0, 0, 0]);
+
+  useEffect(() => {
+    fetchFeed();
+  }, []);
 
   const handler = useGestureHandler({
     state,

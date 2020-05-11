@@ -4,7 +4,7 @@ import groupBy from "lodash/groupBy";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
 
-import { PostModel, Post, NewPost } from "@global";
+import { PostModel, Post, NewPost, Post_populated } from "@global";
 
 import { CommentService } from "./comment";
 import { SlackLogService } from "./logger";
@@ -66,19 +66,36 @@ export class PostService {
 
     const { friends } = user;
 
-    const posts = await this.model
+    const posts = ((await this.model
       .find({ user: { $in: [...friends, id] } })
       .populate("user")
       .sort({ createdAt: -1 })
-      .exec();
+      .lean()
+      .exec()) as unknown) as Post_populated[];
 
-    const postIds: string[] = posts.map(({ id }) => id);
-    const comments = await this.commentService.getByPostIds(postIds);
+    // const comments = await this.commentService.getByPostIds(postIds);
 
-    const postMap = keyBy(posts, ({ id }) => id);
-    const commentMap = groupBy(comments, ({ post }) => post);
+    // const commentMap = groupBy(comments, ({ post }) => post);
 
-    return { posts: postMap, comments: commentMap };
+    const users = uniqBy(
+      posts.map(({ user }) => user),
+      ({ id }) => id
+    );
+
+    console.log(posts);
+
+    const postsUnpopulated = keyBy(
+      posts.map(({ _id, user, ...rest }) => ({
+        ...rest,
+        id: _id,
+        user: user._id,
+      })),
+      ({ id }) => id
+    );
+
+    console.log(postsUnpopulated);
+
+    return { posts: postsUnpopulated, users };
   };
 
   delete = async (_id: string) => {

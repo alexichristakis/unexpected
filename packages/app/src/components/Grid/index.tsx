@@ -1,32 +1,14 @@
-import React, {
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-  useMemo,
-} from "react";
-import {
-  FlatList,
-  ListRenderItemInfo,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StyleSheet,
-  Text,
-  View,
-  ViewStyle,
-} from "react-native";
+import React, { useContext, useCallback, useMemo } from "react";
+import { FlatList, StyleSheet } from "react-native";
 
-import { Post } from "@unexpected/global";
 import groupBy from "lodash/groupBy";
 import moment from "moment";
 import Animated from "react-native-reanimated";
-import { onScrollEvent, vec } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
 import LockSVG from "@assets/svg/lock.svg";
 import { Colors, TextStyles, SB_HEIGHT } from "@lib";
 
-import { formatName } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
@@ -34,10 +16,8 @@ import { Month, Months } from "./Month";
 import { FocusedPostContext, FocusedPostPayload } from "@hooks";
 import testPosts from "./test_data";
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 const mapStateToProps = (state: RootState, props: GridProps) => ({
-  posts: selectors.posts(state, props),
+  posts: selectors.usersPosts(state, props),
 });
 
 const mapDispatchToProps = {};
@@ -45,18 +25,14 @@ const mapDispatchToProps = {};
 export type GridConnectedProps = ConnectedProps<typeof connector>;
 
 export interface GridProps {
+  userId: string;
   renderHeader: () => JSX.Element;
-  uid: string;
 }
-
-type MonthsData = {
-  id: string;
-  month: string;
-  posts: Post[];
-}[];
 
 export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
   ({ posts, renderHeader }) => {
+    console.log(posts);
+
     const { setId, origin, size, open } = useContext(FocusedPostContext);
 
     const handleOnPressPost = useCallback((payload: FocusedPostPayload) => {
@@ -69,25 +45,27 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
     }, []);
 
     // returns object mapping month (0, 1, 2, ...) to array of posts
-    const generateSections = useCallback((posts: Post[]) => {
-      const map = groupBy(posts, ({ createdAt }) =>
-        moment(createdAt).startOf("month")
-      );
+    const generateSections = useCallback(
+      (posts: { id: string; createdAt: Date }[]) => {
+        const map = groupBy(posts, ({ createdAt }) =>
+          moment(createdAt).startOf("month")
+        );
 
-      return Object.keys(map)
-        .sort((a, b) => moment(b).diff(moment(a)))
-        .map((month) => ({
-          id: month,
-          month: Months[moment(month, "ddd MMM DD YYYY").get("month")],
-          posts: map[month]
-            .sort((a, b) => moment(b.createdAt).diff(moment(a.createdAt)))
-            .map(({ id }) => id),
-        }));
-    }, []);
+        return Object.keys(map)
+          .sort((a, b) => moment(b).diff(moment(a)))
+          .map((month) => ({
+            id: month,
+            month: Months[moment(month, "ddd MMM DD YYYY").get("month")],
+            posts: map[month]
+              .sort((a, b) => moment(b.createdAt).diff(moment(a.createdAt)))
+              .map(({ id }) => id),
+          }));
+      },
+      []
+    );
 
     const renderSection = ({
       item,
-      index,
     }: {
       index: number;
       item: {
@@ -98,7 +76,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
     }) => <Month key={item.id} onPressPost={handleOnPressPost} {...item} />;
 
     return useMemo(() => {
-      const sections = generateSections(testPosts);
+      const sections = generateSections(posts);
 
       return (
         <FlatList
@@ -111,7 +89,7 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
           ListHeaderComponent={renderHeader}
         />
       );
-    }, []);
+    }, [posts.length]);
   }
 );
 

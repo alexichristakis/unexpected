@@ -1,6 +1,5 @@
 import { Platform } from "react-native";
 
-import { FriendRequest, User } from "@unexpected/global";
 import { AxiosResponse } from "axios";
 import immer from "immer";
 import _ from "lodash";
@@ -13,24 +12,25 @@ import {
   put,
   select,
   takeEvery,
-  takeLatest
+  takeLatest,
 } from "redux-saga/effects";
 
+import { PartialUser, User, NewUser } from "@global";
 import client, { getHeaders } from "@api";
 
 import { StackParamList } from "../../App";
 import * as selectors from "../selectors";
 import {
-  ActionsUnion,
+  ActionTypes,
+  ActionUnion,
   createAction,
-  ExtractActionFromActionCreator
-} from "../utils";
+  ExtractActionFromActionCreator,
+} from "../types";
 
 export interface UserState {
   phoneNumber: string;
-  friendRequests: FriendRequest[];
-  requestedFriends: FriendRequest[];
-  users: { [phoneNumber: string]: User };
+  id: string;
+  users: { [phoneNumber: string]: PartialUser };
   stale: boolean;
   loading: boolean;
   loadingRequests: boolean;
@@ -39,18 +39,17 @@ export interface UserState {
 
 const initialState: UserState = {
   phoneNumber: "",
-  friendRequests: [],
-  requestedFriends: [],
+  id: "",
   users: {},
   stale: false,
   loading: false,
   loadingRequests: false,
-  error: null
+  error: null,
 };
 
 export default (
   state: UserState = initialState,
-  action: ActionsUnion<typeof Actions>
+  action: ActionUnion
 ): UserState => {
   switch (action.type) {
     case ActionTypes.FETCH_USER:
@@ -66,103 +65,18 @@ export default (
       return {
         ...state,
         loadingRequests: true,
-        error: null
+        error: null,
       };
     }
 
     case ActionTypes.CREATE_USER_SUCCESS: {
       const { user } = action.payload;
 
-      return immer(state, draft => {
+      return immer(state, (draft) => {
         draft.loading = false;
         draft.phoneNumber = user.phoneNumber;
-        draft.users[user.phoneNumber] = user;
-
-        return draft;
-      });
-    }
-
-    case ActionTypes.FRIEND_USER_SUCCESS: {
-      const { request } = action.payload;
-
-      return immer(state, draft => {
-        draft.requestedFriends.push(request);
-        draft.loading = false;
-
-        return draft;
-      });
-    }
-
-    case ActionTypes.FETCH_USERS_REQUESTS_SUCCESS: {
-      const { requestedFriends, friendRequests } = action.payload;
-
-      return immer(state, draft => {
-        draft.loadingRequests = false;
-
-        draft.friendRequests = friendRequests;
-        draft.requestedFriends = requestedFriends;
-
-        return draft;
-      });
-    }
-
-    case ActionTypes.ACCEPT_REQUEST_SUCCESS: {
-      const { from, to } = action.payload;
-
-      return immer(state, draft => {
-        draft.requestedFriends = _.remove(
-          draft.friendRequests,
-          request => request.from === from
-        );
-
-        draft.users[from].friends.push(to);
-        draft.users[to].friends.push(from);
-
-        draft.loading = false;
-
-        return draft;
-      });
-    }
-
-    case ActionTypes.DELETE_FRIEND_SUCCESS: {
-      const { from, to } = action.payload;
-
-      return immer(state, draft => {
-        draft.users[from].friends = draft.users[from].friends.filter(
-          user => user !== to
-        );
-
-        draft.users[to].friends = draft.users[to].friends.filter(
-          user => user !== from
-        );
-
-        draft.loading = false;
-
-        return draft;
-      });
-    }
-
-    case ActionTypes.CANCEL_REQUEST_SUCCESS: {
-      const { id } = action.payload;
-
-      return immer(state, draft => {
-        draft.requestedFriends = _.uniqBy(
-          draft.requestedFriends.filter(r => r.id !== id),
-          ({ to }) => to
-        );
-
-        return draft;
-      });
-    }
-
-    case ActionTypes.DENY_REQUEST_SUCCESS: {
-      const { id } = action.payload;
-
-      return immer(state, draft => {
-        draft.friendRequests = _.uniqBy(
-          draft.friendRequests.filter(r => r.id !== id),
-          ({ from }) => from
-        );
+        draft.id = user.id;
+        draft.users[user.id] = user;
 
         return draft;
       });
@@ -171,8 +85,8 @@ export default (
     case ActionTypes.LOAD_USERS: {
       const { users } = action.payload;
 
-      return immer(state, draft => {
-        users.forEach(user => {
+      return immer(state, (draft) => {
+        users.forEach((user) => {
           draft.users[user.phoneNumber] = user;
         });
 
@@ -182,7 +96,7 @@ export default (
       });
     }
 
-    case ActionTypes.ON_ERROR: {
+    case ActionTypes.USER_ERROR: {
       const { err } = action.payload;
 
       return { ...state, loading: false, error: err };
@@ -207,34 +121,13 @@ function* onFetchUser(
       : `/user/${userPhoneNumber}`;
 
     const res: AxiosResponse<User> = yield call(client.get, endpoint, {
-      headers: getHeaders({ jwt })
+      headers: getHeaders({ jwt }),
     });
 
     const { data } = res;
     yield put(Actions.loadUsers([data]));
   } catch (err) {
-    yield put(Actions.onError(err));
-  }
-}
-
-function* onFetchUsersRequests() {
-  const phoneNumber = yield select(selectors.phoneNumber);
-  const jwt = yield select(selectors.jwt);
-
-  try {
-    const res = yield client.get(`/user/${phoneNumber}/requests`, {
-      headers: getHeaders({ jwt })
-    });
-
-    const {
-      data: { friendRequests, requestedFriends }
-    } = res;
-
-    yield put(
-      Actions.fetchUsersRequestsSuccess(friendRequests, requestedFriends)
-    );
-  } catch (err) {
-    yield put(Actions.onError(err.message));
+    yield put(Actions.onUserError(err));
   }
 }
 
@@ -246,19 +139,16 @@ function* onCreateUser(
 
   const { firstName, lastName, navigation } = action.payload;
 
-  const newUser: User = {
+  const newUser: NewUser = {
     firstName,
     lastName,
     phoneNumber,
-    notifications: [],
-    friends: [],
     deviceOS: Platform.OS,
-    bio: "",
-    timezone: "America/New_York"
+    timezone: "America/New_York",
   };
 
   if (phoneNumber === "0000000000") {
-    yield put(Actions.createUserSuccess(newUser));
+    yield put(Actions.createUserSuccess({ ...newUser, id: "TEST" } as User));
     navigation.navigate("AUTHENTICATED");
   } else {
     try {
@@ -266,7 +156,7 @@ function* onCreateUser(
         "/user",
         { user: newUser },
         {
-          headers: getHeaders({ jwt })
+          headers: getHeaders({ jwt }),
         }
       );
 
@@ -275,7 +165,7 @@ function* onCreateUser(
       yield put(Actions.createUserSuccess(createdUser));
       navigation.navigate("AUTHENTICATED");
     } catch (err) {
-      yield put(Actions.onError(err));
+      yield put(Actions.onUserError(err));
     }
   }
 }
@@ -293,7 +183,7 @@ function* onUpdateUser(
       `/user/${phoneNumber}`,
       { user: { ...user } },
       {
-        headers: getHeaders({ jwt })
+        headers: getHeaders({ jwt }),
       }
     );
 
@@ -301,7 +191,7 @@ function* onUpdateUser(
 
     yield put(Actions.loadUsers([data]));
   } catch (err) {
-    yield put(Actions.onError(err));
+    yield put(Actions.onUserError(err));
   }
 }
 
@@ -316,147 +206,24 @@ function* onFetchUsers(
     if (selectOn) endpoint += `&select=${selectOn.join(",")}`;
 
     const res: AxiosResponse<User[]> = yield client.get(endpoint, {
-      headers: getHeaders({ jwt })
+      headers: getHeaders({ jwt }),
     });
 
     const { data } = res;
 
     yield put(Actions.loadUsers(data));
   } catch (err) {
-    yield put(Actions.onError(err));
-  }
-}
-
-function* onAcceptRequest(
-  action: ExtractActionFromActionCreator<typeof Actions.acceptRequest>
-) {
-  const jwt = yield select(selectors.jwt);
-  const phoneNumber = yield select(selectors.phoneNumber);
-
-  try {
-    const { phoneNumber: from } = action.payload;
-
-    const res = yield call(
-      client.patch,
-      `/user/${from}/accept/${phoneNumber}`,
-      {},
-      { headers: getHeaders({ jwt }) }
-    );
-
-    yield put(Actions.acceptRequestSuccess(from, phoneNumber));
-  } catch (err) {
-    yield put(Actions.onError(err));
-  }
-}
-
-function* onFriendUser(
-  action: ExtractActionFromActionCreator<typeof Actions.friendUser>
-) {
-  const { phoneNumber: to } = action.payload;
-
-  const jwt = yield select(selectors.jwt);
-  const phoneNumber = yield select(selectors.phoneNumber);
-
-  try {
-    const res = yield client.patch(
-      `user/${phoneNumber}/friend/${to}`,
-      {},
-      {
-        headers: getHeaders({ jwt })
-      }
-    );
-
-    const { data } = res;
-
-    yield put(Actions.friendUserSuccess(data));
-  } catch (err) {
-    yield put(Actions.onError(err));
-  }
-}
-
-function* onDeleteFriend(
-  action: ExtractActionFromActionCreator<typeof Actions.deleteFriend>
-) {
-  const { phoneNumber: to } = action.payload;
-
-  try {
-    const phoneNumber = yield select(selectors.phoneNumber);
-    const jwt = yield select(selectors.jwt);
-
-    const res = yield client.patch(
-      `user/${phoneNumber}/delete/${to}`,
-      {},
-      {
-        headers: getHeaders({ jwt })
-      }
-    );
-
-    yield put(Actions.deleteFriendSuccess(phoneNumber, to));
-  } catch (err) {
-    yield put(Actions.onError(err));
-  }
-}
-
-function* onDenyRequest(
-  action: ExtractActionFromActionCreator<typeof Actions.denyRequest>
-) {
-  const { phoneNumber: from } = action.payload;
-
-  const friendRequests: FriendRequest[] = yield select(
-    selectors.friendRequests
-  );
-  const jwt = yield select(selectors.jwt);
-
-  try {
-    const id = friendRequests.find(r => r.from === from)?.id;
-
-    if (id) {
-      const res = yield client.delete(`user/request/${id}`, {
-        headers: getHeaders({ jwt })
-      });
-
-      yield put(Actions.denyRequestSuccess(id));
-    }
-  } catch (err) {
-    yield put(Actions.onError(err.message));
-  }
-}
-
-function* onCancelRequest(
-  action: ExtractActionFromActionCreator<typeof Actions.cancelRequest>
-) {
-  const { phoneNumber: to } = action.payload;
-
-  const requestedFriends: FriendRequest[] = yield select(
-    selectors.requestedFriends
-  );
-
-  const jwt = yield select(selectors.jwt);
-
-  try {
-    const id = requestedFriends.find(r => r.to === to)?.id;
-
-    if (id) {
-      const res = yield client.delete(`user/request/${id}`, {
-        headers: getHeaders({ jwt })
-      });
-
-      yield put(Actions.cancelRequestSuccess(id));
-    }
-  } catch (err) {
-    yield put(Actions.onError(err.message));
+    yield put(Actions.onUserError(err));
   }
 }
 
 function* onStartup() {
-  const jwt = yield select(selectors.jwt);
-  const user = yield select(selectors.currentUser);
-
-  if (jwt) {
-    const timezone = moment.tz.guess(true);
-
-    if (timezone !== user.timezone) yield put(Actions.updateUser({ timezone }));
-  }
+  // const jwt = yield select(selectors.jwt);
+  // const user = yield select(selectors.currentUser);
+  // if (jwt) {
+  //   const timezone = moment.tz.guess(true);
+  //   if (timezone !== user.timezone) yield put(Actions.updateUser({ timezone }));
+  // }
 }
 
 export function* userSagas() {
@@ -464,37 +231,9 @@ export function* userSagas() {
     yield takeLatest(REHYDRATE, onStartup),
     yield takeLatest(ActionTypes.FETCH_USER, onFetchUser),
     yield takeLatest(ActionTypes.FETCH_USERS, onFetchUsers),
-    yield takeLatest(ActionTypes.FETCH_USERS_REQUESTS, onFetchUsersRequests),
     yield takeLatest(ActionTypes.CREATE_NEW_USER, onCreateUser),
     yield takeLatest(ActionTypes.UPDATE_USER, onUpdateUser),
-    yield takeEvery(ActionTypes.FRIEND_USER, onFriendUser),
-    yield takeEvery(ActionTypes.DELETE_FRIEND, onDeleteFriend),
-    yield takeEvery(ActionTypes.ACCEPT_REQUEST, onAcceptRequest),
-    yield takeEvery(ActionTypes.DENY_REQUEST, onDenyRequest),
-    yield takeEvery(ActionTypes.CANCEL_REQUEST, onCancelRequest)
   ]);
-}
-
-export enum ActionTypes {
-  CREATE_NEW_USER = "user/CREATE_NEW_USER",
-  CREATE_USER_SUCCESS = "user/CREATE_USER_SUCCESS",
-  FETCH_USER = "user/FETCH_USER",
-  FETCH_USERS = "user/FETCH_USERS",
-  FETCH_USERS_REQUESTS = "user/FETCH_USERS_REQUESTS",
-  FETCH_USERS_REQUESTS_SUCCESS = "user/FETCH_USERS_REQUESTS_SUCCESS",
-  UPDATE_USER = "user/UPDATE_USER",
-  FRIEND_USER = "user/FRIEND_USER",
-  FRIEND_USER_SUCCESS = "user/FRIEND_USER_SUCCESS",
-  ACCEPT_REQUEST = "user/ACCEPT_REQUEST",
-  ACCEPT_REQUEST_SUCCESS = "user/ACCEPT_REQUEST_SUCCESS",
-  CANCEL_REQUEST = "user/CANCEL_REQUEST",
-  CANCEL_REQUEST_SUCCESS = "user/CANCEL_REQUEST_SUCCESS",
-  DENY_REQUEST = "user/DENY_REQUEST",
-  DENY_REQUEST_SUCCESS = "user/DENY_REQUEST_SUCCESS",
-  DELETE_FRIEND = "user/DELETE_FRIEND",
-  DELETE_FRIEND_SUCCESS = "user/DELETE_FRIEND_SUCCESS",
-  LOAD_USERS = "user/LOAD_USERS",
-  ON_ERROR = "user/ERROR"
 }
 
 export const Actions = {
@@ -502,15 +241,6 @@ export const Actions = {
     createAction(ActionTypes.FETCH_USER, { phoneNumber }),
   fetchUsers: (phoneNumbers: string[], selectOn?: string[]) =>
     createAction(ActionTypes.FETCH_USERS, { phoneNumbers, selectOn }),
-  fetchUsersRequests: () => createAction(ActionTypes.FETCH_USERS_REQUESTS),
-  fetchUsersRequestsSuccess: (
-    friendRequests: FriendRequest[],
-    requestedFriends: FriendRequest[]
-  ) =>
-    createAction(ActionTypes.FETCH_USERS_REQUESTS_SUCCESS, {
-      friendRequests,
-      requestedFriends
-    }),
   createUser: (
     firstName: string,
     lastName: string,
@@ -519,7 +249,7 @@ export const Actions = {
     createAction(ActionTypes.CREATE_NEW_USER, {
       firstName,
       lastName,
-      navigation
+      navigation,
     }),
   createUserSuccess: (user: User) =>
     createAction(ActionTypes.CREATE_USER_SUCCESS, { user }),
@@ -528,30 +258,5 @@ export const Actions = {
   updateUser: (user: Partial<User>) =>
     createAction(ActionTypes.UPDATE_USER, { user }),
 
-  friendUser: (phoneNumber: string) =>
-    createAction(ActionTypes.FRIEND_USER, { phoneNumber }),
-  friendUserSuccess: (request: FriendRequest) =>
-    createAction(ActionTypes.FRIEND_USER_SUCCESS, { request }),
-
-  deleteFriend: (phoneNumber: string) =>
-    createAction(ActionTypes.DELETE_FRIEND, { phoneNumber }),
-  deleteFriendSuccess: (from: string, to: string) =>
-    createAction(ActionTypes.DELETE_FRIEND_SUCCESS, { from, to }),
-
-  acceptRequest: (phoneNumber: string) =>
-    createAction(ActionTypes.ACCEPT_REQUEST, { phoneNumber }),
-  acceptRequestSuccess: (from: string, to: string) =>
-    createAction(ActionTypes.ACCEPT_REQUEST_SUCCESS, { from, to }),
-
-  cancelRequest: (phoneNumber: string) =>
-    createAction(ActionTypes.CANCEL_REQUEST, { phoneNumber }),
-  cancelRequestSuccess: (id: string) =>
-    createAction(ActionTypes.CANCEL_REQUEST_SUCCESS, { id }),
-
-  denyRequest: (phoneNumber: string) =>
-    createAction(ActionTypes.DENY_REQUEST, { phoneNumber }),
-  denyRequestSuccess: (id: string) =>
-    createAction(ActionTypes.DENY_REQUEST_SUCCESS, { id }),
-
-  onError: (err: string) => createAction(ActionTypes.ON_ERROR, { err })
+  onUserError: (err: string) => createAction(ActionTypes.USER_ERROR, { err }),
 };

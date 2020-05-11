@@ -53,10 +53,15 @@ const {
 const randomColor = () =>
   `rgba(${random(255)}, ${random(255)}, ${random(255)}, 1)`;
 
-const connector = connect((state: RootState) => ({}), {});
+const connector = connect(
+  (state: RootState, props: ImageProps) => ({
+    src: selectors.postImageURL(state, props),
+  }),
+  {}
+);
 
 export interface ImageProps {
-  src: string;
+  id: string;
   open: Animated.Value<0 | 1>;
   style?: Animated.AnimateStyle<ImageStyle>;
   containerStyle?: Animated.AnimateStyle<ViewStyle>;
@@ -67,9 +72,9 @@ export interface ImageProps {
   }) => JSX.Element;
 }
 
-export type PostConnectedProps = ConnectedProps<typeof connector>;
+export type PostImageConnectedProps = ConnectedProps<typeof connector>;
 
-const Image: React.FC<ImageProps & PostConnectedProps> = React.memo(
+const Image: React.FC<ImageProps & PostImageConnectedProps> = React.memo(
   ({ children, style, containerStyle, src, open }) => {
     const [state, value, velocity] = useValues([State.UNDETERMINED, 0, 0]);
 

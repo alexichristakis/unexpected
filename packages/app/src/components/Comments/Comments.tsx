@@ -12,7 +12,6 @@ import { Colors, TextStyles } from "@lib";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { Comment as CommentType } from "@unexpected/global";
 
 import CommentPreview from "./CommentPreview";
 

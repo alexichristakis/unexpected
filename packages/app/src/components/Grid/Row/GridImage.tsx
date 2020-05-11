@@ -18,7 +18,7 @@ export interface GridImageProps {
 }
 
 const connector = connect((state: RootState, props: GridImageProps) => ({
-  src: selectors.postPhotoUrl(state, props),
+  src: selectors.postImageURL(state, props),
 }));
 
 export type GridImageConnectedProps = ConnectedProps<typeof connector>;

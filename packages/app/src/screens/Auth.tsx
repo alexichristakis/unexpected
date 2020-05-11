@@ -1,6 +1,6 @@
 import { useFocusEffect } from "@react-navigation/core";
 import { Formik } from "formik";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -12,37 +12,39 @@ import {
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
 import { useDarkStatusBar, useLightStatusBar } from "@hooks";
 import { TextStyles } from "@lib";
 import { Actions as AuthActions } from "@redux/modules/auth";
-import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
+import { RootState as RootStateType } from "@redux/types";
 import { StackParamList } from "../App";
 
-const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
-  ...auth,
-  ...ownProps,
-});
-const mapDispatchToProps = {
-  reset: AuthActions.reset,
-  requestAuth: AuthActions.requestAuth,
-  checkCode: AuthActions.checkCode,
-};
+const connector = connect(
+  ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
+    ...auth,
+    ...ownProps,
+  }),
+  {
+    reset: AuthActions.reset,
+    requestAuth: AuthActions.requestAuth,
+    checkCode: AuthActions.checkCode,
+  }
+);
 
-export type AuthReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type AuthConnectedProps = ConnectedProps<typeof connector>;
+
 export interface AuthOwnProps {
   navigation: NativeStackNavigationProp<StackParamList>;
 }
 
 const initialFormValues = { phoneNumber: "", code: "" };
-const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
+const Auth: React.FC<AuthConnectedProps & AuthOwnProps> = ({
   navigation,
+  isNewAccount,
+  jwt,
   loading,
   reset,
   isAwaitingCode,
@@ -52,13 +54,15 @@ const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
 }) => {
   useDarkStatusBar();
 
-  useFocusEffect(
-    useCallback(() => {
-      reset();
+  useEffect(() => {
+    reset();
+  }, []);
 
-      return () => {};
-    }, [])
-  );
+  useEffect(() => {
+    if (jwt && isNewAccount) {
+      navigation.navigate("SIGN_UP");
+    }
+  }, [jwt, isNewAccount]);
 
   const handleSubmit = (values: typeof initialFormValues) => {
     if (isAwaitingCode) {
@@ -147,4 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+export default connector(Auth);
