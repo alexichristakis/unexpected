@@ -39,6 +39,6 @@ export const getUserProfileURL = (userId: string) => {
   return `${server}/image/${userId}`;
 };
 
-export const getPostImageURL = (userId: string, photoId: string) => {
-  return `${server}/image/${userId}/${photoId}`;
+export const getPostImageURL = (userId: string, postId: string) => {
+  return `${server}/image/${userId}/${postId}`;
 };

@@ -14,9 +14,6 @@ export class Post {
   @Property()
   description: string;
 
-  @Required()
-  photoId: string;
-
   @Format("date-time")
   @Default(Date.now)
   createdAt: Date = new Date();

@@ -1,5 +1,5 @@
 import React from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, Easing } from "react-native";
 
 import Animated, { interpolate } from "react-native-reanimated";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
@@ -29,8 +29,19 @@ import {
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
-import { Auth, Home, Profile, SignUp } from "./screens";
+import {
+  Auth,
+  Home,
+  Profile,
+  SignUp,
+  NewProfilePicture,
+  Permissions,
+  Capture,
+  Share,
+} from "./screens";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Colors } from "@lib";
+import { TransitionSpec } from "@react-navigation/stack/lib/typescript/src/types";
 
 type BaseParams = {
   prevRoute: string;
@@ -47,7 +58,7 @@ export type StackParamList = {
   SHARE: BaseParams;
   USER_PROFILE: undefined | { focusedPostId: string };
   // PROFILE: BaseParams & { phoneNumber: string; focusedPostId?: string };
-  PROFILE: { phoneNumber: string };
+  PROFILE: { userId: string };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: undefined;
@@ -72,13 +83,36 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
   // start listening for notification events
   useNotificationEvents(navigation);
 
-  const cardStyleInterpolator: StackCardStyleInterpolator = ({ current }) => {
+  const cardStyleInterpolator: StackCardStyleInterpolator = ({
+    next,
+    current,
+  }) => {
     return {
+      shadowStyle: {},
+      overlayStyle: {},
       containerStyle: {
-        //
+        opacity: next
+          ? next.progress.interpolate({
+              inputRange: [0, 0.2],
+              outputRange: [1, 0],
+            })
+          : 1,
+        transform: [
+          {
+            scale: next
+              ? next.progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, 1.05],
+                })
+              : 1,
+          },
+        ],
       },
       cardStyle: {
-        opacity: current.progress,
+        opacity: current.progress.interpolate({
+          inputRange: [0, 0.25, 1],
+          outputRange: [0, 1, 1],
+        }),
         transform: [
           {
             scale: current.progress.interpolate({
@@ -91,18 +125,55 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
     };
   };
 
+  const transitionSpec: TransitionSpec = {
+    animation: "timing",
+    config: {
+      duration: 500,
+      easing: Easing.out(Easing.ease),
+    },
+  };
+
   return (
-    <FocusedPostProvider>
-      <KeyboardStateProvider>
-        <Stack.Navigator
-          screenOptions={{ headerShown: false, cardStyleInterpolator }}
-        >
-          <Stack.Screen name="HOME" component={Home} />
-          <Stack.Screen name="PROFILE" component={Profile} />
-        </Stack.Navigator>
-        <FocusedPost {...{ navigation }} />
-      </KeyboardStateProvider>
-    </FocusedPostProvider>
+    <NativeStack.Navigator screenOptions={{ headerShown: false }}>
+      <NativeStack.Screen name="HOME">
+        {() => (
+          <FocusedPostProvider>
+            <KeyboardStateProvider>
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false,
+                  transitionSpec: {
+                    open: transitionSpec,
+                    close: transitionSpec,
+                  },
+                  cardStyleInterpolator,
+                }}
+              >
+                <Stack.Screen
+                  options={{ cardStyle: { backgroundColor: Colors.nearBlack } }}
+                  name="HOME"
+                  component={Home}
+                />
+                <Stack.Screen name="PROFILE" component={Profile} />
+              </Stack.Navigator>
+              <FocusedPost {...{ navigation }} />
+            </KeyboardStateProvider>
+          </FocusedPostProvider>
+        )}
+      </NativeStack.Screen>
+
+      <NativeStack.Screen
+        name="CAPTURE"
+        options={{ stackPresentation: "modal" }}
+      >
+        {() => (
+          <NativeStack.Navigator screenOptions={{ headerShown: false }}>
+            <NativeStack.Screen name="CAPTURE" component={Capture} />
+            <NativeStack.Screen name="SHARE" component={Share} />
+          </NativeStack.Navigator>
+        )}
+      </NativeStack.Screen>
+    </NativeStack.Navigator>
   );
 };
 

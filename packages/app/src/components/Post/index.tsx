@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useCallback, useState, useContext } from "react";
 import { View, StyleSheet, Text, ImageStyle, ViewStyle } from "react-native";
-import Animated, { useCode, interpolate } from "react-native-reanimated";
+import Animated, { useCode, interpolate, Value } from "react-native-reanimated";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/core";
 import { connect, ConnectedProps } from "react-redux";
-import { useValues } from "react-native-redash";
+import { useValue } from "react-native-redash";
+import moment from "moment";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -17,15 +20,14 @@ import {
 import Image from "./Image";
 import Comments from "./Comments";
 import CommentsButton from "./CommentsButton";
-import { useNavigation } from "@react-navigation/core";
 import { StackParamList } from "App";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { FocusedPostContext } from "@hooks";
 
-const { cond, onChange, set } = Animated;
+const { cond, call, onChange, set } = Animated;
 
 const connector = connect(
   (state: RootState, props: PostProps) => ({
-    post: selectors.post(state, props),
+    post: selectors.populatedPost(state, props),
     numComments: selectors.numComments(state, props),
   }),
   {}
@@ -40,7 +42,8 @@ export type AnimateProp = {
 
 export interface PostProps {
   id: string;
-  visible?: Animated.Adaptable<0 | 1>;
+  inViewbox?: Animated.Value<0 | 1> | Animated.Node<0 | 1>;
+  focused?: Animated.Value<0 | 1> | Animated.Node<0 | 1>;
   light?: boolean;
   dragStarted?: Animated.Adaptable<0 | 1>;
   offset?: Animated.Adaptable<number>;
@@ -54,64 +57,99 @@ export const POST_HEIGHT = Math.round(0.65 * SCREEN_HEIGHT);
 const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
   ({
     id,
-    post,
     numComments,
     light,
-    visible = 1,
+    post: { userId, user, description, createdAt },
+    inViewbox = new Value(1),
+    focused = new Value(1),
     dragStarted = 0,
     offset = 0,
     animate = { image: {}, header: {}, footer: {} },
   }) => {
     const navigation = useNavigation<StackNavigationProp<StackParamList>>();
+    const { unmount } = useContext(FocusedPostContext);
+    const [isVisible, setIsVisible] = useState(false);
+    const open = useValue<0 | 1>(0);
 
-    const [open] = useValues<0 | 1>([0]);
-
-    const scale = interpolate(offset, {
-      inputRange: [-POST_HEIGHT, 0, POST_HEIGHT],
-      outputRange: [0.92, 1, 0.92],
-    });
-
-    useCode(() => cond(open, [cond(dragStarted, set(open, 0))]), []);
-
-    const color = light ? Colors.lightGray : Colors.nearBlack;
-    return (
-      <Animated.View style={[styles.container, { transform: [{ scale }] }]}>
-        <Animated.View style={{ ...styles.header, ...animate.header }}>
-          <Text style={{ ...TextStyles.large, color }}>{post.description}</Text>
-        </Animated.View>
-        <Image
-          style={animate.image}
-          containerStyle={animate.container}
-          {...{ open, id }}
-        >
-          {({ translateX }) => (
-            <Comments postId={id} {...{ translateX, visible }} />
-          )}
-        </Image>
-        <Animated.View style={{ ...styles.footer, ...animate.footer }}>
-          <View style={styles.row}>
-            <View style={styles.profile} />
-            <View>
-              <Text
-                onPress={
-                  () =>
-                    navigation.push("PROFILE", { phoneNumber: "2069409629" })
-                  // navigation.push({
-                  //   key: "PROFILE",
-                  //   params: { phoneNumber: "2069409629" },
-                  // })
-                }
-                style={{ ...TextStyles.medium, color }}
-              >
-                {formatName(post.user)}
-              </Text>
-              <Text style={{ ...TextStyles.small, color }}>2 minutes ago</Text>
-            </View>
-          </View>
-          <CommentsButton {...{ open, numComments }} />
-        </Animated.View>
-      </Animated.View>
+    useCode(
+      () => [
+        onChange(
+          inViewbox,
+          call([inViewbox], ([inViewbox]) => setIsVisible(!!inViewbox))
+        ),
+        cond(open, [cond(dragStarted, set(open, 0))]),
+      ],
+      []
     );
+
+    const navigateToProfile = useCallback((userId: string) => {
+      unmount();
+      navigation.navigate("PROFILE", {
+        userId,
+      });
+    }, []);
+
+    const handleOnPressName = useCallback(() => {
+      navigateToProfile(userId);
+    }, []);
+
+    if (isVisible) {
+      const scale = interpolate(offset, {
+        inputRange: [-POST_HEIGHT, 0, POST_HEIGHT],
+        outputRange: [0.92, 1, 0.92],
+      });
+
+      const color = light ? Colors.lightGray : Colors.nearBlack;
+      return (
+        <Animated.View style={[styles.container, { transform: [{ scale }] }]}>
+          <Animated.Text style={{ ...styles.header, ...animate.header, color }}>
+            {description}
+          </Animated.Text>
+          <Image
+            style={animate.image}
+            containerStyle={animate.container}
+            {...{ open, id }}
+          >
+            {({ translateX }) => (
+              <Comments
+                postId={id}
+                navigateToProfile={navigateToProfile}
+                {...{ translateX, focused }}
+              />
+            )}
+          </Image>
+          <Animated.View style={{ ...styles.footer, ...animate.footer }}>
+            <View style={styles.row}>
+              <View style={styles.profile} />
+              <View>
+                <Text
+                  onPress={handleOnPressName}
+                  style={{
+                    ...TextStyles.large,
+                    textAlignVertical: "center",
+                    color,
+                  }}
+                >
+                  {formatName(user)}
+                </Text>
+                <Text
+                  style={{
+                    ...TextStyles.small,
+                    textAlignVertical: "center",
+                    color,
+                  }}
+                >
+                  {moment(createdAt).fromNow()}
+                </Text>
+              </View>
+            </View>
+            <CommentsButton {...{ open, numComments }} />
+          </Animated.View>
+        </Animated.View>
+      );
+    }
+
+    return <View style={styles.container} />;
   },
   (p, n) => p.id === n.id && p.numComments === n.numComments
 );
@@ -122,14 +160,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: POST_HEIGHT,
     width: SCREEN_WIDTH - 40,
-    // backgroundColor: "rgba(100,100,100,0.5)",
   },
   header: {
     marginHorizontal: 20,
     marginBottom: 10,
+    ...TextStyles.large,
   },
   row: {
     flexDirection: "row",
+    alignItems: "center",
   },
   footer: {
     flexDirection: "row",

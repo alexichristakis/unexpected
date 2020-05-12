@@ -1,11 +1,6 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
-import Animated, {
-  useCode,
-  debug,
-  Value,
-  Clock,
-} from "react-native-reanimated";
+import Animated, { Value, Clock } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import {
@@ -22,15 +17,13 @@ import {
 import { useMemoOne } from "use-memo-one";
 
 import * as selectors from "@redux/selectors";
-import { RootState, PostActionTypes } from "@redux/types";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG, Colors } from "@lib";
-import Swipeable from "./Swipeable";
+import { RootState } from "@redux/types";
+import { SPRING_CONFIG, Colors } from "@lib";
 import Post, { POST_HEIGHT } from "@components/Post";
-import random from "lodash/random";
-import { TextStyles } from "@lib";
 
 import Header from "./Header";
 import { PostActions } from "@redux/modules";
+import { posts } from "@redux/selectors";
 
 const {
   onChange,
@@ -38,6 +31,7 @@ const {
   abs,
   modulo,
   divide,
+  lessThan,
   round,
   multiply,
   set,
@@ -45,7 +39,6 @@ const {
   clockRunning,
   not,
   neq,
-  call,
   block,
   startClock,
   stopClock,
@@ -53,12 +46,10 @@ const {
   sub,
   add,
   eq,
-  lessThan,
-  greaterThan,
 } = Animated;
 
 const connector = connect(
-  (state: RootState) => ({ postIds: selectors.feedPosts(state) }),
+  (state: RootState) => ({ postIds: selectors.feed(state) }),
   { fetchFeed: PostActions.fetchFeed }
 );
 
@@ -115,6 +106,7 @@ const Feed: React.FC<FeedProps & FeedConnectedProps> = ({
       sub(offset, POST_HEIGHT),
       0
     );
+
     const prev = cond(neq(index, 0), add(offset, POST_HEIGHT), 0);
 
     const point = snapPoint(springState.position, velocity, [
@@ -166,10 +158,16 @@ const Feed: React.FC<FeedProps & FeedConnectedProps> = ({
   return (
     <View style={styles.container}>
       <PanGestureHandler activeOffsetY={[-10, 10]} {...handler}>
-        <Animated.View style={{ transform: [{ translateY }] }}>
+        <Animated.View
+          style={{
+            height: postIds.length * POST_HEIGHT,
+            transform: [{ translateY }],
+          }}
+        >
           {postIds.map((id, key) => (
             <Post
-              visible={eq(index, key)}
+              inViewbox={lessThan(abs(sub(key, index)), 3)}
+              focused={eq(index, key)}
               dragStarted={eq(state, State.BEGAN)}
               offset={sub(translateY, key * -POST_HEIGHT)}
               {...{ id, key }}

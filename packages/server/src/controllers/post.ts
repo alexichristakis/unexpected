@@ -4,16 +4,17 @@ import {
   Delete,
   Get,
   Inject,
-  Patch,
   PathParams,
   Put,
   UseAuth,
 } from "@tsed/common";
 
-import { Comment, Post } from "@global";
-
-import { AuthMiddleware, Select } from "../middlewares/auth";
+import { AuthMiddleware } from "../middlewares/auth";
 import { PostService } from "../services/post";
+import { ImageService } from "src/services/images";
+import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
+import multer from "multer";
+import { UserService } from "src/services/user";
 
 @Controller("/post")
 @UseAuth(AuthMiddleware)
@@ -21,14 +22,15 @@ export class PostController {
   @Inject(PostService)
   private postService: PostService;
 
+  @Inject(ImageService)
+  private imageService: ImageService;
+
+  @Inject(UserService)
+  private userService: UserService;
+
   @Get()
   getAll() {
     return this.postService.getAll();
-  }
-
-  @Get("/migrate")
-  updateAll() {
-    return this.postService.updateAll();
   }
 
   @Get("/populate/user")
@@ -38,14 +40,25 @@ export class PostController {
 
   @Put("/:userId")
   @UseAuth(AuthMiddleware, { select: "userId" })
-  sendPost(
-    @PathParams("userId") userId: string,
-    @BodyParams("post") post: Post
+  @MulterOptions({
+    storage: multer.memoryStorage(),
+  })
+  async sendPost(
+    @MultipartFile("image") file: Express.Multer.File,
+    @BodyParams("description") description: string,
+    @PathParams("userId") userId: string
   ) {
-    return this.postService.createNewPost({
-      ...post,
-      user: userId,
-    });
+    const post = await this.postService.create({ description, user: userId });
+
+    const imagePath = this.imageService.getPostPath(userId, post.id);
+
+    const { buffer } = file;
+    await Promise.all([
+      this.userService.updateValidNotifications(userId),
+      this.imageService.upload(buffer, imagePath),
+    ]);
+
+    return true;
   }
 
   @Get("/:userId/posts")

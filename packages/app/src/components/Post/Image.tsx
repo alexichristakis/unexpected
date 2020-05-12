@@ -121,7 +121,7 @@ const Image: React.FC<ImageProps & PostImageConnectedProps> = React.memo(
       </PanGestureHandler>
     );
   },
-  (p, n) => p.src === n.src
+  (p, n) => p.id === n.id
 );
 
 const styles = StyleSheet.create({

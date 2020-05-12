@@ -68,7 +68,7 @@ export default (
       };
     }
 
-    case ActionTypes.EXPIRE_CAMERA: {
+    case ActionTypes.SEND_POST_SUCCESS: {
       return {
         ...state,
         camera: { enabled: false, timeOfExpiry: undefined },
@@ -223,7 +223,6 @@ export const Actions = {
   setCameraTimer: (time: Moment) =>
     createAction(ActionTypes.SET_CAMERA_TIMER, { time }),
   enableCamera: () => createAction(ActionTypes.DEBUG_ENABLE_CAMERA),
-  expireCamera: () => createAction(ActionTypes.EXPIRE_CAMERA),
   setAppStatus: (status: AppStatusType) =>
     createAction(ActionTypes.SET_APP_STATUS, { status }),
   setNetInfo: (netInfo: NetInfoState) =>

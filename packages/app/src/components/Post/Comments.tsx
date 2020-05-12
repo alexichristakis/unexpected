@@ -1,22 +1,37 @@
 import React, { useEffect, useState } from "react";
-import Animated, { useCode } from "react-native-reanimated";
+import Animated, { useCode, Value } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
-import { StyleSheet, ScrollView, ViewBase } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 
 import { SCREEN_WIDTH, Colors } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { Comment as CommentType } from "@global";
 
 import Comment from "./Comment";
 import Composer from "./Composer";
-import { bin } from "react-native-redash";
 
 const { onChange, cond, call } = Animated;
 
+const comments: CommentType[] = [
+  {
+    id: "0",
+    user: "5df4235c379aefb72228de51",
+    body: "this is a comment",
+    post: "post",
+  },
+  {
+    id: "5",
+    user: "5df4235c379aefb72228de51",
+    body:
+      "this is a commentthis is a commentthis is a commentthis is a commentthis is a commentthis is a commentlong long comment",
+    post: "post",
+  },
+];
+
 const connector = connect(
   (state: RootState, props: CommentsProps) => ({
-    // comments: selectors.commentsForPost(state, props),
+    loading: selectors.sendingComment(state),
+    comments: selectors.commentsForPost(state, props),
   }),
   {}
 );
@@ -25,55 +40,17 @@ export type CommentsConnectedProps = ConnectedProps<typeof connector>;
 
 export interface CommentsProps {
   postId: string;
+  navigateToProfile: (userId: string) => void;
   translateX: Animated.Adaptable<number>;
-  visible: Animated.Adaptable<0 | 1>;
+  focused?: Animated.Adaptable<0 | 1>;
 }
 
-const comments: CommentType[] = [
-  {
-    id: "0",
-    user: { firstName: "alexi", lastName: "christakis" },
-    body: "this is a comment",
-    post: "post",
-  },
-  {
-    id: "1",
-    user: { firstName: "alexi", lastName: "christakis" },
-    body: "this is a comment",
-    post: "post",
-  },
-  {
-    id: "2",
-    user: { firstName: "alexi", lastName: "christakis" },
-    body:
-      "this is a comment this is a comment this is a comment this is a comment this is a comment this is a comment this is a comment",
-    post: "post",
-  },
-  {
-    id: "3",
-    user: { firstName: "alexi", lastName: "christakis" },
-    body: "this is a comment",
-    post: "post",
-  },
-  {
-    id: "4",
-    user: { firstName: "alexi", lastName: "christakis" },
-    body: "this is a comment",
-    post: "post",
-  },
-  {
-    id: "5",
-    user: { firstName: "alexi", lastName: "christakis" },
-    body:
-      "this is a commentthis is a commentthis is a commentthis is a commentthis is a commentthis is a commentlong long comment",
-    post: "post",
-  },
-];
-
 const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
+  loading,
   translateX,
-  visible,
-  // comments
+  navigateToProfile,
+  focused = new Value(1),
+  // comments,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -82,8 +59,8 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
   useCode(
     () => [
       onChange(
-        visible,
-        call([visible], ([visible]) => setIsVisible(!!visible))
+        focused,
+        call([focused], ([focused]) => setIsVisible(!!focused))
       ),
     ],
     []
@@ -106,10 +83,14 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
           contentContainerStyle={styles.contentContainer}
         >
           {comments.map((comment) => (
-            <Comment key={comment.id} {...comment} />
+            <Comment
+              key={comment.id}
+              navigateToProfile={navigateToProfile}
+              {...comment}
+            />
           ))}
         </ScrollView>
-        <Composer onComment={handleOnComment} />
+        <Composer loading={loading} onComment={handleOnComment} />
       </Animated.View>
     );
 

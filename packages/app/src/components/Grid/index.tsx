@@ -31,8 +31,6 @@ export interface GridProps {
 
 export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
   ({ posts, renderHeader }) => {
-    console.log(posts);
-
     const { setId, origin, size, open } = useContext(FocusedPostContext);
 
     const handleOnPressPost = useCallback((payload: FocusedPostPayload) => {
