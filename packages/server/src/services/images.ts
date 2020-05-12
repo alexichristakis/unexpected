@@ -12,7 +12,7 @@ import { Duplex } from "stream";
 
   folder for each user by phonenumber
   - profile picture: BUCKET/${phonenumber}/profile.jpg
-  - post: BUCKET/${phonenumber}/posts/${post_id}.jpg
+  - post: BUCKET/${phonenumber}/posts/${photoId}.jpg
 
 */
 

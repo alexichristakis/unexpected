@@ -37,6 +37,7 @@ import {
   NewProfilePicture,
   Permissions,
   Capture,
+  Share,
 } from "./screens";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -80,13 +81,28 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
   // start listening for notification events
   useNotificationEvents(navigation);
 
-  const cardStyleInterpolator: StackCardStyleInterpolator = ({ current }) => {
+  const cardStyleInterpolator: StackCardStyleInterpolator = ({
+    next,
+    current,
+  }) => {
     return {
       containerStyle: {
-        //
+        transform: [
+          {
+            scale: next
+              ? next.progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1, 1.05],
+                })
+              : 1,
+          },
+        ],
       },
       cardStyle: {
-        opacity: current.progress,
+        opacity: current.progress.interpolate({
+          inputRange: [0, 0.25, 1],
+          outputRange: [0, 1, 1],
+        }),
         transform: [
           {
             scale: current.progress.interpolate({
@@ -99,24 +115,36 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
     };
   };
 
-  // return <Permissions {...{ navigation }} />;
-
-  // return <NewProfilePicture {...{ navigation }} />;
-
-  return <Capture {...{ navigation }} />;
-
   return (
-    <FocusedPostProvider>
-      <KeyboardStateProvider>
-        <Stack.Navigator
-          screenOptions={{ headerShown: false, cardStyleInterpolator }}
-        >
-          <Stack.Screen name="HOME" component={Home} />
-          <Stack.Screen name="PROFILE" component={Profile} />
-        </Stack.Navigator>
-        <FocusedPost {...{ navigation }} />
-      </KeyboardStateProvider>
-    </FocusedPostProvider>
+    <NativeStack.Navigator screenOptions={{ headerShown: false }}>
+      <NativeStack.Screen name="HOME">
+        {() => (
+          <FocusedPostProvider>
+            <KeyboardStateProvider>
+              <Stack.Navigator
+                screenOptions={{ headerShown: false, cardStyleInterpolator }}
+              >
+                <Stack.Screen name="HOME" component={Home} />
+                <Stack.Screen name="PROFILE" component={Profile} />
+              </Stack.Navigator>
+              <FocusedPost {...{ navigation }} />
+            </KeyboardStateProvider>
+          </FocusedPostProvider>
+        )}
+      </NativeStack.Screen>
+
+      <NativeStack.Screen
+        name="CAPTURE"
+        options={{ stackPresentation: "modal" }}
+      >
+        {() => (
+          <NativeStack.Navigator screenOptions={{ headerShown: false }}>
+            <NativeStack.Screen name="CAPTURE" component={Capture} />
+            <NativeStack.Screen name="SHARE" component={Share} />
+          </NativeStack.Navigator>
+        )}
+      </NativeStack.Screen>
+    </NativeStack.Navigator>
   );
 };
 

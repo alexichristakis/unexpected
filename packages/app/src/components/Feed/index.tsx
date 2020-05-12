@@ -22,12 +22,9 @@ import {
 import { useMemoOne } from "use-memo-one";
 
 import * as selectors from "@redux/selectors";
-import { RootState, PostActionTypes } from "@redux/types";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG, Colors } from "@lib";
-import Swipeable from "./Swipeable";
+import { RootState } from "@redux/types";
+import { SPRING_CONFIG, Colors } from "@lib";
 import Post, { POST_HEIGHT } from "@components/Post";
-import random from "lodash/random";
-import { TextStyles } from "@lib";
 
 import Header from "./Header";
 import { PostActions } from "@redux/modules";
@@ -45,7 +42,6 @@ const {
   clockRunning,
   not,
   neq,
-  call,
   block,
   startClock,
   stopClock,
@@ -53,12 +49,10 @@ const {
   sub,
   add,
   eq,
-  lessThan,
-  greaterThan,
 } = Animated;
 
 const connector = connect(
-  (state: RootState) => ({ postIds: selectors.feedPosts(state) }),
+  (state: RootState) => ({ postIds: selectors.feed(state) }),
   { fetchFeed: PostActions.fetchFeed }
 );
 

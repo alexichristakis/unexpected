@@ -55,8 +55,8 @@ const Capture: React.FC<CaptureOwnProps & CaptureConnectedProps> = ({
         /* save to redux */
         takePhoto(data);
 
-        sendPost("this is my cool description");
-        // navigation.navigate("SHARE");
+        // sendPost("this is my cool description");
+        navigation.navigate("SHARE");
       }
     }
   };

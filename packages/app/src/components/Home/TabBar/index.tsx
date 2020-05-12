@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import Animated, {
   useCode,
   interpolate,
@@ -10,6 +10,7 @@ import {
   TapGestureHandler,
   State,
 } from "react-native-gesture-handler";
+import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { mix, useValues, useGestureHandler, clamp } from "react-native-redash";
 
 import {
@@ -23,10 +24,12 @@ import ProfileIcon from "@assets/svg/profile.svg";
 import FeedIcon from "@assets/svg/feed.svg";
 
 import TabBarIcon from "./Icon";
+import { StackParamList } from "App";
 
 const { set, divide, onChange, add, cond, eq } = Animated;
 
 export interface TabBarProps {
+  navigation: NativeStackNavigationProp<StackParamList>;
   open: Animated.Value<0 | 1>;
   onPress: (index: 0 | 1) => void;
   y: Animated.Value<number>;
@@ -34,6 +37,7 @@ export interface TabBarProps {
 }
 
 export const TabBar: React.FC<TabBarProps> = ({
+  navigation,
   open,
   onPress,
   x: xOffset,
@@ -142,16 +146,22 @@ export const TabBar: React.FC<TabBarProps> = ({
             onPress={handleOnPressProfile}
           />
         </Animated.View>
-        <TapGestureHandler {...tapHandler}>
-          <Animated.View
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              backgroundColor: "blue",
-            }}
+        <Animated.View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("CAPTURE")}
+            style={{ width: 50, height: 50, backgroundColor: "red" }}
           />
-        </TapGestureHandler>
+          <TapGestureHandler {...tapHandler}>
+            <Animated.View
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 15,
+                backgroundColor: "blue",
+              }}
+            />
+          </TapGestureHandler>
+        </Animated.View>
       </Animated.View>
     </PanGestureHandler>
   );

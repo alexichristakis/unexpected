@@ -34,19 +34,19 @@ export const postImageURL = createSelector([post], (post) => {
 export const usersPosts = createSelector(
   [posts, (_: RootState, props: { userId: string }) => props.userId],
   (postMap, userId) => {
-    //
-    console.log(postMap, userId);
-
     const posts = Object.values(postMap).filter(({ user }) => user === userId);
 
     return posts.map(({ id, createdAt }) => ({ id, createdAt }));
   }
 );
 
-export const feedState = createSelector(s, (state) => state.feed);
+export const feed = createSelector(s, (state) => Object.keys(state.posts));
 
-export const feedPosts = createSelector([feedState], (feedState) => {
-  const { posts } = feedState;
+export const isLoadingFeed = createSelector(s, (state) => state.loadingFeed);
 
-  return posts;
-});
+export const isLoadingPost = createSelector(s, (state) => state.loadingPost);
+
+export const isLoadingUsersPosts = createSelector(
+  s,
+  (state) => state.loadingUsersPosts
+);
