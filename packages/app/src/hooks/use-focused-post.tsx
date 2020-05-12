@@ -1,13 +1,18 @@
 import React, { useState, useCallback } from "react";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated, { Easing, cond } from "react-native-reanimated";
 import {
   useValues,
   useTransition,
   Vector,
   useVector,
+  bin,
   useValue,
   Point,
+  withTransition,
 } from "react-native-redash";
+import { useMemoOne } from "use-memo-one";
+
+const { and, not } = Animated;
 
 export type FocusedPostPayload = {
   origin: { x: number; y: number };
@@ -21,6 +26,9 @@ export type FocusedPostState = {
   id: string;
   transition: Animated.Node<number>;
   isOpen: boolean;
+  runUnmount: Animated.Value<0 | 1>;
+  isOpenValue: Animated.Value<0 | 1>;
+  unmount: () => void;
   open: () => void;
   close: () => void;
   setId: (id: string) => void;
@@ -28,22 +36,41 @@ export type FocusedPostState = {
 
 export const FocusedPostContext = React.createContext({} as FocusedPostState);
 
-export const usePhotoCarouselState = (): FocusedPostState => {
+const useFocusedPostState = (): FocusedPostState => {
   const origin = useVector(0, 0);
   const size = useValue(0);
+  const [runUnmount, isOpenValue] = useValues<0 | 1>([0, 0]);
   const [id, setId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  console.log("focusedid", id);
+  const open = useCallback(() => {
+    runUnmount.setValue(0);
+    isOpenValue.setValue(1);
+    setIsOpen(true);
+  }, []);
 
-  const open = useCallback(() => setIsOpen(true), []);
-  const close = useCallback(() => setIsOpen(false), []);
+  const close = useCallback(() => {
+    isOpenValue.setValue(0);
+    setIsOpen(false);
+  }, []);
+
+  const unmount = useCallback(() => {
+    setIsOpen((prev) => {
+      if (prev) {
+        runUnmount.setValue(1);
+        isOpenValue.setValue(0);
+      }
+
+      return !prev;
+    });
+  }, []);
 
   const setIdMemo = useCallback((id: string) => setId(id), []);
 
   const transition = useTransition(isOpen, {
     duration: 250,
-    easing: Easing.inOut(Easing.ease),
+    easing: Easing.out(Easing.ease),
+    // easing: Easing.bezier(0.17, 0.69, 0.72, 0.99),
   });
 
   return {
@@ -52,14 +79,17 @@ export const usePhotoCarouselState = (): FocusedPostState => {
     size,
     open,
     close,
-    transition,
+    unmount,
+    runUnmount,
     isOpen,
+    isOpenValue,
+    transition,
     setId: setIdMemo,
   };
 };
 
 export const FocusedPostProvider: React.FC = ({ children }) => {
-  const state = usePhotoCarouselState();
+  const state = useFocusedPostState();
 
   return (
     <FocusedPostContext.Provider value={state}>

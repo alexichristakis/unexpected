@@ -29,6 +29,7 @@ export interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
+  id,
   user,
   numPosts = 5,
 }) => {
@@ -39,7 +40,7 @@ export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
   return (
     <Animated.View style={styles.container}>
       <View style={styles.row}>
-        <UserImage phoneNumber={phoneNumber} size={(SCREEN_WIDTH - 60) / 2} />
+        <UserImage id={id} size={(SCREEN_WIDTH - 60) / 2} />
 
         <View
           style={{

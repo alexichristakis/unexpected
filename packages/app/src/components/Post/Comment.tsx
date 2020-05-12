@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
 import isEqual from "lodash/isEqual";
 import moment from "moment";
 import Animated, { Easing } from "react-native-reanimated";
-import { timing, useValues } from "react-native-redash";
+import { timing, useValues, useValue } from "react-native-redash";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 import Image from "react-native-fast-image";
@@ -22,6 +22,7 @@ import { ParamList } from "../../App";
 
 import HeartFilledSVG from "@assets/svg/heart_filled.svg";
 import HeartEmptySVG from "@assets/svg/heart_unfilled.svg";
+import { FocusedPostContext } from "@hooks";
 
 const { Clock, useCode, call, not, cond, clockRunning, set } = Animated;
 
@@ -29,24 +30,37 @@ type Navigation = NativeStackNavigationProp<ParamList>;
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
   userPhoneNumber: selectors.phoneNumber(state),
-  user: selectors.user(state, props),
+  user: selectors.user(state, { id: props.user }),
 });
 
 const mapDispatchToProps = {
   likeComment: PostActions.likeComment,
 };
 
-interface CommentProps extends CommentType {}
+interface CommentProps extends CommentType {
+  navigateToProfile: (userId: string) => void;
+}
 
 export type CommentsConnectedProps = ConnectedProps<typeof connector>;
 
 const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
-  ({ id, createdAt, user, likes = [], body, likeComment }) => {
+  ({
+    id,
+    createdAt,
+    user,
+    likes = [],
+    body,
+    likeComment,
+    navigateToProfile,
+  }) => {
     const [clock] = useState(new Clock());
     const [likesTransitioning, setLikesTransitioning] = useState(false);
     const [likesOpen, setLikesOpen] = useState(false);
     const [likesHeight, openLikes, closeLikes] = useValues<number>([0, 0, 0]);
-    const navigation = useNavigation<Navigation>();
+
+    const { isOpen: isFocused, unmount, close } = useContext(
+      FocusedPostContext
+    );
 
     useCode(
       () => [
@@ -92,15 +106,9 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
       []
     );
 
-    const handleOnPressName = () => navigateToProfile(user.phoneNumber);
-    const navigateToProfile = (phoneNumber: string) => {
-      navigation.navigate("PROFILE", {
-        prevRoute: "Post",
-        phoneNumber: user.phoneNumber,
-      });
-    };
+    const handleOnPressName = () => navigateToProfile(user.id);
 
-    const handleOnPressLikes = () => {
+    const handleOnPressLikes = useCallback(() => {
       if (likesOpen) {
         setLikesTransitioning(true);
         closeLikes.setValue(1);
@@ -108,7 +116,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
         setLikesTransitioning(true);
         openLikes.setValue(1);
       }
-    };
+    }, []);
 
     const handleOnPressLike = () => likeComment(id);
 

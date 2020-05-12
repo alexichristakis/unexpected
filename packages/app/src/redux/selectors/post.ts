@@ -1,9 +1,10 @@
 import { createSelector } from "reselect";
 
-import { getPostImageURL } from "@api";
+import { getPostImageURL, getHeaders } from "@api";
 
 import { users } from "./user";
 import { RootState } from "../types";
+import { jwt } from "./auth";
 
 const s = (state: RootState) => state.post || {};
 
@@ -11,7 +12,7 @@ const idFromProps = (_: RootState, props: { id: string }) => props.id;
 
 export const posts = createSelector([s], (state) => state.posts);
 
-export const post = createSelector(
+export const populatedPost = createSelector(
   [posts, users, idFromProps],
   (posts, users, id) => {
     const post = posts[id] ?? {};
@@ -20,15 +21,22 @@ export const post = createSelector(
 
     return {
       ...post,
+      userId: user,
       user: users[user] ?? {},
     };
   }
 );
 
-export const postImageURL = createSelector([post], (post) => {
-  const { user, photoId } = post;
+export const post = createSelector([posts, idFromProps], (posts, id) => {
+  const post = posts[id] ?? {};
 
-  return getPostImageURL(user.id, photoId);
+  return post;
+});
+
+export const postImageURL = createSelector([post, jwt], (post, jwt) => {
+  const { user, id } = post;
+
+  return { uri: getPostImageURL(user, id), headers: getHeaders({ jwt }) };
 });
 
 export const usersPosts = createSelector(

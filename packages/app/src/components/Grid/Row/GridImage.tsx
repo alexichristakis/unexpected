@@ -50,7 +50,7 @@ const GridImage: React.FC<
                 borderRadius: 5,
                 backgroundColor: randomColor(),
               }}
-              source={{ uri: src }}
+              source={src}
             />
           </Animated.View>
         </BaseButton>

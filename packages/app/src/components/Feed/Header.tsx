@@ -106,11 +106,12 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
         width: mix(transition, 50, SCREEN_WIDTH - 50),
         borderRadius: 25,
         height: 50,
+        transform: [{ scale: mix(transition, 0.8, 1) }],
       }),
       []
     );
 
-    const right = mix(transition, 0, SCREEN_WIDTH - 100);
+    const right = mix(transition, 2.5, SCREEN_WIDTH - 100);
     return (
       <View pointerEvents={"box-none"} style={styles.container}>
         <Animated.View style={{ ...background, ...styles.background }} />
@@ -138,7 +139,7 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
           </Animated.View>
           <TapGestureHandler {...handler}>
             <Animated.View style={{ ...styles.center, right }}>
-              <Search fill={Colors.background} width={30} height={30} />
+              <Search fill={Colors.background} width={25} height={25} />
             </Animated.View>
           </TapGestureHandler>
         </Animated.View>

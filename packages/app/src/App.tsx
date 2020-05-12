@@ -1,5 +1,5 @@
 import React from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, Easing } from "react-native";
 
 import Animated, { interpolate } from "react-native-reanimated";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
@@ -40,6 +40,8 @@ import {
   Share,
 } from "./screens";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Colors } from "@lib";
+import { TransitionSpec } from "@react-navigation/stack/lib/typescript/src/types";
 
 type BaseParams = {
   prevRoute: string;
@@ -56,7 +58,7 @@ export type StackParamList = {
   SHARE: BaseParams;
   USER_PROFILE: undefined | { focusedPostId: string };
   // PROFILE: BaseParams & { phoneNumber: string; focusedPostId?: string };
-  PROFILE: { phoneNumber: string };
+  PROFILE: { userId: string };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: undefined;
@@ -86,7 +88,15 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
     current,
   }) => {
     return {
+      shadowStyle: {},
+      overlayStyle: {},
       containerStyle: {
+        opacity: next
+          ? next.progress.interpolate({
+              inputRange: [0, 0.2],
+              outputRange: [1, 0],
+            })
+          : 1,
         transform: [
           {
             scale: next
@@ -115,6 +125,14 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
     };
   };
 
+  const transitionSpec: TransitionSpec = {
+    animation: "timing",
+    config: {
+      duration: 500,
+      easing: Easing.out(Easing.ease),
+    },
+  };
+
   return (
     <NativeStack.Navigator screenOptions={{ headerShown: false }}>
       <NativeStack.Screen name="HOME">
@@ -122,9 +140,20 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
           <FocusedPostProvider>
             <KeyboardStateProvider>
               <Stack.Navigator
-                screenOptions={{ headerShown: false, cardStyleInterpolator }}
+                screenOptions={{
+                  headerShown: false,
+                  transitionSpec: {
+                    open: transitionSpec,
+                    close: transitionSpec,
+                  },
+                  cardStyleInterpolator,
+                }}
               >
-                <Stack.Screen name="HOME" component={Home} />
+                <Stack.Screen
+                  options={{ cardStyle: { backgroundColor: Colors.nearBlack } }}
+                  name="HOME"
+                  component={Home}
+                />
                 <Stack.Screen name="PROFILE" component={Profile} />
               </Stack.Navigator>
               <FocusedPost {...{ navigation }} />
