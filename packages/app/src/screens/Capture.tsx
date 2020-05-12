@@ -4,40 +4,43 @@ import { StyleSheet, View } from "react-native";
 import { RouteProp } from "@react-navigation/core";
 import { Screen } from "react-native-screens";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 import Camera, {
   CameraRef,
   FlipCameraButton,
   Shutter,
-  ToggleFlashModeButton
+  ToggleFlashModeButton,
 } from "@components/Camera";
 import { useLightStatusBar } from "@hooks";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
 import { CameraType, FlashMode } from "react-native-camera";
 import { StackParamList } from "../App";
+import { PostActions } from "@redux/modules";
 
 const mapStateToProps = (state: RootState) => ({
-  cameraPermission: selectors.cameraPermissions(state)
+  cameraPermission: selectors.cameraPermissions(state),
 });
 const mapDispatchToProps = {
-  takePhoto: ImageActions.takePhoto
+  takePhoto: ImageActions.takePhoto,
+  sendPost: PostActions.sendPost,
 };
 
 export interface CaptureOwnProps {
   navigation: NativeStackNavigationProp<StackParamList, "CAPTURE">;
   route: RouteProp<StackParamList, "CAPTURE">;
 }
-export type CaptureReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
 
-const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+export type CaptureConnectedProps = ConnectedProps<typeof connector>;
+
+const Capture: React.FC<CaptureOwnProps & CaptureConnectedProps> = ({
   takePhoto,
-  navigation
+  sendPost,
+  navigation,
 }) => {
   const [camera, setCamera] = useState<CameraRef | null>(null);
   const [flashMode, setFlashMode] = useState<keyof FlashMode>("auto");
@@ -52,7 +55,8 @@ const Capture: React.FC<CaptureOwnProps & CaptureReduxProps> = ({
         /* save to redux */
         takePhoto(data);
 
-        navigation.navigate("SHARE");
+        sendPost("this is my cool description");
+        // navigation.navigate("SHARE");
       }
     }
   };
@@ -111,7 +115,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "black"
+    backgroundColor: "black",
   },
   background: {
     position: "absolute",
@@ -119,14 +123,14 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: "black"
+    backgroundColor: "black",
   },
   camera: {
     ...StyleSheet.absoluteFillObject,
     bottom: 100,
     overflow: "hidden",
     borderBottomRightRadius: 10,
-    borderBottomLeftRadius: 10
+    borderBottomLeftRadius: 10,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -134,13 +138,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    bottom: 100
+    bottom: 100,
   },
   shutter: {
-    flex: 1
+    flex: 1,
     // position: "absolute",
     // bottom: 100
-  }
+  },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Capture);
+export default connector(Capture);

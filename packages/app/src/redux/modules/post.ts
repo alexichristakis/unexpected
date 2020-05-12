@@ -1,16 +1,13 @@
 import immer from "immer";
 import _ from "lodash";
-import keyBy from "lodash/keyBy";
 import moment from "moment";
 import { TakePictureResponse } from "react-native-camera/types";
 import ImageResizer, {
   Response as ImageResizerResponse,
 } from "react-native-image-resizer";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
-import uuid from "uuid/v4";
 
-import { Comment, User, Post, NewComment, Post_populated } from "@global";
+import { Comment, User, Post } from "@global";
 import client, { getHeaders } from "@api";
 
 import * as selectors from "../selectors";
@@ -20,11 +17,6 @@ import {
   createAction,
   ExtractActionFromActionCreator,
 } from "../types";
-import { Actions as AppActions } from "./app";
-import { Actions as UserActions } from "./user";
-
-import { StackParamList } from "../../App";
-import { AxiosResponse } from "axios";
 
 type PostMap = {
   [postId: string]: Post;
@@ -32,25 +24,17 @@ type PostMap = {
 
 export interface PostState {
   posts: PostMap;
-  feed: {
-    posts: string[];
-    lastFetched: number;
-    stale: boolean;
-    loading: boolean;
-  };
-  loading: boolean;
+  loadingPost: boolean;
+  loadingUsersPosts: boolean;
+  loadingFeed: boolean;
   error: string;
 }
 
 const initialState: PostState = {
   posts: {},
-  feed: {
-    posts: [],
-    lastFetched: -1,
-    stale: true,
-    loading: false,
-  },
-  loading: false,
+  loadingPost: false,
+  loadingUsersPosts: false,
+  loadingFeed: false,
   error: "",
 };
 
@@ -60,27 +44,23 @@ export default (
 ): PostState => {
   switch (action.type) {
     case ActionTypes.FETCH_FEED: {
-      return immer(state, (draft) => {
-        draft.feed.loading = true;
-        draft.error = "";
-      });
+      return {
+        ...state,
+        loadingFeed: true,
+        error: "",
+      };
     }
 
     case ActionTypes.FETCH_FEED_SUCCESS: {
       const { posts } = action.payload;
 
-      return immer(state, (draft) => {
-        const lastFetched = moment().unix();
-
-        draft.feed = {
-          loading: false,
-          posts: Object.keys(posts),
-          stale: false,
-          lastFetched,
-        };
-
-        draft.posts = posts;
-      });
+      return {
+        ...state,
+        posts,
+        loadingFeed: false,
+        loadingPost: false,
+        loadingUsersPosts: false,
+      };
     }
 
     case ActionTypes.FETCH_POST_SUCCESS: {
@@ -91,43 +71,50 @@ export default (
       });
     }
 
-    case ActionTypes.FETCH_USERS_POSTS:
+    case ActionTypes.FETCH_USERS_POSTS: {
+      return {
+        ...state,
+        loadingUsersPosts: true,
+      };
+    }
+
     case ActionTypes.DELETE_POST:
     case ActionTypes.SEND_POST: {
-      return immer(state, (draft) => {
-        draft.loading = true;
-        draft.feed.stale = true;
-
-        draft.error = "";
-      });
+      return {
+        ...state,
+        loadingPost: true,
+        error: "",
+      };
     }
 
     case ActionTypes.DELETE_POST_SUCCESS:
     case ActionTypes.SEND_POST_SUCCESS: {
-      return immer(state, (draft) => {
-        draft.loading = false;
-        draft.feed.stale = true;
-      });
+      return {
+        ...state,
+        loadingPost: false,
+      };
     }
 
     case ActionTypes.FETCH_USERS_POSTS_SUCCESS: {
       const { posts } = action.payload;
 
-      return immer(state, (draft) => {
-        draft.loading = false;
-
-        draft.posts = _.merge(draft.posts, posts);
-      });
+      return {
+        ...state,
+        loadingUsersPosts: false,
+        posts: _.merge(state.posts, posts),
+      };
     }
 
     case ActionTypes.POST_ERROR: {
       const { error } = action.payload;
 
-      return immer(state, (draft) => {
-        draft.error = error;
-        draft.loading = false;
-        draft.feed.loading = false;
-      });
+      return {
+        ...state,
+        error,
+        loadingFeed: false,
+        loadingPost: false,
+        loadingUsersPosts: false,
+      };
     }
 
     default:
@@ -138,59 +125,43 @@ export default (
 function* onSendPost(
   action: ExtractActionFromActionCreator<typeof Actions.sendPost>
 ) {
-  const { description, navigation } = action.payload;
+  const { description } = action.payload;
 
   try {
     const jwt = yield select(selectors.jwt);
-    const phoneNumber = yield select(selectors.phoneNumber);
-    const { uri, width, height }: TakePictureResponse = yield select(
-      selectors.currentImage
-    );
-    const id = uuid();
+    const userId = yield select(selectors.userId);
+    const image: TakePictureResponse = yield select(selectors.currentImage);
 
-    const post = {
-      photoId: id,
-      description,
-    };
-
-    const image: ImageResizerResponse = yield ImageResizer.createResizedImage(
+    const {
       uri,
-      1000,
-      1200,
+      width,
+      height,
+    }: ImageResizerResponse = yield ImageResizer.createResizedImage(
+      image.uri,
+      500,
+      600,
       "JPEG",
       50
     );
 
     const body = new FormData();
+
     body.append("image", {
       // @ts-ignore
-      uri: image.uri,
-      height,
+      uri,
       width,
+      height,
+      name: `${moment().toISOString()}.jpg`,
       type: "image/jpeg",
-      name: `${phoneNumber}-${Date.now()}.jpg`,
     });
 
-    yield all([
-      yield call(client.put, `/image/${phoneNumber}/${id}`, body, {
-        headers: getHeaders({ jwt, image: true }),
-      }),
-      yield call(
-        client.put,
-        `/post/${phoneNumber}`,
-        { post },
-        {
-          headers: getHeaders({ jwt }),
-        }
-      ),
-    ]);
+    body.append("description", description);
 
-    yield all([
-      yield put(Actions.sendPostSuccess(phoneNumber)),
-      yield put(AppActions.expireCamera()),
-    ]);
+    yield call(client.put, `/post/${userId}`, body, {
+      headers: getHeaders({ jwt, image: true }),
+    });
 
-    navigation.navigate("HOME");
+    yield put(Actions.postSuccess());
   } catch (err) {
     yield put(Actions.onPostError(err));
   }
@@ -223,8 +194,6 @@ function* onFetchFeed(
   action: ExtractActionFromActionCreator<typeof Actions.fetchFeed>
 ) {
   // const { fromDate } = action.payload;
-
-  console.log("fetching feed");
   try {
     const jwt = yield select(selectors.jwt);
     const userId = yield select(selectors.userId);
@@ -243,7 +212,7 @@ function* onFetchFeed(
       yield put(Actions.fetchFeedSuccess(posts, users));
     }
 
-    // yield put(Actions.fetchFeedSuccess(posts));
+    yield put(Actions.onPostError("error fetching feed"));
   } catch (err) {
     yield put(Actions.onPostError(err.message));
   }
@@ -318,12 +287,9 @@ export const Actions = {
   fetchPostSuccess: (post: Post, comments: Comment[]) =>
     createAction(ActionTypes.FETCH_POST_SUCCESS, { post, comments }),
 
-  sendPost: (
-    description: string,
-    navigation: NativeStackNavigationProp<StackParamList>
-  ) => createAction(ActionTypes.SEND_POST, { description, navigation }),
-  sendPostSuccess: (phoneNumber: string) =>
-    createAction(ActionTypes.SEND_POST_SUCCESS, { phoneNumber }),
+  sendPost: (description: string) =>
+    createAction(ActionTypes.SEND_POST, { description }),
+  postSuccess: () => createAction(ActionTypes.SEND_POST_SUCCESS),
 
   deletePost: (id: string) => createAction(ActionTypes.DELETE_POST, { id }),
   deletePostSuccess: (phoneNumber: string) =>

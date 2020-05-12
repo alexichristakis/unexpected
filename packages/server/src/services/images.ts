@@ -1,7 +1,7 @@
 import {
   GetFilesOptions,
   GetSignedUrlConfig,
-  Storage
+  Storage,
 } from "@google-cloud/storage";
 import { Service } from "@tsed/common";
 import jimp from "jimp";
@@ -20,9 +20,12 @@ import { Duplex } from "stream";
 export class ImageService {
   private storage = new Storage({
     projectId: "expect-photos",
-    keyFilename: "google_cloud.json"
+    keyFilename: "google_cloud.json",
   });
-  private bucket = this.storage.bucket(process.env.GOOGLE_BUCKET_NAME as string);
+
+  private bucket = this.storage.bucket(
+    process.env.GOOGLE_BUCKET_NAME as string
+  );
 
   async resize(input: Buffer, width: number, height: number) {
     const image = await jimp.read(input);
@@ -32,12 +35,12 @@ export class ImageService {
     return resizedImage;
   }
 
-  getProfilePath(phoneNumber: string) {
-    return `${phoneNumber}/profile.jpg`;
+  getProfilePath(userId: string) {
+    return `${userId}/profile.jpg`;
   }
 
-  getPostPath(phoneNumber: string, id: string) {
-    return `${phoneNumber}/posts/${id}.jpg`;
+  getPostPath(userId: string, id: string) {
+    return `${userId}/posts/${id}.jpg`;
   }
 
   async upload(image: Buffer, path: string) {
@@ -52,7 +55,7 @@ export class ImageService {
     const res = await new Promise((resolve, reject) => {
       readStream
         .pipe(writeStream)
-        .once("error", err => {
+        .once("error", (err) => {
           return reject({ err });
         })
         .once("finish", () => {
@@ -65,7 +68,7 @@ export class ImageService {
     const options: GetSignedUrlConfig = {
       version: "v4",
       action: "read",
-      expires: Date.now() + 30 * 60 * 1000 // 30 minutes
+      expires: Date.now() + 30 * 60 * 1000, // 30 minutes
     };
 
     // Get a v4 signed URL for reading the file
@@ -83,7 +86,7 @@ export class ImageService {
 
   async downloadAllPhotoUrls(phoneNumber: string) {
     const fileOptions: GetFilesOptions = {
-      directory: `${phoneNumber}/posts`
+      directory: `${phoneNumber}/posts`,
     };
 
     const [files, {}, metadata] = await this.bucket.getFiles(fileOptions);
@@ -91,11 +94,11 @@ export class ImageService {
     const downloadOptions: GetSignedUrlConfig = {
       version: "v4",
       action: "read",
-      expires: Date.now() + 30 * 60 * 1000 // 30 minutes
+      expires: Date.now() + 30 * 60 * 1000, // 30 minutes
     };
 
     const urls = await Promise.all(
-      files.map(file => file.getSignedUrl(downloadOptions))
+      files.map((file) => file.getSignedUrl(downloadOptions))
     );
 
     return urls;

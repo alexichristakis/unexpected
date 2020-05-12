@@ -29,7 +29,15 @@ import {
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
-import { Auth, Home, Profile, SignUp } from "./screens";
+import {
+  Auth,
+  Home,
+  Profile,
+  SignUp,
+  NewProfilePicture,
+  Permissions,
+  Capture,
+} from "./screens";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 type BaseParams = {
@@ -90,6 +98,12 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
       },
     };
   };
+
+  // return <Permissions {...{ navigation }} />;
+
+  // return <NewProfilePicture {...{ navigation }} />;
+
+  return <Capture {...{ navigation }} />;
 
   return (
     <FocusedPostProvider>

@@ -90,15 +90,12 @@ export class UserService {
     return user.save() as Promise<User>;
   }
 
-  async updateValidNotifications(post: NewPost) {
-    const { user: uid } = post;
-
+  async updateValidNotifications(userId: string) {
     const time = moment();
     const user = await this.model
-      .findById(uid.toString())
+      .findById(userId)
       .select("notifications")
       .exec();
-    // const user = await this.findOne({  }, ["notifications"]);
 
     if (!user) return;
 
@@ -112,7 +109,7 @@ export class UserService {
     );
 
     return this.model.updateOne(
-      { _id: uid.toString() },
+      { _id: userId },
       { notifications: updatedNotifications }
     );
   }

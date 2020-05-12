@@ -46,7 +46,7 @@ export type Post_populated = Omit<Post, "user"> & {
   user: User;
 };
 
-export type NewPost = Pick<Post, "user" | "description" | "photoId">;
+export type NewPost = Pick<Post, "user" | "description">;
 
 export interface Comment extends CommentModel {
   id: string;

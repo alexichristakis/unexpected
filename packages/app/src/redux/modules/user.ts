@@ -3,17 +3,9 @@ import { Platform } from "react-native";
 import { AxiosResponse } from "axios";
 import immer from "immer";
 import _ from "lodash";
-import moment from "moment-timezone";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { REHYDRATE } from "redux-persist";
-import {
-  all,
-  call,
-  put,
-  select,
-  takeEvery,
-  takeLatest,
-} from "redux-saga/effects";
+import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
 import { PartialUser, User, NewUser } from "@global";
 import client, { getHeaders } from "@api";
@@ -77,11 +69,10 @@ export default (
         draft.phoneNumber = user.phoneNumber;
         draft.id = user.id;
         draft.users[user.id] = user;
-
-        return draft;
       });
     }
 
+    case ActionTypes.FETCH_FEED_SUCCESS:
     case ActionTypes.LOAD_USERS: {
       const { users } = action.payload;
 
@@ -91,8 +82,6 @@ export default (
         });
 
         draft.loading = false;
-
-        return draft;
       });
     }
 
