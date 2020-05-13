@@ -7,8 +7,8 @@ import ImageResizer, {
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
-import { Comment, User, Post } from "@global";
 import client, { getHeaders } from "@api";
+import { Comment, Post, User } from "@global";
 
 import * as selectors from "../selectors";
 import {

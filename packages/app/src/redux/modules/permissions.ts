@@ -13,8 +13,8 @@ import {
 import { all, put, takeEvery, takeLatest } from "redux-saga/effects";
 
 import {
-  ActionUnion,
   ActionTypes,
+  ActionUnion,
   createAction,
   ExtractActionFromActionCreator,
 } from "../types";

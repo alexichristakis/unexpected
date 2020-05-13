@@ -3,7 +3,7 @@ import { MongooseModel } from "@tsed/mongoose";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
 
-import { PostModel, NewPost, Post_populated } from "@global";
+import { NewPost, PostModel, Post_populated } from "@global";
 
 import { CommentService } from "./comment";
 import { SlackLogService } from "./logger";

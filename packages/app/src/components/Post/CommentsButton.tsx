@@ -1,17 +1,17 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
-import Animated, { useCode, interpolate } from "react-native-reanimated";
+import { StyleSheet, Text, View } from "react-native";
+import Animated, { interpolate, useCode } from "react-native-reanimated";
 
-import { TextStyles, Colors } from "@lib";
+import { Colors, TextStyles } from "@lib";
 
+import { State, TapGestureHandler } from "react-native-gesture-handler";
 import {
-  useValues,
-  useValue,
-  useGestureHandler,
-  withTransition,
   mix,
+  useGestureHandler,
+  useValue,
+  useValues,
+  withTransition,
 } from "react-native-redash";
-import { TapGestureHandler, State } from "react-native-gesture-handler";
 
 const { cond, onChange, set, eq } = Animated;
 
@@ -40,6 +40,7 @@ const CommentsButton: React.FC<CommentsButtonProps> = React.memo(
     );
 
     const transition = withTransition(open);
+
     return (
       <TapGestureHandler {...handler}>
         <Animated.View style={styles.commentIndicator}>

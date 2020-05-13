@@ -1,27 +1,27 @@
-import React, { useCallback, useState, useContext } from "react";
-import { View, StyleSheet, Text, ImageStyle, ViewStyle } from "react-native";
-import Animated, { useCode, interpolate, Value } from "react-native-reanimated";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/core";
-import { connect, ConnectedProps } from "react-redux";
-import { useValue } from "react-native-redash";
+import { StackNavigationProp } from "@react-navigation/stack";
 import moment from "moment";
+import React, { useCallback, useContext, useState } from "react";
+import { ImageStyle, StyleSheet, Text, View, ViewStyle } from "react-native";
+import Animated, { interpolate, useCode, Value } from "react-native-reanimated";
+import { useValue } from "react-native-redash";
+import { connect, ConnectedProps } from "react-redux";
 
-import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
 import {
+  Colors,
+  formatName,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   TextStyles,
-  formatName,
-  Colors,
 } from "@lib";
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
 
-import Image from "./Image";
+import { FocusedPostContext } from "@hooks";
+import { StackParamList } from "App";
 import Comments from "./Comments";
 import CommentsButton from "./CommentsButton";
-import { StackParamList } from "App";
-import { FocusedPostContext } from "@hooks";
+import Image from "./Image";
 
 const { cond, call, onChange, set } = Animated;
 
@@ -82,16 +82,16 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
       []
     );
 
-    const navigateToProfile = useCallback((userId: string) => {
+    const navigateToProfile = useCallback((id: string) => {
       unmount();
       navigation.navigate("PROFILE", {
-        userId,
+        id,
       });
     }, []);
 
     const handleOnPressName = useCallback(() => {
       navigateToProfile(userId);
-    }, []);
+    }, [userId]);
 
     if (isVisible) {
       const scale = interpolate(offset, {
@@ -100,6 +100,7 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
       });
 
       const color = light ? Colors.lightGray : Colors.nearBlack;
+
       return (
         <Animated.View style={[styles.container, { transform: [{ scale }] }]}>
           <Animated.Text style={{ ...styles.header, ...animate.header, color }}>

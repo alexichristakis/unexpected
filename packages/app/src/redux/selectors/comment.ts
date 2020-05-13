@@ -2,9 +2,9 @@ import { createSelector } from "reselect";
 
 import { getPostImageURL } from "@api";
 
-import { users } from "./user";
-import { post } from "./post";
 import { RootState } from "../types";
+import { post } from "./post";
+import { users } from "./user";
 
 const s = (state: RootState) => state.comment || {};
 

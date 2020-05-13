@@ -1,10 +1,10 @@
 import { createSelector } from "reselect";
 
-import { getPostImageURL, getHeaders } from "@api";
+import { getHeaders, getPostImageURL } from "@api";
 
-import { users } from "./user";
 import { RootState } from "../types";
 import { jwt } from "./auth";
+import { users } from "./user";
 
 const s = (state: RootState) => state.post || {};
 

@@ -9,16 +9,16 @@ import { UserState } from "./modules/user";
 
 import {
   AppActions,
-  UserActions,
-  PostActions,
-  PermissionsActions,
   AuthActions,
-  ImageActions,
-  FriendActions,
   commentActions,
+  FriendActions,
+  ImageActions,
+  PermissionsActions,
+  PostActions,
+  UserActions,
 } from "./modules";
-import { FriendState } from "./modules/friend";
 import { CommentState } from "./modules/comment";
+import { FriendState } from "./modules/friend";
 
 export enum AppActionTypes {
   UPDATE_NAVIGATION = "app/UPDATE_NAVIGATION",
@@ -100,6 +100,8 @@ export enum UserActionTypes {
 }
 
 export enum FriendActionTypes {
+  FETCH_FRIENDS = "friend/FETCH",
+  FETCH_FRIENDS_SUCCESS = "friend/FETCH_SUCCESS",
   FRIEND_USER = "friend/FRIEND",
   FRIEND_USER_SUCCESS = "friend/FRIEND_SUCCESS",
   ACCEPT_REQUEST = "friend/ACCEPT_REQUEST",

@@ -1,19 +1,19 @@
 import React, { useCallback, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import Animated, { useCode, debug } from "react-native-reanimated";
-import { connect, ConnectedProps } from "react-redux";
+import { StyleSheet, Text, View } from "react-native";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
+import Animated, { debug, useCode } from "react-native-reanimated";
 import {
   useGestureHandler,
   useValue,
   useValues,
   withSpring,
 } from "react-native-redash";
+import { connect, ConnectedProps } from "react-redux";
 import { useMemoOne } from "use-memo-one";
 
+import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib";
 
 const { cond, set, sub, add, eq, greaterThan } = Animated;
 

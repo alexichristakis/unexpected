@@ -3,12 +3,12 @@ import { all, fork } from "redux-saga/effects";
 import {
   appSagas,
   authSagas,
+  commentSagas,
+  friendSagas,
   imageSagas,
   permissionSagas,
   postSagas,
   userSagas,
-  friendSagas,
-  commentSagas,
 } from "./modules";
 
 export default function* rootSaga() {

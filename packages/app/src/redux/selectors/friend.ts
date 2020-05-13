@@ -2,9 +2,9 @@ import { createSelector } from "reselect";
 
 import { getPostImageURL } from "@api";
 
-import { users } from "./user";
-import { post } from "./post";
 import { RootState } from "../types";
+import { post } from "./post";
+import { users } from "./user";
 
 const s = (state: RootState) => state.friend || {};
 
@@ -16,5 +16,6 @@ export const requests = createSelector(s, (state) => state.requests);
 export const requested = createSelector(s, (state) => state.requested);
 
 export const friends = createSelector([f, idFromProps], (friends, id) => {
+  console.log(friends, id);
   return friends[id] ?? [];
 });

@@ -1,30 +1,30 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import Animated, {
-  useCode,
-  interpolate,
-  Extrapolate,
-} from "react-native-reanimated";
 import {
   PanGestureHandler,
-  TapGestureHandler,
   State,
+  TapGestureHandler,
 } from "react-native-gesture-handler";
+import Animated, {
+  Extrapolate,
+  interpolate,
+  useCode,
+} from "react-native-reanimated";
+import { clamp, mix, useGestureHandler, useValues } from "react-native-redash";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
-import { mix, useValues, useGestureHandler, clamp } from "react-native-redash";
 
+import FeedIcon from "@assets/svg/feed.svg";
+import ProfileIcon from "@assets/svg/profile.svg";
 import {
-  TextStyles,
+  ACTIVITY_HEIGHT,
   Colors,
   SCREEN_WIDTH,
+  TextStyles,
   withSpringImperative,
-  ACTIVITY_HEIGHT,
 } from "@lib";
-import ProfileIcon from "@assets/svg/profile.svg";
-import FeedIcon from "@assets/svg/feed.svg";
 
-import TabBarIcon from "./Icon";
 import { StackParamList } from "App";
+import TabBarIcon from "./Icon";
 
 const { set, divide, onChange, add, cond, eq } = Animated;
 

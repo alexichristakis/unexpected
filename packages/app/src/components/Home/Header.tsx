@@ -1,10 +1,10 @@
-import React from "react";
-import Animated, { useCode, debug } from "react-native-reanimated";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { SCREEN_WIDTH } from "@lib";
-import { mix } from "react-native-redash";
-import { StyleSheet } from "react-native";
 import { SB_HEIGHT, TextStyles } from "@lib";
+import React from "react";
+import { StyleSheet } from "react-native";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
+import Animated, { debug, useCode } from "react-native-reanimated";
+import { mix } from "react-native-redash";
 
 const { divide } = Animated;
 

@@ -7,8 +7,8 @@ import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { REHYDRATE } from "redux-persist";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
-import { PartialUser, User, NewUser } from "@global";
 import client, { getHeaders } from "@api";
+import { NewUser, PartialUser, User } from "@global";
 
 import { StackParamList } from "../../App";
 import * as selectors from "../selectors";
@@ -20,8 +20,7 @@ import {
 } from "../types";
 
 export interface UserState {
-  phoneNumber: string;
-  id: string;
+  user: User;
   users: { [phoneNumber: string]: PartialUser };
   stale: boolean;
   loading: boolean;
@@ -30,8 +29,7 @@ export interface UserState {
 }
 
 const initialState: UserState = {
-  phoneNumber: "",
-  id: "",
+  user: {} as User,
   users: {},
   stale: false,
   loading: false,
@@ -66,9 +64,7 @@ export default (
 
       return immer(state, (draft) => {
         draft.loading = false;
-        draft.phoneNumber = user.phoneNumber;
-        draft.id = user.id;
-        draft.users[user.id] = user;
+        draft.user = user;
       });
     }
 
@@ -78,7 +74,7 @@ export default (
 
       return immer(state, (draft) => {
         users.forEach((user) => {
-          draft.users[user.phoneNumber] = user;
+          draft.users[user.id] = user;
         });
 
         draft.loading = false;
@@ -243,7 +239,8 @@ export const Actions = {
   createUserSuccess: (user: User) =>
     createAction(ActionTypes.CREATE_USER_SUCCESS, { user }),
 
-  loadUsers: (users: User[]) => createAction(ActionTypes.LOAD_USERS, { users }),
+  loadUsers: (users: PartialUser[]) =>
+    createAction(ActionTypes.LOAD_USERS, { users }),
   updateUser: (user: Partial<User>) =>
     createAction(ActionTypes.UPDATE_USER, { user }),
 

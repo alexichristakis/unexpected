@@ -3,7 +3,7 @@ import { MongooseModel } from "@tsed/mongoose";
 
 import remove from "lodash/remove";
 
-import { Comment, NewComment, CommentModel } from "@global";
+import { Comment, CommentModel, NewComment } from "@global";
 import { NotificationService } from "./notification";
 import { UserService } from "./user";
 

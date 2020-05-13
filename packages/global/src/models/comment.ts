@@ -1,7 +1,7 @@
 import { Default, Format, Property, Required } from "@tsed/common";
 import { Indexed, Model, ObjectID, Ref } from "@tsed/mongoose";
-import { User } from "./user";
 import { Post } from "./post";
+import { User } from "./user";
 
 @Model()
 export class Comment {

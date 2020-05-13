@@ -14,7 +14,7 @@ import { all, call, put, select, take, takeEvery } from "redux-saga/effects";
 import client, { getHeaders } from "@api";
 import { NOTIFICATION_MINUTES } from "@lib";
 import * as selectors from "../selectors";
-import { ActionTypes, createAction, ActionUnion } from "../types";
+import { ActionTypes, ActionUnion, createAction } from "../types";
 
 export interface AppState {
   appStatus: AppStatusType;

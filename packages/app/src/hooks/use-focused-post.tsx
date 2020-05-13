@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from "react";
-import Animated, { Easing, cond } from "react-native-reanimated";
+import React, { useCallback, useState } from "react";
+import Animated, { cond, Easing } from "react-native-reanimated";
 import {
-  useValues,
-  useTransition,
-  Vector,
-  useVector,
   bin,
-  useValue,
   Point,
+  useTransition,
+  useValue,
+  useValues,
+  useVector,
+  Vector,
   withTransition,
 } from "react-native-redash";
 import { useMemoOne } from "use-memo-one";
@@ -59,9 +59,10 @@ const useFocusedPostState = (): FocusedPostState => {
       if (prev) {
         runUnmount.setValue(1);
         isOpenValue.setValue(0);
+        return true;
       }
 
-      return !prev;
+      return false;
     });
   }, []);
 

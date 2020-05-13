@@ -1,11 +1,11 @@
-import React, { useRef, useCallback, useContext, useMemo } from "react";
-import { connect, ConnectedProps } from "react-redux";
-import Animated from "react-native-reanimated";
+import React, { useCallback, useContext, useMemo, useRef } from "react";
 import FastImage from "react-native-fast-image";
 import { BaseButton } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
+import { connect, ConnectedProps } from "react-redux";
 
+import { FocusedPostContext, FocusedPostPayload } from "@hooks";
 import { randomColor } from "@lib";
-import { FocusedPostPayload, FocusedPostContext } from "@hooks";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 

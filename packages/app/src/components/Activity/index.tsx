@@ -1,9 +1,9 @@
+import { ACTIVITY_HEIGHT } from "@lib";
+import { RootState } from "@redux/types";
 import React from "react";
 import { View } from "react-native";
-import { connect, ConnectedProps } from "react-redux";
 import Animated from "react-native-reanimated";
-import { RootState } from "@redux/types";
-import { ACTIVITY_HEIGHT } from "@lib";
+import { connect, ConnectedProps } from "react-redux";
 
 const connector = connect((state: RootState) => ({}), {});
 
@@ -13,6 +13,7 @@ export type ActivityConnectedProps = ConnectedProps<typeof connector>;
 
 const Activity: React.FC<ActivityProps & ActivityConnectedProps> = ({}) => {
   return (
+    
     <Animated.ScrollView
       style={{
         position: "absolute",
@@ -21,7 +22,7 @@ const Activity: React.FC<ActivityProps & ActivityConnectedProps> = ({}) => {
         bottom: 0,
         height: ACTIVITY_HEIGHT,
       }}
-    ></Animated.ScrollView>
+    />
   );
 };
 

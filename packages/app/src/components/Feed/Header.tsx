@@ -1,32 +1,28 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
-import { View, Text, StyleSheet, TextInput, Keyboard } from "react-native";
-import { connect, ConnectedProps } from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { Keyboard, StyleSheet, TextInput, View } from "react-native";
 import Animated, {
+  Easing,
   interpolate,
   useCode,
-  Easing,
 } from "react-native-reanimated";
+import { connect, ConnectedProps } from "react-redux";
 
-import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
-import {
-  TextStyles,
-  Colors,
-  SCREEN_WIDTH,
-  SCREEN_HEIGHT,
-  SB_HEIGHT,
-  SPRING_CONFIG,
-} from "@lib";
 import Search from "@assets/svg/discover.svg";
 import {
-  useValue,
-  useTransition,
-  withTransition,
+  Colors,
+  SB_HEIGHT,
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  TextStyles,
+} from "@lib";
+import { RootState } from "@redux/types";
+import { State, TapGestureHandler } from "react-native-gesture-handler";
+import {
   mix,
   useGestureHandler,
-  useSpringTransition,
+  useTransition,
+  useValue,
 } from "react-native-redash";
-import { TapGestureHandler, State } from "react-native-gesture-handler";
 import { useMemoOne } from "use-memo-one";
 
 const { onChange, concat, neq, cond, eq, call } = Animated;
@@ -49,7 +45,7 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
 
     const transition = useTransition(searchOpen, {
       duration: 400,
-      easing: Easing.bezier(0.17, 0.69, 0.72, 0.99),
+      easing: Easing.out(Easing.ease),
     });
 
     useCode(
@@ -115,7 +111,6 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
     return (
       <View pointerEvents={"box-none"} style={styles.container}>
         <Animated.View style={{ ...background, ...styles.background }} />
-
         <Animated.View
           style={{ ...styles.header, transform: [{ translateY }] }}
         >

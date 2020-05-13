@@ -19,13 +19,13 @@ import {
   bin,
   clamp,
   onGestureEvent,
+  onScrollEvent,
   spring,
   timing,
   useDiff,
   useValues,
   withOffset,
   withSpring,
-  onScrollEvent,
 } from "react-native-redash";
 
 import CloseIcon from "@assets/svg/close.svg";

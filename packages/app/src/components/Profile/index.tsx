@@ -4,17 +4,17 @@ export { default as UserModal } from "./UserModal";
 // export * from "../Feed/Posts";
 
 import React, { useEffect } from "react";
-import { View, Text } from "react-native";
-import { connect, ConnectedProps } from "react-redux";
+import { Text, View } from "react-native";
 import Animated from "react-native-reanimated";
+import { connect, ConnectedProps } from "react-redux";
 
+import { PostActions, UserActions } from "@redux/modules";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { PostActions, UserActions } from "@redux/modules";
 
-import Header from "./Header";
+import { Colors, SB_HEIGHT } from "@lib";
 import Grid from "../Grid";
-import { SB_HEIGHT, Colors } from "@lib";
+import Header from "./Header";
 
 const connector = connect(
   (state: RootState, props: ProfileProps) => ({
@@ -27,7 +27,7 @@ const connector = connect(
 );
 
 export interface ProfileProps {
-  userId: string;
+  id: string;
 }
 
 export type ProfileConnectedProps = ConnectedProps<typeof connector>;
@@ -35,7 +35,7 @@ export type ProfileConnectedProps = ConnectedProps<typeof connector>;
 const Profile: React.FC<ProfileProps & ProfileConnectedProps> = ({
   fetchPosts,
   fetchUser,
-  userId,
+  id: userId,
   postIds,
 }) => {
   useEffect(() => {

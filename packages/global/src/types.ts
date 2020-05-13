@@ -1,8 +1,8 @@
 import {
-  FriendRequestModel,
-  UserModel,
-  PostModel,
   CommentModel,
+  FriendRequestModel,
+  PostModel,
+  UserModel,
 } from "./models";
 
 export interface FriendRequest extends FriendRequestModel {
@@ -21,7 +21,23 @@ export interface User extends UserModel {
   friends: string[];
 }
 
-export type PartialUser = Partial<User> & { id: string };
+export type PartialUser = Pick<User, "id" | "firstName" | "lastName" | "bio">;
+
+export const DefaultUserSchemaFields: (keyof PartialUser)[] = [
+  "firstName",
+  "lastName",
+  "bio",
+];
+
+export const CompleteUserSchemaFields: (keyof User)[] = [
+  ...DefaultUserSchemaFields,
+  "timezone",
+  "createdAt",
+  "phoneNumber",
+];
+
+export const DefaultUserSelect = DefaultUserSchemaFields.join(" ");
+export const CompleteUserSelect = CompleteUserSchemaFields.join(" ");
 
 export type User_populated = Omit<User, "friends"> & {
   friends: User[];

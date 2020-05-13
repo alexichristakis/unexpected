@@ -1,17 +1,17 @@
-import React, { useContext, useMemo, useEffect } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
-  interpolate,
   Extrapolate,
-  Value,
+  interpolate,
   proc,
+  Value,
 } from "react-native-reanimated";
-import { mix, translate, bin } from "react-native-redash";
+import { bin, mix, translate } from "react-native-redash";
 import { useMemoOne } from "use-memo-one";
 
-import { Colors, SCREEN_WIDTH, SCREEN_HEIGHT } from "@lib";
-import { FocusedPostContext } from "@hooks";
 import Post, { AnimateProp } from "@components/Post";
+import { FocusedPostContext } from "@hooks";
+import { Colors, SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib";
 
 const {
   onChange,
@@ -157,7 +157,7 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
           pointerEvents={isOpen ? "box-none" : "none"}
         >
           <Post
-            light
+            light={true}
             focused={cond(isOpenValue, eq(transition, 1), neq(transition, 0))}
             dragStarted={or(
               and(runUnmount, eq(transition, 0)),

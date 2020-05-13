@@ -1,17 +1,17 @@
-import React, { useState, useContext, useCallback } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useNavigation } from "@react-navigation/core";
 import isEqual from "lodash/isEqual";
 import moment from "moment";
+import Image from "react-native-fast-image";
 import Animated, { Easing } from "react-native-reanimated";
-import { timing, useValues, useValue } from "react-native-redash";
+import { timing, useValue, useValues } from "react-native-redash";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
-import Image from "react-native-fast-image";
 
-import { Comment as CommentType } from "@global";
 import { UserImage } from "@components/universal";
+import { Comment as CommentType } from "@global";
 import { Colors, TextStyles } from "@lib";
 import { formatName } from "@lib";
 import { PostActions } from "@redux/modules";
