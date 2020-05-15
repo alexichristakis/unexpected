@@ -1,36 +1,41 @@
-import React, { useContext } from "react";
+import React, { useContext, useCallback } from "react";
 import { View, StyleSheet, Text } from "react-native";
-import Animated, {
-  interpolate,
-  useCode,
-  debug,
-  eq,
-} from "react-native-reanimated";
+import Animated, { interpolate, useCode } from "react-native-reanimated";
 import { connect, ConnectedProps, useSelector } from "react-redux";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
-import {
-  useTransition,
-  useVector,
-  useValue,
-  useGestureHandler,
-  withSpring,
-  usePanGestureHandler,
-  mix,
-  spring,
-} from "react-native-redash";
+import { usePanGestureHandler } from "react-native-redash";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { FriendsContext } from "@hooks";
-import { Colors, SCREEN_WIDTH } from "@lib";
+import { Colors, SCREEN_WIDTH, SPRING_CONFIG, TextStyles } from "@lib";
 import { POST_HEIGHT } from "./Post";
 import { StackParamList } from "App";
 import { useMemoOne } from "use-memo-one";
 import { RouteProp } from "@react-navigation/core";
 import { UserRow } from "./universal";
 
-const { call, set, greaterThan, abs, cond } = Animated;
+const {
+  spring,
+  neq,
+  add,
+  startClock,
+  call,
+  not,
+  set,
+  greaterThan,
+  abs,
+  cond,
+  debug,
+  eq,
+  onChange,
+  Clock,
+  Value,
+  and,
+  stopClock,
+  block,
+  clockRunning,
+} = Animated;
 
 const connector = connect((state: RootState, props: FriendsProps) => {
   const { id } = props.route.params;
@@ -48,12 +53,8 @@ export interface FriendsProps {
 
 const Friends: React.FC<FriendsProps & FriendsConnectedProps> = ({
   navigation,
-  route,
   friends,
 }) => {
-  //   const { isOpen, close } = useContext(FriendsContext);
-
-  //   const translateX = useValue(0);
   const {
     gestureHandler,
     state,
@@ -61,53 +62,81 @@ const Friends: React.FC<FriendsProps & FriendsConnectedProps> = ({
     velocity,
   } = usePanGestureHandler();
 
-  const translateX = useMemoOne(
-    () =>
-      withSpring({
-        state,
-        value: translation.x,
-        velocity: velocity.x,
-        snapPoints: [0],
-      }),
-    []
-  );
+  const translateX = useMemoOne(() => {
+    const offset = new Value(0);
 
-  useCode(
-    () => [
-      //   cond(eq(state, State.ACTIVE), set(translateX, translation.x)),
-      //   cond(
-      //     eq(state, State.END),
-      //     set(
-      //       translateX,
-      //       spring({ from: translation.x, to: 0, velocity: velocity.x })
-      //     )
-      //   ),
+    const clock = new Clock();
+    const springState: Animated.SpringState = {
+      finished: new Value(0),
+      velocity: new Value(0),
+      position: new Value(0),
+      time: new Value(0),
+    };
+
+    const config = {
+      toValue: new Value(0),
+      ...SPRING_CONFIG,
+    };
+
+    const gestureAndAnimationIsOver = new Value(1);
+    const isSpringInterrupted = and(
+      eq(state, State.BEGAN),
+      clockRunning(clock)
+    );
+
+    const finishSpring = [
+      set(offset, springState.position),
+      stopClock(clock),
+      set(gestureAndAnimationIsOver, 1),
+    ];
+
+    return block([
+      cond(isSpringInterrupted, finishSpring),
       cond(
-        greaterThan(abs(translateX), 100),
-        call([], () => {
-          if (navigation.canGoBack()) navigation.goBack();
-        })
+        and(gestureAndAnimationIsOver, not(clockRunning(clock))),
+        set(springState.position, offset)
       ),
-    ],
-    []
-  );
+      cond(and(eq(state, State.END), not(gestureAndAnimationIsOver)), [
+        cond(and(not(clockRunning(clock)), not(springState.finished)), [
+          set(springState.velocity, velocity.x),
+          set(springState.time, 0),
+          set(config.toValue, 0),
+          cond(
+            greaterThan(abs(translation.x), 100),
+            call([], () => {
+              if (navigation.canGoBack()) navigation.goBack();
+            })
+          ),
 
-  //   const transition = useTransition(isOpen);
+          startClock(clock),
+        ]),
+        spring(clock, springState, config),
+        cond(springState.finished, finishSpring),
+      ]),
+      cond(neq(state, State.END), [
+        set(gestureAndAnimationIsOver, 0),
+        set(springState.finished, 0),
+        set(springState.position, add(offset, translation.x)),
+      ]),
+      //   ),
+      springState.position,
+    ]);
+  }, []);
 
-  console.log("friends", friends);
+  const handleOnPressUser = useCallback((id: string) => {
+    navigation.goBack(); // jank
+    navigation.navigate("PROFILE", { id });
+  }, []);
 
-  //   if (isOpen)
   return (
     <View style={styles.container}>
       <Animated.View
         onTouchEnd={navigation.goBack}
         style={StyleSheet.absoluteFill}
       />
-
       <PanGestureHandler {...gestureHandler}>
         <Animated.View
           style={[
-            styles.card,
             // @ts-ignore
             {
               transform: [
@@ -122,17 +151,16 @@ const Friends: React.FC<FriendsProps & FriendsConnectedProps> = ({
             },
           ]}
         >
-          <Animated.ScrollView style={{ flex: 1 }}>
+          <Text style={styles.header}>Friends</Text>
+          <Animated.ScrollView style={styles.card}>
             {friends.map((id) => (
-              <Text>{id}</Text>
+              <UserRow key={id} onPress={handleOnPressUser} {...{ id }} />
             ))}
           </Animated.ScrollView>
         </Animated.View>
       </PanGestureHandler>
     </View>
   );
-
-  return null;
 };
 
 const styles = StyleSheet.create({
@@ -147,8 +175,15 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 20,
     backgroundColor: Colors.background,
-    height: POST_HEIGHT,
+    maxHeight: POST_HEIGHT,
     width: SCREEN_WIDTH - 40,
+    overflow: "hidden",
+  },
+  header: {
+    ...TextStyles.large,
+    color: Colors.lightGray,
+    marginHorizontal: 20,
+    marginBottom: 10,
   },
 });
 

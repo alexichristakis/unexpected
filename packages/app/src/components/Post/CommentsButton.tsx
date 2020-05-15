@@ -23,7 +23,6 @@ export interface CommentsButtonProps {
 const CommentsButton: React.FC<CommentsButtonProps> = React.memo(
   ({ open, numComments }) => {
     const state = useValue(State.UNDETERMINED);
-    const [] = useValues<0 | 1>([0]);
 
     const handler = useGestureHandler({ state });
 

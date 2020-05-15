@@ -34,7 +34,7 @@ const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({
   navigation,
 }) => {
   const offset = useVector(0, 0);
-  const [activeTab, activityOpen] = useValues<0 | 1>([0, 0]);
+  const [activeTab, activityOpen] = useValues<0 | 1>(0, 0);
 
   useDarkStatusBar();
 

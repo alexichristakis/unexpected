@@ -52,7 +52,7 @@ const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     route,
   }) => {
     const [showTitle, setShowTitle] = useState(false);
-    const [scrollY] = useValues([0]);
+    const [scrollY] = useValues(0);
 
     const navBarTransitionRef = useRef<TransitioningView>(null);
 

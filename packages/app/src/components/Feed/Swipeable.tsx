@@ -34,7 +34,7 @@ const Swipeable: React.FC<SwipeableProps> = ({
   offset,
   post,
 }) => {
-  const [translationY, velocity] = useValues<number>([0, 0, 0]);
+  const [translationY, velocity] = useValues<number>(0, 0, 0);
   const state = useValue(State.UNDETERMINED);
 
   const handler = useGestureHandler({

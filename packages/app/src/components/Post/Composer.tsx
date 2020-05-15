@@ -64,7 +64,7 @@ const Composer: React.FC<ComposerProps> = ({
 }) => {
   const [clock] = useState(new Clock());
   const [message, setMessage] = useState("");
-  const [sendButtonScale, keyboardOffset] = useValues<number>([0, 0]);
+  const [sendButtonScale, keyboardOffset] = useValues<number>(0, 0);
   const ref = useRef<Animated.View>(null);
 
   const { open, height } = useContext(KeyboardStateContext);

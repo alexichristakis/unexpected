@@ -76,7 +76,7 @@ export type PostImageConnectedProps = ConnectedProps<typeof connector>;
 
 const Image: React.FC<ImageProps & PostImageConnectedProps> = React.memo(
   ({ children, style, containerStyle, src, open }) => {
-    const [state, value, velocity] = useValues([State.UNDETERMINED, 0, 0]);
+    const [state, value, velocity] = useValues(State.UNDETERMINED, 0, 0);
 
     const handler = useGestureHandler({
       state,

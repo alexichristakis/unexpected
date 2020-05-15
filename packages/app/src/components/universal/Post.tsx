@@ -11,7 +11,7 @@ import moment from "moment";
 import { TransitioningView } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
-import Comments from "@components/Comments/Comments";
+// import Comments from "@components/Comments/Comments";
 import { Colors, TextStyles } from "@lib";
 import { formatName } from "@lib";
 import { Actions as PostActions } from "@redux/modules/post";
@@ -109,12 +109,12 @@ const Post = React.forwardRef<PostRef, PostConnectedProps & PostProps>(
         {description.length ? (
           <Text style={styles.description}>{description}</Text>
         ) : null}
-        <Comments
+        {/* <Comments
           onPressCompose={onPressComposeComment}
           onPressMore={onPressMoreComments}
           postId={post.id}
           comments={comments}
-        />
+        /> */}
       </View>
     );
   }

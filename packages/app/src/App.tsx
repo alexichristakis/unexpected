@@ -88,8 +88,8 @@ const profileCardStyleInterpolator: StackCardStyleInterpolator = ({
   current,
 }) => {
   return {
-    shadowStyle: {},
-    overlayStyle: {},
+    // shadowStyle: {},
+    // overlayStyle: {},
     containerStyle: {
       opacity: next
         ? next.progress.interpolate({

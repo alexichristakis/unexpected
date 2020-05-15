@@ -45,8 +45,8 @@ export const TabBar: React.FC<TabBarProps> = ({
 }) => {
   const val = divide(xOffset, -SCREEN_WIDTH);
 
-  const [state, tapState] = useValues([State.UNDETERMINED, State.UNDETERMINED]);
-  const [value, velocity] = useValues([0, 0]);
+  const [state, tapState] = useValues(State.UNDETERMINED, State.UNDETERMINED);
+  const [value, velocity] = useValues(0, 0);
 
   const handler = useGestureHandler({
     state,

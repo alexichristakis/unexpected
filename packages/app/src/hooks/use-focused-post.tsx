@@ -39,7 +39,7 @@ export const FocusedPostContext = React.createContext({} as FocusedPostState);
 const useFocusedPostState = (): FocusedPostState => {
   const origin = useVector(0, 0);
   const size = useValue(0);
-  const [runUnmount, isOpenValue] = useValues<0 | 1>([0, 0]);
+  const [runUnmount, isOpenValue] = useValues<0 | 1>(0, 0);
   const [id, setId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 

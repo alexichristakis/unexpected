@@ -68,6 +68,7 @@ export default (
       });
     }
 
+    case ActionTypes.FETCH_FRIENDS_SUCCESS:
     case ActionTypes.FETCH_FEED_SUCCESS:
     case ActionTypes.LOAD_USERS: {
       const { users } = action.payload;

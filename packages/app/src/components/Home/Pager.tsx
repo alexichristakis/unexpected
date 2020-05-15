@@ -31,7 +31,7 @@ export interface PagerProps {
 
 export const Pager: React.FC<PagerProps> = React.memo(
   ({ tab, x, children }) => {
-    const [velocity, translationX] = useValues([0, 0]);
+    const [velocity, translationX] = useValues(0, 0);
     const state = useValue(State.UNDETERMINED);
 
     const handler = useGestureHandler({

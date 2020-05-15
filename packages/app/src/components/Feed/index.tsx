@@ -62,7 +62,7 @@ const Feed: React.FC<FeedProps & FeedConnectedProps> = ({
   fetchFeed,
 }) => {
   const state = useValue(State.UNDETERMINED);
-  const [value, velocity, index] = useValues<number>([0, 0, 0]);
+  const [value, velocity, index] = useValues<number>(0, 0, 0);
 
   useEffect(() => {
     fetchFeed();

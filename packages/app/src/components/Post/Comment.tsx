@@ -56,7 +56,7 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
     const [clock] = useState(new Clock());
     const [likesTransitioning, setLikesTransitioning] = useState(false);
     const [likesOpen, setLikesOpen] = useState(false);
-    const [likesHeight, openLikes, closeLikes] = useValues<number>([0, 0, 0]);
+    const [likesHeight, openLikes, closeLikes] = useValues<number>(0, 0, 0);
 
     const { isOpen: isFocused, unmount, close } = useContext(
       FocusedPostContext

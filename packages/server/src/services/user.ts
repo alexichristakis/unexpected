@@ -5,14 +5,11 @@ import moment from "moment";
 import { Document } from "mongoose";
 
 import {
-  NewPost,
   NewUser,
   PartialUser,
-  Post,
   User,
   UserModel,
   UserNotificationRecord,
-  DefaultUserSchemaFields,
   DefaultUserSelect,
 } from "@global";
 import { NOTIFICATION_MINUTES } from "../lib/constants";
@@ -218,7 +215,7 @@ export class UserService {
     const user = await this.model
       .findById(uid)
       .select("friends")
-      .populate("friends")
+      .populate("friends", DefaultUserSelect)
       .lean()
       .exec();
 
@@ -228,8 +225,7 @@ export class UserService {
 
     const ret = friends.map(({ _id, ...rest }: UserModel) => ({
       id: _id,
-      bio: "",
-      ..._.pick(rest, DefaultUserSchemaFields),
+      ...rest,
     }));
 
     return ret as PartialUser[];

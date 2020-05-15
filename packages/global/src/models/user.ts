@@ -21,7 +21,7 @@ export class User {
 
   @Property()
   @Default("")
-  bio: string;
+  bio?: string = "";
 
   @Property()
   deviceOS: string;
