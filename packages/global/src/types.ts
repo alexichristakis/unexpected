@@ -5,6 +5,14 @@ import {
   UserModel,
 } from "./models";
 
+export enum FriendingState {
+  FRIENDS = "friends",
+  RECEIVED = "received",
+  REQUESTED = "requested",
+  CAN_FRIEND = "can_friend",
+  NONE = "none",
+}
+
 export interface FriendRequest extends FriendRequestModel {
   id: string;
   from: string;

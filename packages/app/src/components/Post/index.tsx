@@ -16,12 +16,12 @@ import {
 } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-
 import { FocusedPostContext } from "@hooks";
-import { StackParamList } from "App";
+
 import Comments from "./Comments";
 import CommentsButton from "./CommentsButton";
 import Image from "./Image";
+import { StackParamList } from "../../App";
 
 const { cond, call, onChange, set } = Animated;
 

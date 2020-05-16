@@ -42,7 +42,7 @@ const UserRow: React.FC<UserRowProps & UserRowConnectedProps> = ({
         <UserImage id={id} size={35} />
         <Text style={styles.name}>{formatName(user)}</Text>
         <View style={styles.buttonContainer}>
-          {/* <FriendButton user={user} /> */}
+          <FriendButton {...{ id }} />
         </View>
       </>
     </TouchableHighlight>
