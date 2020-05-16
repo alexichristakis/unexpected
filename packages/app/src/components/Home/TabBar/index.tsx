@@ -25,6 +25,7 @@ import {
 
 import { StackParamList } from "App";
 import TabBarIcon from "./Icon";
+import { StackParamList } from "App";
 
 const { set, divide, onChange, add, cond, eq } = Animated;
 

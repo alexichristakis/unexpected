@@ -8,7 +8,7 @@ import ImageResizer, {
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
-import { Comment, Post, User } from "@global";
+import { Comment, Post, User, PartialUser } from "@global";
 
 import * as selectors from "../selectors";
 import {
@@ -277,7 +277,7 @@ export const Actions = {
 
   fetchFeed: (fromDate?: Date) =>
     createAction(ActionTypes.FETCH_FEED, { fromDate }),
-  fetchFeedSuccess: (posts: PostMap, users: User[]) =>
+  fetchFeedSuccess: (posts: PostMap, users: PartialUser[]) =>
     createAction(ActionTypes.FETCH_FEED_SUCCESS, {
       posts,
       users,

@@ -19,6 +19,7 @@ import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { CameraType, FlashMode } from "react-native-camera";
 import { StackParamList } from "../App";
+import { PostActions } from "@redux/modules";
 
 const mapStateToProps = (state: RootState) => ({
   cameraPermission: selectors.cameraPermissions(state),

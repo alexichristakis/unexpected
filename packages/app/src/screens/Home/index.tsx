@@ -38,6 +38,8 @@ const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({
 
   useDarkStatusBar();
 
+  useDarkStatusBar();
+
   const handleOnPressTab = (index: 0 | 1) => activeTab.setValue(index);
 
   const pagerContainer = { flex: 1, transform: [{ translateY: offset.y }] };

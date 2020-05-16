@@ -165,7 +165,7 @@ function* onUpdateUser(
   const { user } = action.payload;
 
   try {
-    const res: AxiosResponse<User> = yield client.patch(
+    const res: AxiosResponse<PartialUser> = yield client.patch(
       `/user/${phoneNumber}`,
       { user: { ...user } },
       {
