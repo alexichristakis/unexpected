@@ -1,11 +1,11 @@
 import {
   GetFilesOptions,
+  GetFilesResponse,
   GetSignedUrlConfig,
   Storage,
-  GetFilesResponse,
 } from "@google-cloud/storage";
-import mongoose, { Collection } from "mongoose";
 import keyBy from "lodash/keyBy";
+import mongoose, { Collection } from "mongoose";
 
 import { UserModel } from "../src/global";
 
@@ -53,6 +53,7 @@ const migration = async () => {
         // console.log(phoneNumber, userPhoneMap[phoneNumber])
 
         const dest = name.replace(phoneNumber, userPhoneMap[phoneNumber]._id);
+
         return file.copy(dest).then(() => file.delete());
       }),
     ]);

@@ -1,30 +1,30 @@
+import random from "lodash/random";
 import React, {
   useCallback,
-  useState,
-  useRef,
-  useMemo,
   useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import {
-  View,
+  ImageStyle,
+  ScrollView,
   StyleSheet,
   Text,
-  ScrollView,
-  ImageStyle,
+  View,
   ViewStyle,
 } from "react-native";
-import Animated, { interpolate } from "react-native-reanimated";
-import { connect, ConnectedProps } from "react-redux";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { useGestureHandler, useValues } from "react-native-redash";
-import { useMemoOne } from "use-memo-one";
 import FastImage from "react-native-fast-image";
-import random from "lodash/random";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
+import Animated, { interpolate } from "react-native-reanimated";
+import { useGestureHandler, useValues } from "react-native-redash";
+import { connect, ConnectedProps } from "react-redux";
+import { useMemoOne } from "use-memo-one";
 
-import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib";
 import { withSpringImperative } from "@lib";
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
 
 import Comments from "./Comments";
 
@@ -76,7 +76,7 @@ export type PostImageConnectedProps = ConnectedProps<typeof connector>;
 
 const Image: React.FC<ImageProps & PostImageConnectedProps> = React.memo(
   ({ children, style, containerStyle, src, open }) => {
-    const [state, value, velocity] = useValues([State.UNDETERMINED, 0, 0]);
+    const [state, value, velocity] = useValues(State.UNDETERMINED, 0, 0);
 
     const handler = useGestureHandler({
       state,

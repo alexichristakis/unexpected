@@ -1,6 +1,6 @@
+import { createSelector } from "reselect";
 import { RootState } from "../types";
 import { currentUser, phoneNumber } from "./user";
-import { createSelector } from "reselect";
 
 const s = (state: RootState) => state.auth || {};
 

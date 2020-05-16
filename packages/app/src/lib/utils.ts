@@ -1,10 +1,10 @@
 import { User } from "@unexpected/global";
-import Animated, { Value, Clock, Easing } from "react-native-reanimated";
+import Animated, { Clock, Easing, Value } from "react-native-reanimated";
 
-import { SPRING_CONFIG } from "./constants";
-import { State } from "react-native-gesture-handler";
-import { snapPoint, contains } from "react-native-redash";
 import random from "lodash/random";
+import { State } from "react-native-gesture-handler";
+import { contains, snapPoint } from "react-native-redash";
+import { SPRING_CONFIG } from "./constants";
 
 const {
   cond,

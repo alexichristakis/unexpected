@@ -13,6 +13,7 @@ import Camera, {
   ToggleFlashModeButton,
 } from "@components/Camera";
 import { useLightStatusBar } from "@hooks";
+import { PostActions } from "@redux/modules";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";

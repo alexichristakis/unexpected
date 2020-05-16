@@ -5,12 +5,12 @@ import moment from "moment";
 import { Document } from "mongoose";
 
 import {
-  UserModel,
-  Post,
-  User,
-  UserNotificationRecord,
   NewUser,
-  NewPost,
+  PartialUser,
+  User,
+  UserModel,
+  UserNotificationRecord,
+  DefaultUserSelect,
 } from "@global";
 import { NOTIFICATION_MINUTES } from "../lib/constants";
 import { SlackLogService } from "./logger";
@@ -49,11 +49,19 @@ export class UserService {
     return createdUser;
   }
 
-  async get(uid: string, select?: string, populate?: string) {
+  async get(
+    uid: string,
+    select: string = DefaultUserSelect,
+    populate?: string
+  ) {
     return this.model.findById(uid).select(select).populate(populate).exec();
   }
 
-  async getMultiple(uids: string[], select?: string, populate?: string) {
+  async getMultiple(
+    uids: string[],
+    select: string = DefaultUserSelect,
+    populate?: string
+  ) {
     return this.model
       .find({ _id: { $in: uids } })
       .select(select)
@@ -204,12 +212,23 @@ export class UserService {
   }
 
   async getFriends(uid: string) {
-    const user = await this.model.findById(uid).populate("friends").exec();
+    const user = await this.model
+      .findById(uid)
+      .select("friends")
+      .populate("friends", DefaultUserSelect)
+      .lean()
+      .exec();
 
     if (!user) return null;
 
-    const { friends } = user;
-    return friends as User[];
+    const { friends } = user as any;
+
+    const ret = friends.map(({ _id, ...rest }: UserModel) => ({
+      id: _id,
+      ...rest,
+    }));
+
+    return ret as PartialUser[];
   }
 
   async getByPhone(phoneNumber?: string): Promise<User & Document>;

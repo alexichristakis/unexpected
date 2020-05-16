@@ -33,6 +33,7 @@ export const SB_HEIGHT = Platform.select({
 export const Colors = {
   transGray: "rgba(10, 10, 10, 0.7)",
   nearBlack: "rgb(10, 10, 10)",
+  darkGray: "rgb(30,30,30)",
   gray: "rgb(120,120,120)",
   lightGray: "rgb(230, 230, 230)",
   background: "rgb(242, 242, 242)",

@@ -1,21 +1,35 @@
 import React from "react";
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { connect, ConnectedProps } from "react-redux";
 
-import { Colors, TextStyles } from "@lib";
-import { formatName } from "@lib";
-import { User } from "@unexpected/global";
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
+import { formatName, Colors, TextStyles } from "@lib";
 
 import FriendButton from "./FriendButton";
 import UserImage from "./UserImage";
 
+const connector = connect(
+  (state: RootState, props: UserRowProps) => ({
+    user: selectors.user(state, props),
+  }),
+  {}
+);
+
 export interface UserRowProps {
-  onPress: (user: User) => void;
-  user: User;
+  onPress: (id: string) => void;
+  id: string;
 }
 
-export const UserRow: React.FC<UserRowProps> = ({ user, onPress }) => {
+export type UserRowConnectedProps = ConnectedProps<typeof connector>;
+
+const UserRow: React.FC<UserRowProps & UserRowConnectedProps> = ({
+  id,
+  user,
+  onPress,
+}) => {
   const handleOnPress = () => {
-    onPress(user);
+    onPress(id);
   };
 
   return (
@@ -25,10 +39,10 @@ export const UserRow: React.FC<UserRowProps> = ({ user, onPress }) => {
       style={styles.container}
     >
       <>
-        <UserImage phoneNumber={user.phoneNumber} size={35} />
+        <UserImage id={id} size={35} />
         <Text style={styles.name}>{formatName(user)}</Text>
         <View style={styles.buttonContainer}>
-          <FriendButton user={user} />
+          <FriendButton {...{ id }} />
         </View>
       </>
     </TouchableHighlight>
@@ -54,3 +68,5 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
+
+export default connector(UserRow);

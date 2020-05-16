@@ -1,29 +1,29 @@
-import React, { useCallback, useState, useRef, useEffect } from "react";
-import { View, StyleSheet, Text, ScrollView } from "react-native";
-import Animated, { Value, Clock } from "react-native-reanimated";
-import { connect, ConnectedProps } from "react-redux";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
+import Animated, { Clock, Value } from "react-native-reanimated";
 import {
+  min,
+  snapPoint,
+  useClock,
+  //   withSpring,
   useGestureHandler,
   useValue,
   useValues,
-  //   withSpring,
-  WithSpringParams,
-  snapPoint,
-  useClock,
   withSpring,
-  min,
+  WithSpringParams,
 } from "react-native-redash";
+import { connect, ConnectedProps } from "react-redux";
 import { useMemoOne } from "use-memo-one";
 
+import Post, { POST_HEIGHT } from "@components/Post";
+import { Colors, SPRING_CONFIG } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { SPRING_CONFIG, Colors } from "@lib";
-import Post, { POST_HEIGHT } from "@components/Post";
 
-import Header from "./Header";
 import { PostActions } from "@redux/modules";
 import { posts } from "@redux/selectors";
+import Header from "./Header";
 
 const {
   onChange,
@@ -62,7 +62,7 @@ const Feed: React.FC<FeedProps & FeedConnectedProps> = ({
   fetchFeed,
 }) => {
   const state = useValue(State.UNDETERMINED);
-  const [value, velocity, index] = useValues<number>([0, 0, 0]);
+  const [value, velocity, index] = useValues<number>(0, 0, 0);
 
   useEffect(() => {
     fetchFeed();

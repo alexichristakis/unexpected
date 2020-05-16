@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { FlatList, StyleSheet } from "react-native";
 
 import groupBy from "lodash/groupBy";
@@ -7,13 +7,13 @@ import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
 import LockSVG from "@assets/svg/lock.svg";
-import { Colors, TextStyles, SB_HEIGHT } from "@lib";
+import { Colors, SB_HEIGHT, TextStyles } from "@lib";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
-import { Month, Months } from "./Month";
 import { FocusedPostContext, FocusedPostPayload } from "@hooks";
+import { Month, Months } from "./Month";
 import testPosts from "./test_data";
 
 const mapStateToProps = (state: RootState, props: GridProps) => ({

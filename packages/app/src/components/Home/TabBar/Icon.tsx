@@ -1,36 +1,36 @@
 import React from "react";
-import { StyleSheet, LayoutChangeEvent } from "react-native";
-import Animated, {
-  useCode,
-  interpolate,
-  Extrapolate,
-  debug,
-} from "react-native-reanimated";
+import { LayoutChangeEvent, StyleSheet } from "react-native";
 import {
   PanGestureHandler,
-  TapGestureHandler,
   State,
+  TapGestureHandler,
 } from "react-native-gesture-handler";
+import Animated, {
+  debug,
+  Extrapolate,
+  interpolate,
+  useCode,
+} from "react-native-reanimated";
 import {
-  mix,
-  useValues,
-  useGestureHandler,
   clamp,
-  useValue,
+  mix,
   mixColor,
+  useGestureHandler,
+  useValue,
+  useValues,
 } from "react-native-redash";
 
+import FeedIcon from "@assets/svg/feed.svg";
+import ProfileIcon from "@assets/svg/profile.svg";
 import {
-  TextStyles,
+  ACTIVITY_HEIGHT,
   Colors,
   SCREEN_WIDTH,
+  TextStyles,
   withSpringImperative,
-  ACTIVITY_HEIGHT,
 } from "@lib";
-import ProfileIcon from "@assets/svg/profile.svg";
-import FeedIcon from "@assets/svg/feed.svg";
-import { SvgProps } from "react-native-svg";
 import isEqual from "lodash/isEqual";
+import { SvgProps } from "react-native-svg";
 
 const { sub, call, set, divide, onChange, add, cond, eq } = Animated;
 

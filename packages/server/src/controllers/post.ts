@@ -9,6 +9,10 @@ import {
   UseAuth,
 } from "@tsed/common";
 
+import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
+import multer from "multer";
+import { ImageService } from "src/services/images";
+import { UserService } from "src/services/user";
 import { AuthMiddleware } from "../middlewares/auth";
 import { PostService } from "../services/post";
 import { ImageService } from "src/services/images";

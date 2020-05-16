@@ -1,17 +1,17 @@
-import { all, call, put, select, takeLatest } from "redux-saga/effects";
 import immer from "immer";
+import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
-import * as selectors from "../selectors";
-import { Comment, User, Post, NewComment } from "@global";
 import client, { getHeaders } from "@api";
+import { Comment, NewComment, Post, User } from "@global";
+import * as selectors from "../selectors";
 
+import keyBy from "lodash/keyBy";
 import {
-  ActionUnion,
   ActionTypes,
+  ActionUnion,
   createAction,
   ExtractActionFromActionCreator,
 } from "../types";
-import keyBy from "lodash/keyBy";
 
 type CommentMap = {
   [postId: string]: { [commentId: string]: Comment };

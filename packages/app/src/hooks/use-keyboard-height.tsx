@@ -1,8 +1,8 @@
+import { SCREEN_HEIGHT } from "@lib";
 import React, { createContext, useEffect } from "react";
+import { Keyboard, KeyboardEvent } from "react-native";
 import Animated from "react-native-reanimated";
 import { useValue, withTransition } from "react-native-redash";
-import { Keyboard, KeyboardEvent } from "react-native";
-import { SCREEN_HEIGHT } from "@lib";
 
 export type KeyboardState = {
   open: Animated.Value<0 | 1>;

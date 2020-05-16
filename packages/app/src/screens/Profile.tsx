@@ -3,8 +3,8 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleSheet,
-  View,
   Text,
+  View,
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
@@ -25,18 +25,14 @@ import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { ParamList } from "../App";
+import { FriendActions } from "@redux/modules";
 
 const { useCode, debug, block, call, greaterThan, lessOrEq, cond } = Animated;
 
-const mapStateToProps = (state: RootState, props: ProfileProps) => ({
-  phoneNumber: selectors.phoneNumber(state),
-  user: selectors.user(state, props.route.params),
-  friends: selectors.friends(state, props.route.params),
-});
-const mapDispatchToProps = {
+const connector = connect((state: RootState, props: ProfileProps) => ({}), {
   fetchUsersPosts: PostActions.fetchUsersPosts,
-  fetchUser: UserActions.fetchUser,
-};
+  fetchUsersFriends: FriendActions.fetchFriends,
+});
 
 export type ProfileReduxProps = ConnectedProps<typeof connector>;
 
@@ -49,33 +45,24 @@ const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
   ({
     navigation,
     fetchUsersPosts,
-    fetchUser,
-    user,
-    phoneNumber,
-    friends,
+    fetchUsersFriends,
+    // user,
+    // phoneNumber,
+    // friends,
     route,
   }) => {
     const [showTitle, setShowTitle] = useState(false);
-    const [scrollY] = useValues([0]);
+    const [scrollY] = useValues(0);
 
     const navBarTransitionRef = useRef<TransitioningView>(null);
 
-    const getFriendStatusState = () => {
-      if (!user || !user.friends) return "unknown";
-      if (user.friends.includes(phoneNumber)) return "friends";
-      else return "notFriends";
-    };
-
     useDarkStatusBar();
 
+    const { id } = route.params;
     useEffect(() => {
-      const { phoneNumber } = route.params;
-
-      fetchUser(phoneNumber);
-
-      // if friends fetch and render posts too
-      if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
-    }, [getFriendStatusState()]);
+      fetchUsersFriends(id);
+      fetchUsersPosts(id);
+    }, [id]);
 
     useCode(
       () =>
@@ -99,8 +86,18 @@ const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
     );
 
     return (
-      <Profile />
-      // <Screen stackPresentation={"push"} style={styles.container}>
+      <View style={{ flex: 1, paddingTop: SB_HEIGHT }}>
+        <NavBar
+          transitionRef={navBarTransitionRef}
+          // backButtonText={route.params.prevRoute}
+          showTitle={showTitle}
+          showBackButtonText={!showTitle}
+          // title={user.firstName}
+          navigation={navigation}
+          // rightButton={<FriendButton showLabel={!showTitle} user={user} />}
+        />
+        <Profile {...{ id }} />
+      </View>
       //   <NavBar
       //     transitionRef={navBarTransitionRef}
       //     backButtonText={route.params.prevRoute}
@@ -110,29 +107,6 @@ const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
       //     navigation={navigation}
       //     rightButton={<FriendButton showLabel={!showTitle} user={user} />}
       //   />
-      //   <Grid
-      //     phoneNumber={route.params.phoneNumber}
-      //     onPressPost={handleOnPressPost}
-      //     scrollY={scrollY}
-      //     friendStatus={getFriendStatusState()}
-      //     onScrollEndDrag={handleOnScrollEndDrag}
-      //     headerContainerStyle={styles.headerContainer}
-      //     renderHeader={renderTop}
-      //   />
-      //   <UserModal
-      //     visible={showUserModal}
-      //     phoneNumber={route.params.phoneNumber}
-      //     onClose={handleUserModalClose}
-      //   />
-      //   <PostModal
-      //     postId={
-      //       route.params?.focusedPostId?.length
-      //         ? route.params?.focusedPostId
-      //         : focusedPostId
-      //     }
-      //     onClose={handlePostModalClose}
-      //   />
-      // </Screen>
     );
   }
 );
@@ -150,5 +124,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(ProfileScreen);

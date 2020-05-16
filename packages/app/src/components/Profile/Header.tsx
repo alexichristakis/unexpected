@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
@@ -7,6 +7,8 @@ import { Button, PullToRefresh, UserImage } from "@components/universal";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
+import { FriendsContext } from "@hooks";
+import { useNavigation } from "@react-navigation/core";
 
 const mapStateToProps = (state: RootState, props: HeaderProps) => {
   // const isUser = selectors.phoneNumber(state) === props.phoneNumber;
@@ -35,13 +37,21 @@ export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
 }) => {
   const { phoneNumber, firstName, lastName, friends = [], bio = "" } = user;
 
+  const { open: openFriends } = useContext(FriendsContext);
+
+  const navigation = useNavigation();
+
   const onPressAddBio = () => {};
+
+  const handleOnPressFriends = useCallback(() => {
+    // openFriends(id);
+    navigation.navigate("FRIENDS", { id });
+  }, [id]);
 
   return (
     <Animated.View style={styles.container}>
       <View style={styles.row}>
         <UserImage id={id} size={(SCREEN_WIDTH - 60) / 2} />
-
         <View
           style={{
             ...styles.row,
@@ -53,16 +63,10 @@ export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
             style={{ ...styles.subheader, textAlign: "center" }}
             numberOfLines={2}
           >{`${numPosts}\n${numPosts === 1 ? "post" : "posts"}`}</Text>
-          <View
-            style={{
-              width: StyleSheet.hairlineWidth,
-              height: 50,
-              backgroundColor: Colors.gray,
-            }}
-          />
+          <View style={styles.divider} />
           <Text
             style={{ ...styles.subheader, textAlign: "center" }}
-            onPress={console.log}
+            onPress={handleOnPressFriends}
           >{`${friends.length}\n${
             friends.length === 1 ? "friend" : "friends"
           }`}</Text>
@@ -86,20 +90,23 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     alignItems: "center",
     paddingHorizontal: 15,
-    paddingTop: 5,
+    paddingTop: 20,
     paddingBottom: 30,
   },
   headerContainer: {
     alignSelf: "stretch",
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     flex: 1,
     marginBottom: 20,
   },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  divider: {
+    width: StyleSheet.hairlineWidth,
+    height: 50,
+    backgroundColor: Colors.gray,
   },
   subheader: {
     ...TextStyles.large,
@@ -114,6 +121,8 @@ const styles = StyleSheet.create({
   },
   row: {
     alignSelf: "stretch",
+    justifyContent: "space-between",
+    alignItems: "center",
     flexDirection: "row",
     flex: 1,
   },

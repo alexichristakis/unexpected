@@ -1,23 +1,23 @@
 import React from "react";
-import Animated, {
-  useCode,
-  debug,
-  interpolate,
-  Extrapolate,
-} from "react-native-reanimated";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { StyleSheet, ViewStyle } from "react-native";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
+import Animated, {
+  debug,
+  Extrapolate,
+  interpolate,
+  useCode,
+} from "react-native-reanimated";
 import {
-  useValue,
   useGestureHandler,
+  useValue,
   useValues,
   withSpring,
 } from "react-native-redash";
 
 import {
-  SCREEN_WIDTH,
   Colors,
   SCREEN_HEIGHT,
+  SCREEN_WIDTH,
   withSpringImperative,
 } from "@lib";
 import { SPRING_CONFIG } from "@lib";
@@ -31,7 +31,7 @@ export interface PagerProps {
 
 export const Pager: React.FC<PagerProps> = React.memo(
   ({ tab, x, children }) => {
-    const [velocity, translationX] = useValues([0, 0]);
+    const [velocity, translationX] = useValues(0, 0);
     const state = useValue(State.UNDETERMINED);
 
     const handler = useGestureHandler({

@@ -19,13 +19,13 @@ import {
   bin,
   clamp,
   onGestureEvent,
+  onScrollEvent,
   spring,
   timing,
   useDiff,
   useValues,
   withOffset,
   withSpring,
-  onScrollEvent,
 } from "react-native-redash";
 
 import CloseIcon from "@assets/svg/close.svg";
@@ -103,10 +103,13 @@ export const ModalList = React.memo(
       const panRef = useRef<PanGestureHandler>(null);
 
       const [dragY, velocityY, scrollY, lastScrollY, offset] = useValues(
-        [0, 0, 0, 0, SCREEN_HEIGHT],
-        []
+        0,
+        0,
+        0,
+        0,
+        SCREEN_HEIGHT
       );
-      const [gestureState] = useValues([UNDETERMINED], []);
+      const [gestureState] = useValues(UNDETERMINED);
 
       const [goUpFully] = useState<Animated.Value<0 | 1>>(new Value(0));
       const [goUp] = useState<Animated.Value<0 | 1>>(new Value(0));

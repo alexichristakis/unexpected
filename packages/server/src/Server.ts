@@ -9,8 +9,8 @@ import "@tsed/multipartfiles";
 import bodyParser from "body-parser";
 import compress from "compression";
 import cookieParser from "cookie-parser";
-import methodOverride from "method-override";
 import { config } from "dotenv";
+import methodOverride from "method-override";
 import { resolve } from "path";
 
 config({ path: resolve(__dirname, "../.env") });

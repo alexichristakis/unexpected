@@ -1,8 +1,8 @@
 import React from "react";
 import { FlexStyle, StyleSheet } from "react-native";
 
-import FastImage from "react-native-fast-image";
 import { getUserProfileURL } from "@api";
+import FastImage from "react-native-fast-image";
 
 export interface UserImageProps {
   id: string;

@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Keyboard,
   KeyboardAvoidingView,
   KeyboardEvent,
-  Keyboard,
   StyleProp,
   StyleSheet,
   TextInput,
@@ -16,7 +16,7 @@ import Animated, {
   interpolate,
   sub,
 } from "react-native-reanimated";
-import { spring, useValues, withTransition, mix } from "react-native-redash";
+import { mix, spring, useValues, withTransition } from "react-native-redash";
 
 import { KeyboardStateContext } from "@hooks";
 import { Colors, SCREEN_HEIGHT, TextStyles } from "@lib";
@@ -64,7 +64,7 @@ const Composer: React.FC<ComposerProps> = ({
 }) => {
   const [clock] = useState(new Clock());
   const [message, setMessage] = useState("");
-  const [sendButtonScale, keyboardOffset] = useValues<number>([0, 0]);
+  const [sendButtonScale, keyboardOffset] = useValues<number>(0, 0);
   const ref = useRef<Animated.View>(null);
 
   const { open, height } = useContext(KeyboardStateContext);

@@ -7,8 +7,8 @@ import ImageResizer, {
 } from "react-native-image-resizer";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
-import { Comment, User, Post } from "@global";
 import client, { getHeaders } from "@api";
+import { Comment, Post, User, PartialUser } from "@global";
 
 import * as selectors from "../selectors";
 import {
@@ -277,7 +277,7 @@ export const Actions = {
 
   fetchFeed: (fromDate?: Date) =>
     createAction(ActionTypes.FETCH_FEED, { fromDate }),
-  fetchFeedSuccess: (posts: PostMap, users: User[]) =>
+  fetchFeedSuccess: (posts: PostMap, users: PartialUser[]) =>
     createAction(ActionTypes.FETCH_FEED_SUCCESS, {
       posts,
       users,

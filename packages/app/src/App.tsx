@@ -1,47 +1,52 @@
 import React from "react";
-import { StatusBar, Easing } from "react-native";
+import { Easing, StatusBar, Animated, StyleSheet } from "react-native";
 
-import Animated, { interpolate } from "react-native-reanimated";
-import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from "react-native-screens/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   createStackNavigator,
   StackCardStyleInterpolator,
 } from "@react-navigation/stack";
+import { gestureHandlerRootHOC } from "react-native-gesture-handler";
+// import Animated, { interpolate } from "react-native-reanimated";
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from "react-native-screens/native-stack";
 import { Provider, useSelector } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
+import FocusedPost from "@components/FocusedPost";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
-import FocusedPost from "@components/FocusedPost";
 
 import {
-  useNotificationEvents,
   FocusedPostProvider,
-  useReduxState,
   KeyboardStateProvider,
+  useNotificationEvents,
+  useReduxState,
+  FriendsProvider,
 } from "./hooks";
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
+import { Colors } from "@lib";
+import {
+  TransitionSpec,
+  StackNavigationProp,
+} from "@react-navigation/stack/lib/typescript/src/types";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   Auth,
+  Capture,
   Home,
-  Profile,
-  SignUp,
   NewProfilePicture,
   Permissions,
-  Capture,
+  Profile,
   Share,
+  SignUp,
 } from "./screens";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Colors } from "@lib";
-import { TransitionSpec } from "@react-navigation/stack/lib/typescript/src/types";
+import Friends from "@components/Friends";
 
 type BaseParams = {
   prevRoute: string;
@@ -58,7 +63,8 @@ export type StackParamList = {
   SHARE: BaseParams;
   USER_PROFILE: undefined | { focusedPostId: string };
   // PROFILE: BaseParams & { phoneNumber: string; focusedPostId?: string };
-  PROFILE: { userId: string };
+  PROFILE: { id: string };
+  FRIENDS: { id: string };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: undefined;
@@ -74,7 +80,95 @@ const Stack = createStackNavigator<StackParamList>();
 
 type AuthenticatedRootProps = {
   route: any;
-  navigation: NativeStackNavigationProp<StackParamList>;
+  navigation: StackNavigationProp<StackParamList>;
+};
+
+const profileCardStyleInterpolator: StackCardStyleInterpolator = ({
+  next,
+  current,
+}) => {
+  return {
+    // shadowStyle: {},
+    // overlayStyle: {},
+    containerStyle: {
+      opacity: next
+        ? next.progress.interpolate({
+            inputRange: [0, 0.2],
+            outputRange: [1, 0],
+          })
+        : 1,
+      transform: [
+        {
+          scale: next
+            ? next.progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 1.05],
+              })
+            : 1,
+        },
+      ],
+    },
+    cardStyle: {
+      opacity: current.progress.interpolate({
+        inputRange: [0, 0.25, 1],
+        outputRange: [0, 1, 1],
+      }),
+      transform: [
+        {
+          scale: current.progress.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: [0.9, 1.01, 1],
+          }),
+        },
+      ],
+    },
+  };
+};
+
+const friendsCardStyleInterpolator: StackCardStyleInterpolator = ({
+  next,
+  current,
+}) => {
+  return {
+    shadowStyle: { opacity: 0 },
+    overlayStyle: {
+      ...StyleSheet.absoluteFillObject,
+      opacity: current.progress,
+      backgroundColor: Colors.transGray,
+    },
+    containerStyle: {},
+    cardStyle: {
+      backgroundColor: "transparent",
+      opacity: current.progress.interpolate({
+        inputRange: [0, 0.25, 1],
+        outputRange: [0, 1, 1],
+      }),
+      transform: [
+        {
+          scale: current.progress.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: [0.9, 1.01, 1],
+          }),
+        },
+      ],
+    },
+  };
+};
+
+const transitionSpec: TransitionSpec = {
+  animation: "timing",
+  config: {
+    duration: 500,
+    easing: Easing.out(Easing.ease),
+  },
+};
+
+const screenOptions = {
+  headerShown: false,
+  transitionSpec: {
+    open: transitionSpec,
+    close: transitionSpec,
+  },
 };
 
 const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
@@ -83,82 +177,40 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
   // start listening for notification events
   useNotificationEvents(navigation);
 
-  const cardStyleInterpolator: StackCardStyleInterpolator = ({
-    next,
-    current,
-  }) => {
-    return {
-      shadowStyle: {},
-      overlayStyle: {},
-      containerStyle: {
-        opacity: next
-          ? next.progress.interpolate({
-              inputRange: [0, 0.2],
-              outputRange: [1, 0],
-            })
-          : 1,
-        transform: [
-          {
-            scale: next
-              ? next.progress.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 1.05],
-                })
-              : 1,
-          },
-        ],
-      },
-      cardStyle: {
-        opacity: current.progress.interpolate({
-          inputRange: [0, 0.25, 1],
-          outputRange: [0, 1, 1],
-        }),
-        transform: [
-          {
-            scale: current.progress.interpolate({
-              inputRange: [0, 0.5, 1],
-              outputRange: [0.9, 1.01, 1],
-            }),
-          },
-        ],
-      },
-    };
-  };
-
-  const transitionSpec: TransitionSpec = {
-    animation: "timing",
-    config: {
-      duration: 500,
-      easing: Easing.out(Easing.ease),
-    },
-  };
-
   return (
     <NativeStack.Navigator screenOptions={{ headerShown: false }}>
       <NativeStack.Screen name="HOME">
         {() => (
-          <FocusedPostProvider>
-            <KeyboardStateProvider>
-              <Stack.Navigator
-                screenOptions={{
-                  headerShown: false,
-                  transitionSpec: {
-                    open: transitionSpec,
-                    close: transitionSpec,
-                  },
-                  cardStyleInterpolator,
-                }}
-              >
-                <Stack.Screen
-                  options={{ cardStyle: { backgroundColor: Colors.nearBlack } }}
-                  name="HOME"
-                  component={Home}
-                />
-                <Stack.Screen name="PROFILE" component={Profile} />
-              </Stack.Navigator>
-              <FocusedPost {...{ navigation }} />
-            </KeyboardStateProvider>
-          </FocusedPostProvider>
+          <FriendsProvider>
+            <FocusedPostProvider>
+              <KeyboardStateProvider>
+                <Stack.Navigator screenOptions={screenOptions}>
+                  <Stack.Screen name="HOME" component={Home} />
+                  <Stack.Screen
+                    name="PROFILE"
+                    options={{
+                      cardStyleInterpolator: profileCardStyleInterpolator,
+                    }}
+                    component={Profile}
+                  />
+                  <Stack.Screen
+                    name="FRIENDS"
+                    options={{
+                      cardOverlayEnabled: true,
+
+                      // @ts-ignore
+                      cardOverlay: (props) => <Animated.View {...props} />,
+                      cardStyleInterpolator: friendsCardStyleInterpolator,
+                      cardStyle: { backgroundColor: "transparent" },
+                    }}
+                    component={Friends}
+                  />
+                </Stack.Navigator>
+                {/* <Friends {...{ navigation }} /> */}
+                <FocusedPost {...{ navigation }} />
+              </KeyboardStateProvider>
+            </FocusedPostProvider>
+          </FriendsProvider>
         )}
       </NativeStack.Screen>
 

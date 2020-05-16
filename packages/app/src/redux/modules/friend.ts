@@ -1,3 +1,5 @@
+import immer from "immer";
+import _ from "lodash";
 import {
   all,
   call,
@@ -6,34 +8,36 @@ import {
   takeEvery,
   takeLatest,
 } from "redux-saga/effects";
-import immer from "immer";
-import _ from "lodash";
 
 import client, { getHeaders } from "@api";
-import { FriendRequest, FriendRequest_populated } from "@global";
+import { FriendRequest, FriendRequest_populated, PartialUser } from "@global";
 
+import * as selectors from "../selectors";
 import {
-  ActionUnion,
   ActionTypes,
+  ActionUnion,
   createAction,
   ExtractActionFromActionCreator,
 } from "../types";
-import * as selectors from "../selectors";
 
 type FriendMap = { [userId: string]: string[] };
 
 export type FriendState = Readonly<{
   loading: boolean;
+  fetchingFriends: boolean;
   friends: FriendMap;
   requested: string[];
   requests: string[];
+  error: string;
 }>;
 
 const initialState: FriendState = {
   loading: false,
+  fetchingFriends: false,
   friends: {},
   requested: [],
   requests: [],
+  error: "",
 };
 
 export default (
@@ -41,14 +45,25 @@ export default (
   action: ActionUnion
 ): FriendState => {
   switch (action.type) {
+    case ActionTypes.FETCH_FRIENDS: {
+      return { ...state, fetchingFriends: true };
+    }
+
+    case ActionTypes.FETCH_FRIENDS_SUCCESS: {
+      const { id, users } = action.payload;
+
+      return immer(state, (draft) => {
+        draft.fetchingFriends = false;
+        draft.friends[id] = users.map(({ id }) => id);
+      });
+    }
+
     case ActionTypes.FRIEND_USER_SUCCESS: {
       const { request } = action.payload;
 
       return immer(state, (draft) => {
         draft.requested.push(request.to as string);
         draft.loading = false;
-
-        return draft;
       });
     }
 
@@ -60,8 +75,6 @@ export default (
 
         draft.requests = friendRequests.map(({ from }) => from.id);
         draft.requested = requestedFriends.map(({ to }) => to.id);
-
-        return draft;
       });
     }
 
@@ -70,8 +83,6 @@ export default (
 
       return immer(state, (draft) => {
         draft.loading = false;
-
-        return draft;
       });
     }
 
@@ -80,25 +91,29 @@ export default (
 
       return immer(state, (draft) => {
         draft.loading = false;
-
-        return draft;
       });
     }
 
     case ActionTypes.CANCEL_REQUEST_SUCCESS: {
       const { id } = action.payload;
 
-      return immer(state, (draft) => {
-        return draft;
-      });
+      return immer(state, (draft) => {});
     }
 
     case ActionTypes.DENY_REQUEST_SUCCESS: {
       const { id } = action.payload;
 
-      return immer(state, (draft) => {
-        return draft;
-      });
+      return immer(state, (draft) => {});
+    }
+
+    case ActionTypes.FRIEND_ERROR: {
+      const { error } = action.payload;
+      return {
+        ...state,
+        error,
+        loading: false,
+        fetchingFriends: false,
+      };
     }
 
     default:
@@ -244,8 +259,31 @@ function* onCancelRequest(
   }
 }
 
+function* onFetchFriends(
+  action: ExtractActionFromActionCreator<typeof Actions.fetchFriends>
+) {
+  const { id } = action.payload;
+
+  const jwt = yield select(selectors.jwt);
+
+  try {
+    const { data }: { data: PartialUser[] } = yield call(
+      client.get,
+      `user/${id}/friends`,
+      {
+        headers: getHeaders({ jwt }),
+      }
+    );
+
+    yield put(Actions.fetchFriendsSuccess(id, data));
+  } catch (err) {
+    yield put(Actions.onFriendError(err.message));
+  }
+}
+
 export function* friendSagas() {
   yield all([
+    yield takeLatest(ActionTypes.FETCH_FRIENDS, onFetchFriends),
     yield takeLatest(ActionTypes.FETCH_USERS_REQUESTS, onFetchUsersRequests),
     yield takeEvery(ActionTypes.FRIEND_USER, onFriendUser),
     yield takeEvery(ActionTypes.DELETE_FRIEND, onDeleteFriend),
@@ -256,6 +294,10 @@ export function* friendSagas() {
 }
 
 export const Actions = {
+  fetchFriends: (id: string) => createAction(ActionTypes.FETCH_FRIENDS, { id }),
+  fetchFriendsSuccess: (id: string, users: PartialUser[]) =>
+    createAction(ActionTypes.FETCH_FRIENDS_SUCCESS, { id, users }),
+
   fetchUsersRequests: () => createAction(ActionTypes.FETCH_USERS_REQUESTS),
   fetchUsersRequestsSuccess: (
     friendRequests: FriendRequest_populated[],

@@ -13,9 +13,10 @@ module.exports = {
           "@hooks": "./src/hooks",
           "@assets": "./src/assets",
           "@screens": "./src/screens",
-          "@lib": "./src/lib"
-        }
-      }
-    ]
-  ]
+          "@lib": "./src/lib",
+          "@global": "./src/global",
+        },
+      },
+    ],
+  ],
 };

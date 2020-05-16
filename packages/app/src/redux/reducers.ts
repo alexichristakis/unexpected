@@ -3,12 +3,12 @@ import { combineReducers } from "redux";
 import {
   AppReducer,
   AuthReducer,
+  CommentReducer,
+  FriendReducer,
   ImageReducer,
   PermissionsReducer,
   PostReducer,
   UserReducer,
-  CommentReducer,
-  FriendReducer,
 } from "./modules";
 import { RootState } from "./types";
 

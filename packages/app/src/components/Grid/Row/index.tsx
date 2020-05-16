@@ -1,9 +1,9 @@
 import React from "react";
 
+import { FocusedPostPayload } from "@hooks";
 import A from "./A";
 import B from "./B";
 import C from "./C";
-import { FocusedPostPayload } from "@hooks";
 
 import GridImage from "./GridImage";
 

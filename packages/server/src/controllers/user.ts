@@ -11,14 +11,10 @@ import {
   UseAuth,
 } from "@tsed/common";
 
-import { User, NewUser } from "@global";
+import { NewUser, User, CompleteUserSelect } from "@global";
 import { AuthMiddleware, Select } from "../middlewares/auth";
 import { FriendService } from "../services/friend";
 import { UserService } from "../services/user";
-
-export type CameraEnabledReturn = ReturnType<
-  UserController["getIsCameraEnabled"]
->;
 
 @Controller("/user")
 @UseAuth(AuthMiddleware)
@@ -70,6 +66,12 @@ export class UserController {
     @QueryParams("populate") populate?: string
   ) {
     return this.userService.get(id, select, populate);
+  }
+
+  @Get("/:id/complete")
+  @UseAuth(AuthMiddleware, { select: "id" })
+  async getUserComplete(@PathParams("id") id: string) {
+    return this.userService.get(id, CompleteUserSelect);
   }
 
   @Get("/phone/:phoneNumber")

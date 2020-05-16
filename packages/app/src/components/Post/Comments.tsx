@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { ScrollView, StyleSheet } from "react-native";
 import Animated, { useCode, Value } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
-import { StyleSheet, ScrollView } from "react-native";
 
-import { SCREEN_WIDTH, Colors } from "@lib";
+import { Colors, SCREEN_WIDTH } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
