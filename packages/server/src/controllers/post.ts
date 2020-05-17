@@ -48,17 +48,17 @@ export class PostController {
     return true;
   }
 
+  @Get()
+  async getPosts(@Context("auth") auth: string) {
+    return this.postService.getUsersPosts(auth);
+  }
+
   @Get("/feed")
   async getFeed(@Context("auth") userId: string) {
     return this.postService.getFeedForUser(userId);
   }
 
-  @Get("/posts")
-  async getPosts(@Context("auth") auth: string) {
-    return this.postService.getUsersPosts(auth);
-  }
-
-  @Get("/:userId/posts")
+  @Get("/user/:userId")
   async getUsersPosts(
     @PathParams("userId") userId: string,
     @Context("auth") auth: string

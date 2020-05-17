@@ -103,6 +103,8 @@ const Image: React.FC<ImageProps & PostImageConnectedProps> = React.memo(
       outputRange: [0.9, 1],
     });
 
+    console.log(src);
+
     return (
       <PanGestureHandler {...handler} activeOffsetX={[-10, 10]}>
         <Animated.View style={{ ...styles.container, ...containerStyle }}>

@@ -9,6 +9,7 @@ import {
   PermissionsReducer,
   PostReducer,
   UserReducer,
+  SearchReducer,
 } from "./modules";
 import { RootState } from "./types";
 
@@ -21,6 +22,7 @@ const appReducers = combineReducers({
   user: UserReducer,
   comment: CommentReducer,
   friend: FriendReducer,
+  search: SearchReducer,
 });
 
 export const root = (state?: RootState, action?: any) => {

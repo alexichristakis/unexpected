@@ -1,15 +1,11 @@
 import { Controller, Inject, PathParams, Post } from "@tsed/common";
 
 import { AuthService } from "../services/auth";
-import { UserService } from "../services/user";
 
 @Controller("/auth")
 export class UserController {
   @Inject(AuthService)
   private authService: AuthService;
-
-  @Inject(UserService)
-  private userService: UserService;
 
   @Post("/:phoneNumber")
   async sendVerificationCode(@PathParams("phoneNumber") phoneNumer: string) {
@@ -28,13 +24,11 @@ export class UserController {
       code
     );
 
-    if (response.verified) {
+    if (response.verified && response.user) {
       const { user } = response;
 
-      console.log("placeholder:", user);
-
       // generate JWT
-      const token = this.authService.generateJWT(user?._id);
+      const token = this.authService.generateJWT(user._id);
 
       return { ...response, token };
     }

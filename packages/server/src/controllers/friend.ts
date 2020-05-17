@@ -9,8 +9,8 @@ import {
   UseAuth,
 } from "@tsed/common";
 import filter from "lodash/filter";
-
 import { Forbidden } from "ts-httpexceptions";
+
 import { AuthMiddleware } from "../middlewares/auth";
 import { FriendService, UserService } from "../services";
 
@@ -54,7 +54,12 @@ export class FriendController {
 
     // request doesnt exist
     if (!request) {
-      return this.friendService.sendFriendRequest(auth, userId);
+      const friendRequest = await this.friendService.sendFriendRequest(
+        auth,
+        userId
+      );
+
+      return { request: friendRequest };
     }
 
     const { to } = request;
@@ -82,7 +87,8 @@ export class FriendController {
 
     // delete request
     if (request) {
-      return this.friendService.delete(request.id);
+      await this.friendService.delete(request.id);
+      return { request: { from: request.from._id, to: request.to._id } };
     }
 
     // delete friendship

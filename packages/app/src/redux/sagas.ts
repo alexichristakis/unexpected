@@ -9,6 +9,7 @@ import {
   permissionSagas,
   postSagas,
   userSagas,
+  searchSagas,
 } from "./modules";
 
 export default function* rootSaga() {
@@ -21,5 +22,6 @@ export default function* rootSaga() {
     yield fork(postSagas),
     yield fork(friendSagas),
     yield fork(commentSagas),
+    yield fork(searchSagas),
   ]);
 }

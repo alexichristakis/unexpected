@@ -31,6 +31,11 @@ export {
 } from "./friend";
 export {
   default as CommentReducer,
-  Actions as commentActions,
+  Actions as CommentActions,
   commentSagas,
 } from "./comment";
+export {
+  default as SearchReducer,
+  Actions as SearchActions,
+  searchSagas,
+} from "./search";

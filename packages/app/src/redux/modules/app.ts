@@ -1,6 +1,6 @@
 import NetInfo, { NetInfoState } from "@react-native-community/netinfo";
 import immer from "immer";
-import moment, { Moment } from "moment-timezone";
+import moment, { Moment } from "moment";
 import {
   AppState as AppStatus,
   AppStateStatus as AppStatusType,
@@ -157,29 +157,28 @@ const appEmitter = () =>
   });
 
 function* checkCameraStatus() {
-  const jwt = yield select(selectors.jwt);
-  if (jwt) {
-    // check if camera should be enabled
-    const phoneNumber = yield select(selectors.phoneNumber);
-    try {
-      const res = yield client.get(`/user/${phoneNumber}/camera`, {
-        headers: getHeaders({ jwt }),
-      });
-      const {
-        data: { enabled, start },
-      } = res;
-
-      if (enabled) {
-        yield put(
-          Actions.setCameraTimer(
-            moment(start).add(NOTIFICATION_MINUTES, "minutes")
-          )
-        );
-      }
-    } catch (err) {
-      yield put(Actions.networkError());
-    }
-  }
+  // const jwt = yield select(selectors.jwt);
+  // if (jwt) {
+  //   // check if camera should be enabled
+  //   const phoneNumber = yield select(selectors.phoneNumber);
+  //   try {
+  //     const res = yield client.get(`/user/${phoneNumber}/camera`, {
+  //       headers: getHeaders({ jwt }),
+  //     });
+  //     const {
+  //       data: { enabled, start },
+  //     } = res;
+  //     if (enabled) {
+  //       yield put(
+  //         Actions.setCameraTimer(
+  //           moment(start).add(NOTIFICATION_MINUTES, "minutes")
+  //         )
+  //       );
+  //     }
+  //   } catch (err) {
+  //     yield put(Actions.networkError());
+  //   }
+  // }
 }
 
 function* onStartup() {

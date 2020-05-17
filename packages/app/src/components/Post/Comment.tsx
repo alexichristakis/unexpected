@@ -29,7 +29,6 @@ const { Clock, useCode, call, not, cond, clockRunning, set } = Animated;
 type Navigation = NativeStackNavigationProp<ParamList>;
 
 const mapStateToProps = (state: RootState, props: CommentProps) => ({
-  userPhoneNumber: selectors.phoneNumber(state),
   user: selectors.user(state, { id: props.user }),
 });
 

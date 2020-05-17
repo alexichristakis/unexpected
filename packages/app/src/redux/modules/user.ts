@@ -45,8 +45,6 @@ export default (
     case ActionTypes.FETCH_USER:
     case ActionTypes.FETCH_USERS:
     case ActionTypes.UPDATE_USER:
-    case ActionTypes.ACCEPT_REQUEST:
-    case ActionTypes.FRIEND_USER:
     case ActionTypes.CREATE_NEW_USER: {
       return { ...state, loading: true, error: null };
     }
@@ -70,6 +68,7 @@ export default (
 
     case ActionTypes.FETCH_FRIENDS_SUCCESS:
     case ActionTypes.FETCH_FEED_SUCCESS:
+    case ActionTypes.SEARCH_SUCCESS:
     case ActionTypes.LOAD_USERS: {
       const { users } = action.payload;
 
@@ -97,14 +96,11 @@ function* onFetchUser(
   action: ExtractActionFromActionCreator<typeof Actions.fetchUser>
 ) {
   const jwt = yield select(selectors.jwt);
-  const userPhoneNumber = yield select(selectors.phoneNumber);
 
   try {
-    const { phoneNumber } = action.payload;
+    const { id } = action.payload;
 
-    const endpoint = phoneNumber
-      ? `/user/${phoneNumber}`
-      : `/user/${userPhoneNumber}`;
+    const endpoint = id ? `/user/${id}` : `/user`;
 
     const res: AxiosResponse<User> = yield call(client.get, endpoint, {
       headers: getHeaders({ jwt }),
@@ -160,17 +156,14 @@ function* onUpdateUser(
   action: ExtractActionFromActionCreator<typeof Actions.updateUser>
 ) {
   const jwt = yield select(selectors.jwt);
-  const phoneNumber = yield select(selectors.phoneNumber);
 
   const { user } = action.payload;
-
   try {
-    const res: AxiosResponse<PartialUser> = yield client.patch(
-      `/user/${phoneNumber}`,
+    const res: AxiosResponse<PartialUser> = yield call(
+      client.patch,
+      `/user`,
       { user: { ...user } },
-      {
-        headers: getHeaders({ jwt }),
-      }
+      { headers: getHeaders({ jwt }) }
     );
 
     const { data } = res;
@@ -185,10 +178,10 @@ function* onFetchUsers(
   action: ExtractActionFromActionCreator<typeof Actions.fetchUsers>
 ) {
   const jwt = yield select(selectors.jwt);
-  const { phoneNumbers, selectOn } = action.payload;
+  const { ids, selectOn } = action.payload;
 
   try {
-    let endpoint = `/user?phoneNumbers=${phoneNumbers.join(",")}`;
+    let endpoint = `/user/multiple?ids=${ids.join(",")}`;
     if (selectOn) endpoint += `&select=${selectOn.join(",")}`;
 
     const res: AxiosResponse<User[]> = yield client.get(endpoint, {
@@ -223,10 +216,9 @@ export function* userSagas() {
 }
 
 export const Actions = {
-  fetchUser: (phoneNumber?: string) =>
-    createAction(ActionTypes.FETCH_USER, { phoneNumber }),
-  fetchUsers: (phoneNumbers: string[], selectOn?: string[]) =>
-    createAction(ActionTypes.FETCH_USERS, { phoneNumbers, selectOn }),
+  fetchUser: (id?: string) => createAction(ActionTypes.FETCH_USER, { id }),
+  fetchUsers: (ids: string[], selectOn?: string[]) =>
+    createAction(ActionTypes.FETCH_USERS, { ids, selectOn }),
   createUser: (
     firstName: string,
     lastName: string,

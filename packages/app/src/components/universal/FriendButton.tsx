@@ -34,9 +34,6 @@ const connector = connect(
   {
     deleteFriend: FriendActions.deleteFriend,
     friend: FriendActions.friendUser,
-    acceptRequest: FriendActions.acceptRequest,
-    denyRequest: FriendActions.denyRequest,
-    cancelRequest: FriendActions.cancelRequest,
   }
 );
 
@@ -44,17 +41,7 @@ export type FriendButtonConnectedProps = ConnectedProps<typeof connector>;
 
 const FriendButton: React.FC<
   FriendButtonProps & FriendButtonConnectedProps
-> = ({
-  id,
-  showLabel,
-  loading,
-  friendingState,
-  deleteFriend,
-  friend,
-  acceptRequest,
-  denyRequest,
-  cancelRequest,
-}) => {
+> = ({ id, showLabel, loading, friendingState, deleteFriend, friend }) => {
   const renderButton = () => {
     switch (friendingState) {
       case FriendingState.FRIENDS: {
@@ -81,7 +68,7 @@ const FriendButton: React.FC<
 
       case FriendingState.REQUESTED: {
         return (
-          <TouchableOpacity onPress={() => cancelRequest(id)}>
+          <TouchableOpacity onPress={() => deleteFriend(id)}>
             <PendingFriendSVG width={ICON_SIZE} height={ICON_SIZE} />
           </TouchableOpacity>
         );
@@ -90,12 +77,12 @@ const FriendButton: React.FC<
       case FriendingState.RECEIVED: {
         return (
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => acceptRequest(id)}>
+            <TouchableOpacity onPress={() => friend(id)}>
               <CheckSVG width={ICON_SIZE} height={ICON_SIZE} />
             </TouchableOpacity>
             <TouchableOpacity
               style={{ marginLeft: 10 }}
-              onPress={() => denyRequest(id)}
+              onPress={() => deleteFriend(id)}
             >
               <DenySVG width={ICON_SIZE} height={ICON_SIZE} />
             </TouchableOpacity>
