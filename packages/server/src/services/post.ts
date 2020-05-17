@@ -40,8 +40,12 @@ export class PostService {
   };
 
   getPost = async (id: string) => {
+    return this.model.findById(id).exec();
+  };
+
+  getPostWithComments = async (id: string) => {
     const [post, comments] = await Promise.all([
-      this.model.findById(id).exec(),
+      this.model.findById(id).populate("user").exec(),
       this.commentService.getByPostId(id),
     ]);
 
@@ -71,8 +75,6 @@ export class PostService {
       ({ id }) => id
     );
 
-    console.log(posts);
-
     const postsUnpopulated = keyBy(
       posts.map(({ _id, user, ...rest }) => ({
         ...rest,
@@ -81,8 +83,6 @@ export class PostService {
       })),
       ({ id }) => id
     );
-
-    console.log(postsUnpopulated);
 
     return { posts: postsUnpopulated, users };
   };

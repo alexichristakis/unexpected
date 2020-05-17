@@ -10,8 +10,10 @@ import {
   UseAuth,
   Context,
 } from "@tsed/common";
+import { Forbidden } from "ts-httpexceptions";
 
 import { NewUser, User, CompleteUserSelect } from "@global";
+
 import { AuthMiddleware } from "../middlewares/auth";
 import { UserService } from "../services/user";
 
@@ -24,6 +26,31 @@ export class UserController {
   @Get()
   async getUser(@Context("auth") auth: string) {
     return this.userService.get(auth, CompleteUserSelect);
+  }
+
+  @Put()
+  async createUser(
+    @Context("auth") id: string,
+    @BodyParams("user") user: NewUser
+  ) {
+    return this.userService.createFullUser(id, user);
+  }
+
+  @Patch()
+  async updateUser(
+    @Context("auth") id: string,
+    @BodyParams("user") user: Partial<User>
+  ) {
+    if (user.friends) {
+      throw new Forbidden("Forbidden");
+    }
+
+    return this.userService.update(id, user);
+  }
+
+  @Get("/friends")
+  async getFriends(@Context("auth") id: string) {
+    return this.userService.getFriends(id);
   }
 
   @Get("/all")
@@ -60,25 +87,8 @@ export class UserController {
     return this.userService.getByPhone(phoneNumber);
   }
 
-  @Get("/friends")
-  async getUserFriends(@Context("auth") id: string) {
+  @Get("/:id/friends")
+  async getUserFriends(@PathParams("id") id: string) {
     return this.userService.getFriends(id);
-  }
-
-  @Put()
-  async createUser(
-    @Context("auth") id: string,
-    @BodyParams("user") user: NewUser
-  ) {
-    return this.userService.create(user);
-  }
-
-  @Patch("/:id")
-  @UseAuth(AuthMiddleware, { select: "id" })
-  async updateUser(
-    @PathParams("id") id: string,
-    @BodyParams("user") user: Partial<User>
-  ) {
-    return this.userService.update(id, user);
   }
 }

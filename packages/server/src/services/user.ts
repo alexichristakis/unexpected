@@ -1,8 +1,8 @@
 import { $log, Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import _ from "lodash";
-import moment from "moment";
 import { Document } from "mongoose";
+import moment from "moment";
+import _ from "lodash";
 
 import {
   NewUser,
@@ -11,6 +11,7 @@ import {
   UserModel,
   UserNotificationRecord,
   DefaultUserSelect,
+  CompleteUserSchemaFields,
 } from "@global";
 import { NOTIFICATION_MINUTES } from "../lib/constants";
 import { SlackLogService } from "./logger";
@@ -31,18 +32,22 @@ export class UserService {
     return this.model.create({ phoneNumber: phone, placeholder: true });
   }
 
-  async create(newUser: NewUser) {
-    const user = await this.getByPhone(newUser.phoneNumber);
+  async createFullUser(id: string, newData: NewUser) {
+    const user = await this.model.findById(id);
 
-    // if a user has already been created under this phone
-    if (user) return user;
+    if (!user || !user.placeholder) {
+      return null;
+    }
+
+    // update with name, OS, timezone
+    user.update({ ...newData, placeholder: false });
 
     // create
     const [createdUser] = await Promise.all([
-      this.model.create(newUser),
+      user.save(),
       this.logger.sendMessage(
         "new user",
-        `${newUser.firstName} ${newUser.lastName}`
+        `${newData.firstName} ${newData.lastName}`
       ),
     ]);
 
@@ -89,12 +94,14 @@ export class UserService {
   }
 
   async update(id: string, newData: Partial<User>) {
-    const user = await this.model.findById(id).exec();
+    const user = await this.model
+      .findById(id)
+      .select(CompleteUserSchemaFields)
+      .exec();
 
     if (!user) return null;
 
-    user.update(newData);
-
+    user.set(newData);
     return user.save() as Promise<User>;
   }
 
