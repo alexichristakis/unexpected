@@ -17,8 +17,9 @@ const connector = connect(
 );
 
 export interface UserRowProps {
-  onPress: (id: string) => void;
   id: string;
+  card?: boolean;
+  onPress: (id: string) => void;
 }
 
 export type UserRowConnectedProps = ConnectedProps<typeof connector>;
@@ -26,6 +27,7 @@ export type UserRowConnectedProps = ConnectedProps<typeof connector>;
 const UserRow: React.FC<UserRowProps & UserRowConnectedProps> = ({
   id,
   user,
+  card = false,
   onPress,
 }) => {
   const handleOnPress = () => {
@@ -36,7 +38,7 @@ const UserRow: React.FC<UserRowProps & UserRowConnectedProps> = ({
     <TouchableHighlight
       underlayColor={Colors.lightGray}
       onPress={handleOnPress}
-      style={styles.container}
+      style={[styles.container, card ? styles.card : {}]}
     >
       <>
         <UserImage id={id} size={35} />
@@ -57,12 +59,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
+  card: {
+    backgroundColor: "white",
+    borderRadius: 10,
+    marginBottom: 10,
+  },
   buttonContainer: {
     flex: 1,
     marginLeft: 10,
     flexDirection: "row",
     justifyContent: "flex-end",
   },
+
   name: {
     ...TextStyles.medium,
     marginLeft: 10,

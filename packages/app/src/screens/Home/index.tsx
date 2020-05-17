@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { useValues, useVector } from "react-native-redash";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
@@ -26,7 +27,7 @@ const connector = connect(
 
 export type HomeReduxProps = ConnectedProps<typeof connector>;
 export interface HomeOwnProps {
-  navigation: NativeStackNavigationProp<StackParamList>;
+  navigation: StackNavigationProp<StackParamList>;
 }
 
 const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({
@@ -49,7 +50,7 @@ const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({
       <Activity />
       <Animated.View style={pagerContainer}>
         <Pager tab={activeTab} {...offset}>
-          <Feed />
+          <Feed {...{ navigation }} />
           <Profile id={userId} />
           <View style={{ width: 100 }} />
         </Pager>

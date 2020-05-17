@@ -16,14 +16,6 @@ import {
 import { useMemoOne } from "use-memo-one";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-import { PartialUser } from "@global";
-import {
-  Colors,
-  SB_HEIGHT,
-  SCREEN_HEIGHT,
-  SCREEN_WIDTH,
-  TextStyles,
-} from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { UserRow } from "@components/universal";
@@ -59,10 +51,10 @@ const Search: React.FC<SearchProps & SearchResultsConnectedProps> = ({
     <Animated.ScrollView
       pointerEvents={open ? "auto" : "none"}
       keyboardShouldPersistTaps="handled"
-      style={styles.results}
+      style={{ ...styles.container, opacity: transition }}
     >
       {results.map((id) => (
-        <UserRow onPress={handleOnPressUser} {...{ id }} />
+        <UserRow card key={id} onPress={handleOnPressUser} {...{ id }} />
       ))}
     </Animated.ScrollView>
   );
@@ -70,36 +62,6 @@ const Search: React.FC<SearchProps & SearchResultsConnectedProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
-    paddingTop: 80,
-    paddingHorizontal: 25,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    left: 0,
-    right: 0,
-  },
-  background: {
-    position: "absolute",
-    backgroundColor: Colors.lightGray,
-  },
-  searchBar: {
-    position: "absolute",
-    justifyContent: "center",
-    backgroundColor: "#d3d3d3",
-  },
-  input: {
-    ...TextStyles.large,
-    marginLeft: 50,
-  },
-  center: {
-    paddingRight: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  results: {
     marginTop: 30,
     flex: 1,
   },
