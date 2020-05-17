@@ -2,7 +2,17 @@ import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
 import filter from "lodash/filter";
 
-import { FriendRequest, FriendRequestModel, User } from "@global";
+import {
+  _idToId,
+  FriendRequest,
+  FriendRequestModel,
+  FriendRequest_populated,
+  FriendRequest_populated_id,
+  User,
+  PartialUser,
+  UserModel,
+  DefaultUserSelect,
+} from "@global";
 import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
 import { UserService } from "./user";
@@ -24,9 +34,17 @@ export class FriendService {
   private logger: SlackLogService;
 
   async getRequests(id: string) {
-    return this.model
+    const requests = (await this.model
       .find({ $or: [{ to: id }, { from: id }] })
-      .populate("from to");
+      .populate("from to", DefaultUserSelect)
+      .lean()
+      .exec()) as FriendRequest_populated[];
+
+    return requests.map(({ from, to, ...rest }) => ({
+      from: _idToId(from),
+      to: _idToId(to),
+      ..._idToId(rest),
+    }));
   }
 
   async getAll() {
@@ -37,53 +55,54 @@ export class FriendService {
     return this.model.deleteOne({ _id: id });
   }
 
+  async getRequest(a: string, b: string) {
+    const request = await this.model
+      .findOne({
+        $or: [
+          { to: a, from: b },
+          { to: b, from: a },
+        ],
+      })
+      .populate("from to")
+      .lean()
+      .exec();
+
+    if (!request) return request;
+
+    const { to, from, ...rest } = _idToId(request);
+
+    return {
+      to: _idToId(to as User),
+      from: _idToId(from as User),
+      ...rest,
+    } as FriendRequest_populated;
+  }
+
   async sendFriendRequest(from: string, to: string) {
-    console.log(from, to);
+    const request = await (await this.model.create({ from, to }))
+      .populate("from to")
+      .execPopulate();
 
-    // const users = await this.userService.getMultiple([from, to]);
+    const fromUser = request.from as User;
+    const toUser = request.to as User;
 
-    // const [fromUser] = filter(users, ({ id }) => id === from);
-    // const [toUser] = filter(users, ({ id }) => id === to);
-
-    const [request] = await Promise.all([
-      this.model.create({ from, to }),
-      // this.notificationService.notifyWithNavigationToUser(
-      //   toUser,
-      //   `${fromUser.firstName} sent you a friend request!`,
-      //   fromUser
-      // ),
-    ]);
+    await this.notificationService.notifyWithNavigationToUser(
+      toUser,
+      `${fromUser.firstName} sent you a friend request!`,
+      fromUser
+    );
 
     return request;
   }
 
-  async deleteFriendRequest(from: string, to: string) {
-    const doc = await this.model.findOne({ from, to });
+  async acceptFriendRequest(request: FriendRequest_populated_id) {
+    const { id, from, to } = request;
+    return Promise.all([
+      // delete request
+      this.model.deleteOne({ _id: id }),
 
-    if (doc) {
-      return doc.remove();
-    }
-
-    return null;
-  }
-
-  async acceptFriendRequest(from: string, to: string) {
-    const doc = await this.model
-      .findOne({ from, to })
-      .populate("from to")
-      .exec();
-
-    console.log(doc);
-
-    if (doc) {
-      const { from: fromUser, to: toUser } = doc;
-
-      return Promise.all([
-        doc.remove(),
-        this.userService.friend(fromUser as User, toUser as User),
-      ]);
-    }
-
-    return null;
+      // update user records
+      this.userService.friend(from, to),
+    ]);
   }
 }

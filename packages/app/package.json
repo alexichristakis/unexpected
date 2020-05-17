@@ -24,7 +24,7 @@
     "immer": "^6.0.5",
     "lodash": "^4.17.15",
     "moment": "^2.25.3",
-    "moment-timezone": "^0.5.28",
+    "moment-timezone": "^0.5.29",
     "react": "16.13.1",
     "react-native": "0.62.2",
     "react-native-camera": "^3.26.0",
@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
+    "@babel/plugin-proposal-decorators": "^7.8.3",
     "@babel/runtime": "^7.9.6",
     "@react-native-community/eslint-config": "^1.1.0",
     "@welldone-software/why-did-you-render": "^4.2.1",

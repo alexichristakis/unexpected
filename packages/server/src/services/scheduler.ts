@@ -1,7 +1,7 @@
 import { $log, Inject, Service } from "@tsed/common";
 import { MongooseService } from "@tsed/mongoose";
 import Agenda from "agenda";
-import moment from "moment-timezone";
+import moment from "moment";
 import uuid from "uuid/v4";
 
 import { User, UserNotificationRecord } from "@global";

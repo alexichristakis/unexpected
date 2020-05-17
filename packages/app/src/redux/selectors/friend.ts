@@ -1,9 +1,8 @@
 import { createSelector } from "reselect";
 
 import { getPostImageURL } from "@api";
-import { FriendingState } from "@global";
 
-import { RootState } from "../types";
+import { RootState, FriendingState } from "../types";
 import { post } from "./post";
 import { users, userId } from "./user";
 

@@ -162,53 +162,54 @@ export class UserService {
     $log.info(res);
   }
 
-  async unfriend(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhone([from, to], true);
+  async unfriend(a: string, b: string) {
+    const users = await this.getMultiple([a, b], "_id friends");
 
-    await Promise.all([
-      this.model
-        .updateOne(
-          { phoneNumber: to },
-          {
-            friends: userTo.friends.filter((user) => user !== from),
-          }
-        )
-        .exec(),
-      this.model
-        .updateOne(
-          { phoneNumber: from },
-          {
-            friends: userFrom.friends.filter((user) => user !== to),
-          }
-        )
-        .exec(),
+    const [user1] = users.filter(({ _id }) => _id.toString() === a);
+    const [user2] = users.filter(({ _id }) => _id.toString() === b);
+
+    return this.model.bulkWrite([
+      {
+        updateOne: {
+          filter: { _id: a },
+          update: {
+            $set: { friends: user1.friends.filter((user) => user !== b) },
+          },
+        },
+      },
+      {
+        updateOne: {
+          filter: { _id: b },
+          update: {
+            $set: { friends: user2.friends.filter((user) => user !== a) },
+          },
+        },
+      },
     ]);
   }
 
   async friend(from: User, to: User) {
-    const res = await Promise.all([
+    return Promise.all([
       this.model.bulkWrite([
         {
           updateOne: {
-            filter: { _id: from._id },
+            filter: { _id: from.id },
             update: { $set: { friends: _.uniq([...from.friends, to._id]) } },
           },
         },
         {
           updateOne: {
-            filter: { _id: to._id },
+            filter: { _id: to.id },
             update: { $set: { friends: _.uniq([...to.friends, from._id]) } },
           },
         },
       ]),
       this.notificationService.notifyWithNavigationToUser(
         from,
-        `${from.firstName} ${from.lastName} accepted your friend request.`,
-        from
+        `${to.firstName} ${to.lastName} accepted your friend request.`,
+        to
       ),
     ]);
-
-    $log.info(res);
   }
 
   async getFriends(uid: string) {

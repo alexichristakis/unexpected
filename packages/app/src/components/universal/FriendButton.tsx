@@ -14,10 +14,9 @@ import DenySVG from "@assets/svg/cancel_button.svg";
 import CheckSVG from "@assets/svg/check_button.svg";
 import AddFriendSVG from "@assets/svg/plus_button.svg";
 
-import { FriendingState } from "@global";
 import { TextStyles } from "@lib";
 import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
+import { RootState, FriendingState } from "@redux/types";
 import { FriendActions } from "@redux/modules";
 
 const ICON_SIZE = 30;

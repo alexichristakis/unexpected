@@ -1,5 +1,5 @@
 import { Default, Format, Property, Required } from "@tsed/common";
-import { Indexed, Model, ObjectID, Ref } from "@tsed/mongoose";
+import { Model, ObjectID, Ref } from "@tsed/mongoose";
 
 @Model()
 export class User {

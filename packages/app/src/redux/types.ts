@@ -137,6 +137,14 @@ export type RootState = {
   comment: CommentState;
 };
 
+export enum FriendingState {
+  FRIENDS = "friends",
+  RECEIVED = "received",
+  REQUESTED = "requested",
+  CAN_FRIEND = "can_friend",
+  NONE = "none",
+}
+
 export type ActionUnion = ActionsUnion<
   typeof AppActions &
     typeof UserActions &
