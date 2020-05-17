@@ -20,12 +20,12 @@ import Profile from "@components/Profile";
 import { FriendButton, ModalListRef, NavBar } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
 import { SB_HEIGHT } from "@lib";
+import { FriendActions } from "@redux/modules";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { ParamList } from "../App";
-import { FriendActions } from "@redux/modules";
 
 const { useCode, debug, block, call, greaterThan, lessOrEq, cond } = Animated;
 

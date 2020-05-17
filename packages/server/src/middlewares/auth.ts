@@ -1,9 +1,9 @@
 import {
+  Context,
   EndpointInfo,
   IMiddleware,
   Middleware,
   Req,
-  Context,
   RequestContext,
 } from "@tsed/common";
 import jwt from "jsonwebtoken";

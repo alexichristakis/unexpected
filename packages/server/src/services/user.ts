@@ -1,17 +1,17 @@
 import { $log, Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Document } from "mongoose";
-import moment from "moment";
 import _ from "lodash";
+import moment from "moment";
+import { Document } from "mongoose";
 
 import {
+  CompleteUserSchemaFields,
+  DefaultUserSelect,
   NewUser,
   PartialUser,
   User,
   UserModel,
   UserNotificationRecord,
-  DefaultUserSelect,
-  CompleteUserSchemaFields,
 } from "@global";
 import { NOTIFICATION_MINUTES } from "../lib/constants";
 import { SlackLogService } from "./logger";
@@ -102,6 +102,7 @@ export class UserService {
     if (!user) return null;
 
     user.set(newData);
+
     return user.save() as Promise<User>;
   }
 

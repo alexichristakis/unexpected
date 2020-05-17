@@ -3,15 +3,15 @@ import { MongooseModel } from "@tsed/mongoose";
 import filter from "lodash/filter";
 
 import {
-  _idToId,
+  DefaultUserSelect,
   FriendRequest,
   FriendRequestModel,
   FriendRequest_populated,
   FriendRequest_populated_id,
-  User,
   PartialUser,
+  User,
   UserModel,
-  DefaultUserSelect,
+  _idToId,
 } from "@global";
 import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
@@ -97,6 +97,7 @@ export class FriendService {
 
   async acceptFriendRequest(request: FriendRequest_populated_id) {
     const { id, from, to } = request;
+
     return Promise.all([
       // delete request
       this.model.deleteOne({ _id: id }),

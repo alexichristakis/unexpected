@@ -1,25 +1,25 @@
-import React, { useContext } from "react";
-import { View, StyleSheet } from "react-native";
-import Animated, { interpolate } from "react-native-reanimated";
-import { connect, ConnectedProps } from "react-redux";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import {
-  useTransition,
-  useVector,
-  useValue,
-  useGestureHandler,
-  withSpring,
-  usePanGestureHandler,
-  mix,
-} from "react-native-redash";
 import { StackNavigationProp } from "@react-navigation/stack";
+import React, { useContext } from "react";
+import { StyleSheet, View } from "react-native";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
+import Animated, { interpolate } from "react-native-reanimated";
+import {
+  mix,
+  useGestureHandler,
+  usePanGestureHandler,
+  useTransition,
+  useValue,
+  useVector,
+  withSpring,
+} from "react-native-redash";
+import { connect, ConnectedProps } from "react-redux";
 
-import { RootState } from "@redux/types";
 import { FriendsContext } from "@hooks";
 import { Colors, SCREEN_WIDTH } from "@lib";
-import { POST_HEIGHT } from "./Post";
+import { RootState } from "@redux/types";
 import { StackParamList } from "App";
 import { useMemoOne } from "use-memo-one";
+import { POST_HEIGHT } from "./Post";
 
 const connector = connect((state: RootState) => ({}), {});
 
@@ -83,7 +83,7 @@ const Friends: React.FC<FriendsProps & FriendsConnectedProps> = ({
                 ],
               },
             ]}
-          ></Animated.View>
+          />
         </PanGestureHandler>
       </Animated.View>
     </View>

@@ -108,6 +108,7 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
     );
 
     const right = mix(transition, 2.5, SCREEN_WIDTH - 100);
+
     return (
       <View pointerEvents={"box-none"} style={styles.container}>
         <Animated.View style={{ ...background, ...styles.background }} />

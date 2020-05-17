@@ -8,7 +8,7 @@ import ImageResizer, {
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
-import { Comment, Post, User, PartialUser } from "@global";
+import { Comment, PartialUser, Post, User } from "@global";
 
 import * as selectors from "../selectors";
 import {

@@ -1,18 +1,18 @@
 import {
+  Context,
   Controller,
-  Inject,
-  UseAuth,
+  Delete,
   Get,
+  Inject,
   PathParams,
   Put,
-  Delete,
-  Context,
+  UseAuth,
 } from "@tsed/common";
 import filter from "lodash/filter";
 
+import { Forbidden } from "ts-httpexceptions";
 import { AuthMiddleware } from "../middlewares/auth";
 import { FriendService, UserService } from "../services";
-import { Forbidden } from "ts-httpexceptions";
 
 @Controller("/friend")
 @UseAuth(AuthMiddleware)

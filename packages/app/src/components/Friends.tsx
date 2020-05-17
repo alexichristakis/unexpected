@@ -1,18 +1,18 @@
-import React, { useContext, useCallback } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import Animated, { interpolate, useCode } from "react-native-reanimated";
-import { connect, ConnectedProps, useSelector } from "react-redux";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { usePanGestureHandler } from "react-native-redash";
 import { StackNavigationProp } from "@react-navigation/stack";
+import React, { useCallback, useContext } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
+import Animated, { interpolate, useCode } from "react-native-reanimated";
+import { usePanGestureHandler } from "react-native-redash";
+import { connect, ConnectedProps, useSelector } from "react-redux";
 
+import { Colors, SCREEN_WIDTH, SPRING_CONFIG, TextStyles } from "@lib";
+import { RouteProp } from "@react-navigation/core";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { Colors, SCREEN_WIDTH, SPRING_CONFIG, TextStyles } from "@lib";
-import { POST_HEIGHT } from "./Post";
 import { StackParamList } from "App";
 import { useMemoOne } from "use-memo-one";
-import { RouteProp } from "@react-navigation/core";
+import { POST_HEIGHT } from "./Post";
 import { UserRow } from "./universal";
 
 const {
@@ -39,6 +39,7 @@ const {
 
 const connector = connect((state: RootState, props: FriendsProps) => {
   const { id } = props.route.params;
+
   return {
     friends: selectors.friends(state, { id }),
   };

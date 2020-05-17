@@ -108,6 +108,7 @@ export default (
 
     case ActionTypes.FRIEND_ERROR: {
       const { error } = action.payload;
+
       return {
         ...state,
         error,

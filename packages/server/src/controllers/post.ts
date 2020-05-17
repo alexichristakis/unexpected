@@ -1,5 +1,6 @@
 import {
   BodyParams,
+  Context,
   Controller,
   Delete,
   Get,
@@ -7,16 +8,13 @@ import {
   PathParams,
   Put,
   UseAuth,
-  Context,
 } from "@tsed/common";
-
 import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
-import multer from "multer";
-import { ImageService } from "src/services/images";
-import { UserService } from "src/services/user";
-import { AuthMiddleware } from "../middlewares/auth";
-import { PostService } from "../services/post";
 import { Forbidden } from "ts-httpexceptions";
+import multer from "multer";
+
+import { AuthMiddleware } from "../middlewares/auth";
+import { PostService, ImageService, UserService } from "../services";
 
 @Controller("/post")
 @UseAuth(AuthMiddleware)
@@ -51,12 +49,29 @@ export class PostController {
   }
 
   @Get("/feed")
-  async getUsersFeed(@Context("auth") userId: string) {
+  async getFeed(@Context("auth") userId: string) {
     return this.postService.getFeedForUser(userId);
   }
 
+  @Get("/posts")
+  async getPosts(@Context("auth") auth: string) {
+    return this.postService.getUsersPosts(auth);
+  }
+
   @Get("/:userId/posts")
-  getUsersPosts(@PathParams("userId") userId: string) {
+  async getUsersPosts(
+    @PathParams("userId") userId: string,
+    @Context("auth") auth: string
+  ) {
+    const user = await this.userService.get(userId, "friends");
+
+    if (!user) return null;
+
+    // assert users are friends before fetching posts
+    if (!user.friends.includes(auth)) {
+      throw new Forbidden("Forbidden");
+    }
+
     return this.postService.getUsersPosts(userId);
   }
 

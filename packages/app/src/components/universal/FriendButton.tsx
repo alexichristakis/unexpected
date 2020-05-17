@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
 import {
+  ActionSheetIOS,
   ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
   View,
-  ActionSheetIOS,
 } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
 
@@ -15,9 +15,9 @@ import CheckSVG from "@assets/svg/check_button.svg";
 import AddFriendSVG from "@assets/svg/plus_button.svg";
 
 import { TextStyles } from "@lib";
-import * as selectors from "@redux/selectors";
-import { RootState, FriendingState } from "@redux/types";
 import { FriendActions } from "@redux/modules";
+import * as selectors from "@redux/selectors";
+import { FriendingState, RootState } from "@redux/types";
 
 const ICON_SIZE = 30;
 

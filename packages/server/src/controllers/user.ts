@@ -1,5 +1,6 @@
 import {
   BodyParams,
+  Context,
   Controller,
   Get,
   Inject,
@@ -8,11 +9,10 @@ import {
   Put,
   QueryParams,
   UseAuth,
-  Context,
 } from "@tsed/common";
 import { Forbidden } from "ts-httpexceptions";
 
-import { NewUser, User, CompleteUserSelect } from "@global";
+import { CompleteUserSelect, NewUser, User } from "@global";
 
 import { AuthMiddleware } from "../middlewares/auth";
 import { UserService } from "../services/user";

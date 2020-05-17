@@ -2,9 +2,9 @@ import { createSelector } from "reselect";
 
 import { getPostImageURL } from "@api";
 
-import { RootState, FriendingState } from "../types";
+import { FriendingState, RootState } from "../types";
 import { post } from "./post";
-import { users, userId } from "./user";
+import { userId, users } from "./user";
 
 const s = (state: RootState) => state.friend || {};
 

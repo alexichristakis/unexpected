@@ -1,14 +1,14 @@
-import React, { useContext, useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
 import { Button, PullToRefresh, UserImage } from "@components/universal";
+import { FriendsContext } from "@hooks";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib";
+import { useNavigation } from "@react-navigation/core";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { FriendsContext } from "@hooks";
-import { useNavigation } from "@react-navigation/core";
 
 const mapStateToProps = (state: RootState, props: HeaderProps) => {
   // const isUser = selectors.phoneNumber(state) === props.phoneNumber;

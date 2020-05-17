@@ -2,9 +2,9 @@ import React from "react";
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import { connect, ConnectedProps } from "react-redux";
 
+import { Colors, formatName, TextStyles } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { formatName, Colors, TextStyles } from "@lib";
 
 import FriendButton from "./FriendButton";
 import UserImage from "./UserImage";
