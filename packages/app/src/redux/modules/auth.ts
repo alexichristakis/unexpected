@@ -129,6 +129,8 @@ function* onVerifyCodeRequest(
 
     const { data } = res;
 
+    console.log(data);
+
     if (!data.verified) {
       yield put(Actions.errorRequestingAuth("code invalid"));
     }

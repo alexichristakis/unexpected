@@ -1,11 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Keyboard, StyleSheet, TextInput, View } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import Animated, {
   Easing,
   interpolate,
   useCode,
 } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
+import { State, TapGestureHandler } from "react-native-gesture-handler";
+import {
+  mix,
+  useGestureHandler,
+  useTransition,
+  useValue,
+} from "react-native-redash";
+import { useMemoOne } from "use-memo-one";
 
 import Search from "@assets/svg/discover.svg";
 import {
@@ -16,34 +25,36 @@ import {
   TextStyles,
 } from "@lib";
 import { RootState } from "@redux/types";
-import { State, TapGestureHandler } from "react-native-gesture-handler";
-import {
-  mix,
-  useGestureHandler,
-  useTransition,
-  useValue,
-} from "react-native-redash";
-import { useMemoOne } from "use-memo-one";
+import { SearchActions } from "@redux/modules";
+import { PartialUser } from "@global";
+import { UserRow } from "@components/universal";
+import { StackParamList } from "App";
 
-const { onChange, concat, neq, cond, eq, call } = Animated;
+import SearchResults from "./SearchResults";
+import SearchInput from "./SearchInput";
 
-const connector = connect((state: RootState) => ({}), {});
+const { onChange, neq, cond, eq, call } = Animated;
+
+const connector = connect((state: RootState) => ({}), {
+  search: SearchActions.search,
+});
 
 export interface HeaderProps {
+  navigation: StackNavigationProp<StackParamList>;
   offset: Animated.Node<number>;
 }
 
 export type HeaderConnectedProps = ConnectedProps<typeof connector>;
 
 const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
-  ({ offset }) => {
+  ({ offset, navigation, search }) => {
     const inputRef = useRef<TextInput>(null);
-    const [searchOpen, setSearchOpen] = useState(false);
+    const [open, setSearchOpen] = useState(false);
     const state = useValue(State.UNDETERMINED);
 
     const handler = useGestureHandler({ state });
 
-    const transition = useTransition(searchOpen, {
+    const transition = useTransition(open, {
       duration: 400,
       easing: Easing.out(Easing.ease),
     });
@@ -53,9 +64,7 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
         onChange(
           state,
           cond(eq(state, State.END), [
-            call([], () => {
-              setSearchOpen((prev) => !prev);
-            }),
+            call([], () => setSearchOpen((prev) => !prev)),
           ])
         ),
       ],
@@ -63,12 +72,12 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
     );
 
     useEffect(() => {
-      if (searchOpen) inputRef.current?.focus();
+      if (open) inputRef.current?.focus();
       else {
         inputRef.current?.clear();
         Keyboard.dismiss();
       }
-    }, [searchOpen, inputRef]);
+    }, [open, inputRef]);
 
     const translateY = interpolate(offset, {
       inputRange: [-10, 0, 10],
@@ -96,53 +105,34 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
       []
     );
 
-    const searchBar = useMemoOne(
-      () => ({
-        right: 0,
-        width: mix(transition, 50, SCREEN_WIDTH - 50),
-        borderRadius: 25,
-        height: 50,
-        transform: [{ scale: mix(transition, 0.8, 1) }],
-      }),
-      []
-    );
+    const right = mix(transition, 27.5, SCREEN_WIDTH - 60);
 
-    const right = mix(transition, 2.5, SCREEN_WIDTH - 100);
     return (
       <View pointerEvents={"box-none"} style={styles.container}>
-        <Animated.View style={{ ...background, ...styles.background }} />
+        <Animated.View
+          style={{ ...background, ...styles.background }}
+          pointerEvents={open ? "auto" : "none"}
+          onTouchEnd={() => setSearchOpen(false)}
+        />
+        <SearchResults {...{ navigation, transition, open }} />
         <Animated.View
           style={{ ...styles.header, transform: [{ translateY }] }}
         >
           <Animated.Text
             style={{
               ...TextStyles.title,
+              left: 25,
               opacity: mix(transition, 1, 0),
             }}
           >
             unexpected
           </Animated.Text>
-
-          <Animated.View style={{ ...searchBar, ...styles.searchBar }}>
-            {searchOpen ? (
-              <TextInput
-                ref={inputRef}
-                style={styles.input}
-                placeholder="search"
-              />
-            ) : null}
-          </Animated.View>
+          <SearchInput {...{ open, transition }} />
           <TapGestureHandler {...handler}>
             <Animated.View style={{ ...styles.center, right }}>
               <Search fill={Colors.background} width={25} height={25} />
             </Animated.View>
           </TapGestureHandler>
-        </Animated.View>
-        <Animated.View
-          pointerEvents={searchOpen ? "auto" : "none"}
-          style={styles.results}
-        >
-          {/* render results as user row */}
         </Animated.View>
       </View>
     );
@@ -152,13 +142,13 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    paddingTop: 80,
-    paddingHorizontal: 25,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginTop: SB_HEIGHT + 40,
+    // marginHorizontal: 25,
     left: 0,
     right: 0,
   },
@@ -180,7 +170,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  results: { marginTop: 30, flex: 1 },
 });
 
 export default connector(Header);

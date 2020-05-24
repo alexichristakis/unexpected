@@ -1,27 +1,25 @@
-import React, { useContext, useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
 import { Button, PullToRefresh, UserImage } from "@components/universal";
+import { FriendsContext } from "@hooks";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib";
+import { useNavigation } from "@react-navigation/core";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { FriendsContext } from "@hooks";
-import { useNavigation } from "@react-navigation/core";
 
-const mapStateToProps = (state: RootState, props: HeaderProps) => {
-  // const isUser = selectors.phoneNumber(state) === props.phoneNumber;
-
-  return {
+const connector = connect(
+  (state: RootState, props: HeaderProps) => ({
     // isUser,
     user: selectors.user(state, props),
-    // numPosts: selectors.usersPostsLength(state, props),
+    numPosts: selectors.numPosts(state, props),
+    numFriends: selectors.numFriends(state, props),
     // friendRequests: isUser ? selectors.friendRequestNumbers(state) : null,
-  };
-};
-
-const mapDispatchToProps = {};
+  }),
+  {}
+);
 
 export type HeaderConnectedProps = ConnectedProps<typeof connector>;
 
@@ -33,9 +31,10 @@ export interface HeaderProps {
 export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
   id,
   user,
-  numPosts = 5,
+  numPosts,
+  numFriends,
 }) => {
-  const { phoneNumber, firstName, lastName, friends = [], bio = "" } = user;
+  const { firstName, lastName, bio = "" } = user;
 
   const { open: openFriends } = useContext(FriendsContext);
 
@@ -67,9 +66,7 @@ export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({
           <Text
             style={{ ...styles.subheader, textAlign: "center" }}
             onPress={handleOnPressFriends}
-          >{`${friends.length}\n${
-            friends.length === 1 ? "friend" : "friends"
-          }`}</Text>
+          >{`${numFriends}\n${numFriends === 1 ? "friend" : "friends"}`}</Text>
         </View>
       </View>
 
@@ -150,5 +147,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
 export default connector(Header);

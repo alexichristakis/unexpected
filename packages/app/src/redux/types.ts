@@ -6,19 +6,21 @@ import { ImageState } from "./modules/image";
 import { PermissionsState } from "./modules/permissions";
 import { PostState } from "./modules/post";
 import { UserState } from "./modules/user";
+import { CommentState } from "./modules/comment";
+import { FriendState } from "./modules/friend";
+import { SearchState } from "./modules/search";
 
 import {
   AppActions,
   AuthActions,
-  commentActions,
+  CommentActions,
   FriendActions,
   ImageActions,
   PermissionsActions,
   PostActions,
   UserActions,
+  SearchActions,
 } from "./modules";
-import { CommentState } from "./modules/comment";
-import { FriendState } from "./modules/friend";
 
 export enum AppActionTypes {
   UPDATE_NAVIGATION = "app/UPDATE_NAVIGATION",
@@ -92,27 +94,29 @@ export enum UserActionTypes {
   CREATE_USER_SUCCESS = "user/CREATE_USER_SUCCESS",
   FETCH_USER = "user/FETCH_USER",
   FETCH_USERS = "user/FETCH_USERS",
-  FETCH_USERS_REQUESTS = "user/FETCH_USERS_REQUESTS",
-  FETCH_USERS_REQUESTS_SUCCESS = "user/FETCH_USERS_REQUESTS_SUCCESS",
   UPDATE_USER = "user/UPDATE_USER",
   LOAD_USERS = "user/LOAD_USERS",
   USER_ERROR = "user/ERROR",
 }
 
 export enum FriendActionTypes {
+  FETCH_USERS_REQUESTS = "friend/FETCH_USERS_REQUESTS",
+  FETCH_USERS_REQUESTS_SUCCESS = "friend/FETCH_USERS_REQUESTS_SUCCESS",
   FETCH_FRIENDS = "friend/FETCH",
   FETCH_FRIENDS_SUCCESS = "friend/FETCH_SUCCESS",
   FRIEND_USER = "friend/FRIEND",
   FRIEND_USER_SUCCESS = "friend/FRIEND_SUCCESS",
   ACCEPT_REQUEST = "friend/ACCEPT_REQUEST",
   ACCEPT_REQUEST_SUCCESS = "friend/ACCEPT_REQUEST_SUCCESS",
-  CANCEL_REQUEST = "friend/CANCEL_REQUEST",
-  CANCEL_REQUEST_SUCCESS = "friend/CANCEL_REQUEST_SUCCESS",
-  DENY_REQUEST = "friend/DENY_REQUEST",
-  DENY_REQUEST_SUCCESS = "friend/DENY_REQUEST_SUCCESS",
   DELETE_FRIEND = "friend/DELETE",
   DELETE_FRIEND_SUCCESS = "friend/DELETE_SUCCESS",
+  DELETE_REQUEST_SUCCESS = "friend/DELETE_REQUEST_SUCCESS",
   FRIEND_ERROR = "friend/ERROR",
+}
+
+export enum SearchActionTypes {
+  SEARCH = "search/SEARCH",
+  SEARCH_SUCCESS = "search/SEARCH_SUCCESS",
 }
 
 export const ActionTypes = {
@@ -124,6 +128,7 @@ export const ActionTypes = {
   ...UserActionTypes,
   ...CommentActionTypes,
   ...FriendActionTypes,
+  ...SearchActionTypes,
 };
 
 export type RootState = {
@@ -135,7 +140,16 @@ export type RootState = {
   post: PostState;
   friend: FriendState;
   comment: CommentState;
+  search: SearchState;
 };
+
+export enum FriendingState {
+  FRIENDS = "friends",
+  RECEIVED = "received",
+  REQUESTED = "requested",
+  CAN_FRIEND = "can_friend",
+  NONE = "none",
+}
 
 export type ActionUnion = ActionsUnion<
   typeof AppActions &
@@ -145,7 +159,8 @@ export type ActionUnion = ActionsUnion<
     typeof AuthActions &
     typeof ImageActions &
     typeof FriendActions &
-    typeof commentActions
+    typeof CommentActions &
+    typeof SearchActions
 >;
 
 interface Action<T extends string> {

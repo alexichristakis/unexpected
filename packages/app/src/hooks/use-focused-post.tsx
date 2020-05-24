@@ -59,6 +59,7 @@ const useFocusedPostState = (): FocusedPostState => {
       if (prev) {
         runUnmount.setValue(1);
         isOpenValue.setValue(0);
+
         return true;
       }
 

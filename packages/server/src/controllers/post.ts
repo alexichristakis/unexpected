@@ -1,5 +1,6 @@
 import {
   BodyParams,
+  Context,
   Controller,
   Delete,
   Get,
@@ -8,17 +9,12 @@ import {
   Put,
   UseAuth,
 } from "@tsed/common";
+import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
+import { Forbidden } from "ts-httpexceptions";
+import multer from "multer";
 
-import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
-import multer from "multer";
-import { ImageService } from "src/services/images";
-import { UserService } from "src/services/user";
 import { AuthMiddleware } from "../middlewares/auth";
-import { PostService } from "../services/post";
-import { ImageService } from "src/services/images";
-import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
-import multer from "multer";
-import { UserService } from "src/services/user";
+import { PostService, ImageService, UserService } from "../services";
 
 @Controller("/post")
 @UseAuth(AuthMiddleware)
@@ -32,25 +28,12 @@ export class PostController {
   @Inject(UserService)
   private userService: UserService;
 
-  @Get()
-  getAll() {
-    return this.postService.getAll();
-  }
-
-  @Get("/populate/user")
-  getAllWithUser() {
-    return this.postService.getAll(null, "user");
-  }
-
-  @Put("/:userId")
-  @UseAuth(AuthMiddleware, { select: "userId" })
-  @MulterOptions({
-    storage: multer.memoryStorage(),
-  })
+  @Put()
+  @MulterOptions({ storage: multer.memoryStorage() })
   async sendPost(
     @MultipartFile("image") file: Express.Multer.File,
     @BodyParams("description") description: string,
-    @PathParams("userId") userId: string
+    @Context("auth") userId: string
   ) {
     const post = await this.postService.create({ description, user: userId });
 
@@ -65,23 +48,50 @@ export class PostController {
     return true;
   }
 
-  @Get("/:userId/posts")
-  getUsersPosts(@PathParams("userId") userId: string) {
-    return this.postService.getUsersPosts(userId);
+  @Get()
+  async getPosts(@Context("auth") auth: string) {
+    return this.postService.getUsersPosts(auth);
   }
 
-  @Get("/:userId/feed")
-  async getUsersFeed(@PathParams("userId") userId: string) {
+  @Get("/feed")
+  async getFeed(@Context("auth") userId: string) {
     return this.postService.getFeedForUser(userId);
   }
 
+  @Get("/user/:userId")
+  async getUsersPosts(
+    @PathParams("userId") userId: string,
+    @Context("auth") auth: string
+  ) {
+    const user = await this.userService.get(userId, "friends");
+
+    if (!user) return null;
+
+    // assert users are friends before fetching posts
+    if (!user.friends.includes(auth)) {
+      throw new Forbidden("Forbidden");
+    }
+
+    return this.postService.getUsersPosts(userId);
+  }
+
   @Get("/:id")
-  async getPostId(@PathParams("id") id: string) {
-    return this.postService.getPost(id);
+  async getPost(@PathParams("id") id: string) {
+    return this.postService.getPostWithComments(id);
   }
 
   @Delete("/:id")
   async deletePost(@PathParams("id") id: string) {
-    return this.postService.delete(id);
+    const post = await this.postService.getPost(id);
+
+    if (!post) {
+      return null;
+    }
+
+    if (post.user !== id) {
+      throw new Forbidden("Forbidden");
+    }
+
+    return post.remove();
   }
 }

@@ -43,7 +43,15 @@ const PROD = !!process.env.PORT;
     logStart: !PROD,
     logEnd: !PROD,
     disableRoutesSummary: PROD,
-    requestFields: ["reqId", "url", "body", "query", "params", "duration"],
+    requestFields: [
+      "method",
+      "reqId",
+      "url",
+      "body",
+      "query",
+      "params",
+      "duration",
+    ],
   },
 })
 export class Server extends ServerLoader {

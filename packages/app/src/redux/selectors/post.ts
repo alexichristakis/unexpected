@@ -40,13 +40,19 @@ export const postImageURL = createSelector([post, jwt], (post, jwt) => {
 });
 
 export const usersPosts = createSelector(
-  [posts, (_: RootState, props: { userId: string }) => props.userId],
+  [
+    posts,
+    (_: RootState, { userId, id }: { userId?: string; id?: string }) =>
+      !!userId ? userId : (id as string),
+  ],
   (postMap, userId) => {
     const posts = Object.values(postMap).filter(({ user }) => user === userId);
 
     return posts.map(({ id, createdAt }) => ({ id, createdAt }));
   }
 );
+
+export const numPosts = createSelector([usersPosts], (posts) => posts.length);
 
 export const feed = createSelector(s, (state) => Object.keys(state.posts));
 

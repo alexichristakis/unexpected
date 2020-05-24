@@ -1,4 +1,11 @@
-import { EndpointInfo, IMiddleware, Middleware, Req } from "@tsed/common";
+import {
+  Context,
+  EndpointInfo,
+  IMiddleware,
+  Middleware,
+  Req,
+  RequestContext,
+} from "@tsed/common";
 import jwt from "jsonwebtoken";
 import { Forbidden, Unauthorized } from "ts-httpexceptions";
 
@@ -6,7 +13,11 @@ import { User } from "@global";
 
 @Middleware()
 export class AuthMiddleware implements IMiddleware {
-  public use(@Req() request: any, @EndpointInfo() endpoint: EndpointInfo) {
+  public use(
+    @Req() request: any,
+    @EndpointInfo() endpoint: EndpointInfo,
+    @Context() context: RequestContext
+  ) {
     // retrieve options given to the @UseAuth decorator
     const options = endpoint.get(AuthMiddleware) || {};
 
@@ -20,6 +31,9 @@ export class AuthMiddleware implements IMiddleware {
 
       try {
         const payload: any = jwt.verify(token, publicKey);
+
+        // pass auth token to context
+        context.set("auth", payload.id.trim());
 
         const { select, verify = (a: any, b: any) => a === b } = options;
         if (select && verify)

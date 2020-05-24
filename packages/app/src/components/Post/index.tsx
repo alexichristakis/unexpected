@@ -7,6 +7,7 @@ import Animated, { interpolate, useCode, Value } from "react-native-reanimated";
 import { useValue } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
+import { FocusedPostContext } from "@hooks";
 import {
   Colors,
   formatName,
@@ -16,12 +17,11 @@ import {
 } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-import { FocusedPostContext } from "@hooks";
 
+import { StackParamList } from "../../App";
 import Comments from "./Comments";
 import CommentsButton from "./CommentsButton";
 import Image from "./Image";
-import { StackParamList } from "../../App";
 
 const { cond, call, onChange, set } = Animated;
 

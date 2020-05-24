@@ -81,7 +81,7 @@ export class AuthService {
     return { verified: true, newUser: true, user: placeholder };
   }
 
-  generateJWT(id: string): string {
+  generateJWT(id: string) {
     const privateKey = process.env.AUTH_PRIVATE_KEY as string;
     const token = jwt.sign({ id }, privateKey, { algorithm: "RS256" });
 

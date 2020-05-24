@@ -20,10 +20,11 @@ import Post, { POST_HEIGHT } from "@components/Post";
 import { Colors, SPRING_CONFIG } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
-
 import { PostActions } from "@redux/modules";
-import { posts } from "@redux/selectors";
+
 import Header from "./Header";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamList } from "App";
 
 const {
   onChange,
@@ -53,11 +54,14 @@ const connector = connect(
   { fetchFeed: PostActions.fetchFeed }
 );
 
-export interface FeedProps {}
+export interface FeedProps {
+  navigation: StackNavigationProp<StackParamList>;
+}
 
 export type FeedConnectedProps = ConnectedProps<typeof connector>;
 
 const Feed: React.FC<FeedProps & FeedConnectedProps> = ({
+  navigation,
   postIds,
   fetchFeed,
 }) => {
@@ -175,7 +179,7 @@ const Feed: React.FC<FeedProps & FeedConnectedProps> = ({
           ))}
         </Animated.View>
       </PanGestureHandler>
-      <Header offset={translateY} />
+      <Header navigation={navigation} offset={translateY} />
     </View>
   );
 };

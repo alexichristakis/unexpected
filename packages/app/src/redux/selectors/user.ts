@@ -15,20 +15,15 @@ export const userRequestsLoading = createSelector(
   (state) => state.loadingRequests
 );
 
-export const phoneNumber = createSelector(s, (state) => state.phoneNumber);
-
-export const userId = createSelector(s, (state) => state.id);
-
 const idFromProps = (_: RootState, props: { id: string }) => props.id;
 
 export const user = createSelector([users, idFromProps], (users, id) => {
   return users[id] ?? {};
 });
 
-export const currentUser = createSelector(
-  [users, phoneNumber],
-  (users, phoneNumber) => users[phoneNumber]
-);
+export const currentUser = createSelector(s, (state) => state.user);
+
+export const userId = createSelector(currentUser, (user) => user.id);
 
 export const userStale = createSelector(s, (state) => state.stale);
 

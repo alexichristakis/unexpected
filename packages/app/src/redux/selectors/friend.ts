@@ -1,11 +1,10 @@
 import { createSelector } from "reselect";
 
 import { getPostImageURL } from "@api";
-import { FriendingState } from "@global";
 
-import { RootState } from "../types";
+import { FriendingState, RootState } from "../types";
 import { post } from "./post";
-import { users, userId } from "./user";
+import { userId, users } from "./user";
 
 const s = (state: RootState) => state.friend || {};
 
@@ -23,6 +22,11 @@ export const friends = createSelector([f, idFromProps], (friends, id) => {
 export const usersFriends = createSelector([f, userId], (friends, id) => {
   return friends[id] ?? [];
 });
+
+export const numFriends = createSelector(
+  [friends],
+  (friends) => friends.length
+);
 
 export const friendingState = createSelector(
   [idFromProps, userId, usersFriends, requests, requested],

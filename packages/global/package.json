@@ -7,7 +7,7 @@
     "deploy": "yarn clean && yarn build && node scripts/deploy.js"
   },
   "dependencies": {
-    "@tsed/common": "^5.52.1",
-    "@tsed/mongoose": "^5.52.1"
+    "@tsed/common": "^5.53.1",
+    "@tsed/mongoose": "^5.53.1"
   }
 }

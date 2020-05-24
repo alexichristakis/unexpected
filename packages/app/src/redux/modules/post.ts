@@ -8,7 +8,7 @@ import ImageResizer, {
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
-import { Comment, Post, User, PartialUser } from "@global";
+import { Comment, PartialUser, Post, User } from "@global";
 
 import * as selectors from "../selectors";
 import {
@@ -129,7 +129,6 @@ function* onSendPost(
 
   try {
     const jwt = yield select(selectors.jwt);
-    const userId = yield select(selectors.userId);
     const image: TakePictureResponse = yield select(selectors.currentImage);
 
     const {
@@ -157,7 +156,7 @@ function* onSendPost(
 
     body.append("description", description);
 
-    yield call(client.put, `/post/${userId}`, body, {
+    yield call(client.put, `/post`, body, {
       headers: getHeaders({ jwt, image: true }),
     });
 
@@ -190,18 +189,11 @@ function* onFetchUsersPosts(
   }
 }
 
-function* onFetchFeed(
-  action: ExtractActionFromActionCreator<typeof Actions.fetchFeed>
-) {
-  // const { fromDate } = action.payload;
+function* onFetchFeed() {
   try {
     const jwt = yield select(selectors.jwt);
-    const userId = yield select(selectors.userId);
-    // const feedState: FeedState = yield select(selectors.feedState);
 
-    // const from = fromDate ? fromDate : feedState.lastFetched;
-
-    const res = yield client.get(`post/${userId}/feed`, {
+    const res = yield call(client.get, `post/feed`, {
       headers: getHeaders({ jwt }),
     });
 
@@ -247,13 +239,12 @@ function* onDeletePost(
 
   try {
     const jwt = yield select(selectors.jwt);
-    const phoneNumber = yield select(selectors.phoneNumber);
 
     const res = yield client.delete(`post/${id}`, {
       headers: getHeaders({ jwt }),
     });
 
-    yield put(Actions.deletePostSuccess(phoneNumber));
+    yield put(Actions.deletePostSuccess());
   } catch (err) {
     yield put(Actions.onPostError(err.message));
   }
@@ -292,8 +283,7 @@ export const Actions = {
   postSuccess: () => createAction(ActionTypes.SEND_POST_SUCCESS),
 
   deletePost: (id: string) => createAction(ActionTypes.DELETE_POST, { id }),
-  deletePostSuccess: (phoneNumber: string) =>
-    createAction(ActionTypes.DELETE_POST_SUCCESS, { phoneNumber }),
+  deletePostSuccess: () => createAction(ActionTypes.DELETE_POST_SUCCESS),
 
   onPostError: (error: string) =>
     createAction(ActionTypes.POST_ERROR, { error }),

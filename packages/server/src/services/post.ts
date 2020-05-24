@@ -3,7 +3,13 @@ import { MongooseModel } from "@tsed/mongoose";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
 
-import { NewPost, PostModel, Post_populated } from "@global";
+import {
+  NewPost,
+  PostModel,
+  Post_populated,
+  DefaultUserSelect,
+  _idToId,
+} from "@global";
 
 import { CommentService } from "./comment";
 import { SlackLogService } from "./logger";
@@ -40,8 +46,12 @@ export class PostService {
   };
 
   getPost = async (id: string) => {
+    return this.model.findById(id).exec();
+  };
+
+  getPostWithComments = async (id: string) => {
     const [post, comments] = await Promise.all([
-      this.model.findById(id).exec(),
+      this.model.findById(id).populate("user").exec(),
       this.commentService.getByPostId(id),
     ]);
 
@@ -57,7 +67,7 @@ export class PostService {
 
     const posts = ((await this.model
       .find({ user: { $in: [...friends, id] } })
-      .populate("user")
+      .populate("user", DefaultUserSelect)
       .sort({ createdAt: -1 })
       .lean()
       .exec()) as unknown) as Post_populated[];
@@ -68,10 +78,8 @@ export class PostService {
 
     const users = uniqBy(
       posts.map(({ user }) => user),
-      ({ id }) => id
+      ({ _id }) => _id
     );
-
-    console.log(posts);
 
     const postsUnpopulated = keyBy(
       posts.map(({ _id, user, ...rest }) => ({
@@ -82,9 +90,10 @@ export class PostService {
       ({ id }) => id
     );
 
-    console.log(postsUnpopulated);
-
-    return { posts: postsUnpopulated, users };
+    return {
+      posts: postsUnpopulated,
+      users: users.map((user) => _idToId(user)),
+    };
   };
 
   delete = async (_id: string) => {

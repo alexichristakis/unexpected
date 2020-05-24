@@ -139,25 +139,22 @@ function* onDeleteComment(
 function* onLikeComment(
   action: ExtractActionFromActionCreator<typeof Actions.likeComment>
 ) {
-  const { id } = action.payload;
-
-  try {
-    const phoneNumber = yield select(selectors.phoneNumber);
-    const jwt = yield select(selectors.jwt);
-
-    const res = yield client.patch(
-      `/comment/${phoneNumber}/like/${id}`,
-      {},
-      {
-        headers: getHeaders({ jwt }),
-      }
-    );
-
-    const { data } = res;
-    yield put(Actions.loadComment(data));
-  } catch (err) {
-    yield put(Actions.onCommentError(err));
-  }
+  // const { id } = action.payload;
+  // try {
+  //   const phoneNumber = yield select(selectors.phoneNumber);
+  //   const jwt = yield select(selectors.jwt);
+  //   const res = yield client.patch(
+  //     `/comment/${phoneNumber}/like/${id}`,
+  //     {},
+  //     {
+  //       headers: getHeaders({ jwt }),
+  //     }
+  //   );
+  //   const { data } = res;
+  //   yield put(Actions.loadComment(data));
+  // } catch (err) {
+  //   yield put(Actions.onCommentError(err));
+  // }
 }
 
 export function* commentSagas() {

@@ -20,7 +20,6 @@ export function useNotificationEvents(
   navigation: NativeStackNavigationProp<StackParamList>
 ) {
   const launchPermissions = useReduxState(selectors.shouldLaunchPermissions);
-  const currentUserPhoneNumber = useReduxState(selectors.phoneNumber);
   const updateUser = useReduxAction(UserActions.updateUser);
   const setCameraTimer = useReduxAction(AppActions.setCameraTimer);
 
@@ -33,49 +32,49 @@ export function useNotificationEvents(
 
   return useEffect(() => {
     const subscribers = [
-      Notifications.events().registerNotificationOpened(
-        (notification, complete) => {
-          // @ts-ignore -- idk why these types are wrong?
-          const { payload }: { payload: NotificationPayload } = notification;
+      // Notifications.events().registerNotificationOpened(
+      //   (notification, complete) => {
+      //     // @ts-ignore -- idk why these types are wrong?
+      //     const { payload }: { payload: NotificationPayload } = notification;
 
-          switch (payload.type) {
-            case "user": {
-              const { phoneNumber } = payload.route;
-              // nav to user
-              navigation.navigate("PROFILE", {
-                prevRoute: "Back",
-                phoneNumber,
-              });
-              break;
-            }
+      //     switch (payload.type) {
+      //       case "user": {
+      //         const { phoneNumber } = payload.route;
+      //         // nav to user
+      //         navigation.navigate("PROFILE", {
+      //           prevRoute: "Back",
+      //           phoneNumber,
+      //         });
+      //         break;
+      //       }
 
-            case "post": {
-              const { phoneNumber, id } = payload.route;
+      //       case "post": {
+      //         const { phoneNumber, id } = payload.route;
 
-              if (phoneNumber === currentUserPhoneNumber) {
-                // @ts-ignore
-                navigation.navigate("USER_PROFILE_TAB", {
-                  screen: "USER_PROFILE",
-                  params: { focusedPostId: id },
-                });
-              } else {
-                navigation.navigate("PROFILE", {
-                  prevRoute: "Back",
-                  focusedPostId: id,
-                  phoneNumber,
-                });
-              }
-              break;
-            }
+      //         if (phoneNumber === currentUserPhoneNumber) {
+      //           // @ts-ignore
+      //           navigation.navigate("USER_PROFILE_TAB", {
+      //             screen: "USER_PROFILE",
+      //             params: { focusedPostId: id },
+      //           });
+      //         } else {
+      //           navigation.navigate("PROFILE", {
+      //             prevRoute: "Back",
+      //             focusedPostId: id,
+      //             phoneNumber,
+      //           });
+      //         }
+      //         break;
+      //       }
 
-            case "photoTime": {
-              setPhotoTime(payload);
-              break;
-            }
-          }
-          complete();
-        }
-      ),
+      //       case "photoTime": {
+      //         setPhotoTime(payload);
+      //         break;
+      //       }
+      //     }
+      //     complete();
+      //   }
+      // ),
       Notifications.events().registerNotificationReceivedForeground(
         (notification, complete) => {
           const { payload }: { payload: NotificationPayload } = notification;

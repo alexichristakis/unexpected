@@ -1,5 +1,5 @@
 import React from "react";
-import { Easing, StatusBar, Animated, StyleSheet } from "react-native";
+import { Animated, Easing, StatusBar, StyleSheet } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import {
@@ -22,18 +22,19 @@ import createStore from "@redux/store";
 
 import {
   FocusedPostProvider,
+  FriendsProvider,
   KeyboardStateProvider,
   useNotificationEvents,
   useReduxState,
-  FriendsProvider,
 } from "./hooks";
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
+import Friends from "@components/Friends";
 import { Colors } from "@lib";
 import {
-  TransitionSpec,
   StackNavigationProp,
+  TransitionSpec,
 } from "@react-navigation/stack/lib/typescript/src/types";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
@@ -46,7 +47,6 @@ import {
   Share,
   SignUp,
 } from "./screens";
-import Friends from "@components/Friends";
 
 type BaseParams = {
   prevRoute: string;

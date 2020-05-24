@@ -1,10 +1,10 @@
-import { User } from "@unexpected/global";
 import Animated, { Clock, Easing, Value } from "react-native-reanimated";
 
 import random from "lodash/random";
 import { State } from "react-native-gesture-handler";
 import { contains, snapPoint } from "react-native-redash";
 import { SPRING_CONFIG } from "./constants";
+import { PartialUser } from "@global";
 
 const {
   cond,
@@ -29,7 +29,7 @@ const {
 export const randomColor = () =>
   `rgba(${random(255)}, ${random(255)}, ${random(255)}, 0.4)`;
 
-export const formatName = (user?: User) =>
+export const formatName = (user?: PartialUser) =>
   user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : "";
 
 export interface WithSpringImperativeParams {
