@@ -63,7 +63,7 @@ export default (
       const { request } = action.payload;
 
       return immer(state, (draft) => {
-        draft.requested.push(request.to as string);
+        draft.requested.push(request.to.id);
         draft.loading = false;
       });
     }
@@ -72,10 +72,10 @@ export default (
       const { requestedFriends, friendRequests } = action.payload;
 
       return immer(state, (draft) => {
-        draft.loading = false;
+        draft.requests = friendRequests.map(({ id }) => id);
+        draft.requested = requestedFriends.map(({ id }) => id);
 
-        draft.requests = friendRequests.map(({ from }) => from.id);
-        draft.requested = requestedFriends.map(({ to }) => to.id);
+        draft.loading = false;
       });
     }
 
@@ -138,7 +138,7 @@ function* onFetchUsersRequests() {
   const jwt = yield select(selectors.jwt);
 
   try {
-    const res = yield call(client.get, `/user/requests`, {
+    const res = yield call(client.get, `/friend/requests`, {
       headers: getHeaders({ jwt }),
     });
 
@@ -218,18 +218,21 @@ function* onFetchFriends(
 ) {
   const { id } = action.payload;
 
-  const jwt = yield select(selectors.jwt);
+  const userId: string = yield select(selectors.userId);
+  const jwt: string = yield select(selectors.jwt);
 
   try {
     const { data }: { data: PartialUser[] } = yield call(
       client.get,
-      `user/${id}/friends`,
+      `user/friends/${id ? id : ""}`,
       {
         headers: getHeaders({ jwt }),
       }
     );
 
-    yield put(Actions.fetchFriendsSuccess(id, data));
+    console.log(data);
+
+    yield put(Actions.fetchFriendsSuccess(id ? id : userId, data));
   } catch (err) {
     yield put(Actions.onFriendError(err.message));
   }
@@ -245,14 +248,15 @@ export function* friendSagas() {
 }
 
 export const Actions = {
-  fetchFriends: (id: string) => createAction(ActionTypes.FETCH_FRIENDS, { id }),
+  fetchFriends: (id?: string) =>
+    createAction(ActionTypes.FETCH_FRIENDS, { id }),
   fetchFriendsSuccess: (id: string, users: PartialUser[]) =>
     createAction(ActionTypes.FETCH_FRIENDS_SUCCESS, { id, users }),
 
   fetchUsersRequests: () => createAction(ActionTypes.FETCH_USERS_REQUESTS),
   fetchUsersRequestsSuccess: (
-    friendRequests: FriendRequest_populated[],
-    requestedFriends: FriendRequest_populated[]
+    friendRequests: PartialUser[],
+    requestedFriends: PartialUser[]
   ) =>
     createAction(ActionTypes.FETCH_USERS_REQUESTS_SUCCESS, {
       friendRequests,
@@ -260,7 +264,7 @@ export const Actions = {
     }),
 
   friendUser: (id: string) => createAction(ActionTypes.FRIEND_USER, { id }),
-  sendFriendRequestSuccess: (request: FriendRequest) =>
+  sendFriendRequestSuccess: (request: FriendRequest_populated) =>
     createAction(ActionTypes.FRIEND_USER_SUCCESS, { request }),
   acceptRequestSuccess: (userId: string, id: string) =>
     createAction(ActionTypes.ACCEPT_REQUEST_SUCCESS, { userId, id }),

@@ -64,9 +64,7 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
         onChange(
           state,
           cond(eq(state, State.END), [
-            call([], () => {
-              setSearchOpen((prev) => !prev);
-            }),
+            call([], () => setSearchOpen((prev) => !prev)),
           ])
         ),
       ],
@@ -107,7 +105,7 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
       []
     );
 
-    const right = mix(transition, 2.5, SCREEN_WIDTH - 100);
+    const right = mix(transition, 27.5, SCREEN_WIDTH - 60);
 
     return (
       <View pointerEvents={"box-none"} style={styles.container}>
@@ -116,12 +114,14 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
           pointerEvents={open ? "auto" : "none"}
           onTouchEnd={() => setSearchOpen(false)}
         />
+        <SearchResults {...{ navigation, transition, open }} />
         <Animated.View
           style={{ ...styles.header, transform: [{ translateY }] }}
         >
           <Animated.Text
             style={{
               ...TextStyles.title,
+              left: 25,
               opacity: mix(transition, 1, 0),
             }}
           >
@@ -134,7 +134,6 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
             </Animated.View>
           </TapGestureHandler>
         </Animated.View>
-        <SearchResults {...{ navigation, transition, open }} />
       </View>
     );
   }
@@ -143,13 +142,13 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    paddingTop: 80,
-    paddingHorizontal: 25,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginTop: SB_HEIGHT + 40,
+    // marginHorizontal: 25,
     left: 0,
     right: 0,
   },

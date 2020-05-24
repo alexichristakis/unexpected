@@ -23,6 +23,7 @@ import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   TextStyles,
+  isIPhoneX,
 } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
@@ -66,8 +67,8 @@ const Header: React.FC<
 
   const searchBar = useMemoOne(
     () => ({
-      right: 0,
-      width: mix(transition, 50, SCREEN_WIDTH - 50),
+      right: mix(transition, 25, 15),
+      left: mix(transition, SCREEN_WIDTH - 75, 15),
       borderRadius: 25,
       height: 50,
       transform: [{ scale: mix(transition, 0.8, 1) }],
@@ -91,22 +92,6 @@ const Header: React.FC<
 });
 
 const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFillObject,
-    paddingTop: 80,
-    paddingHorizontal: 25,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    left: 0,
-    right: 0,
-  },
-  background: {
-    position: "absolute",
-    backgroundColor: Colors.lightGray,
-  },
   searchBar: {
     position: "absolute",
     justifyContent: "center",
@@ -115,11 +100,6 @@ const styles = StyleSheet.create({
   input: {
     ...TextStyles.large,
     marginLeft: 50,
-  },
-  center: {
-    paddingRight: 10,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
 

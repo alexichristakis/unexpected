@@ -8,6 +8,9 @@ import { RootState } from "@redux/types";
 
 import FriendButton from "./FriendButton";
 import UserImage from "./UserImage";
+import { useNavigation } from "@react-navigation/core";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackParamList } from "App";
 
 const connector = connect(
   (state: RootState, props: UserRowProps) => ({
@@ -16,9 +19,12 @@ const connector = connect(
   {}
 );
 
+export type UserRowStyle = "light" | "card" | "default";
+
 export interface UserRowProps {
   id: string;
   card?: boolean;
+  style: UserRowStyle;
   onPress: (id: string) => void;
 }
 
@@ -27,24 +33,33 @@ export type UserRowConnectedProps = ConnectedProps<typeof connector>;
 const UserRow: React.FC<UserRowProps & UserRowConnectedProps> = ({
   id,
   user,
+  style = "default",
   card = false,
   onPress,
 }) => {
+  const navigation = useNavigation<StackNavigationProp<StackParamList>>();
+
   const handleOnPress = () => {
-    onPress(id);
+    navigation.navigate("PROFILE", { id });
   };
+
+  const additionalStyle = style === "card" ? styles.card : {};
+
+  const additionalTextSTyle = style === "light" ? styles.light : {};
 
   return (
     <TouchableHighlight
-      underlayColor={Colors.lightGray}
+      underlayColor={style === "light" ? Colors.transGray : Colors.gray}
       onPress={handleOnPress}
-      style={[styles.container, card ? styles.card : {}]}
+      style={[styles.container, additionalStyle]}
     >
       <>
         <UserImage id={id} size={35} />
-        <Text style={styles.name}>{formatName(user)}</Text>
+        <Text style={{ ...styles.name, ...additionalTextSTyle }}>
+          {formatName(user)}
+        </Text>
         <View style={styles.buttonContainer}>
-          <FriendButton {...{ id }} />
+          <FriendButton light={style === "light"} {...{ id }} />
         </View>
       </>
     </TouchableHighlight>
@@ -63,6 +78,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     marginBottom: 10,
+  },
+  light: {
+    color: Colors.lightGray,
   },
   buttonContainer: {
     flex: 1,

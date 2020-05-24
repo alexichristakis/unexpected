@@ -1,20 +1,23 @@
 import React, { useCallback, useContext, useMemo } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, StyleProp, ViewStyle } from "react-native";
 
 import groupBy from "lodash/groupBy";
 import moment from "moment";
 import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
+import { onScrollEvent } from "react-native-redash";
 
 import LockSVG from "@assets/svg/lock.svg";
 import { Colors, SB_HEIGHT, TextStyles } from "@lib";
+import { FocusedPostContext, FocusedPostPayload } from "@hooks";
 
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
-import { FocusedPostContext, FocusedPostPayload } from "@hooks";
 import { Month, Months } from "./Month";
 import testPosts from "./test_data";
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const mapStateToProps = (state: RootState, props: GridProps) => ({
   posts: selectors.usersPosts(state, props),
@@ -26,11 +29,13 @@ export type GridConnectedProps = ConnectedProps<typeof connector>;
 
 export interface GridProps {
   userId: string;
+  style?: StyleProp<ViewStyle>;
+  offset?: Animated.Value<number>;
   renderHeader: () => JSX.Element;
 }
 
 export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
-  ({ posts, renderHeader }) => {
+  ({ posts, style, offset, renderHeader }) => {
     const { setId, origin, size, open } = useContext(FocusedPostContext);
 
     const handleOnPressPost = useCallback((payload: FocusedPostPayload) => {
@@ -78,13 +83,20 @@ export const Grid: React.FC<GridProps & GridConnectedProps> = React.memo(
 
       return (
         <FlatList
-          style={styles.list}
+          style={[styles.list, style]}
           data={sections}
           contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
           renderItem={renderSection}
           removeClippedSubviews={true}
           ListHeaderComponent={renderHeader}
+          renderScrollComponent={(props) => (
+            <Animated.ScrollView
+              {...props}
+              scrollEventThrottle={16}
+              onScroll={onScrollEvent({ y: offset })}
+            />
+          )}
         />
       );
     }, [posts.length]);
@@ -95,7 +107,6 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     width: "100%",
-    paddingTop: SB_HEIGHT,
     backgroundColor: Colors.background,
   },
   separator: {

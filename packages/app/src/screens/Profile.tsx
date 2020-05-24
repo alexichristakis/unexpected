@@ -94,19 +94,10 @@ const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
           showBackButtonText={!showTitle}
           // title={user.firstName}
           navigation={navigation}
-          // rightButton={<FriendButton showLabel={!showTitle} user={user} />}
+          rightButton={<FriendButton id={id} showLabel={!showTitle} />}
         />
         <Profile {...{ id }} />
       </View>
-      //   <NavBar
-      //     transitionRef={navBarTransitionRef}
-      //     backButtonText={route.params.prevRoute}
-      //     showTitle={showTitle}
-      //     showBackButtonText={!showTitle}
-      //     title={user.firstName}
-      //     navigation={navigation}
-      //     rightButton={<FriendButton showLabel={!showTitle} user={user} />}
-      //   />
     );
   }
 );

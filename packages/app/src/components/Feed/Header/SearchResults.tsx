@@ -1,19 +1,7 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Keyboard, StyleSheet, TextInput, View } from "react-native";
-import Animated, {
-  Easing,
-  interpolate,
-  useCode,
-} from "react-native-reanimated";
+import React, { useCallback } from "react";
+import { StyleSheet } from "react-native";
+import Animated from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
-import { State, TapGestureHandler } from "react-native-gesture-handler";
-import {
-  mix,
-  useGestureHandler,
-  useTransition,
-  useValue,
-} from "react-native-redash";
-import { useMemoOne } from "use-memo-one";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import * as selectors from "@redux/selectors";
@@ -21,6 +9,7 @@ import { RootState } from "@redux/types";
 import { UserRow } from "@components/universal";
 
 import { StackParamList } from "App";
+import { SB_HEIGHT } from "@lib";
 
 export interface SearchProps {
   navigation: StackNavigationProp<StackParamList>;
@@ -54,7 +43,12 @@ const Search: React.FC<SearchProps & SearchResultsConnectedProps> = ({
       style={{ ...styles.container, opacity: transition }}
     >
       {results.map((id) => (
-        <UserRow card key={id} onPress={handleOnPressUser} {...{ id }} />
+        <UserRow
+          style="card"
+          key={id}
+          onPress={handleOnPressUser}
+          {...{ id }}
+        />
       ))}
     </Animated.ScrollView>
   );
@@ -62,8 +56,11 @@ const Search: React.FC<SearchProps & SearchResultsConnectedProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 30,
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
+    paddingTop: SB_HEIGHT + 100,
+    marginHorizontal: 10,
+    // marginTop: 30,
+    // flex: 1,
   },
 });
 

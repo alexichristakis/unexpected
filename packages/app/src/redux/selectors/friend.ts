@@ -23,6 +23,11 @@ export const usersFriends = createSelector([f, userId], (friends, id) => {
   return friends[id] ?? [];
 });
 
+export const numFriends = createSelector(
+  [friends],
+  (friends) => friends.length
+);
+
 export const friendingState = createSelector(
   [idFromProps, userId, usersFriends, requests, requested],
   (id, userId, friends, requests, requested) => {

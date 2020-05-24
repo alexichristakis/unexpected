@@ -49,14 +49,6 @@ export default (
       return { ...state, loading: true, error: null };
     }
 
-    case ActionTypes.FETCH_USERS_REQUESTS: {
-      return {
-        ...state,
-        loadingRequests: true,
-        error: null,
-      };
-    }
-
     case ActionTypes.CREATE_USER_SUCCESS: {
       const { user } = action.payload;
 
@@ -78,6 +70,16 @@ export default (
         });
 
         draft.loading = false;
+      });
+    }
+
+    case ActionTypes.FETCH_USERS_REQUESTS_SUCCESS: {
+      const { requestedFriends, friendRequests } = action.payload;
+
+      return immer(state, (draft) => {
+        [...requestedFriends, ...friendRequests].forEach((user) => {
+          draft.users[user.id] = user;
+        });
       });
     }
 
