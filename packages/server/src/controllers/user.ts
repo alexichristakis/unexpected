@@ -53,6 +53,11 @@ export class UserController {
     return this.userService.getFriends(id);
   }
 
+  @Get("/friends/:id")
+  async getUserFriends(@PathParams("id") id: string) {
+    return this.userService.getFriends(id);
+  }
+
   @Get("/all")
   async getAll() {
     return this.userService.getAll();
@@ -85,10 +90,5 @@ export class UserController {
   @Get("/phone/:phoneNumber")
   async getUserByPhone(@PathParams("phoneNumber") phoneNumber: string) {
     return this.userService.getByPhone(phoneNumber);
-  }
-
-  @Get("/:id/friends")
-  async getUserFriends(@PathParams("id") id: string) {
-    return this.userService.getFriends(id);
   }
 }

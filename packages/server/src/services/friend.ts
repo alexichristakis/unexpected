@@ -12,6 +12,7 @@ import {
   User,
   UserModel,
   _idToId,
+  DefaultUserSchemaFields,
 } from "@global";
 import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
@@ -52,7 +53,7 @@ export class FriendService {
   }
 
   async delete(id: string) {
-    return this.model.deleteOne({ _id: id });
+    return this.model.deleteOne({ _id: id }).exec();
   }
 
   async getRequest(a: string, b: string) {
@@ -78,9 +79,15 @@ export class FriendService {
     } as FriendRequest_populated;
   }
 
-  async sendFriendRequest(from: string, to: string) {
-    const request = await (await this.model.create({ from, to }))
-      .populate("from to")
+  async sendFriendRequest(fromId: string, toId: string) {
+    const userSelect = [
+      ...DefaultUserSchemaFields,
+      "deviceOS",
+      "deviceToken",
+    ].join(" ");
+
+    const request = await new this.model({ from: fromId, to: toId })
+      .populate("from to", userSelect)
       .execPopulate();
 
     const fromUser = request.from as User;
@@ -92,7 +99,7 @@ export class FriendService {
       fromUser
     );
 
-    return request;
+    return request.save();
   }
 
   async acceptFriendRequest(request: FriendRequest_populated_id) {

@@ -88,7 +88,9 @@ export class FriendController {
     // delete request
     if (request) {
       await this.friendService.delete(request.id);
-      return { request: { from: request.from._id, to: request.to._id } };
+
+      console.log(request);
+      return { request: { from: request.from.id, to: request.to.id } };
     }
 
     // delete friendship
