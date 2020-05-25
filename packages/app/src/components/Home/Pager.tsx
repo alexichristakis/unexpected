@@ -54,6 +54,15 @@ export interface PagerProps {
   navigation: StackNavigationProp<StackParamList>;
 }
 
+export interface WithPagingSnapProps {
+  value: Animated.Adaptable<number>;
+  velocity: Animated.Adaptable<number>;
+  state: Animated.Node<State>;
+  snapPoints: Animated.Adaptable<number>[];
+  index: Animated.Value<number>;
+  offset?: Animated.Value<number>;
+}
+
 export const Pager: React.FC<PagerProps> = React.memo(
   ({ tab, open, navigation, offset, children }) => {
     const [velocity, translationX] = useValues(0, 0);
