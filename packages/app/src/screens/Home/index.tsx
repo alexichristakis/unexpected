@@ -16,7 +16,7 @@ import Feed from "@components/Feed";
 import Profile from "@components/Profile";
 import Settings from "@components/Settings";
 import { useDarkStatusBar } from "@hooks";
-import { Colors, SCREEN_WIDTH, SB_HEIGHT, ACTIVITY_HEIGHT } from "@lib";
+import { Colors, SB_HEIGHT, ACTIVITY_HEIGHT } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState as RootStateType } from "@redux/types";
 import { FriendActions } from "@redux/modules";

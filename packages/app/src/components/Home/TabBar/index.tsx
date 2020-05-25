@@ -30,8 +30,10 @@ import {
 
 import { StackParamList } from "../../../App";
 import TabBarIcon from "./Icon";
+import CameraButton from "./CameraButton";
+import ActivityButton from "./ActivityButton";
 
-const { set, divide, onChange, add, cond, eq } = Animated;
+const { set, not, divide, onChange, cond, eq } = Animated;
 
 export interface TabBarProps {
   navigation: NativeStackNavigationProp<StackParamList>;
@@ -105,7 +107,7 @@ export const TabBar: React.FC<TabBarProps> = ({
       <Animated.View
         style={[styles.container, { transform: [{ translateX }] }, style]}
       >
-        <Animated.View style={{ flexDirection: "row" }}>
+        <Animated.View style={styles.row}>
           <TabBarIcon
             index={0}
             name="Feed"
@@ -131,21 +133,9 @@ export const TabBar: React.FC<TabBarProps> = ({
             onPress={handleOnPressProfile}
           />
         </Animated.View>
-        <Animated.View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("CAPTURE")}
-            style={{ width: 50, height: 50, backgroundColor: "red" }}
-          />
-          <TapGestureHandler {...tapHandler}>
-            <Animated.View
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 15,
-                backgroundColor: "blue",
-              }}
-            />
-          </TapGestureHandler>
+        <Animated.View style={styles.row}>
+          <CameraButton onPress={() => navigation.navigate("CAPTURE")} />
+          <ActivityButton onPress={set(open, not(open))} />
         </Animated.View>
       </Animated.View>
     </PanGestureHandler>
@@ -164,13 +154,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: Colors.background,
   },
-  indicator: {
-    position: "absolute",
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: Colors.nearBlack,
-    left: 15,
-    top: 28,
+  row: {
+    flexDirection: "row",
   },
 });
