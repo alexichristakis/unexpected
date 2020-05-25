@@ -85,22 +85,10 @@ export const TabBar: React.FC<TabBarProps> = ({
     []
   );
 
-  const yOffsetBorderRadius = interpolate(yOffset, {
-    inputRange: [-50, 0],
-    outputRange: [20, 1],
-    extrapolate: Extrapolate.CLAMP,
-  });
-
   const translateX = interpolate(xOffset, {
     inputRange: [-SCREEN_WIDTH - 50, -SCREEN_WIDTH, 0],
     outputRange: [-50, 0, 0],
     extrapolateRight: Extrapolate.CLAMP,
-  });
-
-  const xOffsetBorderRadius = interpolate(translateX, {
-    inputRange: [-50, 0],
-    outputRange: [20, 0],
-    extrapolate: Extrapolate.CLAMP,
   });
 
   const handleOnPressFeed = () => onPress(0);
@@ -112,11 +100,6 @@ export const TabBar: React.FC<TabBarProps> = ({
         style={{
           ...styles.container,
           transform: [{ translateX }],
-          borderBottomLeftRadius: yOffsetBorderRadius,
-          borderBottomRightRadius: add(
-            yOffsetBorderRadius,
-            xOffsetBorderRadius
-          ),
         }}
       >
         <Animated.View style={{ flexDirection: "row" }}>
@@ -168,9 +151,9 @@ export const TabBar: React.FC<TabBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
     bottom: 0,
-    left: 0,
-    right: 0,
+    width: SCREEN_WIDTH,
     justifyContent: "space-between",
     paddingTop: 12,
     paddingHorizontal: 20,

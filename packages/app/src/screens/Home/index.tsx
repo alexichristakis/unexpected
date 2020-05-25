@@ -1,23 +1,23 @@
 import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, { eq } from "react-native-reanimated";
 import { useValues, useVector, useValue } from "react-native-redash";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { connect, ConnectedProps } from "react-redux";
 
 import Activity from "@components/Activity";
-import { Pager, TabBar } from "@components/Home";
+import { ReactiveOverlay, Pager, TabBar } from "@components/Home";
 
 import Feed from "@components/Feed";
 import Profile from "@components/Profile";
 import Settings from "@components/Settings";
 import { useDarkStatusBar } from "@hooks";
-import { Colors, SCREEN_WIDTH, SB_HEIGHT } from "@lib";
+import { Colors, SCREEN_WIDTH, SB_HEIGHT, ACTIVITY_HEIGHT } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState as RootStateType } from "@redux/types";
+import { FriendActions } from "@redux/modules";
 
 import { StackParamList } from "../../App";
-import { FriendActions } from "@redux/modules";
 
 const connector = connect(
   (state: RootStateType) => ({
@@ -60,20 +60,24 @@ const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({
       <Activity open={activityOpen} />
       <Animated.View style={[styles.pagerContainer, pagerContainer]}>
         <Settings offset={offset.x} {...{ navigation }} />
-        <Pager tab={activeTab} {...offset}>
+        <Pager
+          navigation={navigation}
+          open={activityOpen}
+          tab={activeTab}
+          offset={offset}
+        >
           <Feed {...{ navigation }} />
           <Profile
             id={userId}
             style={styles.profileContainer}
             onPressSettings={handleOnPressSettings}
           />
-          <View style={{ width: 100 }} />
         </Pager>
-        <TabBar
-          open={activityOpen}
-          onPress={handleOnPressTab}
-          {...offset}
-          {...{ navigation }}
+        <ReactiveOverlay
+          onPress={() => activityOpen.setValue(0)}
+          value={offset.y}
+          inputRange={[-ACTIVITY_HEIGHT, 0]}
+          active={activityOpen}
         />
       </Animated.View>
     </View>
