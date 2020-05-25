@@ -1,12 +1,16 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
-import Animated, { eq } from "react-native-reanimated";
-import { useValues, useVector, useValue } from "react-native-redash";
+import { StyleSheet, View, ViewStyle } from "react-native";
+import Animated, {
+  eq,
+  interpolate,
+  Extrapolate,
+} from "react-native-reanimated";
+import { useVector, useValue } from "react-native-redash";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { connect, ConnectedProps } from "react-redux";
 
 import Activity from "@components/Activity";
-import { ReactiveOverlay, Pager, TabBar } from "@components/Home";
+import { ReactiveOverlay, Pager } from "@components/Home";
 
 import Feed from "@components/Feed";
 import Profile from "@components/Profile";
@@ -51,10 +55,18 @@ const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({
     fetchFriends();
   }, []);
 
-  const handleOnPressTab = (index: 0 | 1) => activeTab.setValue(index);
+  const closeActivity = () => activityOpen.setValue(0);
   const handleOnPressSettings = () => activeTab.setValue(2);
 
-  const pagerContainer = { transform: [{ translateY: offset.y }] };
+  const pagerContainer: Animated.AnimateStyle<ViewStyle> = {
+    transform: [{ translateY: offset.y }],
+    borderRadius: interpolate(offset.y, {
+      inputRange: [-50, 0],
+      outputRange: [20, 1],
+      extrapolate: Extrapolate.CLAMP,
+    }),
+  };
+
   return (
     <View style={styles.container}>
       <Activity open={activityOpen} />
@@ -74,7 +86,7 @@ const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({
           />
         </Pager>
         <ReactiveOverlay
-          onPress={() => activityOpen.setValue(0)}
+          onPress={closeActivity}
           value={offset.y}
           inputRange={[-ACTIVITY_HEIGHT, 0]}
           active={activityOpen}
@@ -91,6 +103,7 @@ const styles = StyleSheet.create({
   },
   pagerContainer: {
     flex: 1,
+    overflow: "hidden",
   },
   profileContainer: {
     paddingTop: SB_HEIGHT,

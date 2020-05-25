@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import {
   PanGestureHandler,
   State,
@@ -10,7 +10,13 @@ import Animated, {
   interpolate,
   useCode,
 } from "react-native-reanimated";
-import { clamp, mix, useGestureHandler, useValues } from "react-native-redash";
+import {
+  clamp,
+  mix,
+  useGestureHandler,
+  useValues,
+  Vector,
+} from "react-native-redash";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
 import FeedIcon from "@assets/svg/feed.svg";
@@ -29,20 +35,20 @@ const { set, divide, onChange, add, cond, eq } = Animated;
 
 export interface TabBarProps {
   navigation: NativeStackNavigationProp<StackParamList>;
+  style?: Animated.AnimateStyle<ViewStyle>;
   open: Animated.Value<0 | 1>;
   onPress: (index: 0 | 1) => void;
-  y: Animated.Value<number>;
-  x: Animated.Value<number>;
+  offset: Vector<Animated.Value<number>>;
 }
 
 export const TabBar: React.FC<TabBarProps> = ({
   navigation,
   open,
   onPress,
-  x: xOffset,
-  y: yOffset,
+  style,
+  offset,
 }) => {
-  const val = divide(xOffset, -SCREEN_WIDTH);
+  const val = divide(offset.x, -SCREEN_WIDTH);
 
   const [state, tapState] = useValues(State.UNDETERMINED, State.UNDETERMINED);
   const [value, velocity] = useValues(0, 0);
@@ -66,7 +72,7 @@ export const TabBar: React.FC<TabBarProps> = ({
         ])
       ),
       set(
-        yOffset,
+        offset.y,
         clamp(
           withSpringImperative({
             state,
@@ -85,7 +91,7 @@ export const TabBar: React.FC<TabBarProps> = ({
     []
   );
 
-  const translateX = interpolate(xOffset, {
+  const translateX = interpolate(offset.x, {
     inputRange: [-SCREEN_WIDTH - 50, -SCREEN_WIDTH, 0],
     outputRange: [-50, 0, 0],
     extrapolateRight: Extrapolate.CLAMP,
@@ -97,10 +103,7 @@ export const TabBar: React.FC<TabBarProps> = ({
   return (
     <PanGestureHandler activeOffsetY={[-10, 10]} {...handler}>
       <Animated.View
-        style={{
-          ...styles.container,
-          transform: [{ translateX }],
-        }}
+        style={[styles.container, { transform: [{ translateX }] }, style]}
       >
         <Animated.View style={{ flexDirection: "row" }}>
           <TabBarIcon

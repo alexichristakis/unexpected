@@ -6,6 +6,7 @@ import Animated, {
   interpolate,
   useCode,
   sub,
+  debug,
 } from "react-native-reanimated";
 import {
   useGestureHandler,
@@ -74,12 +75,6 @@ export const Pager: React.FC<PagerProps> = React.memo(
       velocityX: velocity,
     });
 
-    const borderTopRightRadius = interpolate(offset.x, {
-      inputRange: [-SCREEN_WIDTH - 50, -SCREEN_WIDTH, 0],
-      outputRange: [20, 1, 1],
-      extrapolate: Extrapolate.CLAMP,
-    });
-
     useCode(
       () => [
         set(
@@ -109,48 +104,35 @@ export const Pager: React.FC<PagerProps> = React.memo(
       ],
     };
 
-    const yOffsetBorderRadius = interpolate(offset.y, {
-      inputRange: [-50, 0],
-      outputRange: [20, 1],
-      extrapolate: Extrapolate.CLAMP,
-    });
-
     const xOffsetBorderRadius = interpolate(offset.x, {
       inputRange: [-SCREEN_WIDTH - 50, -SCREEN_WIDTH],
-      outputRange: [20, 0],
+      outputRange: [20, 1],
       extrapolate: Extrapolate.CLAMP,
     });
 
     return (
       <PanGestureHandler activeOffsetX={[-10, 10]} {...handler}>
-        <Animated.View
-          style={[
-            StyleSheet.absoluteFill,
-            {
-              overflow: "hidden",
-              borderTopRightRadius,
-              borderBottomLeftRadius: yOffsetBorderRadius,
-              borderBottomRightRadius: add(
-                yOffsetBorderRadius,
-                xOffsetBorderRadius
-              ),
-            },
-          ]}
-        >
+        <Animated.View style={StyleSheet.absoluteFill}>
           <Animated.View
             style={[
               styles.container,
-              { transform: [{ translateX: offset.x }] },
+              {
+                transform: [{ translateX: offset.x }],
+                borderTopRightRadius: xOffsetBorderRadius,
+                borderBottomRightRadius: xOffsetBorderRadius,
+              },
             ]}
           >
             {children}
           </Animated.View>
+
           <TabBar
             open={open}
             onPress={handleOnPressTab}
-            {...offset}
-            {...{ navigation }}
+            style={{ borderBottomRightRadius: xOffsetBorderRadius }}
+            {...{ navigation, offset }}
           />
+
           <ReactiveOverlay
             onPress={() => handleOnPressTab(1)}
             style={reactiveOverlayStyle}
@@ -168,6 +150,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
+    overflow: "hidden",
     width: 2 * SCREEN_WIDTH,
   },
 });
