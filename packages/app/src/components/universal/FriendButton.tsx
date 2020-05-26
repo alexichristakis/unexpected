@@ -95,7 +95,10 @@ const FriendButton: React.FC<
           );
 
         return (
-          <TouchableOpacity style={styles.button} onPress={action}>
+          <TouchableOpacity
+            style={{ ...styles.button, borderWidth: 1 }}
+            onPress={action}
+          >
             <Text style={styles.buttonText}>friends</Text>
           </TouchableOpacity>
         );

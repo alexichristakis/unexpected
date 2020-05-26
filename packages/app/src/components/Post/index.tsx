@@ -22,6 +22,7 @@ import { StackParamList } from "../../App";
 import Comments from "./Comments";
 import CommentsButton from "./CommentsButton";
 import Image from "./Image";
+import { UserImage } from "@components/universal";
 
 const { cond, call, onChange, set } = Animated;
 
@@ -56,7 +57,6 @@ export const POST_HEIGHT = Math.round(0.65 * SCREEN_HEIGHT);
 const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
   ({
     id,
-    numComments,
     light,
     post: { userId, user, description, createdAt },
     inViewbox = new Value(1),
@@ -120,25 +120,15 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
           </Image>
           <Animated.View style={{ ...styles.footer, ...animate.footer }}>
             <View style={styles.row}>
-              <View style={styles.profile} />
+              <UserImage id={userId} size={40} style={styles.profile} />
               <View>
                 <Text
                   onPress={handleOnPressName}
-                  style={{
-                    ...TextStyles.large,
-                    textAlignVertical: "center",
-                    color,
-                  }}
+                  style={[styles.name, { color }]}
                 >
                   {formatName(user)}
                 </Text>
-                <Text
-                  style={{
-                    ...TextStyles.small,
-                    textAlignVertical: "center",
-                    color,
-                  }}
-                >
+                <Text style={[styles.createdAt, { color }]}>
                   {moment(createdAt).fromNow()}
                 </Text>
               </View>
@@ -170,6 +160,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  name: {
+    ...TextStyles.large,
+    textAlignVertical: "center",
+  },
+  createdAt: {
+    ...TextStyles.small,
+    textAlignVertical: "center",
+  },
   footer: {
     flexDirection: "row",
     alignItems: "center",
@@ -185,8 +183,6 @@ const styles = StyleSheet.create({
     backgroundColor: "lightpink",
   },
   profile: {
-    width: 40,
-    height: 40,
     borderRadius: 5,
     marginRight: 10,
     backgroundColor: "lightblue",

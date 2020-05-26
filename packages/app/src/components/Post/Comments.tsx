@@ -43,8 +43,6 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {});
-
   useCode(
     () => [
       onChange(
