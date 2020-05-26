@@ -274,7 +274,7 @@ PODS:
     - React
   - react-native-notifications (3.2.2):
     - React
-  - react-native-safe-area-context (2.0.0):
+  - react-native-safe-area-context (2.0.1):
     - React
   - React-RCTActionSheet (0.62.2):
     - React-Core/RCTActionSheetHeaders (= 0.62.2)
@@ -335,7 +335,7 @@ PODS:
     - React-cxxreact (= 0.62.2)
     - React-jsi (= 0.62.2)
     - ReactCommon/callinvoker (= 0.62.2)
-  - RNCAsyncStorage (1.10.3):
+  - RNCAsyncStorage (1.11.0):
     - React
   - RNCMaskedView (0.1.10):
     - React
@@ -592,7 +592,7 @@ SPEC CHECKSUMS:
   react-native-image-resizer: e794dc2dbd0db0a1062ac5fa425d5df04c1970ca
   react-native-netinfo: 4284e9f4ade9fc498f313b2e9e3f7fd4fa6e3082
   react-native-notifications: 3d1c66c8a3eb1857577f283f9f6e9aa505f16346
-  react-native-safe-area-context: 60f654e00b6cc416573f6d5dbfce3839958eb57a
+  react-native-safe-area-context: 41039849ff9cfe4b8ee4fb90bfecbc621703fb22
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
   React-RCTAnimation: 49ab98b1c1ff4445148b72a3d61554138565bad0
   React-RCTBlob: a332773f0ebc413a0ce85942a55b064471587a71
@@ -603,7 +603,7 @@ SPEC CHECKSUMS:
   React-RCTText: fae545b10cfdb3d247c36c56f61a94cfd6dba41d
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
-  RNCAsyncStorage: cd7234ff15c010723ed7c499ae4eedc605eac1fd
+  RNCAsyncStorage: d059c3ee71738c39834a627476322a5a8cd5bf36
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNFastImage: 35ae972d6727c84ee3f5c6897e07f84d0a3445e9
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df

@@ -1,38 +1,15 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
-import {
-  PanGestureHandler,
-  State,
-  TapGestureHandler,
-} from "react-native-gesture-handler";
-import Animated, {
-  Extrapolate,
-  interpolate,
-  useCode,
-} from "react-native-reanimated";
-import {
-  clamp,
-  mix,
-  useGestureHandler,
-  useValues,
-  Vector,
-  useValue,
-} from "react-native-redash";
+import { StyleSheet } from "react-native";
+import { State, TapGestureHandler } from "react-native-gesture-handler";
+import Animated, { useCode } from "react-native-reanimated";
+import { useGestureHandler, useValue } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
-import FeedIcon from "@assets/svg/feed.svg";
-import ProfileIcon from "@assets/svg/profile.svg";
 import { RootState } from "@redux/types";
-import {
-  ACTIVITY_HEIGHT,
-  Colors,
-  SCREEN_WIDTH,
-  withSpringImperative,
-} from "@lib";
+import { Colors, SCREEN_WIDTH } from "@lib";
 import CameraIcon from "@assets/svg/camera_button.svg";
 
-const { set, divide, call, onChange, cond, eq } = Animated;
+const { call, onChange, cond, eq } = Animated;
 
 export interface CameraButtonProps {
   onPress: () => void;

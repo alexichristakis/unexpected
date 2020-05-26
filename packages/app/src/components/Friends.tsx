@@ -1,10 +1,10 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import React, { useCallback, useContext } from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
-import Animated, { interpolate, useCode } from "react-native-reanimated";
+import Animated, { interpolate } from "react-native-reanimated";
 import { usePanGestureHandler } from "react-native-redash";
-import { connect, ConnectedProps, useSelector } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 import { Colors, SCREEN_WIDTH, SPRING_CONFIG, TextStyles } from "@lib";
 import { RouteProp } from "@react-navigation/core";
@@ -138,7 +138,6 @@ const Friends: React.FC<FriendsProps & FriendsConnectedProps> = ({
       <PanGestureHandler {...gestureHandler}>
         <Animated.View
           style={[
-            // @ts-ignore
             {
               transform: [
                 { translateX },

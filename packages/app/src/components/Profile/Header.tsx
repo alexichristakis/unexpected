@@ -25,7 +25,6 @@ export type HeaderConnectedProps = ConnectedProps<typeof connector>;
 
 export interface HeaderProps {
   id: string;
-  offset: Animated.Value<number>;
 }
 
 export const Header: React.FC<HeaderProps & HeaderConnectedProps> = ({

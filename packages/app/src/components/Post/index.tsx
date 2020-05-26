@@ -28,7 +28,6 @@ const { cond, call, onChange, set } = Animated;
 const connector = connect(
   (state: RootState, props: PostProps) => ({
     post: selectors.populatedPost(state, props),
-    numComments: selectors.numComments(state, props),
   }),
   {}
 );
@@ -144,7 +143,7 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
                 </Text>
               </View>
             </View>
-            <CommentsButton {...{ open, numComments }} />
+            <CommentsButton {...{ open, id }} />
           </Animated.View>
         </Animated.View>
       );
@@ -152,7 +151,7 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
 
     return <View style={styles.container} />;
   },
-  (p, n) => p.id === n.id && p.numComments === n.numComments
+  (p, n) => p.id === n.id
 );
 
 const styles = StyleSheet.create({

@@ -40,7 +40,11 @@ const UserRow: React.FC<UserRowProps & UserRowConnectedProps> = ({
   const navigation = useNavigation<StackNavigationProp<StackParamList>>();
 
   const handleOnPress = () => {
-    navigation.navigate("PROFILE", { id });
+    if (onPress) {
+      onPress(id);
+    } else {
+      navigation.navigate("PROFILE", { id });
+    }
   };
 
   const additionalStyle = style === "card" ? styles.card : {};

@@ -88,8 +88,11 @@ const profileCardStyleInterpolator: StackCardStyleInterpolator = ({
   current,
 }) => {
   return {
-    // shadowStyle: {},
-    // overlayStyle: {},
+    overlayStyle: {
+      ...StyleSheet.absoluteFillObject,
+      opacity: current.progress,
+      backgroundColor: Colors.transGray,
+    },
     containerStyle: {
       opacity: next
         ? next.progress.interpolate({
@@ -165,6 +168,7 @@ const transitionSpec: TransitionSpec = {
 
 const screenOptions = {
   headerShown: false,
+  cardOverlayEnabled: true,
   transitionSpec: {
     open: transitionSpec,
     close: transitionSpec,
@@ -196,10 +200,6 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
                   <Stack.Screen
                     name="FRIENDS"
                     options={{
-                      cardOverlayEnabled: true,
-
-                      // @ts-ignore
-                      cardOverlay: (props) => <Animated.View {...props} />,
                       cardStyleInterpolator: friendsCardStyleInterpolator,
                       cardStyle: { backgroundColor: "transparent" },
                     }}

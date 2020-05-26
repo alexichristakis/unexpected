@@ -3,7 +3,7 @@ import { MongooseModel } from "@tsed/mongoose";
 
 import remove from "lodash/remove";
 
-import { Comment, CommentModel, NewComment } from "@global";
+import { CommentModel, Comment, NewComment } from "@global";
 import { NotificationService } from "./notification";
 import { UserService } from "./user";
 
@@ -18,7 +18,7 @@ export class CommentService {
   @Inject(NotificationService)
   private notificationService: NotificationService;
 
-  async createNewComment(comment: NewComment) {
+  async create(comment: Pick<Comment, "user" | "post" | "body">) {
     return this.model.create(comment);
   }
 

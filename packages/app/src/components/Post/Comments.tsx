@@ -9,31 +9,18 @@ import { RootState } from "@redux/types";
 
 import Comment from "./Comment";
 import Composer from "./Composer";
+import { CommentActions } from "@redux/modules";
 
-const { onChange, cond, call } = Animated;
-
-const comments: CommentType[] = [
-  {
-    id: "0",
-    user: "5df4235c379aefb72228de51",
-    body: "this is a comment",
-    post: "post",
-  },
-  {
-    id: "5",
-    user: "5df4235c379aefb72228de51",
-    body:
-      "this is a commentthis is a commentthis is a commentthis is a commentthis is a commentthis is a commentlong long comment",
-    post: "post",
-  },
-];
+const { onChange, call } = Animated;
 
 const connector = connect(
   (state: RootState, props: CommentsProps) => ({
     loading: selectors.sendingComment(state),
     comments: selectors.commentsForPost(state, props),
   }),
-  {}
+  {
+    sendComment: CommentActions.sendComment,
+  }
 );
 
 export type CommentsConnectedProps = ConnectedProps<typeof connector>;
@@ -50,7 +37,9 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
   translateX,
   navigateToProfile,
   focused = new Value(1),
-  // comments,
+  comments,
+  sendComment,
+  postId,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -66,9 +55,8 @@ const Comments: React.FC<CommentsProps & CommentsConnectedProps> = ({
     []
   );
 
-  const handleOnComment = (comment: string) => {
-    console.log(comment);
-  };
+  const handleOnComment = (comment: string) =>
+    sendComment({ body: comment, post: postId });
 
   if (isVisible)
     return (

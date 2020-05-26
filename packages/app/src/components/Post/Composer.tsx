@@ -1,21 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Keyboard,
-  KeyboardAvoidingView,
-  KeyboardEvent,
   StyleProp,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   ViewStyle,
 } from "react-native";
-import Animated, {
-  Clock,
-  Extrapolate,
-  interpolate,
-  sub,
-} from "react-native-reanimated";
+import Animated, { Clock, sub } from "react-native-reanimated";
 import { mix, spring, useValues, withTransition } from "react-native-redash";
 
 import { KeyboardStateContext } from "@hooks";

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Animated, { interpolate, useCode } from "react-native-reanimated";
+import Animated, { Easing, useCode } from "react-native-reanimated";
 
 import { Colors, TextStyles } from "@lib";
 
@@ -9,18 +9,32 @@ import {
   mix,
   useGestureHandler,
   useValue,
-  useValues,
   withTransition,
 } from "react-native-redash";
+import { connect, ConnectedProps } from "react-redux";
+
+import * as selectors from "@redux/selectors";
+import { RootState } from "@redux/types";
 
 const { cond, onChange, set, eq } = Animated;
 
+const connector = connect(
+  (state: RootState, props: CommentsButtonProps) => ({
+    numComments: selectors.numComments(state, props),
+  }),
+  {}
+);
+
 export interface CommentsButtonProps {
-  numComments: number;
+  id: string;
   open: Animated.Value<0 | 1>;
 }
 
-const CommentsButton: React.FC<CommentsButtonProps> = React.memo(
+export type CommentsButtonConnectedProps = ConnectedProps<typeof connector>;
+
+const CommentsButton: React.FC<
+  CommentsButtonProps & CommentsButtonConnectedProps
+> = React.memo(
   ({ open, numComments }) => {
     const state = useValue(State.UNDETERMINED);
 
@@ -39,10 +53,19 @@ const CommentsButton: React.FC<CommentsButtonProps> = React.memo(
     );
 
     const transition = withTransition(open);
+    const pressInTransition = withTransition(eq(state, State.BEGAN), {
+      easing: Easing.ease,
+      duration: 200,
+    });
 
     return (
       <TapGestureHandler {...handler}>
-        <Animated.View style={styles.commentIndicator}>
+        <Animated.View
+          style={[
+            styles.container,
+            { transform: [{ scale: mix(pressInTransition, 1, 1.5) }] },
+          ]}
+        >
           <Animated.Text
             style={{
               position: "absolute",
@@ -69,7 +92,7 @@ const CommentsButton: React.FC<CommentsButtonProps> = React.memo(
 );
 
 const styles = StyleSheet.create({
-  commentIndicator: {
+  container: {
     width: 30,
     height: 30,
     borderRadius: 15,
@@ -79,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommentsButton;
+export default connector(CommentsButton);

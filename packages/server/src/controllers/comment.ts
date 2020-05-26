@@ -8,6 +8,7 @@ import {
   PathParams,
   Put,
   UseAuth,
+  Context,
 } from "@tsed/common";
 import filter from "lodash/filter";
 import remove from "lodash/remove";
@@ -37,8 +38,13 @@ export class CommentController {
   private notificationService: NotificationService;
 
   @Put()
-  async comment(@BodyParams("comment") comment: NewComment) {
-    const { user: uid, post: postId } = comment;
+  async comment(
+    @BodyParams("comment") comment: NewComment,
+    @Context("auth") id: string
+  ) {
+    const { body, post } = comment;
+
+    return this.commentService.create({ user: id, body, post });
 
     // const [fromUser, comments, post] = await Promise.all([
     //   this.userService.get(uid.toString()),

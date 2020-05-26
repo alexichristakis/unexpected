@@ -1,52 +1,26 @@
 import React from "react";
-import { StyleSheet, ViewStyle } from "react-native";
+import { StyleSheet } from "react-native";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import Animated, {
   Extrapolate,
   interpolate,
   useCode,
-  sub,
-  debug,
 } from "react-native-reanimated";
 import {
   useGestureHandler,
   useValue,
   useValues,
-  contains,
-  get,
-  min,
-  clamp,
   Vector,
 } from "react-native-redash";
 
-import { Colors, SCREEN_HEIGHT, SCREEN_WIDTH, withPagingSnap } from "@lib";
+import { SCREEN_WIDTH, withPagingSnap } from "@lib";
 
 import { TabBar } from "./TabBar";
 import { ReactiveOverlay } from "./ReactiveOverlay";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamList } from "App";
 
-const {
-  set,
-  Value,
-  Clock,
-  eq,
-  abs,
-  and,
-  max: bMax,
-  min: bMin,
-  cond,
-  clockRunning,
-  not,
-  neq,
-  multiply,
-  or,
-  startClock,
-  stopClock,
-  block,
-  add,
-  spring,
-} = Animated;
+const { set, eq } = Animated;
 
 export interface PagerProps {
   tab: Animated.Value<number>;
