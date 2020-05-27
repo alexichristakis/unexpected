@@ -86,7 +86,10 @@ export const Pager: React.FC<PagerProps> = React.memo(
 
     return (
       <PanGestureHandler activeOffsetX={[-10, 10]} {...handler}>
-        <Animated.View style={StyleSheet.absoluteFill}>
+        <Animated.View
+          pointerEvents={"box-none"}
+          style={[StyleSheet.absoluteFill]}
+        >
           <Animated.View
             style={[
               styles.container,

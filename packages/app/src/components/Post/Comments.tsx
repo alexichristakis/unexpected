@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import Animated, { useCode, Value } from "react-native-reanimated";
 import { connect, ConnectedProps } from "react-redux";
 
 import { Colors, SCREEN_WIDTH } from "@lib";
-import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
+import { CommentActions, selectors, RootState } from "@redux";
 
 import Comment from "./Comment";
 import Composer from "./Composer";
-import { CommentActions } from "@redux/modules";
 
 const { onChange, call } = Animated;
 

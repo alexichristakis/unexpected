@@ -10,7 +10,7 @@ import {
   TextInputSubmitEditingEventData,
   View,
 } from "react-native";
-
+import { Formik } from "formik";
 import { RouteProp } from "@react-navigation/core";
 import _ from "lodash";
 import { Screen } from "react-native-screens";
@@ -20,10 +20,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { Button, Input } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
 import { isIPhoneX, TextStyles } from "@lib";
-import { Actions as UserActions } from "@redux/modules/user";
-import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
-import { Formik } from "formik";
+import { RootState, selectors, UserActions } from "@redux";
 import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState, props: EditProfileProps) => ({
@@ -66,9 +63,8 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
   };
 
   const initialFormValues = { firstName, lastName, bio };
-
   return (
-    <Screen stackPresentation={"modal"} style={styles.container}>
+    <View style={styles.container}>
       <Formik initialValues={initialFormValues} onSubmit={handleOnPressSubmit}>
         {({ values, handleChange, handleSubmit }) => (
           <>
@@ -118,7 +114,7 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
           </>
         )}
       </Formik>
-    </Screen>
+    </View>
   );
 };
 

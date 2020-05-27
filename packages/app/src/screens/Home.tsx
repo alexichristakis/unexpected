@@ -21,7 +21,7 @@ import * as selectors from "@redux/selectors";
 import { RootState as RootStateType } from "@redux/types";
 import { FriendActions } from "@redux/modules";
 
-import { StackParamList } from "../../App";
+import { StackParamList } from "../App";
 
 const connector = connect(
   (state: RootStateType) => ({

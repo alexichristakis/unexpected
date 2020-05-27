@@ -12,11 +12,8 @@ import { connect, ConnectedProps } from "react-redux";
 
 import { UserImage } from "@components/universal";
 import { Comment as CommentType } from "@global";
-import { Colors, TextStyles } from "@lib";
-import { formatName } from "@lib";
-import { PostActions } from "@redux/modules";
-import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
+import { Colors, formatName, TextStyles } from "@lib";
+import { selectors, RootState, CommentActions } from "@redux";
 
 import { ParamList } from "../../App";
 
@@ -33,7 +30,7 @@ const mapStateToProps = (state: RootState, props: CommentProps) => ({
 });
 
 const mapDispatchToProps = {
-  likeComment: PostActions.likeComment,
+  likeComment: CommentActions.likeComment,
 };
 
 interface CommentProps extends CommentType {

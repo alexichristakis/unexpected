@@ -270,11 +270,11 @@ PODS:
     - React
   - react-native-image-resizer (1.2.2):
     - React
-  - react-native-netinfo (5.9.1):
+  - react-native-netinfo (5.9.2):
     - React
   - react-native-notifications (3.2.2):
     - React
-  - react-native-safe-area-context (2.0.1):
+  - react-native-safe-area-context (2.0.3):
     - React
   - React-RCTActionSheet (0.62.2):
     - React-Core/RCTActionSheetHeaders (= 0.62.2)
@@ -590,9 +590,9 @@ SPEC CHECKSUMS:
   react-native-camera: 2b74be8edc1103c4c46d1f4e5f41723d9ff052cc
   react-native-contacts: 439dd9c7ea7e0d86190f8370898b82cfb7cf4ef4
   react-native-image-resizer: e794dc2dbd0db0a1062ac5fa425d5df04c1970ca
-  react-native-netinfo: 4284e9f4ade9fc498f313b2e9e3f7fd4fa6e3082
+  react-native-netinfo: cb74e17062b2af5a16a4b137f32495f241df1a8e
   react-native-notifications: 3d1c66c8a3eb1857577f283f9f6e9aa505f16346
-  react-native-safe-area-context: 41039849ff9cfe4b8ee4fb90bfecbc621703fb22
+  react-native-safe-area-context: 14c793e8b0bfe51e74dcdbe75dd14ee7498b88b8
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
   React-RCTAnimation: 49ab98b1c1ff4445148b72a3d61554138565bad0
   React-RCTBlob: a332773f0ebc413a0ce85942a55b064471587a71

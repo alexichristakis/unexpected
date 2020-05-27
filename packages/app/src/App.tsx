@@ -41,8 +41,7 @@ import {
   Auth,
   Capture,
   Home,
-  NewProfilePicture,
-  Permissions,
+  EditProfile,
   Profile,
   Share,
   SignUp,
@@ -182,9 +181,11 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
   useNotificationEvents(navigation);
 
   return (
-    <NativeStack.Navigator screenOptions={{ headerShown: false }}>
+    <NativeStack.Navigator
+      screenOptions={{ stackPresentation: "modal", headerShown: false }}
+    >
       <NativeStack.Screen name="HOME">
-        {() => (
+        {(props) => (
           <FriendsProvider>
             <FocusedPostProvider>
               <KeyboardStateProvider>
@@ -213,11 +214,8 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
           </FriendsProvider>
         )}
       </NativeStack.Screen>
-
-      <NativeStack.Screen
-        name="CAPTURE"
-        options={{ stackPresentation: "modal" }}
-      >
+      <NativeStack.Screen name="EDIT_PROFILE" component={EditProfile} />
+      <NativeStack.Screen name="CAPTURE">
         {() => (
           <NativeStack.Navigator screenOptions={{ headerShown: false }}>
             <NativeStack.Screen name="CAPTURE" component={Capture} />
