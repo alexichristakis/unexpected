@@ -4,44 +4,29 @@ import Animated, {
   Extrapolate,
   interpolate,
   proc,
-  Value,
 } from "react-native-reanimated";
-import { bin, mix, translate } from "react-native-redash";
+import { connect, ConnectedProps } from "react-redux";
+import { mix, translate } from "react-native-redash";
 import { useMemoOne } from "use-memo-one";
 
 import Post, { AnimateProp } from "@components/Post";
 import { FocusedPostContext } from "@hooks";
 import { Colors, SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib";
+import { RootState, PostActions } from "@redux";
 
-const {
-  onChange,
-  cond,
-  abs,
-  modulo,
-  divide,
-  round,
-  multiply,
-  set,
-  or,
-  and,
-  clockRunning,
-  not,
-  neq,
-  call,
-  block,
-  startClock,
-  stopClock,
-  spring,
-  sub,
-  add,
-  eq,
-  lessThan,
-  greaterThan,
-} = Animated;
+const { cond, or, and, not, neq, sub, add, eq } = Animated;
+
+const connector = connect((state: RootState) => ({}), {
+  fetchPost: PostActions.fetchPost,
+});
 
 export interface FocusedPostProps {}
 
-const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
+export type FocusedPostConnectedProps = ConnectedProps<typeof connector>;
+
+const FocusedPost: React.FC<
+  FocusedPostProps & FocusedPostConnectedProps
+> = React.memo(({ fetchPost }) => {
   const {
     id,
     close,
@@ -54,7 +39,9 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
   } = useContext(FocusedPostContext);
 
   // fetch new post data on each load
-  // useEffect(() => [fetchPost(id)], [id]);
+  useEffect(() => {
+    fetchPost(id);
+  }, [id]);
 
   const animate: AnimateProp = useMemoOne(() => {
     const opacity = interpolate(transition, {
@@ -134,30 +121,33 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
     transition
   );
 
-  return useMemo(() => {
-    // const focused = new Value(bin(isOpen));
-    return (
+  return useMemo(
+    () => (
       <>
         <Animated.View
           onTouchEnd={close}
           pointerEvents={isOpen ? "auto" : "none"}
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            backgroundColor: Colors.transGray,
-            opacity: overlayOpacity,
-          }}
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              backgroundColor: Colors.transGray,
+              opacity: overlayOpacity,
+            },
+          ]}
         />
 
         <Animated.View
-          style={{
-            ...styles.container,
-            transform: [{ scale }],
-            opacity: postOpacity,
-          }}
+          style={[
+            styles.container,
+            {
+              transform: [{ scale }],
+              opacity: postOpacity,
+            },
+          ]}
           pointerEvents={isOpen ? "box-none" : "none"}
         >
           <Post
-            light={true}
+            light
             focused={cond(isOpenValue, eq(transition, 1), neq(transition, 0))}
             dragStarted={or(
               and(runUnmount, eq(transition, 0)),
@@ -168,8 +158,9 @@ const FocusedPost: React.FC<FocusedPostProps> = React.memo(({}) => {
           />
         </Animated.View>
       </>
-    );
-  }, [id, isOpen]);
+    ),
+    [id, isOpen]
+  );
 });
 
 const styles = StyleSheet.create({
@@ -180,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FocusedPost;
+export default connector(FocusedPost);

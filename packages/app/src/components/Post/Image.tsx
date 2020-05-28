@@ -1,19 +1,5 @@
-import random from "lodash/random";
-import React, {
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  ImageStyle,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  ViewStyle,
-} from "react-native";
+import React from "react";
+import { ImageStyle, StyleSheet, ViewStyle } from "react-native";
 import FastImage from "react-native-fast-image";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import Animated, { interpolate } from "react-native-reanimated";
@@ -21,37 +7,11 @@ import { useGestureHandler, useValues } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 import { useMemoOne } from "use-memo-one";
 
-import { SCREEN_HEIGHT, SCREEN_WIDTH, SPRING_CONFIG } from "@lib";
-import { withSpringImperative } from "@lib";
-import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
-
-import Comments from "./Comments";
+import { ZoomHandler } from "@components/universal";
+import { SCREEN_WIDTH, withSpringImperative } from "@lib";
+import { RootState, selectors } from "@redux";
 
 const AnimatedImage = Animated.createAnimatedComponent(FastImage);
-
-const {
-  cond,
-  or,
-  set,
-  and,
-  clockRunning,
-  not,
-  multiply,
-  spring,
-  neq,
-  call,
-  block,
-  startClock,
-  stopClock,
-  sub,
-  add,
-  eq,
-  greaterThan,
-} = Animated;
-
-const randomColor = () =>
-  `rgba(${random(255)}, ${random(255)}, ${random(255)}, 1)`;
 
 const connector = connect(
   (state: RootState, props: ImageProps) => ({
@@ -103,21 +63,21 @@ const Image: React.FC<ImageProps & PostImageConnectedProps> = React.memo(
       outputRange: [0.9, 1],
     });
 
-    console.log(src);
-
     return (
       <PanGestureHandler {...handler} activeOffsetX={[-10, 10]}>
-        <Animated.View style={{ ...styles.container, ...containerStyle }}>
-          <AnimatedImage
-            source={src}
-            style={[
-              styles.image,
-              {
-                ...style,
-                transform: [{ scale }, ...(style?.transform ?? [])],
-              },
-            ]}
-          />
+        <Animated.View style={[styles.container, containerStyle]}>
+          <ZoomHandler>
+            <AnimatedImage
+              source={src}
+              style={[
+                styles.image,
+                style,
+                {
+                  transform: [{ scale }, ...(style?.transform ?? [])],
+                },
+              ]}
+            />
+          </ZoomHandler>
           {children({ translateX })}
         </Animated.View>
       </PanGestureHandler>
@@ -133,11 +93,8 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignSelf: "center",
-    // backgroundColor: "red",
-    // justifyContent: "center",
   },
   image: {
-    // backgroundColor: randomColor(),
     backgroundColor: "white",
     position: "absolute",
     left: 0,
@@ -145,7 +102,6 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     borderRadius: 20,
-    // height: 450,
   },
 });
 

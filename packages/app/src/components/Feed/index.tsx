@@ -18,6 +18,7 @@ import { PostActions, RootState, selectors } from "@redux";
 
 import { StackParamList } from "App";
 import Header from "./Header";
+import ZoomHandler from "@components/universal/ZoomHandler";
 
 const {
   onChange,

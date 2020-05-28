@@ -4,16 +4,15 @@ import { StackParamList } from "App";
 import { View, StyleSheet, Text, TouchableHighlight } from "react-native";
 import { SB_HEIGHT, Colors, TextStyles, SCREEN_WIDTH } from "@lib";
 import Animated, { interpolate, Extrapolate } from "react-native-reanimated";
-import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
 export interface SettingsProps {
   offset: Animated.Adaptable<number>;
-  navigation: NativeStackNavigationProp<StackParamList>;
+  navigation: StackNavigationProp<StackParamList>;
 }
 
 export interface SettingButtonProps {
   title: string;
-  navigation: NativeStackNavigationProp<StackParamList>;
+  navigation: StackNavigationProp<StackParamList>;
   route: keyof StackParamList;
 }
 

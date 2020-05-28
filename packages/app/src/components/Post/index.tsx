@@ -7,7 +7,7 @@ import Animated, { interpolate, useCode, Value } from "react-native-reanimated";
 import { useValue } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
-import { UserImage } from "@components/universal";
+import { UserImage, ZoomHandler } from "@components/universal";
 import { FocusedPostContext } from "@hooks";
 import {
   Colors,
