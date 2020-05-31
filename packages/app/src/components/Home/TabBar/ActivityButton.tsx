@@ -15,7 +15,7 @@ import { useGestureHandler, useValue } from "react-native-redash";
 import { Colors, SCREEN_WIDTH, TextStyles } from "@lib";
 
 import { connect, ConnectedProps } from "react-redux";
-import { RootState } from "@redux/types";
+import { RootState, selectors } from "@redux";
 
 const { onChange, cond, eq } = Animated;
 
@@ -25,14 +25,14 @@ export interface ActivityButtonProps {
 
 const connector = connect(
   (state: RootState) => ({
-    //
+    numRequests: selectors.numRequests(state),
   }),
   {}
 );
 
 const ActivityButton: React.FC<
   ActivityButtonProps & ConnectedProps<typeof connector>
-> = ({ onPress }) => {
+> = ({ numRequests, onPress }) => {
   const state = useValue(State.UNDETERMINED);
 
   const tapHandler = useGestureHandler({
@@ -44,7 +44,7 @@ const ActivityButton: React.FC<
   return (
     <TapGestureHandler {...tapHandler}>
       <Animated.View style={styles.container}>
-        <Text style={styles.text}>5</Text>
+        <Text style={styles.text}>{numRequests}</Text>
       </Animated.View>
     </TapGestureHandler>
   );
@@ -52,13 +52,12 @@ const ActivityButton: React.FC<
 
 const styles = StyleSheet.create({
   container: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     marginLeft: 10,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-
     backgroundColor: Colors.purple,
   },
   text: {

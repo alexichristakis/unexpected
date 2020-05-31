@@ -6,13 +6,18 @@ import Animated, { interpolate } from "react-native-reanimated";
 import { usePanGestureHandler } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
-import { Colors, SCREEN_WIDTH, SPRING_CONFIG, TextStyles } from "@lib";
+import {
+  Colors,
+  POST_HEIGHT,
+  SCREEN_WIDTH,
+  SPRING_CONFIG,
+  TextStyles,
+} from "@lib";
 import { RouteProp } from "@react-navigation/core";
 import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 import { StackParamList } from "App";
 import { useMemoOne } from "use-memo-one";
-import { POST_HEIGHT } from "./Post";
 import { UserRow } from "./universal";
 
 const {

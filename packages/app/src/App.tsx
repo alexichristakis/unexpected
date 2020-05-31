@@ -235,6 +235,11 @@ const Router: React.FC = () => {
     <NavigationContainer ref={setNavigatorRef}>
       <NativeStack.Navigator screenOptions={{ stackAnimation: "fade" }}>
         {isAuthorized && !isNewAccount ? (
+          // <NativeStack.Screen
+          //   // options={{ headerShown: false }}
+          //   name="AUTHENTICATED"
+          //   component={EditProfile}
+          // />
           <NativeStack.Screen
             name="AUTHENTICATED"
             options={{ headerShown: false }}
@@ -242,6 +247,12 @@ const Router: React.FC = () => {
             {(props) => <AuthenticatedRoot {...props} />}
           </NativeStack.Screen>
         ) : (
+          // <NativeStack.Screen
+          //   name="AUTHENTICATED"
+          //   options={{ headerShown: false }}
+          // >
+          //   {(props) => <AuthenticatedRoot {...props} />}
+          // </NativeStack.Screen>
           <NativeStack.Screen
             name="UNAUTHENTICATED"
             options={{ headerShown: false }}

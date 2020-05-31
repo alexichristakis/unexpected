@@ -16,7 +16,7 @@ import { RootState, PostActions } from "@redux";
 
 const { cond, or, and, not, neq, sub, add, eq } = Animated;
 
-const connector = connect((state: RootState) => ({}), {
+const connector = connect((_: RootState) => ({}), {
   fetchPost: PostActions.fetchPost,
 });
 

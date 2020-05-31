@@ -125,11 +125,11 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
           <Animated.Text
             style={{
               ...TextStyles.title,
-              left: 25,
+              left: 20,
               opacity: mix(transition, 1, 0),
             }}
           >
-            unexpected
+            {/* Feed */}
           </Animated.Text>
           <SearchInput {...{ open, transition }} />
           <TapGestureHandler {...handler}>

@@ -12,6 +12,7 @@ export * from "./NavBar";
 export * from "./ZoomedImage";
 export * from "./ModalList";
 
+export { default as EditUserImage } from "./EditUserImage";
 export { default as ZoomHandler } from "./ZoomHandler";
 export { default as FriendButton } from "./FriendButton";
 export { default as PostImage } from "./PostImage";

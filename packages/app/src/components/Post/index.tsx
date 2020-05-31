@@ -14,6 +14,8 @@ import {
   formatName,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
+  POST_HEIGHT,
+  POST_WIDTH,
   TextStyles,
 } from "@lib";
 import { selectors, RootState } from "@redux";
@@ -50,8 +52,6 @@ export interface PostProps {
 }
 
 export type PostConnectedProps = ConnectedProps<typeof connector>;
-
-export const POST_HEIGHT = Math.round(0.65 * SCREEN_HEIGHT);
 
 const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
   ({
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     height: POST_HEIGHT,
-    width: SCREEN_WIDTH - 40,
+    width: POST_WIDTH,
   },
   header: {
     marginHorizontal: 20,

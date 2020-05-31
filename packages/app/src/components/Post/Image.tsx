@@ -8,7 +8,12 @@ import { connect, ConnectedProps } from "react-redux";
 import { useMemoOne } from "use-memo-one";
 
 import { ZoomHandler } from "@components/universal";
-import { SCREEN_WIDTH, withSpringImperative } from "@lib";
+import {
+  SCREEN_WIDTH,
+  withSpringImperative,
+  IMAGE_HEIGHT,
+  POST_WIDTH,
+} from "@lib";
 import { RootState, selectors } from "@redux";
 
 const AnimatedImage = Animated.createAnimatedComponent(FastImage);
@@ -88,9 +93,9 @@ const Image: React.FC<ImageProps & PostImageConnectedProps> = React.memo(
 
 const styles = StyleSheet.create({
   container: {
-    height: 450,
     zIndex: 1,
-    width: "100%",
+    height: IMAGE_HEIGHT,
+    width: POST_WIDTH,
     flexDirection: "row",
     alignSelf: "center",
   },

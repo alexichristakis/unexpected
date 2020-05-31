@@ -7,3 +7,4 @@ export * from "./use-notification-events";
 export * from "./use-focused-post";
 export * from "./use-keyboard-height";
 export * from "./use-friends";
+export * from "./use-editable-user-image";

@@ -2,7 +2,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
   useRef,
-  useState
+  useState,
 } from "react";
 import {
   GestureResponderEvent,
@@ -10,7 +10,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
-  ViewStyle
+  ViewStyle,
 } from "react-native";
 
 import {
@@ -18,7 +18,7 @@ import {
   FlashMode,
   RNCamera,
   TakePictureOptions,
-  TakePictureResponse
+  TakePictureResponse,
 } from "react-native-camera";
 
 export interface CameraProps {
@@ -45,7 +45,7 @@ const Camera = React.memo(
       const [focus, setFocus] = useState({
         x: 0.5,
         y: 0.5,
-        autoExposure: true
+        autoExposure: true,
       });
       const [layout, setLayout] = useState({ width: 0, height: 0 });
       const camera = useRef<RNCamera>();
@@ -55,14 +55,14 @@ const Camera = React.memo(
           if (camera.current) {
             const options: TakePictureOptions = {
               quality: 0.5,
-              base64: false
+              base64: false,
             };
 
             return camera.current.takePictureAsync(options);
           }
 
           return null;
-        }
+        },
       }));
 
       const handleOnPress = ({ nativeEvent }: GestureResponderEvent) => {
@@ -73,7 +73,7 @@ const Camera = React.memo(
         setFocus({
           x: locationX / width,
           y: locationY / height,
-          autoExposure: true
+          autoExposure: true,
         });
       };
 
@@ -91,9 +91,10 @@ const Camera = React.memo(
           style={[
             {
               overflow: "hidden",
-              borderRadius: round && !!size ? size / 2 : 0
+              borderRadius: round && !!size ? size / 2 : 0,
+              ...cameraStyle,
             },
-            style
+            style,
           ]}
         >
           <TouchableWithoutFeedback onPress={handleOnPress}>
@@ -113,7 +114,7 @@ const Camera = React.memo(
               style={[
                 styles.camera,
                 cameraStyle,
-                { backgroundColor: "red", position: "absolute" }
+                { backgroundColor: "red", position: "absolute" },
               ]}
             />
           )}
@@ -125,8 +126,8 @@ const Camera = React.memo(
 
 const styles = StyleSheet.create({
   camera: {
-    backgroundColor: "black"
-  }
+    backgroundColor: "black",
+  },
 });
 
 export default Camera;

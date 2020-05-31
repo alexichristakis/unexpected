@@ -12,8 +12,8 @@ import {
 import { connect, ConnectedProps } from "react-redux";
 import { useMemoOne } from "use-memo-one";
 
-import Post, { POST_HEIGHT } from "@components/Post";
-import { Colors, SPRING_CONFIG, withSnappingScroll } from "@lib";
+import Post from "@components/Post";
+import { Colors, POST_HEIGHT, SPRING_CONFIG, withSnappingScroll } from "@lib";
 import { PostActions, RootState, selectors } from "@redux";
 
 import { StackParamList } from "App";
