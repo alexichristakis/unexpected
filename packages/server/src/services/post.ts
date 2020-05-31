@@ -51,7 +51,7 @@ export class PostService {
 
   getPostWithComments = async (id: string) => {
     const [post, comments] = await Promise.all([
-      this.model.findById(id).populate("user").exec(),
+      this.model.findById(id).populate("user", DefaultUserSelect).exec(),
       this.commentService.getByPostId(id),
     ]);
 

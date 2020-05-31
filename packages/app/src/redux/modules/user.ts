@@ -59,6 +59,16 @@ export default (
       });
     }
 
+    case ActionTypes.FETCH_POST_SUCCESS: {
+      const { post } = action.payload;
+
+      const { user } = post;
+
+      return immer(state, (draft) => {
+        draft.users[user.id] = user;
+      });
+    }
+
     case ActionTypes.FETCH_FRIENDS_SUCCESS:
     case ActionTypes.FETCH_FEED_SUCCESS:
     case ActionTypes.SEARCH_SUCCESS:
