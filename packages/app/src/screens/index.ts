@@ -6,6 +6,5 @@ export { default as Carousel } from "./Carousel";
 export { default as NewProfilePicture } from "./NewProfilePicture";
 export { default as Permissions } from "./Permissions";
 export { default as Profile } from "./Profile";
-export { default as Settings } from "./Settings";
 export { default as Share } from "./Share";
 export { default as SignUp } from "./SignUp";

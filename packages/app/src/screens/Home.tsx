@@ -1,23 +1,27 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
-import Animated from "react-native-reanimated";
-import { useValues, useVector, useValue } from "react-native-redash";
+import { StyleSheet, View, ViewStyle } from "react-native";
+import Animated, {
+  eq,
+  interpolate,
+  Extrapolate,
+} from "react-native-reanimated";
+import { useVector, useValue } from "react-native-redash";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { connect, ConnectedProps } from "react-redux";
 
 import Activity from "@components/Activity";
-import { Pager, TabBar } from "@components/Home";
+import { ReactiveOverlay, Pager } from "@components/Home";
 
 import Feed from "@components/Feed";
 import Profile from "@components/Profile";
 import Settings from "@components/Settings";
 import { useDarkStatusBar } from "@hooks";
-import { Colors, SCREEN_WIDTH, SB_HEIGHT } from "@lib";
+import { Colors, SB_HEIGHT, ACTIVITY_HEIGHT } from "@lib";
 import * as selectors from "@redux/selectors";
 import { RootState as RootStateType } from "@redux/types";
-
-import { StackParamList } from "../../App";
 import { FriendActions } from "@redux/modules";
+
+import { StackParamList } from "../App";
 
 const connector = connect(
   (state: RootStateType) => ({
@@ -51,29 +55,41 @@ const Home: React.FC<HomeReduxProps & HomeOwnProps> = ({
     fetchFriends();
   }, []);
 
-  const handleOnPressTab = (index: 0 | 1) => activeTab.setValue(index);
+  const closeActivity = () => activityOpen.setValue(0);
   const handleOnPressSettings = () => activeTab.setValue(2);
 
-  const pagerContainer = { transform: [{ translateY: offset.y }] };
+  const pagerContainer: Animated.AnimateStyle<ViewStyle> = {
+    transform: [{ translateY: offset.y }],
+    borderRadius: interpolate(offset.y, {
+      inputRange: [-50, 0],
+      outputRange: [20, 1],
+      extrapolate: Extrapolate.CLAMP,
+    }),
+  };
+
   return (
     <View style={styles.container}>
       <Activity open={activityOpen} />
       <Animated.View style={[styles.pagerContainer, pagerContainer]}>
         <Settings offset={offset.x} {...{ navigation }} />
-        <Pager tab={activeTab} {...offset}>
+        <Pager
+          navigation={navigation}
+          open={activityOpen}
+          tab={activeTab}
+          offset={offset}
+        >
           <Feed {...{ navigation }} />
           <Profile
             id={userId}
             style={styles.profileContainer}
             onPressSettings={handleOnPressSettings}
           />
-          <View style={{ width: 100 }} />
         </Pager>
-        <TabBar
-          open={activityOpen}
-          onPress={handleOnPressTab}
-          {...offset}
-          {...{ navigation }}
+        <ReactiveOverlay
+          onPress={closeActivity}
+          value={offset.y}
+          inputRange={[-ACTIVITY_HEIGHT, 0]}
+          active={activityOpen}
         />
       </Animated.View>
     </View>
@@ -87,6 +103,7 @@ const styles = StyleSheet.create({
   },
   pagerContainer: {
     flex: 1,
+    overflow: "hidden",
   },
   profileContainer: {
     paddingTop: SB_HEIGHT,

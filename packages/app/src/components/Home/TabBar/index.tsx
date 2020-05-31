@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 import {
   PanGestureHandler,
   State,
@@ -10,7 +10,13 @@ import Animated, {
   interpolate,
   useCode,
 } from "react-native-reanimated";
-import { clamp, mix, useGestureHandler, useValues } from "react-native-redash";
+import {
+  clamp,
+  mix,
+  useGestureHandler,
+  useValues,
+  Vector,
+} from "react-native-redash";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
 import FeedIcon from "@assets/svg/feed.svg";
@@ -24,25 +30,27 @@ import {
 
 import { StackParamList } from "../../../App";
 import TabBarIcon from "./Icon";
+import CameraButton from "./CameraButton";
+import ActivityButton from "./ActivityButton";
 
-const { set, divide, onChange, add, cond, eq } = Animated;
+const { set, not, divide, onChange, cond, eq } = Animated;
 
 export interface TabBarProps {
   navigation: NativeStackNavigationProp<StackParamList>;
+  style?: Animated.AnimateStyle<ViewStyle>;
   open: Animated.Value<0 | 1>;
   onPress: (index: 0 | 1) => void;
-  y: Animated.Value<number>;
-  x: Animated.Value<number>;
+  offset: Vector<Animated.Value<number>>;
 }
 
 export const TabBar: React.FC<TabBarProps> = ({
   navigation,
   open,
   onPress,
-  x: xOffset,
-  y: yOffset,
+  style,
+  offset,
 }) => {
-  const val = divide(xOffset, -SCREEN_WIDTH);
+  const val = divide(offset.x, -SCREEN_WIDTH);
 
   const [state, tapState] = useValues(State.UNDETERMINED, State.UNDETERMINED);
   const [value, velocity] = useValues(0, 0);
@@ -66,7 +74,7 @@ export const TabBar: React.FC<TabBarProps> = ({
         ])
       ),
       set(
-        yOffset,
+        offset.y,
         clamp(
           withSpringImperative({
             state,
@@ -85,22 +93,10 @@ export const TabBar: React.FC<TabBarProps> = ({
     []
   );
 
-  const yOffsetBorderRadius = interpolate(yOffset, {
-    inputRange: [-50, 0],
-    outputRange: [20, 1],
-    extrapolate: Extrapolate.CLAMP,
-  });
-
-  const translateX = interpolate(xOffset, {
+  const translateX = interpolate(offset.x, {
     inputRange: [-SCREEN_WIDTH - 50, -SCREEN_WIDTH, 0],
     outputRange: [-50, 0, 0],
     extrapolateRight: Extrapolate.CLAMP,
-  });
-
-  const xOffsetBorderRadius = interpolate(translateX, {
-    inputRange: [-50, 0],
-    outputRange: [20, 0],
-    extrapolate: Extrapolate.CLAMP,
   });
 
   const handleOnPressFeed = () => onPress(0);
@@ -109,17 +105,9 @@ export const TabBar: React.FC<TabBarProps> = ({
   return (
     <PanGestureHandler activeOffsetY={[-10, 10]} {...handler}>
       <Animated.View
-        style={{
-          ...styles.container,
-          transform: [{ translateX }],
-          borderBottomLeftRadius: yOffsetBorderRadius,
-          borderBottomRightRadius: add(
-            yOffsetBorderRadius,
-            xOffsetBorderRadius
-          ),
-        }}
+        style={[styles.container, { transform: [{ translateX }] }, style]}
       >
-        <Animated.View style={{ flexDirection: "row" }}>
+        <Animated.View style={styles.row}>
           <TabBarIcon
             index={0}
             name="Feed"
@@ -145,21 +133,9 @@ export const TabBar: React.FC<TabBarProps> = ({
             onPress={handleOnPressProfile}
           />
         </Animated.View>
-        <Animated.View style={{ flexDirection: "row" }}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("CAPTURE")}
-            style={{ width: 50, height: 50, backgroundColor: "red" }}
-          />
-          <TapGestureHandler {...tapHandler}>
-            <Animated.View
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 15,
-                backgroundColor: "blue",
-              }}
-            />
-          </TapGestureHandler>
+        <Animated.View style={styles.row}>
+          <CameraButton onPress={() => navigation.navigate("CAPTURE")} />
+          <ActivityButton onPress={set(open, not(open))} />
         </Animated.View>
       </Animated.View>
     </PanGestureHandler>
@@ -168,9 +144,9 @@ export const TabBar: React.FC<TabBarProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
     bottom: 0,
-    left: 0,
-    right: 0,
+    width: SCREEN_WIDTH,
     justifyContent: "space-between",
     paddingTop: 12,
     paddingHorizontal: 20,
@@ -178,13 +154,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: Colors.background,
   },
-  indicator: {
-    position: "absolute",
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: Colors.nearBlack,
-    left: 15,
-    top: 28,
+  row: {
+    flexDirection: "row",
   },
 });

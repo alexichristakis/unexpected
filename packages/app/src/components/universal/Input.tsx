@@ -61,9 +61,10 @@ const styles = StyleSheet.create({
   error: {},
   textInput: {
     padding: 5,
-    // paddingRight: 10,
-
-    borderBottomWidth: 1,
+    paddingLeft: 12,
+    // borderBottomWidth: 1,
+    borderRadius: 10,
+    backgroundColor: Colors.lightGray,
     marginBottom: 10,
   },
 });

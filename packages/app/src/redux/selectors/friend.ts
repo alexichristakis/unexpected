@@ -15,6 +15,11 @@ const f = createSelector(s, (state) => state.friends);
 export const requests = createSelector(s, (state) => state.requests);
 export const requested = createSelector(s, (state) => state.requested);
 
+export const numRequests = createSelector(
+  requests,
+  (requests) => requests.length
+);
+
 export const friends = createSelector([f, idFromProps], (friends, id) => {
   return friends[id] ?? [];
 });

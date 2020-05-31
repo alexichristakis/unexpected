@@ -8,7 +8,7 @@ import ImageResizer, {
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
 import client, { getHeaders } from "@api";
-import { Comment, PartialUser, Post, User } from "@global";
+import { Comment, PartialUser, Post, User, Post_populated } from "@global";
 
 import * as selectors from "../selectors";
 import {
@@ -67,7 +67,7 @@ export default (
       const { post } = action.payload;
 
       return immer(state, (draft) => {
-        draft.posts[post.id] = post;
+        draft.posts[post.id] = { ...post, user: post.user.id };
       });
     }
 
@@ -275,7 +275,7 @@ export const Actions = {
     }),
 
   fetchPost: (id: string) => createAction(ActionTypes.FETCH_POST, { id }),
-  fetchPostSuccess: (post: Post, comments: Comment[]) =>
+  fetchPostSuccess: (post: Post_populated, comments: Comment[]) =>
     createAction(ActionTypes.FETCH_POST_SUCCESS, { post, comments }),
 
   sendPost: (description: string) =>

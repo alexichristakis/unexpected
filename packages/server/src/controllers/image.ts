@@ -6,6 +6,7 @@ import {
   Put,
   UseAfter,
   UseAuth,
+  Context,
 } from "@tsed/common";
 import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
 import multer from "multer";
@@ -39,11 +40,12 @@ export class ImageController {
     return this.imageService.download(path);
   }
 
-  @Put("/:userId")
+  @Put()
+  @UseAuth(AuthMiddleware)
   @MulterOptions({ storage: multer.memoryStorage() })
   async uploadProfileImage(
     @MultipartFile("image") file: Express.Multer.File,
-    @PathParams("userId") userId: string
+    @Context("auth") userId: string
   ) {
     const { buffer } = file;
 

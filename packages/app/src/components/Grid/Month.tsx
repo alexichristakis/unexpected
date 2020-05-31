@@ -1,7 +1,7 @@
 import random from "lodash/random";
 import React, { useCallback, useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import uuid from "uuid/v4";
+import { v4 as uuid } from "uuid";
 
 import { FocusedPostPayload } from "@hooks";
 import { TextStyles } from "@lib";
@@ -111,9 +111,7 @@ export const Month: React.FC<MonthProps> = React.memo(
         <View style={styles.container}>
           <View style={styles.headerContainer}>
             <Text style={TextStyles.title}>{month}</Text>
-            <View style={styles.moments}>
-              <Text style={TextStyles.medium}>{momentsString()}</Text>
-            </View>
+            <Text style={TextStyles.medium}>{momentsString()}</Text>
           </View>
 
           {rows.map(({ id, type, posts }) => (
@@ -137,11 +135,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  moments: {
-    padding: 5,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-    backgroundColor: "#fffa94",
   },
 });

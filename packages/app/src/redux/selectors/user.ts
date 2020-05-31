@@ -21,13 +21,11 @@ export const user = createSelector([users, idFromProps], (users, id) => {
   return users[id] ?? {};
 });
 
-export const currentUser = createSelector(s, (state) => state.user);
+export const currentUser = createSelector(
+  s,
+  (state) => state.users[state.userId]
+);
 
 export const userId = createSelector(currentUser, (user) => user.id);
 
 export const userStale = createSelector(s, (state) => state.stale);
-
-export const deviceToken = createSelector(
-  currentUser,
-  (currentUserEntity) => currentUserEntity.deviceToken
-);

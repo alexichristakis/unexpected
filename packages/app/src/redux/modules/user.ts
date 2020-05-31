@@ -20,7 +20,7 @@ import {
 } from "../types";
 
 export interface UserState {
-  user: User;
+  userId: string;
   users: { [phoneNumber: string]: PartialUser };
   stale: boolean;
   loading: boolean;
@@ -29,7 +29,7 @@ export interface UserState {
 }
 
 const initialState: UserState = {
-  user: {} as User,
+  userId: "",
   users: {},
   stale: false,
   loading: false,
@@ -54,7 +54,18 @@ export default (
 
       return immer(state, (draft) => {
         draft.loading = false;
-        draft.user = user;
+        draft.userId = user.id;
+        draft.users[user.id] = user;
+      });
+    }
+
+    case ActionTypes.FETCH_POST_SUCCESS: {
+      const { post } = action.payload;
+
+      const { user } = post;
+
+      return immer(state, (draft) => {
+        draft.users[user.id] = user;
       });
     }
 
@@ -169,6 +180,8 @@ function* onUpdateUser(
     );
 
     const { data } = res;
+
+    console.log(data);
 
     yield put(Actions.loadUsers([data]));
   } catch (err) {

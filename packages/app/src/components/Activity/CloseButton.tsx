@@ -1,11 +1,11 @@
-import { ACTIVITY_HEIGHT, Colors } from "@lib";
-import { RootState } from "@redux/types";
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import Animated, { useCode } from "react-native-reanimated";
-import { connect, ConnectedProps } from "react-redux";
 import { TapGestureHandler, State } from "react-native-gesture-handler";
 import { useValue, useGestureHandler } from "react-native-redash";
+
+import { Colors } from "@lib";
+import Chevron from "@assets/svg/back_chevron.svg";
 
 const { onChange, eq, cond, set } = Animated;
 
@@ -25,7 +25,9 @@ const CloseButton: React.FC<CloseButtonProps> = ({ open }) => {
 
   return (
     <TapGestureHandler {...handler}>
-      <Animated.View style={styles.container}></Animated.View>
+      <Animated.View style={styles.container}>
+        <Chevron fill={Colors.darkGray} width={20} height={20} />
+      </Animated.View>
     </TapGestureHandler>
   );
 };
@@ -33,12 +35,15 @@ const CloseButton: React.FC<CloseButtonProps> = ({ open }) => {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     right: 10,
     bottom: 30,
     backgroundColor: Colors.lightGray,
+    alignItems: "center",
+    justifyContent: "center",
+    transform: [{ rotate: "-90deg" }],
   },
 });
 

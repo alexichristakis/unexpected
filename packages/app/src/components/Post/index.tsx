@@ -7,16 +7,18 @@ import Animated, { interpolate, useCode, Value } from "react-native-reanimated";
 import { useValue } from "react-native-redash";
 import { connect, ConnectedProps } from "react-redux";
 
+import { UserImage, ZoomHandler } from "@components/universal";
 import { FocusedPostContext } from "@hooks";
 import {
   Colors,
   formatName,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
+  POST_HEIGHT,
+  POST_WIDTH,
   TextStyles,
 } from "@lib";
-import * as selectors from "@redux/selectors";
-import { RootState } from "@redux/types";
+import { selectors, RootState } from "@redux";
 
 import { StackParamList } from "../../App";
 import Comments from "./Comments";
@@ -28,7 +30,6 @@ const { cond, call, onChange, set } = Animated;
 const connector = connect(
   (state: RootState, props: PostProps) => ({
     post: selectors.populatedPost(state, props),
-    numComments: selectors.numComments(state, props),
   }),
   {}
 );
@@ -52,12 +53,9 @@ export interface PostProps {
 
 export type PostConnectedProps = ConnectedProps<typeof connector>;
 
-export const POST_HEIGHT = Math.round(0.65 * SCREEN_HEIGHT);
-
 const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
   ({
     id,
-    numComments,
     light,
     post: { userId, user, description, createdAt },
     inViewbox = new Value(1),
@@ -121,30 +119,20 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
           </Image>
           <Animated.View style={{ ...styles.footer, ...animate.footer }}>
             <View style={styles.row}>
-              <View style={styles.profile} />
+              <UserImage id={userId} size={40} style={styles.profile} />
               <View>
                 <Text
                   onPress={handleOnPressName}
-                  style={{
-                    ...TextStyles.large,
-                    textAlignVertical: "center",
-                    color,
-                  }}
+                  style={[styles.name, { color }]}
                 >
                   {formatName(user)}
                 </Text>
-                <Text
-                  style={{
-                    ...TextStyles.small,
-                    textAlignVertical: "center",
-                    color,
-                  }}
-                >
+                <Text style={[styles.createdAt, { color }]}>
                   {moment(createdAt).fromNow()}
                 </Text>
               </View>
             </View>
-            <CommentsButton {...{ open, numComments }} />
+            <CommentsButton {...{ open, id }} />
           </Animated.View>
         </Animated.View>
       );
@@ -152,7 +140,7 @@ const Post: React.FC<PostProps & PostConnectedProps> = React.memo(
 
     return <View style={styles.container} />;
   },
-  (p, n) => p.id === n.id && p.numComments === n.numComments
+  (p, n) => p.id === n.id
 );
 
 const styles = StyleSheet.create({
@@ -160,7 +148,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     height: POST_HEIGHT,
-    width: SCREEN_WIDTH - 40,
+    width: POST_WIDTH,
   },
   header: {
     marginHorizontal: 20,
@@ -170,6 +158,14 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  name: {
+    ...TextStyles.large,
+    textAlignVertical: "center",
+  },
+  createdAt: {
+    ...TextStyles.small,
+    textAlignVertical: "center",
   },
   footer: {
     flexDirection: "row",
@@ -186,8 +182,6 @@ const styles = StyleSheet.create({
     backgroundColor: "lightpink",
   },
   profile: {
-    width: 40,
-    height: 40,
     borderRadius: 5,
     marginRight: 10,
     backgroundColor: "lightblue",

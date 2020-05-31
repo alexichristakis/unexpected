@@ -33,7 +33,7 @@ const Activity: React.FC<ActivityProps & ActivityConnectedProps> = ({
     return (
       <>
         <View style={styles.requestsHeader}>
-          <Text style={TextStyles.small}>Requests</Text>
+          <Text style={styles.header}>Requests</Text>
         </View>
         {requests.map((id) => (
           <UserRow style="light" key={id} {...{ id }} />
@@ -42,10 +42,15 @@ const Activity: React.FC<ActivityProps & ActivityConnectedProps> = ({
     );
   };
 
+  const renderActivity = () => {
+    return null;
+  };
+
   return (
     <>
-      <Animated.ScrollView style={styles.container}>
+      <Animated.ScrollView style={styles.container} contentContainerStyle={{}}>
         {renderRequests()}
+        {renderActivity()}
       </Animated.ScrollView>
       <CloseButton {...{ open }} />
     </>
@@ -61,9 +66,17 @@ const styles = StyleSheet.create({
     height: ACTIVITY_HEIGHT,
   },
   requestsHeader: {
-    backgroundColor: Colors.pink,
+    flexDirection: "row",
     paddingHorizontal: 10,
     paddingVertical: 5,
+  },
+  header: {
+    ...TextStyles.small,
+    backgroundColor: Colors.pink,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 12,
+    overflow: "hidden",
   },
 });
 

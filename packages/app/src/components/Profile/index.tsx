@@ -1,9 +1,5 @@
-// export { default as Header } from "./Header";
-// export * from "../Feed/Posts";
-
 import React, { useEffect } from "react";
 import {
-  Text,
   View,
   StyleSheet,
   TouchableOpacity,
@@ -15,24 +11,18 @@ import { connect, ConnectedProps } from "react-redux";
 import { useValue } from "react-native-redash";
 
 import { PostActions, UserActions } from "@redux/modules";
-import * as selectors from "@redux/selectors";
 import { RootState } from "@redux/types";
 
-import { Colors, SB_HEIGHT } from "@lib";
+import { SB_HEIGHT } from "@lib";
 import Header from "./Header";
 import Grid from "../Grid";
 
 import Hamburger from "@assets/svg/feed.svg";
 
-const connector = connect(
-  (state: RootState, props: ProfileProps) => ({
-    postIds: selectors.usersPosts(state, props),
-  }),
-  {
-    fetchPosts: PostActions.fetchUsersPosts,
-    fetchUser: UserActions.fetchUser,
-  }
-);
+const connector = connect((state: RootState) => ({}), {
+  fetchPosts: PostActions.fetchUsersPosts,
+  fetchUser: UserActions.fetchUser,
+});
 
 export interface ProfileProps {
   id: string;
@@ -68,7 +58,6 @@ const Profile: React.FC<ProfileProps & ProfileConnectedProps> = ({
   id: userId,
   onPressSettings,
   style,
-  postIds,
 }) => {
   const offset = useValue(0);
 
@@ -99,7 +88,6 @@ const styles = StyleSheet.create({
     top: SB_HEIGHT + 20,
     width: 50,
     height: 50,
-    // backgroundColor: "red",
   },
 });
 

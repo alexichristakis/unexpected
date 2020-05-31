@@ -91,7 +91,7 @@ export type Comment_populated = Omit<Comment, "user" | "likes" | "post"> & {
   user: User;
 };
 
-export type NewComment = Pick<Comment, "user" | "body" | "post">;
+export type NewComment = Pick<Comment, "body" | "post">;
 
 export type UserNotificationPayload = {
   type: "user";

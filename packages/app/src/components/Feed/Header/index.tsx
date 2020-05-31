@@ -26,8 +26,7 @@ import {
 } from "@lib";
 import { RootState } from "@redux/types";
 import { SearchActions } from "@redux/modules";
-import { PartialUser } from "@global";
-import { UserRow } from "@components/universal";
+
 import { StackParamList } from "App";
 
 import SearchResults from "./SearchResults";
@@ -35,9 +34,14 @@ import SearchInput from "./SearchInput";
 
 const { onChange, neq, cond, eq, call } = Animated;
 
-const connector = connect((state: RootState) => ({}), {
-  search: SearchActions.search,
-});
+const connector = connect(
+  (state: RootState) => ({
+    //
+  }),
+  {
+    search: SearchActions.search,
+  }
+);
 
 export interface HeaderProps {
   navigation: StackNavigationProp<StackParamList>;
@@ -90,12 +94,12 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
           inputRange: [0, 0.5, 1],
           outputRange: [SCREEN_WIDTH - 70, 20, 0],
         }),
-        right: mix(transition, 25, 0),
+        right: mix(transition, 30, 0),
         top: interpolate(transition, {
           inputRange: [0, 0.25, 1],
-          outputRange: [SB_HEIGHT + 30, SB_HEIGHT, 0],
+          outputRange: [SB_HEIGHT + 37, SB_HEIGHT, 0],
         }),
-        bottom: mix(transition, SCREEN_HEIGHT - SB_HEIGHT - 155, 0),
+        bottom: mix(transition, SCREEN_HEIGHT - SB_HEIGHT - 78, 0),
         borderRadius: interpolate(transition, {
           inputRange: [0, 0.5, 0.75, 1],
           outputRange: [75, 75, 75, 0],
@@ -121,11 +125,11 @@ const Header: React.FC<HeaderProps & HeaderConnectedProps> = React.memo(
           <Animated.Text
             style={{
               ...TextStyles.title,
-              left: 25,
+              left: 20,
               opacity: mix(transition, 1, 0),
             }}
           >
-            unexpected
+            {/* Feed */}
           </Animated.Text>
           <SearchInput {...{ open, transition }} />
           <TapGestureHandler {...handler}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated, Easing, StatusBar, StyleSheet } from "react-native";
+import { Easing, StatusBar, StyleSheet } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import {
@@ -7,11 +7,7 @@ import {
   StackCardStyleInterpolator,
 } from "@react-navigation/stack";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-// import Animated, { interpolate } from "react-native-reanimated";
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from "react-native-screens/native-stack";
+import { createNativeStackNavigator } from "react-native-screens/native-stack";
 import { Provider, useSelector } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -41,8 +37,7 @@ import {
   Auth,
   Capture,
   Home,
-  NewProfilePicture,
-  Permissions,
+  EditProfile,
   Profile,
   Share,
   SignUp,
@@ -88,8 +83,11 @@ const profileCardStyleInterpolator: StackCardStyleInterpolator = ({
   current,
 }) => {
   return {
-    // shadowStyle: {},
-    // overlayStyle: {},
+    overlayStyle: {
+      ...StyleSheet.absoluteFillObject,
+      opacity: current.progress,
+      backgroundColor: Colors.transGray,
+    },
     containerStyle: {
       opacity: next
         ? next.progress.interpolate({
@@ -165,6 +163,7 @@ const transitionSpec: TransitionSpec = {
 
 const screenOptions = {
   headerShown: false,
+  cardOverlayEnabled: true,
   transitionSpec: {
     open: transitionSpec,
     close: transitionSpec,
@@ -178,7 +177,9 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
   useNotificationEvents(navigation);
 
   return (
-    <NativeStack.Navigator screenOptions={{ headerShown: false }}>
+    <NativeStack.Navigator
+      screenOptions={{ stackPresentation: "modal", headerShown: false }}
+    >
       <NativeStack.Screen name="HOME">
         {() => (
           <FriendsProvider>
@@ -196,28 +197,20 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
                   <Stack.Screen
                     name="FRIENDS"
                     options={{
-                      cardOverlayEnabled: true,
-
-                      // @ts-ignore
-                      cardOverlay: (props) => <Animated.View {...props} />,
                       cardStyleInterpolator: friendsCardStyleInterpolator,
                       cardStyle: { backgroundColor: "transparent" },
                     }}
                     component={Friends}
                   />
                 </Stack.Navigator>
-                {/* <Friends {...{ navigation }} /> */}
                 <FocusedPost {...{ navigation }} />
               </KeyboardStateProvider>
             </FocusedPostProvider>
           </FriendsProvider>
         )}
       </NativeStack.Screen>
-
-      <NativeStack.Screen
-        name="CAPTURE"
-        options={{ stackPresentation: "modal" }}
-      >
+      <NativeStack.Screen name="EDIT_PROFILE" component={EditProfile} />
+      <NativeStack.Screen name="CAPTURE">
         {() => (
           <NativeStack.Navigator screenOptions={{ headerShown: false }}>
             <NativeStack.Screen name="CAPTURE" component={Capture} />

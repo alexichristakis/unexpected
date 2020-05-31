@@ -122,7 +122,7 @@ function* onUploadProfilePhoto(
     const { uri, width, height }: TakePictureResponse = yield select(
       selectors.currentImage
     );
-    const phoneNumber = yield select(selectors.phoneNumber);
+    const userId = yield select(selectors.userId);
     const jwt = yield select(selectors.jwt);
 
     const image: ImageResizerResponse = yield ImageResizer.createResizedImage(
@@ -140,17 +140,16 @@ function* onUploadProfilePhoto(
       height,
       width,
       type: "image/jpeg",
-      name: `${phoneNumber}-${Date.now()}.jpg`,
+      name: `${userId}-${Date.now()}.jpg`,
     });
 
-    const endpoint = `/image/${phoneNumber}`;
-
-    yield client.put(endpoint, body, {
+    yield client.put(`/image`, body, {
       headers: getHeaders({ jwt, image: true }),
     });
 
     yield put(Actions.uploadPhotoSuccess());
-    yield put(Actions.cachePhoto(image.uri, phoneNumber));
+    // yield put(Actions.cachePhoto(image.uri, phoneNumber));
+
     if (cb) yield cb();
   } catch (err) {
     yield put(Actions.onError(err.message));
