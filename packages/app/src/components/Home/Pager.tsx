@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import Animated, {
   Extrapolate,
@@ -17,7 +18,6 @@ import { SCREEN_WIDTH, withPagingSnap } from "@lib";
 
 import { TabBar } from "./TabBar";
 import { ReactiveOverlay } from "./ReactiveOverlay";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { StackParamList } from "App";
 
 const { set, eq } = Animated;
@@ -88,7 +88,20 @@ export const Pager: React.FC<PagerProps> = React.memo(
       <PanGestureHandler activeOffsetX={[-10, 10]} {...handler}>
         <Animated.View
           pointerEvents={"box-none"}
-          style={[StyleSheet.absoluteFill]}
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              transform: [
+                {
+                  scale: interpolate(offset.x, {
+                    inputRange: [-SCREEN_WIDTH - 200, -SCREEN_WIDTH],
+                    outputRange: [0.9, 1],
+                    extrapolate: Extrapolate.CLAMP,
+                  }),
+                },
+              ],
+            },
+          ]}
         >
           <Animated.View
             style={[

@@ -170,8 +170,8 @@ const Comment: React.FC<CommentProps & CommentsConnectedProps> = React.memo(
               return (
                 <TouchableOpacity key={i} onPress={handleOnPress}>
                   <UserImage
+                    id={user.id}
                     style={{ marginRight: 5 }}
-                    phoneNumber={like}
                     size={20}
                   />
                 </TouchableOpacity>

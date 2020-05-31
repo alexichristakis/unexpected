@@ -43,18 +43,7 @@ const Activity: React.FC<ActivityProps & ActivityConnectedProps> = ({
   };
 
   const renderActivity = () => {
-    if (!requests.length) return null;
-
-    return (
-      <>
-        <View style={styles.requestsHeader}>
-          <Text style={styles.header}>Requests</Text>
-        </View>
-        {requests.map((id) => (
-          <UserRow style="light" key={id} {...{ id }} />
-        ))}
-      </>
-    );
+    return null;
   };
 
   return (

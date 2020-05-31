@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated, Easing, StatusBar, StyleSheet } from "react-native";
+import { Easing, StatusBar, StyleSheet } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import {
@@ -7,11 +7,7 @@ import {
   StackCardStyleInterpolator,
 } from "@react-navigation/stack";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-// import Animated, { interpolate } from "react-native-reanimated";
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from "react-native-screens/native-stack";
+import { createNativeStackNavigator } from "react-native-screens/native-stack";
 import { Provider, useSelector } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -185,7 +181,7 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
       screenOptions={{ stackPresentation: "modal", headerShown: false }}
     >
       <NativeStack.Screen name="HOME">
-        {(props) => (
+        {() => (
           <FriendsProvider>
             <FocusedPostProvider>
               <KeyboardStateProvider>
@@ -207,7 +203,6 @@ const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
                     component={Friends}
                   />
                 </Stack.Navigator>
-                {/* <Friends {...{ navigation }} /> */}
                 <FocusedPost {...{ navigation }} />
               </KeyboardStateProvider>
             </FocusedPostProvider>
