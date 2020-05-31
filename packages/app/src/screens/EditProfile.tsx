@@ -1,14 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import {
-  ActivityIndicator,
   Keyboard,
   TouchableOpacity,
-  KeyboardAvoidingView,
   NativeSyntheticEvent,
   StyleSheet,
-  Text,
   TextInputKeyPressEventData,
-  TextInputSubmitEditingEventData,
   View,
 } from "react-native";
 import { Formik } from "formik";
@@ -79,16 +75,16 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
   return (
     <View ref={parentRef} style={styles.container}>
       <TouchableOpacity onPress={handleOnPressDismiss} style={{ zIndex: 1 }}>
-        <CloseIcon width={20} height={20} />
+        <CloseIcon width={25} height={25} />
       </TouchableOpacity>
       <Formik initialValues={initialFormValues} onSubmit={handleOnPressSubmit}>
         {({ values, handleChange, handleSubmit }) => (
-          <View style={styles.formContainer}>
-            <View style={{ flexDirection: "row", marginBottom: 10 }}>
+          <View>
+            <View style={styles.section}>
               <UserImage />
-              <View style={{ marginLeft: 10, flex: 1 }}>
+              <View style={styles.nameContainer}>
                 <Input
-                  style={{ marginBottom: 10 }}
+                  style={styles.input}
                   value={values.firstName}
                   placeholder={firstName}
                   label="first name"
@@ -102,7 +98,7 @@ const EditProfile: React.FC<EditProfileProps & EditProfileConnectedProps> = ({
                   onEndEditing={(_) => handleSubmit()}
                 />
                 <Input
-                  style={{ marginBottom: 10 }}
+                  style={styles.input}
                   placeholder={lastName}
                   value={values.lastName}
                   label="last name"
@@ -146,11 +142,16 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   section: {
-    marginBottom: 10,
     flexDirection: "row",
-    justifyContent: "space-between",
+    marginBottom: 10,
   },
-  formContainer: {},
+  nameContainer: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  input: {
+    marginBottom: 10,
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

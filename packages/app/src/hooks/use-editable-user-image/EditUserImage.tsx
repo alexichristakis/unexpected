@@ -13,7 +13,7 @@ import {
 import { mix } from "react-native-redash";
 
 import { RootState, selectors, ImageActions } from "@redux";
-import { SCREEN_WIDTH, Colors, TextStyles } from "@lib";
+import { SCREEN_WIDTH, Colors } from "@lib";
 import Camera, { Shutter, CameraRef } from "@components/Camera";
 import { UserImage } from "@components/universal";
 

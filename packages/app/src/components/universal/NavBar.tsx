@@ -13,7 +13,7 @@ import Animated, {
 
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
-import BackButtonIcon from "@assets/svg/back_chevron.svg";
+import BackButtonIcon from "@assets/svg/close.svg";
 import { TextStyles } from "@lib";
 import { StackParamList } from "../../App";
 
@@ -58,7 +58,7 @@ export const NavBar: React.FC<NavBarProps> = React.memo(
         style={styles.container}
       >
         <TouchableOpacity onPress={onPressBackButton} style={styles.backButton}>
-          <BackButtonIcon width={20} height={20} />
+          <BackButtonIcon width={25} height={25} />
           {showBackButtonText ? (
             <Text style={styles.backButtonText}>{backButtonText}</Text>
           ) : null}
