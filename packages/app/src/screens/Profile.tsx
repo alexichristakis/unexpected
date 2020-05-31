@@ -2,11 +2,12 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
-  StyleSheet
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
-import { Post, User } from "@unexpected/global";
 import isEqual from "lodash/isEqual";
 import Haptics from "react-native-haptic-feedback";
 import Animated, { TransitioningView } from "react-native-reanimated";
@@ -15,10 +16,11 @@ import { Screen } from "react-native-screens";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 import { connect, ConnectedProps } from "react-redux";
 
-import { Grid, PostModal, Top, UserModal } from "@components/Profile";
+import Profile from "@components/Profile";
 import { FriendButton, ModalListRef, NavBar } from "@components/universal";
 import { useDarkStatusBar } from "@hooks";
-import { SB_HEIGHT } from "@lib/styles";
+import { SB_HEIGHT } from "@lib";
+import { FriendActions } from "@redux/modules";
 import { Actions as PostActions } from "@redux/modules/post";
 import { Actions as UserActions } from "@redux/modules/user";
 import * as selectors from "@redux/selectors";
@@ -27,15 +29,10 @@ import { ParamList } from "../App";
 
 const { useCode, debug, block, call, greaterThan, lessOrEq, cond } = Animated;
 
-const mapStateToProps = (state: RootState, props: ProfileProps) => ({
-  phoneNumber: selectors.phoneNumber(state),
-  user: selectors.user(state, props.route.params),
-  friends: selectors.friends(state, props.route.params)
-});
-const mapDispatchToProps = {
+const connector = connect((state: RootState, props: ProfileProps) => ({}), {
   fetchUsersPosts: PostActions.fetchUsersPosts,
-  fetchUser: UserActions.fetchUser
-};
+  fetchUsersFriends: FriendActions.fetchFriends,
+});
 
 export type ProfileReduxProps = ConnectedProps<typeof connector>;
 
@@ -44,39 +41,28 @@ export interface ProfileProps {
   route: RouteProp<ParamList, "PROFILE">;
 }
 
-const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
+const ProfileScreen: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
   ({
     navigation,
     fetchUsersPosts,
-    fetchUser,
-    user,
-    phoneNumber,
-    friends,
-    route
+    fetchUsersFriends,
+    // user,
+    // phoneNumber,
+    // friends,
+    route,
   }) => {
-    const [focusedPostId, setFocusedPostId] = useState("");
-    const [showUserModal, setShowUserModal] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
-    const [scrollY] = useValues([0], []);
+    const [scrollY] = useValues(0);
 
     const navBarTransitionRef = useRef<TransitioningView>(null);
 
-    const getFriendStatusState = () => {
-      if (!user || !user.friends) return "unknown";
-      if (user.friends.includes(phoneNumber)) return "friends";
-      else return "notFriends";
-    };
-
     useDarkStatusBar();
 
+    const { id } = route.params;
     useEffect(() => {
-      const { phoneNumber } = route.params;
-
-      fetchUser(phoneNumber);
-
-      // if friends fetch and render posts too
-      if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
-    }, [getFriendStatusState()]);
+      fetchUsersFriends(id);
+      fetchUsersPosts(id);
+    }, [id]);
 
     useCode(
       () =>
@@ -94,102 +80,39 @@ const Profile: React.FC<ProfileProps & ProfileReduxProps> = React.memo(
               navBarTransitionRef.current?.animateNextTransition();
               setShowTitle(false);
             })
-          )
+          ),
         ]),
       []
     );
 
-    const renderTop = () => (
-      <Top
-        phoneNumber={route.params.phoneNumber}
-        scrollY={scrollY}
-        onPressFriends={handleOnPressFriends}
-      />
-    );
-
-    const handleOnPressPost = ({ id }: Post) => {
-      requestAnimationFrame(() => setFocusedPostId(id));
-    };
-
-    const handleOnPressFriends = () => {
-      requestAnimationFrame(() => setShowUserModal(true));
-    };
-
-    const handlePostModalClose = () => setFocusedPostId("");
-    const handleUserModalClose = () => setShowUserModal(false);
-
-    const handleOnScrollEndDrag = (
-      event: NativeSyntheticEvent<NativeScrollEvent>
-    ) => {
-      const {
-        nativeEvent: {
-          contentOffset: { y }
-        }
-      } = event;
-
-      if (y < -100) {
-        Haptics.trigger("impactMedium");
-        fetchUser(phoneNumber);
-
-        // if friends fetch and render posts too
-        if (getFriendStatusState() === "friends") fetchUsersPosts(phoneNumber);
-      }
-    };
-
     return (
-      <Screen stackPresentation={"push"} style={styles.container}>
+      <View style={{ flex: 1, paddingTop: SB_HEIGHT }}>
         <NavBar
           transitionRef={navBarTransitionRef}
-          backButtonText={route.params.prevRoute}
+          // backButtonText={route.params.prevRoute}
           showTitle={showTitle}
           showBackButtonText={!showTitle}
-          title={user.firstName}
+          // title={user.firstName}
           navigation={navigation}
-          rightButton={<FriendButton showLabel={!showTitle} user={user} />}
+          rightButton={<FriendButton id={id} showLabel={!showTitle} />}
         />
-        <Grid
-          phoneNumber={route.params.phoneNumber}
-          onPressPost={handleOnPressPost}
-          scrollY={scrollY}
-          friendStatus={getFriendStatusState()}
-          onScrollEndDrag={handleOnScrollEndDrag}
-          headerContainerStyle={styles.headerContainer}
-          renderHeader={renderTop}
-        />
-        <UserModal
-          visible={showUserModal}
-          phoneNumber={route.params.phoneNumber}
-          onClose={handleUserModalClose}
-        />
-        <PostModal
-          postId={
-            route.params?.focusedPostId?.length
-              ? route.params?.focusedPostId
-              : focusedPostId
-          }
-          onClose={handlePostModalClose}
-        />
-      </Screen>
+        <Profile {...{ id }} />
+      </View>
     );
-  },
-  (prevProps, nextProps) =>
-    prevProps.route.params?.focusedPostId ===
-      nextProps.route.params?.focusedPostId &&
-    isEqual(prevProps.user, nextProps.user)
+  }
 );
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: SB_HEIGHT,
-    alignItems: "center"
+    alignItems: "center",
   },
   headerContainer: {
     zIndex: 1,
     alignItems: "center",
-    alignSelf: "stretch"
-  }
+    alignSelf: "stretch",
+  },
 });
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
-export default connector(Profile);
+export default connector(ProfileScreen);

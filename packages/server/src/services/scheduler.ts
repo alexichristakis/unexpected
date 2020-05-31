@@ -2,9 +2,9 @@ import { $log, Inject, Service } from "@tsed/common";
 import { MongooseService } from "@tsed/mongoose";
 import Agenda from "agenda";
 import moment from "moment-timezone";
-import uuid from "uuid/v4";
+import { v4 as uuid } from "uuid";
 
-import { User } from "@unexpected/global";
+import { User, UserNotificationRecord } from "@global";
 
 import { AuthService } from "./auth";
 import { SlackLogService } from "./logger";
@@ -14,7 +14,7 @@ import { UserService } from "./user";
 export enum AgendaJobs {
   GENERATE_NOTIFICATIONS = "GENERATE_NOTIFICATIONS",
   SEND_NOTIFICATION = "SEND_NOTIFICATION",
-  CLEAR_CODES = "CLEAR_CODES"
+  CLEAR_CODES = "CLEAR_CODES",
 }
 
 @Service()
@@ -44,39 +44,33 @@ export class SchedulerService {
 
     this.agenda.processEvery("5 minutes");
 
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       this.agenda.once("ready", async () => {
         // await this.agenda.purge();
 
-        this.agenda.define(AgendaJobs.SEND_NOTIFICATION, async args => {
+        this.agenda.define(AgendaJobs.SEND_NOTIFICATION, async (args) => {
           const { to } = args.attrs.data;
           await Promise.all([
             this.notificationService.notifyPhotoTime(to),
             this.slackLogger.sendMessage(
               "notification sent",
               `${to.phoneNumber} -- ${to.firstName} ${to.lastName}`
-            )
+            ),
           ]);
         });
 
         this.agenda.define(AgendaJobs.GENERATE_NOTIFICATIONS, async () => {
-          const users = await this.userService.getAll([
-            "_id",
-            "phoneNumber",
-            "timezone",
-            "deviceOS",
-            "deviceToken",
-            "firstName",
-            "lastName"
-          ]);
+          const users = await this.userService.getAll(
+            "_id phoneNumber timezone deviceOS deviceToken firstName lastName"
+          );
 
           const generatedTimes = await Promise.all(
-            users.map(user => this.scheduleNotificationForUser(user))
+            users.map((user) => this.scheduleNotificationForUser(user))
           );
 
           await Promise.all([
             this.userService.setNotificationTimes(generatedTimes),
-            this.slackLogger.logNotifications(generatedTimes)
+            this.slackLogger.logNotifications(generatedTimes),
           ]);
         });
 
@@ -100,8 +94,10 @@ export class SchedulerService {
   }
 
   // takes a user, schedules n notifications for them, returns the times
-  scheduleNotificationForUser = async (user: User) => {
-    const { phoneNumber, timezone } = user;
+  scheduleNotificationForUser = async (
+    user: Pick<User, "_id" | "timezone">
+  ): Promise<UserNotificationRecord> => {
+    const { _id, timezone } = user;
 
     // to eventually pull from user entity
     const NUM_NOTIFICATIONS = 2;
@@ -109,14 +105,8 @@ export class SchedulerService {
     const times = this.generateTimes(timezone, NUM_NOTIFICATIONS);
 
     const jobs = await Promise.all(
-      times.map(time => {
+      times.map((time) => {
         const dateInstance = moment(time);
-
-        $log.info(
-          `notification for ${user.firstName} at: ${dateInstance.format(
-            "dddd, MMMM Do YYYY, h:mm:ss a"
-          )}`
-        );
 
         return this.agenda.schedule(
           dateInstance.toDate(),
@@ -126,7 +116,7 @@ export class SchedulerService {
       })
     );
 
-    return { phoneNumber, notifications: times };
+    return { _id, notifications: times };
   };
 
   private generateTimes = (

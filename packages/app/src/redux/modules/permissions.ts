@@ -8,15 +8,16 @@ import {
   PERMISSIONS,
   PermissionStatus,
   request,
-  requestNotifications
+  requestNotifications,
 } from "react-native-permissions";
 import { all, put, takeEvery, takeLatest } from "redux-saga/effects";
 
 import {
-  ActionsUnion,
+  ActionTypes,
+  ActionUnion,
   createAction,
-  ExtractActionFromActionCreator
-} from "../utils";
+  ExtractActionFromActionCreator,
+} from "../types";
 
 export interface PermissionsState {
   readonly loading: boolean;
@@ -33,7 +34,7 @@ const initialState: PermissionsState = {
   camera: "denied",
   location: "denied",
   contacts: "denied",
-  error: ""
+  error: "",
 };
 
 export type PermissionType = {
@@ -45,23 +46,23 @@ export const Permissions = {
   CAMERA: {
     key: "camera",
     ios: PERMISSIONS.IOS.CAMERA,
-    android: PERMISSIONS.ANDROID.CAMERA
+    android: PERMISSIONS.ANDROID.CAMERA,
   },
   LOCATION: {
     key: "location",
     ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
-    android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+    android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
   },
   CONTACTS: {
     key: "contacts",
     ios: PERMISSIONS.IOS.CONTACTS,
-    android: PERMISSIONS.ANDROID.READ_CONTACTS
-  }
+    android: PERMISSIONS.ANDROID.READ_CONTACTS,
+  },
 };
 
 export default (
   state: PermissionsState = initialState,
-  action: ActionsUnion<typeof Actions>
+  action: ActionUnion
 ): PermissionsState => {
   switch (action.type) {
     case ActionTypes.SET_NOTIFICATIONS: {
@@ -93,7 +94,7 @@ function* onRequestNotifications() {
   try {
     let {
       status,
-      settings
+      settings,
     }: NotificationsResponse = yield checkNotifications();
 
     if (status !== "granted") {
@@ -133,16 +134,8 @@ function* onRequestPermission(
 export function* permissionSagas() {
   yield all([
     yield takeLatest(ActionTypes.REQUEST_NOTIFICATIONS, onRequestNotifications),
-    yield takeEvery(ActionTypes.REQUEST_PERMISSION, onRequestPermission)
+    yield takeEvery(ActionTypes.REQUEST_PERMISSION, onRequestPermission),
   ]);
-}
-
-export enum ActionTypes {
-  REQUEST_NOTIFICATIONS = "permissions/REQUEST_NOTIFICATIONS",
-  SET_NOTIFICATIONS = "permissions/SET_NOTIFICATIONS",
-  REQUEST_PERMISSION = "permissions/REQUEST_PERMISSION",
-  SET_PERMISSION = "permissions/SET_PERMISSION",
-  ERROR_REQUESTING = "permissions/ERROR_REQUESTING"
 }
 
 export const Actions = {
@@ -154,5 +147,5 @@ export const Actions = {
   setPermission: (type: PermissionType, status: PermissionStatus) =>
     createAction(ActionTypes.SET_PERMISSION, { type, status }),
   errorRequestingPermissions: (err: string) =>
-    createAction(ActionTypes.ERROR_REQUESTING, { err })
+    createAction(ActionTypes.ERROR_REQUESTING, { err }),
 };

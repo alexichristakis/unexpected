@@ -8,7 +8,7 @@ import { connect, ConnectedProps } from "react-redux";
 import Camera, { CameraRef, Shutter } from "@components/Camera";
 import { Button, Input, PendingPostImage } from "@components/universal";
 import { useLightStatusBar } from "@hooks";
-import { SCREEN_WIDTH, TextStyles } from "@lib/styles";
+import { SCREEN_WIDTH, TextStyles } from "@lib";
 import { Actions as ImageActions } from "@redux/modules/image";
 import * as selectors from "@redux/selectors";
 import { ReduxPropsType, RootState } from "@redux/types";
@@ -16,12 +16,12 @@ import { StackParamList } from "../App";
 
 const mapStateToProps = (state: RootState) => ({
   image: selectors.currentImage(state),
-  uploading: selectors.isUploadingImage(state)
+  uploading: selectors.isUploadingImage(state),
 });
 const mapDispatchToProps = {
   takePhoto: ImageActions.takePhoto,
   clearPhoto: ImageActions.clearPhoto,
-  uploadPhoto: ImageActions.uploadProfilePhoto
+  uploadPhoto: ImageActions.uploadProfilePhoto,
 };
 
 export type NewProfileConnectedProps = ConnectedProps<typeof connector>;
@@ -105,20 +105,20 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 100
+    paddingBottom: 100,
     // alignItems: "center"
   },
   photo: {
     // alignSelf: ""
   },
   buttonContainer: {
-    alignSelf: "stretch"
+    alignSelf: "stretch",
     // justifyContent: "space-around"
   },
   center: {},
   header: {
-    marginBottom: 40
-  }
+    marginBottom: 40,
+  },
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

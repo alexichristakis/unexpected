@@ -2,19 +2,19 @@ import React, {
   PropsWithChildren,
   PropsWithRef,
   ReactPropTypes,
-  useEffect
+  useEffect,
 } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   Transition,
   Transitioning,
-  TransitioningView
+  TransitioningView,
 } from "react-native-reanimated";
 
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
 
-import BackButtonIcon from "@assets/svg/back_chevron.svg";
-import { TextStyles } from "@lib/styles";
+import BackButtonIcon from "@assets/svg/close.svg";
+import { TextStyles } from "@lib";
 import { StackParamList } from "../../App";
 
 export interface NavBarProps {
@@ -35,7 +35,7 @@ export const NavBar: React.FC<NavBarProps> = React.memo(
     showTitle = false,
     title,
     navigation,
-    rightButton
+    rightButton,
   }) => {
     const onPressBackButton = () => {
       if (navigation.canGoBack()) {
@@ -58,7 +58,7 @@ export const NavBar: React.FC<NavBarProps> = React.memo(
         style={styles.container}
       >
         <TouchableOpacity onPress={onPressBackButton} style={styles.backButton}>
-          <BackButtonIcon width={20} height={20} />
+          <BackButtonIcon width={25} height={25} />
           {showBackButtonText ? (
             <Text style={styles.backButtonText}>{backButtonText}</Text>
           ) : null}
@@ -80,20 +80,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   backButton: {
     flex: 1,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
   title: {
     flex: 2,
     textAlign: "center",
-    ...TextStyles.large
+    ...TextStyles.large,
   },
   backButtonText: {
     ...TextStyles.large,
-    marginLeft: 5
-  }
+    marginLeft: 5,
+  },
 });

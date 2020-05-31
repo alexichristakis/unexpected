@@ -1,7 +1,7 @@
 import {
   GlobalAcceptMimesMiddleware,
   ServerLoader,
-  ServerSettings
+  ServerSettings,
 } from "@tsed/common";
 import "@tsed/mongoose";
 import "@tsed/multipartfiles";
@@ -9,7 +9,11 @@ import "@tsed/multipartfiles";
 import bodyParser from "body-parser";
 import compress from "compression";
 import cookieParser from "cookie-parser";
+import { config } from "dotenv";
 import methodOverride from "method-override";
+import { resolve } from "path";
+
+config({ path: resolve(__dirname, "../.env") });
 
 const PROD = !!process.env.PORT;
 
@@ -20,7 +24,7 @@ const PROD = !!process.env.PORT;
   debug: !PROD,
 
   mount: {
-    "/": PROD ? "dist/controllers/*" : "src/controllers/*"
+    "/": PROD ? "dist/controllers/*" : "src/controllers/*",
   },
 
   mongoose: {
@@ -28,8 +32,8 @@ const PROD = !!process.env.PORT;
     connectionOptions: {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useCreateIndex: true
-    }
+      useCreateIndex: true,
+    },
   },
 
   logger: {
@@ -39,8 +43,16 @@ const PROD = !!process.env.PORT;
     logStart: !PROD,
     logEnd: !PROD,
     disableRoutesSummary: PROD,
-    requestFields: ["reqId", "url", "body", "query", "params", "duration"]
-  }
+    requestFields: [
+      "method",
+      "reqId",
+      "url",
+      "body",
+      "query",
+      "params",
+      "duration",
+    ],
+  },
 })
 export class Server extends ServerLoader {
   public $beforeRoutesInit(): void | Promise<any> {
@@ -51,7 +63,7 @@ export class Server extends ServerLoader {
       .use(bodyParser.json())
       .use(
         bodyParser.urlencoded({
-          extended: true
+          extended: true,
         })
       );
   }

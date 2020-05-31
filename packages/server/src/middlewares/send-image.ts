@@ -8,6 +8,7 @@ export class SendImageMiddleware implements IMiddleware {
     }
 
     response.contentType("image/jpeg");
-    response.end(data, "binary");
+
+    return response.end(data, "binary");
   }
 }

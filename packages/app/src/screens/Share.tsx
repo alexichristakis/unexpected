@@ -1,49 +1,47 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View
 } from "react-native";
 
 import { RouteProp } from "@react-navigation/core";
 import { Formik } from "formik";
 import { Screen } from "react-native-screens";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 import { Button, Input, NavBar, PendingPostImage } from "@components/universal";
-import { SB_HEIGHT, TextSizes } from "@lib/styles";
+import { TextSizes } from "@lib";
 import { Actions as PostActions } from "@redux/modules/post";
 import * as selectors from "@redux/selectors";
-import { ReduxPropsType, RootState } from "@redux/types";
+import { RootState } from "@redux/types";
 import { StackParamList } from "../App";
 
-const mapStateToProps = (state: RootState) => ({
-  image: selectors.currentImage(state),
-  sending: selectors.postLoading(state)
-});
-const mapDispatchToProps = {
-  sendPost: PostActions.sendPost
-};
+const connector = connect(
+  (state: RootState) => ({
+    image: selectors.currentImage(state),
+    loading: selectors.isLoadingPost(state),
+  }),
+  {
+    sendPost: PostActions.sendPost,
+  }
+);
 
 export interface SharePostOwnProps {
   navigation: NativeStackNavigationProp<StackParamList, "SHARE">;
   route: RouteProp<StackParamList, "SHARE">;
 }
-export type SharePostReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type SharePostReduxProps = ConnectedProps<typeof connector>;
+
 const initialFormValues = { description: "" };
 const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
-  ({ sendPost, image, sending, navigation }) => {
+  ({ sendPost, image, loading, navigation }) => {
     useEffect(() => {});
 
     const handleSubmit = (values: typeof initialFormValues) => {
-      sendPost(values.description, navigation);
+      sendPost(values.description);
     };
 
     return (
@@ -82,7 +80,7 @@ const SharePost: React.FC<SharePostOwnProps & SharePostReduxProps> = React.memo(
                 <Button
                   style={styles.button}
                   title="share post"
-                  loading={sending}
+                  loading={loading}
                   onPress={handleSubmit}
                 />
               </KeyboardAvoidingView>
@@ -99,29 +97,29 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 35,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   subContainer: {
     width: "100%",
     height: "100%",
     paddingHorizontal: 50,
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   form: {
     flex: 1,
     alignSelf: "stretch",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   button: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   headerContent: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
     // paddingHorizontal: 10
   },
   camera: { width: 500, height: 600 },
-  shutter: { position: "absolute", bottom: 100 }
+  shutter: { position: "absolute", bottom: 100 },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SharePost);
+export default connector(SharePost);

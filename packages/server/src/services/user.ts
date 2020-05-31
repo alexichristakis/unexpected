@@ -1,18 +1,24 @@
 import { $log, Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Post, User, UserNotificationRecord } from "@unexpected/global";
 import _ from "lodash";
 import moment from "moment";
 import { Document } from "mongoose";
 
+import {
+  CompleteUserSchemaFields,
+  DefaultUserSelect,
+  NewUser,
+  PartialUser,
+  User,
+  UserModel,
+  UserNotificationRecord,
+} from "@global";
 import { NOTIFICATION_MINUTES } from "../lib/constants";
-import { User as UserModel } from "../models/user";
-import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { NotificationService } from "./notification";
 
 @Service()
-export class UserService extends CRUDService<UserModel, User> {
+export class UserService {
   @Inject(UserModel)
   model: MongooseModel<UserModel>;
 
@@ -22,20 +28,54 @@ export class UserService extends CRUDService<UserModel, User> {
   @Inject(NotificationService)
   notificationService: NotificationService;
 
-  async createNewUser(newUser: User) {
-    const user = await this.getByPhoneNumber(newUser.phoneNumber);
+  async createPlaceholder(phone: string) {
+    return this.model.create({ phoneNumber: phone, placeholder: true });
+  }
 
-    if (user) return user;
+  async createFullUser(id: string, newData: NewUser) {
+    const user = await this.model.findById(id);
 
+    if (!user || !user.placeholder) {
+      return null;
+    }
+
+    // update with name, OS, timezone
+    user.update({ ...newData, placeholder: false });
+
+    // create
     const [createdUser] = await Promise.all([
-      this.create(newUser),
+      user.save(),
       this.logger.sendMessage(
         "new user",
-        `${newUser.firstName} ${newUser.lastName}`
-      )
+        `${newData.firstName} ${newData.lastName}`
+      ),
     ]);
 
     return createdUser;
+  }
+
+  async get(
+    uid: string,
+    select: string = DefaultUserSelect,
+    populate?: string
+  ) {
+    return this.model.findById(uid).select(select).populate(populate).exec();
+  }
+
+  async getMultiple(
+    uids: string[],
+    select: string = DefaultUserSelect,
+    populate?: string
+  ) {
+    return this.model
+      .find({ _id: { $in: uids } })
+      .select(select)
+      .populate(populate)
+      .exec();
+  }
+
+  async getAll(select?: string, populate?: string) {
+    return this.model.find().select(select).populate(populate).exec();
   }
 
   async search(query: string) {
@@ -47,37 +87,54 @@ export class UserService extends CRUDService<UserModel, User> {
       return this.model
         .find({
           firstName: new RegExp(firstName, "i"),
-          lastName: new RegExp(lastName, "i")
+          lastName: new RegExp(lastName, "i"),
         })
         .exec();
     }
   }
 
-  async updateValidNotifications(post: Post) {
-    const { createdAt, phoneNumber } = post;
+  async update(id: string, newData: Partial<User>) {
+    const user = await this.model
+      .findById(id)
+      .select(CompleteUserSchemaFields)
+      .exec();
 
-    const time = moment(createdAt);
-    const user = await this.findOne({ phoneNumber }, ["notifications"]);
+    if (!user) return null;
+
+    user.set(newData);
+
+    return user.save() as Promise<User>;
+  }
+
+  async updateValidNotifications(userId: string) {
+    const time = moment();
+    const user = await this.model
+      .findById(userId)
+      .select("notifications")
+      .exec();
 
     if (!user) return;
 
     const { notifications } = user;
     const updatedNotifications = notifications.filter(
-      notification =>
+      (notification) =>
         !time.isBetween(
           notification,
           moment(notification).add(NOTIFICATION_MINUTES, "minutes")
         )
     );
 
-    return this.updateOne(
-      { phoneNumber },
+    return this.model.updateOne(
+      { _id: userId },
       { notifications: updatedNotifications }
     );
   }
 
   async cameraEnabled(phoneNumber: string) {
-    const user = await this.findOne({ phoneNumber }, ["notifications"]);
+    const user = await this.model
+      .findOne({ phoneNumber })
+      .select("notifications")
+      .exec();
 
     if (!user) return { enabled: false };
 
@@ -86,7 +143,8 @@ export class UserService extends CRUDService<UserModel, User> {
     const currentTime = moment();
 
     const payload = { enabled: false, start: "" };
-    notifications.forEach(notification => {
+
+    notifications.forEach((notification) => {
       const start = moment(notification);
       const end = start.clone().add(NOTIFICATION_MINUTES, "minutes");
 
@@ -101,82 +159,94 @@ export class UserService extends CRUDService<UserModel, User> {
 
   async setNotificationTimes(times: UserNotificationRecord[]) {
     const res = await this.model.bulkWrite(
-      times.map(({ phoneNumber, notifications }) => ({
+      times.map(({ _id, notifications }) => ({
         updateOne: {
-          filter: { phoneNumber },
-          update: { $set: { notifications } }
-        }
+          filter: { _id },
+          update: { $set: { notifications } },
+        },
       }))
     );
 
     $log.info(res);
   }
 
-  async unfriend(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
+  async unfriend(a: string, b: string) {
+    const users = await this.getMultiple([a, b], "_id friends");
 
-    await Promise.all([
-      this.model
-        .updateOne(
-          { phoneNumber: to },
-          {
-            friends: userTo.friends.filter(user => user !== from)
-          }
-        )
-        .exec(),
-      this.model
-        .updateOne(
-          { phoneNumber: from },
-          {
-            friends: userFrom.friends.filter(user => user !== to)
-          }
-        )
-        .exec()
+    const [user1] = users.filter(({ _id }) => _id.toString() === a);
+    const [user2] = users.filter(({ _id }) => _id.toString() === b);
+
+    return this.model.bulkWrite([
+      {
+        updateOne: {
+          filter: { _id: a },
+          update: {
+            $set: { friends: user1.friends.filter((user) => user !== b) },
+          },
+        },
+      },
+      {
+        updateOne: {
+          filter: { _id: b },
+          update: {
+            $set: { friends: user2.friends.filter((user) => user !== a) },
+          },
+        },
+      },
     ]);
   }
 
-  async friend(from: string, to: string) {
-    const [userFrom, userTo] = await this.getByPhoneNumber([from, to], true);
-
-    const res = await Promise.all([
-      this.model
-        .updateOne(
-          { phoneNumber: from },
-          {
-            friends: _.uniq([...userFrom.friends, to])
-          }
-        )
-        .exec(),
-      this.model
-        .updateOne(
-          { phoneNumber: to },
-          {
-            friends: _.uniq([...userTo.friends, from])
-          }
-        )
-        .exec(),
+  async friend(from: User, to: User) {
+    return Promise.all([
+      this.model.bulkWrite([
+        {
+          updateOne: {
+            filter: { _id: from.id },
+            update: { $set: { friends: _.uniq([...from.friends, to._id]) } },
+          },
+        },
+        {
+          updateOne: {
+            filter: { _id: to.id },
+            update: { $set: { friends: _.uniq([...to.friends, from._id]) } },
+          },
+        },
+      ]),
       this.notificationService.notifyWithNavigationToUser(
-        userTo,
-        `${userFrom.firstName} ${userFrom.lastName} accepted your friend request.`,
-        userFrom
-      )
+        from,
+        `${to.firstName} ${to.lastName} accepted your friend request.`,
+        to
+      ),
     ]);
   }
 
-  async getUserFriends(phoneNumber: string) {
-    const user = await this.getByPhoneNumber(phoneNumber);
-    const { friends } = user;
+  async getFriends(uid: string) {
+    const user = await this.model
+      .findById(uid)
+      .select("friends")
+      .populate("friends", DefaultUserSelect)
+      .lean()
+      .exec();
 
-    return this.getByPhoneNumber(friends);
+    if (!user) return null;
+
+    const { friends } = user as any;
+
+    const ret = friends.map(({ _id, ...rest }: UserModel) => ({
+      id: _id,
+      ...rest,
+    }));
+
+    return ret as PartialUser[];
   }
 
-  async getByPhoneNumber(phoneNumber?: string): Promise<UserModel & Document>;
-  async getByPhoneNumber(
+  async getByPhone(phoneNumber?: string): Promise<User & Document>;
+  async getByPhone(
     phoneNumbers: string[],
     sort?: boolean,
     select?: string
-  ): Promise<(UserModel & Document)[]>;
-  async getByPhoneNumber(
+  ): Promise<(User & Document)[]>;
+  async getByPhone(
     phoneNumber?: string | string[],
     sort?: boolean,
     select?: string
@@ -184,7 +254,7 @@ export class UserService extends CRUDService<UserModel, User> {
     if (phoneNumber instanceof Array) {
       const users = await this.model
         .find({
-          phoneNumber: { $in: phoneNumber }
+          phoneNumber: { $in: phoneNumber },
         })
         // .select(select)
         .exec();
@@ -201,6 +271,6 @@ export class UserService extends CRUDService<UserModel, User> {
       return users;
     }
 
-    return this.findOne({ phoneNumber });
+    return this.model.findOne({ phoneNumber }).exec();
   }
 }

@@ -1,106 +1,66 @@
-import moment from "moment";
 import { createSelector } from "reselect";
 
+import { getHeaders, getPostImageURL } from "@api";
+
 import { RootState } from "../types";
-import {
-  phoneNumber as phoneNumberSelector,
-  user as userEntitySelector,
-  users as usersEntitySelector
-} from "./user";
+import { jwt } from "./auth";
+import { users } from "./user";
 
 const s = (state: RootState) => state.post || {};
-const usersSelector = createSelector(s, state => state.users);
 
-const _posts = (state: RootState) => s(state).posts;
-const _comments = (state: RootState) => s(state).comments;
+const idFromProps = (_: RootState, props: { id: string }) => props.id;
 
-export const commentsLoading = (state: RootState) => s(state).commentsLoading;
-export const postLoading = (state: RootState) => s(state).loading;
-export const feedLoading = (state: RootState) => s(state).feed.loading;
+export const posts = createSelector([s], (state) => state.posts);
 
-export const errorSendingPost = (state: RootState) => s(state).error;
-
-const phoneNumberFromProps = (_: RootState, props: { phoneNumber: string }) =>
-  props.phoneNumber;
-
-const postIdFromProps = (_: RootState, props: { postId: string }) =>
-  props.postId;
-
-export const commentsForPost = createSelector(
-  [_comments, postIdFromProps],
-  (commentMap, postId) =>
-    commentMap[postId] ? Object.values(commentMap[postId]) : []
-);
-
-export const post = createSelector(
-  [_posts, _comments, usersEntitySelector, postIdFromProps],
-  (posts, commentMap, users, id) => {
+export const populatedPost = createSelector(
+  [posts, users, idFromProps],
+  (posts, users, id) => {
     const post = posts[id] ?? {};
 
-    const comments = commentMap[id] ? Object.values(commentMap[id]) : [];
-    const user = users[post.phoneNumber] ?? {};
+    const { user } = post;
 
     return {
-      id, // in case post is undefined
       ...post,
-      comments,
-      user
+      userId: user,
+      user: users[user] ?? {},
     };
   }
 );
 
+export const post = createSelector([posts, idFromProps], (posts, id) => {
+  const post = posts[id] ?? {};
+
+  return post;
+});
+
+export const postImageURL = createSelector([post, jwt], (post, jwt) => {
+  const { user, id } = post;
+
+  return { uri: getPostImageURL(user, id), headers: getHeaders({ jwt }) };
+});
+
 export const usersPosts = createSelector(
-  [usersSelector, _posts, userEntitySelector],
-  (users, posts, user) => {
-    const phoneNumber = user.phoneNumber;
-    const postIds = users[phoneNumber]?.posts ?? [];
+  [
+    posts,
+    (_: RootState, { userId, id }: { userId?: string; id?: string }) =>
+      !!userId ? userId : (id as string),
+  ],
+  (postMap, userId) => {
+    const posts = Object.values(postMap).filter(({ user }) => user === userId);
 
-    return postIds.map(id => posts[id]);
+    return posts.map(({ id, createdAt }) => ({ id, createdAt }));
   }
 );
 
-export const usersPostsLength = createSelector(
-  [usersSelector, userEntitySelector],
-  (users, { phoneNumber }) => {
-    const postIds = users[phoneNumber]?.posts ?? [];
+export const numPosts = createSelector([usersPosts], (posts) => posts.length);
 
-    return postIds.length;
-  }
-);
+export const feed = createSelector(s, (state) => Object.keys(state.posts));
 
-export const usersPostState = createSelector(
-  [usersSelector, phoneNumberFromProps],
-  (users, phoneNumber) => users[phoneNumber] || {}
-);
+export const isLoadingFeed = createSelector(s, (state) => state.loadingFeed);
 
-export const currentUsersPostsState = createSelector(
-  [phoneNumberSelector, usersSelector],
-  (phoneNumber, users) => users[phoneNumber] || {}
-);
+export const isLoadingPost = createSelector(s, (state) => state.loadingPost);
 
-export const currentUsersPosts = createSelector(
-  [currentUsersPostsState, _posts],
-  (userPostState, posts) => {
-    const postIds = userPostState.posts ?? [];
-
-    return postIds.map(id => posts[id]);
-  }
-);
-
-export const feedState = (state: RootState) => s(state).feed;
-
-export const feedStale = createSelector([feedState], state => state.stale);
-
-export const feed = createSelector(
-  [feedState, _posts],
-  (feedState, postMap) => {
-    const postIds = feedState.posts;
-
-    return postIds.map(id => postMap[id]);
-  }
-);
-
-export const lastFetched = createSelector(
-  [feedState],
-  state => state.lastFetched
+export const isLoadingUsersPosts = createSelector(
+  s,
+  (state) => state.loadingUsersPosts
 );

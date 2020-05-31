@@ -1,18 +1,14 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Comment } from "@unexpected/global";
 
 import remove from "lodash/remove";
 
-import { Comment as CommentModel } from "../models/Comment";
-import { CRUDService } from "./crud";
-import { SlackLogService } from "./logger";
+import { CommentModel, Comment, NewComment } from "@global";
 import { NotificationService } from "./notification";
-import { PostService } from "./post";
 import { UserService } from "./user";
 
 @Service()
-export class CommentService extends CRUDService<CommentModel, Comment> {
+export class CommentService {
   @Inject(CommentModel)
   model: MongooseModel<CommentModel>;
 
@@ -22,25 +18,24 @@ export class CommentService extends CRUDService<CommentModel, Comment> {
   @Inject(NotificationService)
   private notificationService: NotificationService;
 
-  async createNewComment(comment: Comment) {
-    return this.create(comment);
+  async create(comment: Pick<Comment, "user" | "post" | "body">) {
+    return this.model.create(comment);
   }
 
   async getByPostIds(postIds: string[]) {
-    const comments = await this.model.find({ postId: { $in: postIds } }).exec();
+    const comments = await this.model.find({ post: { $in: postIds } }).exec();
 
     return comments;
   }
 
-  async getByPostId(postId: string) {
-    return this.model
-      .find({ postId })
-      .sort({ createdAt: -1 })
-      .exec();
+  async getByPostId(post: string) {
+    return this.model.find({ post }).sort({ createdAt: -1 }).exec();
   }
 
-  async likeComment(phoneNumber: string, id: string) {
-    const comment = await this.model.findById(id).exec();
+  async likeComment(phoneNumber: string, id: string, populate?: string) {
+    const comment = await (populate
+      ? this.model.findById(id).populate(populate).exec()
+      : this.model.findById(id).exec());
 
     if (!comment) return null;
 

@@ -4,11 +4,11 @@ import {
   StyleSheet,
   TextInput,
   TextInputFocusEventData,
-  ViewStyle
+  ViewStyle,
 } from "react-native";
 
 import { Input } from "@components/universal";
-import { TextSizes, TextStyles } from "@lib/styles";
+import { TextSizes, TextStyles } from "@lib";
 
 export const normalizePhone = (value: string, previousValue?: string) => {
   if (!value) {
@@ -54,7 +54,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   // onBlur,
   loading,
   editable,
-  error
+  error,
 }) => {
   const [ref, setRef] = useState<TextInput | null>(null);
   const stripPhone = (text: string) => text.replace(/[^\d]/g, "");
@@ -105,5 +105,5 @@ const styles = StyleSheet.create({
     // color: "white",
     // borderBottomColor: "white"
     // marginTop: 40
-  }
+  },
 });

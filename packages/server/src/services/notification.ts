@@ -2,21 +2,21 @@ import { $log, Inject, Service } from "@tsed/common";
 import { Notification, Provider } from "apn";
 import moment from "moment";
 
-import { NotificationPayload, Post, User } from "@unexpected/global";
+import { NotificationPayload, User } from "@global";
 import { SentryService } from "./sentry";
 
 const settings = {
   fcm: {
-    api: "some fcm key"
+    api: "some fcm key",
   },
   apns: {
     token: {
       key: process.env.APNS_KEY as string,
       keyId: process.env.APNS_KEY_ID as string,
-      teamId: process.env.APNS_TEAM_ID as string
+      teamId: process.env.APNS_TEAM_ID as string,
     },
-    production: !!process.env.PORT
-  }
+    production: !!process.env.PORT,
+  },
 };
 
 @Service()
@@ -35,6 +35,7 @@ export class NotificationService {
   ) {
     if (deviceOS === "Android") {
       // deal with android notification
+      return null;
     } else {
       // deal with ios notification
       const payload = {
@@ -42,8 +43,8 @@ export class NotificationService {
         topic: "christakis.expect.photos",
         payload: data,
         alert: {
-          body
-        }
+          body,
+        },
       };
 
       const notification = new Notification(payload);
@@ -51,24 +52,37 @@ export class NotificationService {
       if (deviceToken.length) {
         const results = await this.APNs.send(notification, deviceToken);
 
-        results.failed.forEach(failure => {
+        results.failed.forEach((failure) => {
           $log.info(failure);
           this.sentryService.captureException(failure);
         });
 
-        results.sent.forEach(sent => {
+        results.sent.forEach((sent) => {
           $log.info(sent);
         });
 
         return Promise.resolve(results);
       }
+
+      return null;
     }
   }
 
-  notify(user: User, body: string) {
-    const { deviceOS, deviceToken } = user;
+  notify(
+    user:
+      | { deviceOS: string; deviceToken?: string }
+      | { deviceOS: string; deviceToken?: string }[],
+    body: string
+  ) {
+    let token;
+    const deviceOS = "ios";
+    if (user instanceof Array) {
+      token = user.map(({ deviceToken = "" }) => deviceToken);
+    } else {
+      token = user.deviceToken;
+    }
 
-    return this.send(deviceToken, deviceOS, body);
+    return this.send(token, deviceOS, body);
   }
 
   notifyPhotoTime(user: User) {
@@ -77,7 +91,7 @@ export class NotificationService {
     return this.send(deviceToken, deviceOS, "time to take & share a photo", {
       type: "photoTime",
       photoTime: true,
-      date: moment().toISOString()
+      date: moment().toISOString(),
     });
   }
 
@@ -86,12 +100,14 @@ export class NotificationService {
 
     return this.send(deviceToken, deviceOS, body, {
       type: "user",
-      route
+      route,
     });
   }
 
   notifyWithNavigationToPost(
-    user: User | User[],
+    user:
+      | { deviceOS: string; deviceToken: string }
+      | { deviceOS: string; deviceToken: string }[],
     body: string,
     route: { id: string; phoneNumber: string }
   ) {
@@ -105,7 +121,7 @@ export class NotificationService {
 
     return this.send(token, deviceOS, body, {
       type: "post",
-      route
+      route,
     });
   }
 }

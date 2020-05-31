@@ -14,18 +14,18 @@ export default axios.create({ baseURL: server });
 
 export const getHeaders = ({
   jwt,
-  image
+  image,
 }: {
   jwt: string | null;
   image?: boolean;
 }) => {
   const imageHeaders = {
     Accept: "application/json",
-    "Content-Type": "multipart/form-data"
+    "Content-Type": "multipart/form-data",
   };
 
   let headers = {
-    Authorization: jwt ? `Bearer ${jwt}` : ""
+    Authorization: jwt ? `Bearer ${jwt}` : "",
   };
 
   if (image) {
@@ -35,10 +35,10 @@ export const getHeaders = ({
   return headers;
 };
 
-export const getUserProfileURL = (phoneNumber: string) => {
-  return `${server}/image/${phoneNumber}`;
+export const getUserProfileURL = (userId: string) => {
+  return `${server}/image/${userId}`;
 };
 
-export const getPostImageURL = (phoneNumber: string, id: string) => {
-  return `${server}/image/${phoneNumber}/${id}`;
+export const getPostImageURL = (userId: string, postId: string) => {
+  return `${server}/image/${userId}/${postId}`;
 };

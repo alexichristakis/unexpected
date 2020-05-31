@@ -6,32 +6,31 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ViewStyle
+  ViewStyle,
 } from "react-native";
 import {
   NativeViewGestureHandler,
   PanGestureHandler,
   State,
-  TapGestureHandler
+  TapGestureHandler,
 } from "react-native-gesture-handler";
 import Animated, { Extrapolate } from "react-native-reanimated";
 import {
   bin,
-  bInterpolate,
   clamp,
   onGestureEvent,
-  onScroll,
+  onScrollEvent,
   spring,
   timing,
   useDiff,
   useValues,
   withOffset,
-  withSpring
+  withSpring,
 } from "react-native-redash";
 
 import CloseIcon from "@assets/svg/close.svg";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib/constants";
-import { Colors, SB_HEIGHT, TextStyles } from "@lib/styles";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "@lib";
+import { Colors, SB_HEIGHT, TextStyles } from "@lib";
 
 const {
   interpolate,
@@ -48,7 +47,7 @@ const {
   clockRunning,
   sub,
   Clock,
-  Value
+  Value,
 } = Animated;
 
 const { UNDETERMINED } = State;
@@ -59,7 +58,7 @@ const config = {
   stiffness: 500,
   overshootClamping: false,
   restSpeedThreshold: 0.1,
-  restDisplacementThreshold: 0.1
+  restDisplacementThreshold: 0.1,
 };
 
 export interface ModalListProps {
@@ -90,7 +89,7 @@ export const ModalList = React.memo(
         children,
         offsetY = new Animated.Value(0),
         scrollRef,
-        onClose
+        onClose,
       },
       ref
     ) => {
@@ -104,10 +103,13 @@ export const ModalList = React.memo(
       const panRef = useRef<PanGestureHandler>(null);
 
       const [dragY, velocityY, scrollY, lastScrollY, offset] = useValues(
-        [0, 0, 0, 0, SCREEN_HEIGHT],
-        []
+        0,
+        0,
+        0,
+        0,
+        SCREEN_HEIGHT
       );
-      const [gestureState] = useValues([UNDETERMINED], []);
+      const [gestureState] = useValues(UNDETERMINED);
 
       const [goUpFully] = useState<Animated.Value<0 | 1>>(new Value(0));
       const [goUp] = useState<Animated.Value<0 | 1>>(new Value(0));
@@ -121,7 +123,7 @@ export const ModalList = React.memo(
       useImperativeHandle(ref, () => ({
         open,
         openFully,
-        close
+        close,
       }));
 
       const handleClose = () => {
@@ -130,7 +132,7 @@ export const ModalList = React.memo(
       };
 
       const handleOnSnap = (values: readonly number[]) => {
-        values.forEach(value => {
+        values.forEach((value) => {
           if (value === SNAP_OPEN) {
             setIsOpen(true);
           } else if (value === FULLY_OPEN) {
@@ -149,7 +151,7 @@ export const ModalList = React.memo(
       const panHandler = onGestureEvent({
         state: gestureState,
         translationY: dragY,
-        velocityY
+        velocityY,
       });
 
       const [translateY] = useState(
@@ -161,7 +163,7 @@ export const ModalList = React.memo(
             snapPoints: [FULLY_OPEN, SNAP_OPEN, CLOSED],
             onSnap: handleOnSnap,
             offset,
-            config
+            config,
           }),
           FULLY_OPEN,
           CLOSED
@@ -171,13 +173,13 @@ export const ModalList = React.memo(
       const opacity = interpolate(translateY, {
         inputRange: [0, SCREEN_HEIGHT],
         outputRange: [0.8, 0],
-        extrapolate: Extrapolate.CLAMP
+        extrapolate: Extrapolate.CLAMP,
       });
 
       const dividerOpacity = interpolate(scrollY, {
         inputRange: [0, 10],
         outputRange: [0, 1],
-        extrapolate: Extrapolate.CLAMP
+        extrapolate: Extrapolate.CLAMP,
       });
 
       useCode(
@@ -199,11 +201,11 @@ export const ModalList = React.memo(
                   clock,
                   from: offset,
                   to: SNAP_OPEN,
-                  config
+                  config,
                 })
               ),
               call([], () => setIsOpen(true)),
-              cond(not(clockRunning(clock)), [set(goUp, 0)])
+              cond(not(clockRunning(clock)), [set(goUp, 0)]),
             ]),
             cond(goUpFully, [
               set(
@@ -212,7 +214,7 @@ export const ModalList = React.memo(
                   clock,
                   from: offset,
                   to: FULLY_OPEN,
-                  config
+                  config,
                 })
               ),
               cond(not(clockRunning(clock)), [
@@ -220,8 +222,8 @@ export const ModalList = React.memo(
                 cond(
                   not(bin(isOpen)),
                   call([], () => setIsOpen(true))
-                )
-              ])
+                ),
+              ]),
             ]),
             cond(goDown, [
               set(
@@ -230,14 +232,14 @@ export const ModalList = React.memo(
                   clock,
                   from: offset,
                   to: CLOSED,
-                  config
+                  config,
                 })
               ),
               cond(not(clockRunning(clock)), [
                 set(goDown, 0),
-                call([], handleClose)
-              ])
-            ])
+                call([], handleClose),
+              ]),
+            ]),
           ]),
         []
       );
@@ -282,8 +284,8 @@ export const ModalList = React.memo(
                     ref={scrollRef}
                     bounces={false}
                     scrollEventThrottle={16}
-                    onScrollBeginDrag={onScroll({ y: lastScrollY })}
-                    onScroll={onScroll({ y: scrollY })}
+                    onScrollBeginDrag={onScrollEvent({ y: lastScrollY })}
+                    onScroll={onScrollEvent({ y: scrollY })}
                     contentContainerStyle={[{ paddingBottom: 110 }, style]}
                   >
                     {children}
@@ -305,7 +307,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     backgroundColor: "white",
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT
+    height: SCREEN_HEIGHT,
   },
   headerContainer: {
     flexDirection: "row",
@@ -314,15 +316,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 10,
     marginLeft: 15,
-    marginBottom: 7
+    marginBottom: 7,
   },
   headerDivider: {
     width: "100%",
     height: 1,
-    backgroundColor: Colors.lightGray
+    backgroundColor: Colors.lightGray,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.nearBlack
-  }
+    backgroundColor: Colors.nearBlack,
+  },
 });

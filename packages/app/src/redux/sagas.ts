@@ -1,11 +1,16 @@
 import { all, fork } from "redux-saga/effects";
 
-import { appSagas } from "./modules/app";
-import { authSagas } from "./modules/auth";
-import { imageSagas } from "./modules/image";
-import { permissionSagas } from "./modules/permissions";
-import { postSagas } from "./modules/post";
-import { userSagas } from "./modules/user";
+import {
+  appSagas,
+  authSagas,
+  commentSagas,
+  friendSagas,
+  imageSagas,
+  permissionSagas,
+  postSagas,
+  userSagas,
+  searchSagas,
+} from "./modules";
 
 export default function* rootSaga() {
   yield all([
@@ -14,6 +19,9 @@ export default function* rootSaga() {
     yield fork(permissionSagas),
     yield fork(appSagas),
     yield fork(imageSagas),
-    yield fork(postSagas)
+    yield fork(postSagas),
+    yield fork(friendSagas),
+    yield fork(commentSagas),
+    yield fork(searchSagas),
   ]);
 }

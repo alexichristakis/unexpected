@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Image, ImageStyle, View } from "react-native";
 import { TakePictureResponse } from "react-native-camera/types";
 
-import { SCREEN_WIDTH } from "@lib/styles";
+import { SCREEN_WIDTH } from "@lib";
 
 export interface PendingPostImageProps {
   width?: number;
@@ -18,7 +18,7 @@ export const PendingPostImage: React.FC<PendingPostImageProps> = ({
   round = false,
   size = 0,
   width = SCREEN_WIDTH - 20,
-  height
+  height,
 }) => {
   const [loading, setLoading] = useState(true);
   const [uri, setUri] = useState("");

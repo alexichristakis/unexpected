@@ -1,30 +1,41 @@
 export {
   default as UserReducer,
-  ActionTypes as UserActionTypes,
-  Actions as UserActions
+  Actions as UserActions,
+  userSagas,
 } from "./user";
 export {
   default as ImageReducer,
-  ActionTypes as ImageActionTypes,
-  Actions as ImageActions
+  Actions as ImageActions,
+  imageSagas,
 } from "./image";
 export {
   default as PostReducer,
-  ActionTypes as PostActionTypes,
-  Actions as PostActions
+  Actions as PostActions,
+  postSagas,
 } from "./post";
 export {
   default as AuthReducer,
-  ActionTypes as AuthActionTypes,
-  Actions as AuthActions
+  Actions as AuthActions,
+  authSagas,
 } from "./auth";
 export {
   default as PermissionsReducer,
-  ActionTypes as PermissionsActionTypes,
-  Actions as PermissionsActions
+  Actions as PermissionsActions,
+  permissionSagas,
 } from "./permissions";
+export { default as AppReducer, Actions as AppActions, appSagas } from "./app";
 export {
-  default as AppReducer,
-  ActionTypes as AppActionTypes,
-  Actions as AppActions
-} from "./app";
+  default as FriendReducer,
+  Actions as FriendActions,
+  friendSagas,
+} from "./friend";
+export {
+  default as CommentReducer,
+  Actions as CommentActions,
+  commentSagas,
+} from "./comment";
+export {
+  default as SearchReducer,
+  Actions as SearchActions,
+  searchSagas,
+} from "./search";

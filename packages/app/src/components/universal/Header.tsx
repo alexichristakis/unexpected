@@ -1,7 +1,7 @@
 import React from "react";
 import { Animated, StyleSheet } from "react-native";
 
-import { TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib";
 
 export interface HeaderProps {
   title: string;
@@ -14,10 +14,10 @@ const Header: React.FC<HeaderProps> = ({ title, scrollY }) => {
         translateY: scrollY.interpolate({
           inputRange: [-10, 0, 10],
           outputRange: [10, 0, -20],
-          extrapolateRight: "clamp"
-        })
-      }
-    ]
+          extrapolateRight: "clamp",
+        }),
+      },
+    ],
   };
 
   const animatedTextStyle = {
@@ -32,10 +32,10 @@ const Header: React.FC<HeaderProps> = ({ title, scrollY }) => {
         scale: scrollY.interpolate({
           inputRange: [-5, 1, 10],
           outputRange: [1, 1, 0.9],
-          extrapolate: "clamp"
-        })
-      }
-    ]
+          extrapolate: "clamp",
+        }),
+      },
+    ],
   };
 
   return (
@@ -56,9 +56,9 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   text: {
-    ...TextStyles.large
-  }
+    ...TextStyles.large,
+  },
 });

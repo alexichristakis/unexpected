@@ -1,6 +1,6 @@
 import { useFocusEffect } from "@react-navigation/core";
 import { Formik } from "formik";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -8,57 +8,61 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { Screen } from "react-native-screens";
 import { NativeStackNavigationProp } from "react-native-screens/native-stack";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 
 import { Background, CodeInput, PhoneNumberInput } from "@components/Auth";
 import { Button } from "@components/universal";
 import { useDarkStatusBar, useLightStatusBar } from "@hooks";
-import { TextStyles } from "@lib/styles";
+import { TextStyles } from "@lib";
 import { Actions as AuthActions } from "@redux/modules/auth";
-import { ReduxPropsType, RootState as RootStateType } from "@redux/types";
+import { RootState as RootStateType } from "@redux/types";
 import { StackParamList } from "../App";
 
-const mapStateToProps = ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
-  ...auth,
-  ...ownProps
-});
-const mapDispatchToProps = {
-  reset: AuthActions.reset,
-  requestAuth: AuthActions.requestAuth,
-  checkCode: AuthActions.checkCode
-};
+const connector = connect(
+  ({ auth }: RootStateType, ownProps: AuthOwnProps) => ({
+    ...auth,
+    ...ownProps,
+  }),
+  {
+    reset: AuthActions.reset,
+    requestAuth: AuthActions.requestAuth,
+    checkCode: AuthActions.checkCode,
+  }
+);
 
-export type AuthReduxProps = ReduxPropsType<
-  typeof mapStateToProps,
-  typeof mapDispatchToProps
->;
+export type AuthConnectedProps = ConnectedProps<typeof connector>;
+
 export interface AuthOwnProps {
   navigation: NativeStackNavigationProp<StackParamList>;
 }
 
 const initialFormValues = { phoneNumber: "", code: "" };
-const Auth: React.FC<AuthReduxProps & AuthOwnProps> = ({
+const Auth: React.FC<AuthConnectedProps & AuthOwnProps> = ({
   navigation,
+  isNewAccount,
+  jwt,
   loading,
   reset,
   isAwaitingCode,
   authError,
   requestAuth,
-  checkCode
+  checkCode,
 }) => {
   useDarkStatusBar();
 
-  useFocusEffect(
-    useCallback(() => {
-      reset();
+  useEffect(() => {
+    reset();
+  }, []);
 
-      return () => {};
-    }, [])
-  );
+  useEffect(() => {
+    if (jwt && isNewAccount) {
+      navigation.navigate("SIGN_UP");
+    }
+  }, [jwt, isNewAccount]);
 
   const handleSubmit = (values: typeof initialFormValues) => {
     if (isAwaitingCode) {
@@ -119,32 +123,32 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 50,
     paddingHorizontal: 30,
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   subContainer: {
     width: "100%",
     height: "100%",
     justifyContent: "space-around",
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
   },
   formFields: {
     flex: 1,
     paddingTop: 50,
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   title: {
     ...TextStyles.title,
     fontSize: 40,
-    fontWeight: "500"
+    fontWeight: "500",
     // color: "white"
   },
   subtitle: {
-    ...TextStyles.large
+    ...TextStyles.large,
     // color: "white"
   },
   button: {
-    marginBottom: 45
-  }
+    marginBottom: 45,
+  },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+export default connector(Auth);

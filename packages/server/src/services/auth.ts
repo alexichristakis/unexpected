@@ -1,12 +1,11 @@
 import { $log, Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { User } from "@unexpected/global";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import moment from "moment";
 
+import { VerificationMessageModel } from "@global";
 import { SALT_ROUNDS } from "../lib/constants";
-import { VerificationMessage as VerificationMessageModel } from "../models/verification-message";
 import { TwilioService } from "./twilio";
 import { UserService } from "./user";
 
@@ -34,31 +33,24 @@ export class AuthService {
 
         const doc = new this.verificationMessageModel({
           phoneNumber: to,
-          code: encryptedCode
+          code: encryptedCode,
         });
 
         await doc.save();
 
         return encryptedCode;
       })
-      .catch(error => error);
+      .catch((error) => error);
   }
 
   async clearOldCodes() {
     return this.verificationMessageModel.deleteMany({}).exec();
   }
 
-  async checkVerification(
-    phoneNumber: string,
-    sentCode: string
-  ): Promise<{ verified: boolean; user?: User }> {
+  async checkVerification(phoneNumber: string, sentCode: string) {
     const verificationMessage = await this.verificationMessageModel
-      .findOne({
-        phoneNumber
-      })
-      .sort({
-        createdAt: -1
-      })
+      .findOne({ phoneNumber })
+      .sort({ createdAt: -1 })
       .exec();
 
     // no record of the phone number requested to be verified
@@ -77,19 +69,21 @@ export class AuthService {
     if (!comparison) return { verified: false };
 
     // check to see if the user already has an account
-    const userModel = await this.userService.getByPhoneNumber(phoneNumber);
+    const userModel = await this.userService.getByPhone(phoneNumber);
 
     if (userModel) {
       return { verified: true, user: userModel };
     }
 
+    const placeholder = await this.userService.createPlaceholder(phoneNumber);
+
     // otherwise verified and new user
-    return { verified: true };
+    return { verified: true, newUser: true, user: placeholder };
   }
 
-  generateJWT(phoneNumber: string): string {
+  generateJWT(id: string) {
     const privateKey = process.env.AUTH_PRIVATE_KEY as string;
-    const token = jwt.sign({ phoneNumber }, privateKey, { algorithm: "RS256" });
+    const token = jwt.sign({ id }, privateKey, { algorithm: "RS256" });
 
     return token;
   }

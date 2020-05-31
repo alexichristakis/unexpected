@@ -5,7 +5,8 @@ import {
   PathParams,
   Put,
   UseAfter,
-  UseAuth
+  UseAuth,
+  Context,
 } from "@tsed/common";
 import { MulterOptions, MultipartFile } from "@tsed/multipartfiles";
 import multer from "multer";
@@ -19,62 +20,37 @@ export class ImageController {
   @Inject(ImageService)
   private imageService: ImageService;
 
-  @Put("/:phoneNumber/:id")
-  @MulterOptions({
-    storage: multer.memoryStorage()
-  })
-  async uploadPost(
-    @MultipartFile("image") file: Express.Multer.File,
-    @PathParams("phoneNumber") phoneNumber: string,
-    @PathParams("id") id: string
-  ): Promise<any> {
-    const { buffer } = file;
-
-    const path = this.imageService.getPostPath(phoneNumber, id);
-
-    await this.imageService.upload(buffer, path);
-
-    return true;
-  }
-
-  @Get("/:phoneNumber/:id")
+  @Get("/:userId/:photoId")
   @UseAuth(AuthMiddleware)
   @UseAfter(SendImageMiddleware)
-  async getPostImageUrl(
-    @PathParams("phoneNumber") phoneNumber: string,
-    @PathParams("id") id: string
+  downloadPostImage(
+    @PathParams("userId") userId: string,
+    @PathParams("photoId") photoId: string
   ) {
-    const path = this.imageService.getPostPath(phoneNumber, id);
+    const path = this.imageService.getPostPath(userId, photoId);
 
-    const buffer = await this.imageService.download(path);
-
-    return buffer;
+    return this.imageService.download(path);
   }
 
-  @Put("/:phoneNumber")
-  @MulterOptions({
-    storage: multer.memoryStorage()
-  })
+  @Get("/:userId")
+  @UseAfter(SendImageMiddleware)
+  downloadProfileImage(@PathParams("userId") userId: string) {
+    const path = this.imageService.getProfilePath(userId);
+
+    return this.imageService.download(path);
+  }
+
+  @Put()
+  @UseAuth(AuthMiddleware)
+  @MulterOptions({ storage: multer.memoryStorage() })
   async uploadProfileImage(
     @MultipartFile("image") file: Express.Multer.File,
-    @PathParams("phoneNumber") phoneNumber: string
-  ): Promise<any> {
+    @Context("auth") userId: string
+  ) {
     const { buffer } = file;
 
-    const path = this.imageService.getProfilePath(phoneNumber);
+    const path = this.imageService.getProfilePath(userId);
 
-    await this.imageService.upload(buffer, path);
-
-    return true;
-  }
-
-  @Get("/:phoneNumber")
-  @UseAfter(SendImageMiddleware)
-  async getUserProfileImage(@PathParams("phoneNumber") phoneNumber: string) {
-    const path = this.imageService.getProfilePath(phoneNumber);
-
-    const buffer = await this.imageService.download(path);
-
-    return buffer;
+    return this.imageService.upload(buffer, path);
   }
 }

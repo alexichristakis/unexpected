@@ -1,56 +1,47 @@
 import React from "react";
-import { StatusBar } from "react-native";
+import { Easing, StatusBar, StyleSheet } from "react-native";
 
-import {
-  BottomTabBar,
-  BottomTabBarProps,
-  BottomTabNavigationProp,
-  createBottomTabNavigator
-} from "@react-navigation/bottom-tabs";
-import {
-  CompositeNavigationProp,
-  ParamListBase,
-  RouteProp
-} from "@react-navigation/core";
 import { NavigationContainer } from "@react-navigation/native";
-import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp
-} from "react-native-screens/native-stack";
-import { Provider } from "react-redux";
+  createStackNavigator,
+  StackCardStyleInterpolator,
+} from "@react-navigation/stack";
+import { gestureHandlerRootHOC } from "react-native-gesture-handler";
+import { createNativeStackNavigator } from "react-native-screens/native-stack";
+import { Provider, useSelector } from "react-redux";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
+import FocusedPost from "@components/FocusedPost";
 import * as selectors from "@redux/selectors";
 import createStore from "@redux/store";
 
-import { LaunchCameraButton } from "@components/Camera";
-import Connection from "@components/Connection";
-import { isIPhoneX, TextStyles } from "@lib/styles";
-import { useNotificationEvents, useReduxState } from "./hooks";
+import {
+  FocusedPostProvider,
+  FriendsProvider,
+  KeyboardStateProvider,
+  useNotificationEvents,
+  useReduxState,
+} from "./hooks";
 import { setNavigatorRef } from "./navigation";
 
 /* screens */
+import Friends from "@components/Friends";
+import { Colors } from "@lib";
+import {
+  StackNavigationProp,
+  TransitionSpec,
+} from "@react-navigation/stack/lib/typescript/src/types";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import {
   Auth,
   Capture,
-  Discover,
+  Home,
   EditProfile,
-  Feed,
-  NewProfilePicture,
-  Permissions,
   Profile,
-  Settings,
   Share,
   SignUp,
-  UserProfile
 } from "./screens";
-
-import DiscoverIcon from "./assets/svg/discover.svg";
-import FeedIcon from "./assets/svg/feed.svg";
-import ProfileIcon from "./assets/svg/profile.svg";
 
 type BaseParams = {
   prevRoute: string;
@@ -66,7 +57,9 @@ export type StackParamList = {
   AUTH: undefined;
   SHARE: BaseParams;
   USER_PROFILE: undefined | { focusedPostId: string };
-  PROFILE: BaseParams & { phoneNumber: string; focusedPostId?: string };
+  // PROFILE: BaseParams & { phoneNumber: string; focusedPostId?: string };
+  PROFILE: { id: string };
+  FRIENDS: { id: string };
   SETTINGS: undefined;
   SIGN_UP: undefined;
   CAPTURE: undefined;
@@ -74,210 +67,197 @@ export type StackParamList = {
   EDIT_PROFILE: undefined;
 };
 
-export type TabParamList = {
-  FEED_TAB: undefined;
-  USER_PROFILE_TAB: undefined;
-  DISCOVER_TAB: undefined;
-};
-
-export type ParamList = StackParamList & TabParamList;
-
-type HomeTabProps<T extends keyof TabParamList> = {
-  name: keyof StackParamList;
-  component: React.ComponentType<any>;
-  navigation: NativeStackNavigationProp<ParamListBase>;
-  route: RouteProp<TabParamList, T>;
-};
+export type ParamList = StackParamList;
 
 /* initialize navigators */
-const Stack = createNativeStackNavigator<StackParamList>();
-const Tabs = createBottomTabNavigator<TabParamList>();
-
-const renderTabBar = (tabBarProps: BottomTabBarProps) => (
-  <>
-    <LaunchCameraButton />
-    <BottomTabBar {...tabBarProps} />
-  </>
-);
-
-const HomeTab: React.FC<HomeTabProps<keyof TabParamList>> = ({
-  navigation,
-  component: Root,
-  name,
-  route,
-  ...rest
-}) => {
-  navigation.setOptions({
-    headerShown: false
-  });
-
-  const screenOptions = {
-    headerShown: false,
-    contentStyle: { backgroundColor: "white" }
-  };
-
-  return (
-    <Stack.Navigator {...rest}>
-      <Stack.Screen name={name} options={screenOptions}>
-        {props => <Root {...props} />}
-      </Stack.Screen>
-      <Stack.Screen
-        name="PROFILE"
-        options={screenOptions}
-        component={Profile}
-      />
-    </Stack.Navigator>
-  );
-};
-
-const TAB_BAR_OPTIONS = {
-  style: {
-    maxHeight: 60,
-    paddingTop: isIPhoneX ? 10 : 0,
-    backgroundColor: "white",
-    borderTopWidth: 0
-  },
-  showLabel: false,
-  activeTintColor: "#231F20",
-  inactiveTintColor: "#9C9C9C"
-};
+const NativeStack = createNativeStackNavigator<StackParamList>();
+const Stack = createStackNavigator<StackParamList>();
 
 type AuthenticatedRootProps = {
   route: any;
-  navigation: CompositeNavigationProp<
-    BottomTabNavigationProp<TabParamList>,
-    NativeStackNavigationProp<StackParamList>
-  >;
+  navigation: StackNavigationProp<StackParamList>;
+};
+
+const profileCardStyleInterpolator: StackCardStyleInterpolator = ({
+  next,
+  current,
+}) => {
+  return {
+    overlayStyle: {
+      ...StyleSheet.absoluteFillObject,
+      opacity: current.progress,
+      backgroundColor: Colors.transGray,
+    },
+    containerStyle: {
+      opacity: next
+        ? next.progress.interpolate({
+            inputRange: [0, 0.2],
+            outputRange: [1, 0],
+          })
+        : 1,
+      transform: [
+        {
+          scale: next
+            ? next.progress.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 1.05],
+              })
+            : 1,
+        },
+      ],
+    },
+    cardStyle: {
+      opacity: current.progress.interpolate({
+        inputRange: [0, 0.25, 1],
+        outputRange: [0, 1, 1],
+      }),
+      transform: [
+        {
+          scale: current.progress.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: [0.9, 1.01, 1],
+          }),
+        },
+      ],
+    },
+  };
+};
+
+const friendsCardStyleInterpolator: StackCardStyleInterpolator = ({
+  next,
+  current,
+}) => {
+  return {
+    shadowStyle: { opacity: 0 },
+    overlayStyle: {
+      ...StyleSheet.absoluteFillObject,
+      opacity: current.progress,
+      backgroundColor: Colors.transGray,
+    },
+    containerStyle: {},
+    cardStyle: {
+      backgroundColor: "transparent",
+      opacity: current.progress.interpolate({
+        inputRange: [0, 0.25, 1],
+        outputRange: [0, 1, 1],
+      }),
+      transform: [
+        {
+          scale: current.progress.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: [0.9, 1.01, 1],
+          }),
+        },
+      ],
+    },
+  };
+};
+
+const transitionSpec: TransitionSpec = {
+  animation: "timing",
+  config: {
+    duration: 500,
+    easing: Easing.out(Easing.ease),
+  },
+};
+
+const screenOptions = {
+  headerShown: false,
+  cardOverlayEnabled: true,
+  transitionSpec: {
+    open: transitionSpec,
+    close: transitionSpec,
+  },
 };
 
 const AuthenticatedRoot: React.FC<AuthenticatedRootProps> = ({
-  navigation
+  navigation,
 }) => {
   // start listening for notification events
   useNotificationEvents(navigation);
 
   return (
-    <Stack.Navigator
-      // initialRouteName={}
-      screenOptions={{ stackPresentation: "modal" }}
+    <NativeStack.Navigator
+      screenOptions={{ stackPresentation: "modal", headerShown: false }}
     >
-      <Stack.Screen name="HOME" options={{ headerShown: false }}>
+      <NativeStack.Screen name="HOME">
         {() => (
-          <Tabs.Navigator tabBarOptions={TAB_BAR_OPTIONS} tabBar={renderTabBar}>
-            <Tabs.Screen
-              name="FEED_TAB"
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <FeedIcon width={16} height={16} fill={color} />
-                )
-              }}
-            >
-              {tabScreenProps => (
-                <HomeTab name="FEED" component={Feed} {...tabScreenProps} />
-              )}
-            </Tabs.Screen>
-            <Tabs.Screen
-              name="USER_PROFILE_TAB"
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <ProfileIcon width={22} height={22} fill={color} />
-                )
-              }}
-            >
-              {tabScreenProps => (
-                <HomeTab
-                  name="USER_PROFILE"
-                  component={UserProfile}
-                  {...tabScreenProps}
-                />
-              )}
-            </Tabs.Screen>
-            <Tabs.Screen
-              name="DISCOVER_TAB"
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <DiscoverIcon width={16} height={16} fill={color} />
-                )
-              }}
-            >
-              {tabScreenProps => (
-                <HomeTab
-                  name="DISCOVER"
-                  component={Discover}
-                  {...tabScreenProps}
-                />
-              )}
-            </Tabs.Screen>
-          </Tabs.Navigator>
+          <FriendsProvider>
+            <FocusedPostProvider>
+              <KeyboardStateProvider>
+                <Stack.Navigator screenOptions={screenOptions}>
+                  <Stack.Screen name="HOME" component={Home} />
+                  <Stack.Screen
+                    name="PROFILE"
+                    options={{
+                      cardStyleInterpolator: profileCardStyleInterpolator,
+                    }}
+                    component={Profile}
+                  />
+                  <Stack.Screen
+                    name="FRIENDS"
+                    options={{
+                      cardStyleInterpolator: friendsCardStyleInterpolator,
+                      cardStyle: { backgroundColor: "transparent" },
+                    }}
+                    component={Friends}
+                  />
+                </Stack.Navigator>
+                <FocusedPost {...{ navigation }} />
+              </KeyboardStateProvider>
+            </FocusedPostProvider>
+          </FriendsProvider>
         )}
-      </Stack.Screen>
-      <Stack.Screen
-        name="NEW_PROFILE_PICTURE"
-        component={NewProfilePicture}
-        options={{
-          headerTitle: "share",
-          headerTitleStyle: TextStyles.large,
-          headerTintColor: "#231F20",
-          headerHideShadow: true
-        }}
-      />
-
-      <Stack.Screen name="CAPTURE">
-        {({ route }) => (
-          <Stack.Navigator>
-            <Stack.Screen name="CAPTURE" options={{ headerShown: false }}>
-              {({ navigation }) => (
-                <Capture navigation={navigation} route={route} />
-              )}
-            </Stack.Screen>
-            <Stack.Screen
-              name="SHARE"
-              component={Share}
-              options={{ headerShown: false }}
-            />
-          </Stack.Navigator>
+      </NativeStack.Screen>
+      <NativeStack.Screen name="EDIT_PROFILE" component={EditProfile} />
+      <NativeStack.Screen name="CAPTURE">
+        {() => (
+          <NativeStack.Navigator screenOptions={{ headerShown: false }}>
+            <NativeStack.Screen name="CAPTURE" component={Capture} />
+            <NativeStack.Screen name="SHARE" component={Share} />
+          </NativeStack.Navigator>
         )}
-      </Stack.Screen>
-      <Stack.Screen name="SETTINGS" component={Settings} />
-      <Stack.Screen name="PERMISSIONS" component={Permissions} />
-      <Stack.Screen name="EDIT_PROFILE" component={EditProfile} />
-    </Stack.Navigator>
+      </NativeStack.Screen>
+    </NativeStack.Navigator>
   );
 };
 
-const UnathenticatedRoot = () => (
-  <Stack.Navigator>
-    <Stack.Screen
-      name="AUTH"
-      options={{ headerShown: false }}
-      component={Auth}
-    />
-    <Stack.Screen
-      name="SIGN_UP"
-      options={{ headerShown: false }}
-      component={SignUp}
-    />
-  </Stack.Navigator>
-);
-
 const Router: React.FC = () => {
-  const isAuthorized = useReduxState(selectors.isAuthorized);
+  const isAuthorized = useSelector(selectors.isAuthorized);
+  const isNewAccount = useSelector(selectors.isNewAccount);
 
   return (
     <NavigationContainer ref={setNavigatorRef}>
-      <Stack.Navigator screenOptions={{ stackAnimation: "fade" }}>
-        {isAuthorized ? (
-          <Stack.Screen name="AUTHENTICATED" options={{ headerShown: false }}>
-            {props => <AuthenticatedRoot {...props} />}
-          </Stack.Screen>
+      <NativeStack.Navigator screenOptions={{ stackAnimation: "fade" }}>
+        {isAuthorized && !isNewAccount ? (
+          <NativeStack.Screen
+            name="AUTHENTICATED"
+            options={{ headerShown: false }}
+          >
+            {(props) => <AuthenticatedRoot {...props} />}
+          </NativeStack.Screen>
         ) : (
-          <Stack.Screen
+          <NativeStack.Screen
             name="UNAUTHENTICATED"
             options={{ headerShown: false }}
-            component={UnathenticatedRoot}
-          />
+          >
+            {() => (
+              <NativeStack.Navigator>
+                <NativeStack.Screen
+                  name="AUTH"
+                  options={{ headerShown: false }}
+                  component={Auth}
+                />
+                <NativeStack.Screen
+                  name="SIGN_UP"
+                  options={{ headerShown: false }}
+                  component={SignUp}
+                />
+              </NativeStack.Navigator>
+            )}
+          </NativeStack.Screen>
         )}
-      </Stack.Navigator>
+      </NativeStack.Navigator>
     </NavigationContainer>
   );
 };

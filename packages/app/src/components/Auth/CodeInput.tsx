@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, TextInput, ViewStyle } from "react-native";
 
 import { Input } from "@components/universal";
-import { TextSizes, TextStyles } from "@lib/styles";
+import { TextSizes, TextStyles } from "@lib";
 // import , { Easing } from "react-native-reanimated";
 
 export interface CodeInputProps {
@@ -17,7 +17,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({
   style,
   value,
   onChange,
-  error
+  error,
 }) => {
   const [ref, setRef] = useState<TextInput | null>(null);
   const [entry, setEntry] = useState(new Animated.Value(0));
@@ -27,7 +27,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({
       Animated.timing(entry, {
         toValue: 1,
         duration: 300,
-        useNativeDriver: true
+        useNativeDriver: true,
       }).start();
     }
 
@@ -42,10 +42,10 @@ export const CodeInput: React.FC<CodeInputProps> = ({
       {
         translateY: entry.interpolate({
           inputRange: [0, 1],
-          outputRange: [-50, 0]
-        })
-      }
-    ]
+          outputRange: [-50, 0],
+        }),
+      },
+    ],
   };
 
   return (
@@ -74,7 +74,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({
 const styles = StyleSheet.create({
   textInput: {
     // marginTop: 20
-  }
+  },
 });
 
 export default CodeInput;

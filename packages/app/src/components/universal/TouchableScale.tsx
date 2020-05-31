@@ -5,7 +5,7 @@ import Animated, { Easing } from "react-native-reanimated";
 
 export interface TouchableScaleProps {
   onPress?: () => void;
-  style?: StyleProp<ViewStyle>;
+  style?: Animated.AnimateStyle<ViewStyle>;
   toScale?: number;
   children: React.ReactNode[] | React.ReactChild;
 }
@@ -13,7 +13,7 @@ export const TouchableScale: React.FC<TouchableScaleProps> = ({
   children,
   style,
   toScale = 0.95,
-  onPress
+  onPress,
 }) => {
   const [scale] = useState(new Animated.Value(1));
 
@@ -21,7 +21,7 @@ export const TouchableScale: React.FC<TouchableScaleProps> = ({
     Animated.timing(scale, {
       toValue: active ? toScale : 1,
       duration: 150,
-      easing: Easing.ease
+      easing: Easing.ease,
     }).start();
   };
 
@@ -33,8 +33,8 @@ export const TouchableScale: React.FC<TouchableScaleProps> = ({
           {
             transform: [{ scale }],
             alignItems: "center",
-            justifyContent: "center"
-          }
+            justifyContent: "center",
+          },
         ]}
       >
         <BaseButton onActiveStateChange={update} onPress={onPress}>

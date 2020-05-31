@@ -1,18 +1,22 @@
 import { Inject, Service } from "@tsed/common";
 import { MongooseModel } from "@tsed/mongoose";
-import { Post } from "@unexpected/global";
-import groupBy from "lodash/groupBy";
 import keyBy from "lodash/keyBy";
 import uniqBy from "lodash/uniqBy";
 
-import { Post as PostModel } from "../models/post";
+import {
+  NewPost,
+  PostModel,
+  Post_populated,
+  DefaultUserSelect,
+  _idToId,
+} from "@global";
+
 import { CommentService } from "./comment";
-import { CRUDService } from "./crud";
 import { SlackLogService } from "./logger";
 import { UserService } from "./user";
 
 @Service()
-export class PostService extends CRUDService<PostModel, Post> {
+export class PostService {
   @Inject(PostModel)
   model: MongooseModel<PostModel>;
 
@@ -25,16 +29,16 @@ export class PostService extends CRUDService<PostModel, Post> {
   @Inject(SlackLogService)
   logger: SlackLogService;
 
-  createNewPost = async (post: Post) => {
-    return Promise.all([
-      this.create(post),
-      this.userService.updateValidNotifications(post),
-      this.logger.sendMessage(post.phoneNumber, post.description)
-    ]);
+  getAll = async (select?: string | null, populate?: string | null) => {
+    return this.model.find().select(select).populate(populate).exec();
   };
 
-  getUsersPosts = async (phoneNumber: string) => {
-    const posts = await this.find({ phoneNumber });
+  create = async (post: NewPost) => {
+    return this.model.create(post);
+  };
+
+  getUsersPosts = async (user: string) => {
+    const posts = await this.model.find({ user });
 
     const postMap = keyBy(posts, ({ id }) => id);
 
@@ -42,53 +46,57 @@ export class PostService extends CRUDService<PostModel, Post> {
   };
 
   getPost = async (id: string) => {
+    return this.model.findById(id).exec();
+  };
+
+  getPostWithComments = async (id: string) => {
     const [post, comments] = await Promise.all([
-      this.getId(id),
-      this.commentService.getByPostId(id)
+      this.model.findById(id).populate("user", DefaultUserSelect).exec(),
+      this.commentService.getByPostId(id),
     ]);
 
     return { post, comments };
   };
 
-  getFeedForUser = async (phoneNumber: string) => {
-    const user = await this.userService.findOne({ phoneNumber }, ["friends"]);
+  getFeedForUser = async (id: string) => {
+    const user = await this.userService.get(id, "friends");
 
-    if (!user) return [];
+    if (!user) return null;
 
     const { friends } = user;
 
-    // gets all friends posts
-    const posts = await this.model
-      .find({ phoneNumber: { $in: [...friends, phoneNumber] } })
+    const posts = ((await this.model
+      .find({ user: { $in: [...friends, id] } })
+      .populate("user", DefaultUserSelect)
       .sort({ createdAt: -1 })
-      .exec();
+      .lean()
+      .exec()) as unknown) as Post_populated[];
 
-    // gets their ids
-    const postIds: string[] = posts.map(({ id }) => id);
+    // const comments = await this.commentService.getByPostIds(postIds);
 
-    const comments = await this.commentService.getByPostIds(postIds);
+    // const commentMap = groupBy(comments, ({ post }) => post);
 
-    // gets all unique user entities in the feed
-    const usersToFetch = uniqBy(
-      [...posts, ...comments],
-      post => post.phoneNumber
-    ).map(({ phoneNumber }) => phoneNumber);
+    const users = uniqBy(
+      posts.map(({ user }) => user),
+      ({ _id }) => _id
+    );
 
-    // fetches users and comments
-    const users = await this.userService.getByPhoneNumber(usersToFetch);
+    const postsUnpopulated = keyBy(
+      posts.map(({ _id, user, ...rest }) => ({
+        ...rest,
+        id: _id,
+        user: user._id,
+      })),
+      ({ id }) => id
+    );
 
-    // generates maps to load data into returned list
-    const postMap = keyBy(posts, ({ id }) => id);
-    const userMap = keyBy(users, ({ phoneNumber }) => phoneNumber);
-    const commentMap = groupBy(comments, ({ postId }) => postId);
-
-    const ret = {
-      postIds,
-      posts: postMap,
-      users: userMap,
-      comments: commentMap
+    return {
+      posts: postsUnpopulated,
+      users: users.map((user) => _idToId(user)),
     };
+  };
 
-    return ret;
+  delete = async (_id: string) => {
+    return this.model.deleteOne({ _id });
   };
 }
