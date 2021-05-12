@@ -22,7 +22,7 @@
     "@sentry/node": "^5.15.5",
     "@slack/web-api": "^5.9.0",
     "@tsed/common": "^5.56.0",
-    "@tsed/core": "^5.56.0",
+    "@tsed/core": "^5.65.7",
     "@tsed/di": "^5.56.0",
     "@tsed/mongoose": "^5.56.0",
     "@tsed/multipartfiles": "^5.56.0",
