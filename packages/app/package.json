@@ -22,7 +22,7 @@
     "axios": "^0.19.2",
     "formik": "^2.1.4",
     "immer": "^6.0.9",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.26.0",
     "moment-timezone": "^0.5.31",
     "react": "16.13.1",
