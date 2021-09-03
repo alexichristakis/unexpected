@@ -19,7 +19,7 @@
     "@react-navigation/native": "^5.5.0",
     "@react-navigation/stack": "^5.4.1",
     "@svgr/core": "^5.4.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "formik": "^2.1.4",
     "immer": "^6.0.9",
     "lodash": "^4.17.15",
