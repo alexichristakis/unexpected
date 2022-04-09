@@ -23,7 +23,7 @@
     "formik": "^2.1.4",
     "immer": "^6.0.9",
     "lodash": "^4.17.15",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.31",
     "react": "16.13.1",
     "react-native": "0.62.2",
